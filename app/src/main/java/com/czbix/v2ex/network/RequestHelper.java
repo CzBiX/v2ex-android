@@ -33,8 +33,7 @@ public class RequestHelper {
     private static final String BASE_URL = "https://www.v2ex.com";
     private static final String API_GET_ALL_NODES = BASE_URL + "/api/nodes/all.json";
 
-    public static final String USER_AGENT = "V2EX+/" + BuildConfig.VERSION_NAME;
-    public static final int SERVER_ERROR_CODE = 500;
+    private static final int SERVER_ERROR_CODE = 500;
 
     private static final OkHttpClient CLIENT;
 
@@ -130,7 +129,7 @@ public class RequestHelper {
         return response;
     }
 
-    public static void checkResponse(Response response) throws RemoteException, RequestException {
+    private static void checkResponse(Response response) throws RemoteException, RequestException {
         if (response.isSuccessful()) {
             return;
         }
