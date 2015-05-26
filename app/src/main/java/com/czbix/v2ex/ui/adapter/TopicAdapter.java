@@ -83,7 +83,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mTime.setText(topic.getReplyTime());
             mReplyCount.setText(Integer.toString(topic.getReplyCount()));
 
-            mAvatar.setImageBitmap(null);
+            mAvatar.setImageResource(R.drawable.avatar_default);
             final Avatar avatar = topic.getMember().getAvatar();
             ImageLoader.getInstance().add(mId, mAvatar,
                     avatar.getUrlByDp(32), this);
