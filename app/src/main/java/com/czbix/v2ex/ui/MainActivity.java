@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
 
@@ -17,6 +18,16 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        addFragmentToView();
+    }
+
+    private void addFragmentToView() {
+        Node node = new Node.Builder().setTitle("Linux").setName("linux").createNode();
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment, TopicListFragment.newInstance(node))
+                .commit();
     }
 
     @Override

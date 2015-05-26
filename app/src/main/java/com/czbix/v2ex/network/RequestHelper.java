@@ -5,17 +5,22 @@ import android.util.Log;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
-import com.czbix.v2ex.common.ConnectionException;
-import com.czbix.v2ex.common.FatalException;
-import com.czbix.v2ex.common.RequestException;
+import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.model.GsonFactory;
+import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.network.interceptor.UserAgentInterceptor;
+import com.czbix.v2ex.parser.Parser;
+import com.czbix.v2ex.parser.TopicListParser;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+
+import org.jsoup.nodes.Document;
+import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,10 +29,10 @@ import java.util.concurrent.TimeUnit;
 
 public class RequestHelper {
     private static final String TAG = RequestHelper.class.getSimpleName();
-    private static final String BASE_URL = "https://www.v2ex.com/";
-    private static final String LATEST_URL = BASE_URL + "api/topics/latest.json";
+    private static final String BASE_URL = "https://www.v2ex.com";
+    private static final String API_GET_ALL_NODES = BASE_URL + "/api/nodes/all.json";
 
-    public static final String USER_AGENT = "V2EX+ " + BuildConfig.VERSION_NAME;
+    public static final String USER_AGENT = "V2EX+/" + BuildConfig.VERSION_NAME;
     public static final int SERVER_ERROR_CODE = 500;
 
     private static final OkHttpClient CLIENT;
@@ -48,18 +53,27 @@ public class RequestHelper {
         return new Cache(cacheDir, cacheSize);
     }
 
-    public static List<Topic> getLatest() throws ConnectionException, RemoteException, RequestException {
+    public static List<Topic> getTopics(Node node) throws ConnectionException, RemoteException {
         if (BuildConfig.DEBUG) {
-            Log.v(TAG, "request latest topic by api");
+            Log.v(TAG, "request latest topic for node: " + node.getTitle());
         }
 
         final Request request = new Request.Builder()
-                .url(LATEST_URL)
+                .url(BASE_URL + node.getUrl())
                 .build();
 
-        final String json = sendRequest(request);
-        final List<Topic> topics = GsonFactory.getInstance().fromJson(json, new TypeToken<List<Topic>>() {
-        }.getType());
+        final Response response = sendRequest(request);
+
+        final Document doc;
+        final List<Topic> topics;
+        try {
+            doc = Parser.toDoc(response.body().string());
+            topics = TopicListParser.parseDoc(doc, node);
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        } catch (SAXException e) {
+            throw new RequestException(e);
+        }
 
         if (BuildConfig.DEBUG) {
             Log.v(TAG, "received topics, count: " + topics.size());
@@ -68,7 +82,23 @@ public class RequestHelper {
         return topics;
     }
 
-    private static String sendRequest(Request request) throws ConnectionException, RemoteException {
+    public static List<Node> getAllNodes() throws ConnectionException, RemoteException {
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "request all nodes");
+        }
+
+        final Request request = new Request.Builder().url(API_GET_ALL_NODES).build();
+        final Response response = sendRequest(request);
+
+        try {
+            final String json = response.body().string();
+            return GsonFactory.getInstance().fromJson(json, new TypeToken<List<Node>>() {}.getType());
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        }
+    }
+
+    private static Response sendRequest(Request request) throws ConnectionException, RemoteException {
         final Response response;
         try {
             response = CLIENT.newCall(request).execute();
@@ -77,13 +107,7 @@ public class RequestHelper {
         }
         checkResponse(response);
 
-        final String json;
-        try {
-            json = response.body().string();
-        } catch (IOException e) {
-            throw new FatalException(e);
-        }
-        return json;
+        return response;
     }
 
     public static void checkResponse(Response response) throws RemoteException, RequestException {

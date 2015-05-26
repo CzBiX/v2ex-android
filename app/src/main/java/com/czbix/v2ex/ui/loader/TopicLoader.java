@@ -4,23 +4,27 @@ import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.os.RemoteException;
 
-import com.czbix.v2ex.common.ConnectionException;
+import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.network.RequestHelper;
 
 import java.util.List;
 
 public class TopicLoader extends AsyncTaskLoader<List<Topic>> {
+    private final Node mNode;
     private List<Topic> mResult;
 
-    public TopicLoader(Context context) {
+    public TopicLoader(Context context, Node node) {
         super(context);
+
+        mNode = node;
     }
 
     @Override
     public List<Topic> loadInBackground() {
         try {
-            mResult = RequestHelper.getLatest();
+            mResult = RequestHelper.getTopics(mNode);
         } catch (ConnectionException | RemoteException e) {
             e.printStackTrace();
         }

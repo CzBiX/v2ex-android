@@ -13,6 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="@string/desc_avatar"
+            android:layout_margin="5dp"
             android:layout_alignParentStart="false"/>
 
         <TextView
@@ -27,7 +28,14 @@
             style="@style/AppTheme.CardView.Node"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/username_tv"/>
+            android:layout_toEndOf="@id/username_tv"
+            android:layout_marginStart="5dp"/>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/node_tv"
+            android:layout_toStartOf="@+id/time_tv"/>
 
         <TextView
             android:id="@+id/time_tv"
@@ -39,23 +47,15 @@
         <TextView
             android:id="@+id/title_tv"
             style="@style/AppTheme.CardView.TextView"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/username_tv"/>
-
-        <TextView
-            android:id="@+id/content_tv"
-            style="@style/AppTheme.CardView.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title_tv"/>
 
         <TextView
             android:id="@+id/reply_count_tv"
             style="@style/AppTheme.CardView.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/content_tv"/>
+            android:layout_below="@id/title_tv"/>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

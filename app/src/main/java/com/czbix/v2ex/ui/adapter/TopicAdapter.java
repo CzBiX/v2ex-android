@@ -51,7 +51,6 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         public final TextView mNode;
         public final TextView mReplyCount;
         public final TextView mTime;
-        public final TextView mContent;
 
         public ViewHolder(View view) {
             super(view);
@@ -63,7 +62,6 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mUsername = ((TextView) view.findViewById(R.id.username_tv));
             mNode = ((TextView) view.findViewById(R.id.node_tv));
             mTime = ((TextView) view.findViewById(R.id.time_tv));
-            mContent = ((TextView) view.findViewById(R.id.content_tv));
             mReplyCount = ((TextView) view.findViewById(R.id.reply_count_tv));
         }
 
@@ -71,14 +69,14 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mTitle.setText(topic.getTitle());
             mUsername.setText(topic.getMember().getUsername());
             mNode.setText(topic.getNode().getTitle());
-            mReplyCount.setText(Integer.toString(topic.getReplies()));
-            mContent.setText(topic.getSummary(15));
+            mTime.setText(topic.getReplyTime());
+            mReplyCount.setText(Integer.toString(topic.getReplyCount()));
         }
 
         @Override
         public void onClick(View v) {
             final int position = getAdapterPosition();
-            if (v.equals(itemView)) {
+            if (v == itemView) {
                 mListener.onItemClick(position, mData.get(position));
             }
         }

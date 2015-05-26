@@ -1,4 +1,4 @@
-package com.czbix.v2ex.common;
+package com.czbix.v2ex.common.exception;
 
 public class ConnectionException extends Exception {
     public ConnectionException() {

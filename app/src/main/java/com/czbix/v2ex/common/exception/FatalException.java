@@ -1,4 +1,4 @@
-package com.czbix.v2ex.common;
+package com.czbix.v2ex.common.exception;
 
 public class FatalException extends RuntimeException {
     public FatalException(String detailMessage) {
