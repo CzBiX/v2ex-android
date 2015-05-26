@@ -6,7 +6,10 @@
     </style>
 
     <style name="AppTheme.CardView" parent="CardView">
-        <item name="cardElevation">5dp</item>
+        <item name="cardUseCompatPadding">true</item>
+    </style>
+
+    <style name="AppTheme.CardView.Avatar">
     </style>
 
     <style name="AppTheme.CardView.TextView" parent="TextAppearance.AppCompat">
@@ -14,11 +17,9 @@
     </style>
 
     <style name="AppTheme.CardView.Username" parent="AppTheme.CardView.TextView">
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="AppTheme.CardView.Node" parent="AppTheme.CardView.TextView">
-        <item name="android:textStyle">bold</item>
         <item name="android:textColor">#4caf50</item>
     </style>
 

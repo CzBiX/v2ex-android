@@ -5,62 +5,71 @@
                                     android:layout_height="wrap_content"
                                     style="@style/AppTheme.CardView"
     >
-    <RelativeLayout
+    <LinearLayout
         android:background="?android:attr/selectableItemBackground"
+        android:padding="5dp"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/avatar_img"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:contentDescription="@string/desc_avatar"
-            android:layout_margin="5dp"
-            android:layout_alignParentStart="false"/>
-
-        <TextView
-            android:id="@+id/username_tv"
-            style="@style/AppTheme.CardView.Username"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Username"
-            android:layout_toEndOf="@id/avatar_img"
-            tools:ignore="HardcodedText"/>
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/node_tv"
-            style="@style/AppTheme.CardView.Node"
-            android:text="Node"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/username_tv"
-            android:layout_marginStart="5dp"
-            tools:ignore="HardcodedText"/>
+            <ImageView
+                android:id="@+id/avatar_img"
+                style="@style/AppTheme.CardView.Avatar"
+                android:layout_height="32dp"
+                android:layout_width="32dp"
+                android:contentDescription="@string/desc_avatar"/>
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/node_tv"
-            android:layout_toStartOf="@+id/time_tv"/>
+            <TextView
+                android:id="@+id/username_tv"
+                style="@style/AppTheme.CardView.Username"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textStyle="bold"
+                android:layout_marginStart="10dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/avatar_img"
+                tools:ignore="HardcodedText"/>
 
-        <TextView
-            android:id="@+id/time_tv"
-            style="@style/AppTheme.CardView.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"/>
+            <TextView
+                android:id="@+id/node_tv"
+                style="@style/AppTheme.CardView.Node"
+                android:text="Node"
+                android:textStyle="bold"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@id/username_tv"
+                tools:ignore="HardcodedText"/>
+
+            <TextView
+                android:id="@+id/time_tv"
+                style="@style/AppTheme.CardView.TextView"
+                android:text="12m"
+                android:layout_centerVertical="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                tools:ignore="HardcodedText"/>
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/title_tv"
             style="@style/AppTheme.CardView.TextView"
+            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/avatar_img"/>
+            android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/reply_count_tv"
             style="@style/AppTheme.CardView.TextView"
+            android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title_tv"/>
-    </RelativeLayout>
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 </android.support.v7.widget.CardView>
