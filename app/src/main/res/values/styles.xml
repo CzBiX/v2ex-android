@@ -5,10 +5,11 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="AppTheme.CardView">
+    <style name="AppTheme.CardView" parent="CardView">
+        <item name="cardElevation">5dp</item>
     </style>
 
-    <style name="AppTheme.CardView.TextView">
+    <style name="AppTheme.CardView.TextView" parent="TextAppearance.AppCompat">
         <item name="android:textColor">#000</item>
     </style>
 

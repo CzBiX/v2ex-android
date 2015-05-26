@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:tools="http://schemas.android.com/tools"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     style="@style/AppTheme.CardView"
-                                    >
+    >
     <RelativeLayout
         android:background="?android:attr/selectableItemBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/avatar_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:contentDescription="@string/desc_avatar"
             android:layout_margin="5dp"
             android:layout_alignParentStart="false"/>
@@ -21,15 +22,19 @@
             style="@style/AppTheme.CardView.Username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/avatar_img"/>
+            android:text="Username"
+            android:layout_toEndOf="@id/avatar_img"
+            tools:ignore="HardcodedText"/>
 
         <TextView
             android:id="@+id/node_tv"
             style="@style/AppTheme.CardView.Node"
+            android:text="Node"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/username_tv"
-            android:layout_marginStart="5dp"/>
+            android:layout_marginStart="5dp"
+            tools:ignore="HardcodedText"/>
 
         <Space
             android:layout_width="0dp"
@@ -49,7 +54,7 @@
             style="@style/AppTheme.CardView.TextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/username_tv"/>
+            android:layout_below="@id/avatar_img"/>
 
         <TextView
             android:id="@+id/reply_count_tv"

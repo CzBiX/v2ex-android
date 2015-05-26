@@ -98,6 +98,25 @@ public class RequestHelper {
         }
     }
 
+    public static byte[] getImage(String url) throws ConnectionException, RemoteException {
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "request image: " + url);
+        }
+
+        final Request request = new Request.Builder().url(url).build();
+        final Response response = sendRequest(request);
+
+        if (BuildConfig.DEBUG) {
+            Log.v(TAG, "response image from cache: " + (response.cacheResponse() != null));
+        }
+
+        try {
+            return response.body().bytes();
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        }
+    }
+
     private static Response sendRequest(Request request) throws ConnectionException, RemoteException {
         final Response response;
         try {

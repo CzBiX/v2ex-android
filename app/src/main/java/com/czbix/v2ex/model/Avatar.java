@@ -1,8 +1,11 @@
 package com.czbix.v2ex.model;
 
+import com.czbix.v2ex.AppCtx;
+
 import java.util.regex.Pattern;
 
 public class Avatar extends Page {
+    public static final float DENSITY = AppCtx.getInstance().getDensity();
     public static final int SIZE_LARGE = 73;
     public static final int SIZE_NORMAL = 48;
     public static final int SIZE_MINI = 24;
@@ -38,11 +41,22 @@ public class Avatar extends Page {
 
     @Override
     public String getUrl() {
-        return getLarge();
+        return getNormal();
+    }
+
+    public String getUrlByDp(int dp) {
+        final float size = dp * DENSITY;
+        if (size >= SIZE_LARGE) {
+            return getLarge();
+        } else if (size >= SIZE_NORMAL) {
+            return getNormal();
+        } else {
+            return getMini();
+        }
     }
 
     public static String getUrl(String baseUrl, String size) {
-        return String.format(baseUrl, size);
+        return "https:" + String.format(baseUrl, size);
     }
 
     private static String getBaseUrl(String url) {

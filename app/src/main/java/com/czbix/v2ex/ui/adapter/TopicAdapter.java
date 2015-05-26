@@ -9,7 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.network.ImageLoader;
 
 import java.util.List;
 
@@ -71,6 +73,9 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mNode.setText(topic.getNode().getTitle());
             mTime.setText(topic.getReplyTime());
             mReplyCount.setText(Integer.toString(topic.getReplyCount()));
+
+            final Avatar avatar = topic.getMember().getAvatar();
+            ImageLoader.getInstance().add(mAvatar, avatar.getUrlByDp(mAvatar.getHeight()));
         }
 
         @Override
