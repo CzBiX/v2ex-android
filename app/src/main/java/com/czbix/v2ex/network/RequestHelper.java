@@ -3,7 +3,6 @@ package com.czbix.v2ex.network;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RequestException;
@@ -13,6 +12,7 @@ import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.network.interceptor.UserAgentInterceptor;
 import com.czbix.v2ex.parser.Parser;
 import com.czbix.v2ex.parser.TopicListParser;
+import com.czbix.v2ex.util.IOUtils;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
@@ -47,7 +47,7 @@ public class RequestHelper {
     }
 
     private static Cache buildCache() {
-        final File cacheDir = AppCtx.getInstance().getCacheDir();
+        final File cacheDir = IOUtils.getWebCachePath();
         final int cacheSize = 128 * 1024 * 1024;
 
         return new Cache(cacheDir, cacheSize);
