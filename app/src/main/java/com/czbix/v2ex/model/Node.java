@@ -1,5 +1,7 @@
 package com.czbix.v2ex.model;
 
+import android.os.Parcel;
+
 import java.util.regex.Pattern;
 
 public class Node extends Page {
@@ -54,6 +56,35 @@ public class Node extends Page {
     public String getUrl() {
         return buildUrlByName(getName());
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(getTitle());
+        dest.writeInt(mId);
+        dest.writeString(mName);
+        dest.writeString(mAlternative);
+        dest.writeInt(mTopics);
+        mAvatar.writeToParcel(dest, flags);
+    }
+
+    public static final Creator<Node> CREATOR = new Creator<Node>() {
+        @Override
+        public Node createFromParcel(Parcel source) {
+            return new Builder()
+                    .setTitle(source.readString())
+                    .setId(source.readInt())
+                    .setName(source.readString())
+                    .setTitleAlternative(source.readString())
+                    .setTopics(source.readInt())
+                    .setAvatar(Avatar.CREATOR.createFromParcel(source))
+                    .createNode();
+        }
+
+        @Override
+        public Node[] newArray(int size) {
+            return new Node[size];
+        }
+    };
 
     public static class Builder {
         private int mId;

@@ -1,6 +1,5 @@
 package com.czbix.v2ex.model;
 
-import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.common.base.Preconditions;
@@ -23,10 +22,5 @@ public abstract class Page implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mTitle);
     }
 }

@@ -1,5 +1,7 @@
 package com.czbix.v2ex.model;
 
+import android.os.Parcel;
+
 import com.czbix.v2ex.common.exception.FatalException;
 
 import java.util.regex.Matcher;
@@ -46,9 +48,31 @@ public class Member extends Page {
         return buildUrlFromName(getUsername());
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(getUsername());
+        mAvatar.writeToParcel(dest, flags);
+        dest.writeString(mTagLine);
+    }
+
+    public static final Creator<Member> CREATOR = new Creator<Member>() {
+        @Override
+        public Member createFromParcel(Parcel source) {
+            return new Builder()
+                    .setUsername(source.readString())
+                    .setAvatar(Avatar.CREATOR.createFromParcel(source))
+                    .setTagLine(source.readString())
+                    .createMember();
+        }
+
+        @Override
+        public Member[] newArray(int size) {
+            return new Member[size];
+        }
+    };
+
     public static class Builder {
         private String mUsername;
-        private String mUrl;
         private Avatar mAvatar;
         private String mTagLine;
 

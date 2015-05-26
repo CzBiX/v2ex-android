@@ -1,10 +1,13 @@
 package com.czbix.v2ex.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.czbix.v2ex.AppCtx;
 
 import java.util.regex.Pattern;
 
-public class Avatar extends Page {
+public class Avatar implements Parcelable {
     public static final float DENSITY = AppCtx.getInstance().getDensity();
     public static final int SIZE_LARGE = 73;
     public static final int SIZE_NORMAL = 48;
@@ -18,8 +21,6 @@ public class Avatar extends Page {
     private final String mBaseUrl;
 
     Avatar(String baseUrl) {
-        super("Avatar");
-
         mBaseUrl = baseUrl;
     }
 
@@ -37,11 +38,6 @@ public class Avatar extends Page {
 
     public String getBaseUrl() {
         return mBaseUrl;
-    }
-
-    @Override
-    public String getUrl() {
-        return getNormal();
     }
 
     public String getUrlByDp(int dp) {
@@ -62,6 +58,30 @@ public class Avatar extends Page {
     private static String getBaseUrl(String url) {
         return PATTERN.matcher(url).replaceFirst("%s");
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mBaseUrl);
+    }
+
+    public static final Creator<Avatar> CREATOR = new Creator<Avatar>() {
+        @Override
+        public Avatar createFromParcel(Parcel source) {
+            return new Builder()
+                    .setBaseUrl(source.readString())
+                    .createAvatar();
+        }
+
+        @Override
+        public Avatar[] newArray(int size) {
+            return new Avatar[size];
+        }
+    };
 
     public static class Builder {
         private String mUrl;

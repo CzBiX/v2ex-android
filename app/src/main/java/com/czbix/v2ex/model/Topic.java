@@ -1,5 +1,7 @@
 package com.czbix.v2ex.model;
 
+import android.os.Parcel;
+
 import com.czbix.v2ex.common.exception.FatalException;
 
 import java.util.regex.Matcher;
@@ -63,6 +65,37 @@ public class Topic extends Page {
     public String getUrl() {
         return buildUrlFromId(mId);
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(getTitle());
+        dest.writeInt(mId);
+        dest.writeString(mContent);
+        dest.writeInt(mReplies);
+        mMember.writeToParcel(dest, flags);
+        mNode.writeToParcel(dest, flags);
+        dest.writeString(mReplyTime);
+    }
+
+    public static final Creator<Topic> CREATOR = new Creator<Topic>() {
+        @Override
+        public Topic createFromParcel(Parcel source) {
+            return new Builder()
+                    .setTitle(source.readString())
+                    .setId(source.readInt())
+                    .setContent(source.readString())
+                    .setReplyCount(source.readInt())
+                    .setMember(Member.CREATOR.createFromParcel(source))
+                    .setNode(Node.CREATOR.createFromParcel(source))
+                    .setReplyTime(source.readString())
+                    .createTopic();
+        }
+
+        @Override
+        public Topic[] newArray(int size) {
+            return new Topic[size];
+        }
+    };
 
     public static class Builder {
         private int mId;
