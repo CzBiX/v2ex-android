@@ -5,26 +5,26 @@ import android.content.Context;
 import android.os.RemoteException;
 
 import com.czbix.v2ex.common.exception.ConnectionException;
-import com.czbix.v2ex.model.Node;
+import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.network.RequestHelper;
 
 import java.util.List;
 
 public class TopicLoader extends AsyncTaskLoader<List<Topic>> {
-    private final Node mNode;
+    private final Page mPage;
     private List<Topic> mResult;
 
-    public TopicLoader(Context context, Node node) {
+    public TopicLoader(Context context, Page page) {
         super(context);
 
-        mNode = node;
+        mPage = page;
     }
 
     @Override
     public List<Topic> loadInBackground() {
         try {
-            mResult = RequestHelper.getTopics(mNode);
+            mResult = RequestHelper.getTopics(mPage);
         } catch (ConnectionException | RemoteException e) {
             e.printStackTrace();
         }

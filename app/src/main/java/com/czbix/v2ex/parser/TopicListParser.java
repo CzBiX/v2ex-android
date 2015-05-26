@@ -1,9 +1,12 @@
 package com.czbix.v2ex.parser;
 
 import com.czbix.v2ex.common.exception.FatalException;
+import com.czbix.v2ex.dao.NodeDAO;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Node;
+import com.czbix.v2ex.model.Page;
+import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -21,26 +24,59 @@ import java.util.regex.Pattern;
 public class TopicListParser extends Parser {
     private static final Pattern PATTERN_REPLY_TIME = Pattern.compile("•\\s*(.+?)(?:\\s+•|$)");
 
-    public static List<Topic> parseDoc(Document doc, Node node) throws IOException, SAXException {
-        final Elements elements = doc.select("#TopicsNode > .cell  tr");
-        List<Topic> result = Lists.newArrayListWithCapacity(elements.size());
+    public static List<Topic> parseDoc(Document doc, Page page) throws IOException, SAXException {
+        if (page instanceof Node) {
+            return parseDocForNode(doc, (Node) page);
+        } else if (page instanceof Tab) {
+            return parseDocForTab(doc, (Tab) page);
+        } else {
+            throw new IllegalArgumentException("unknown page type: " + page);
+        }
+    }
+
+    private static List<Topic> parseDocForTab(Document doc, Tab tab) throws IOException, SAXException {
+        final Elements elements = doc.select("#Main > div:nth-child(2) > .item  tr");
+        final List<Topic> result = Lists.newArrayListWithCapacity(elements.size());
         for (Element item : elements) {
-            result.add(parseItem(item, node));
+            result.add(parseItemForTab(item));
+        }
+        return result;
+    }
+
+    private static List<Topic> parseDocForNode(Document doc, Node node) throws IOException, SAXException {
+        final Elements elements = doc.select("#TopicsNode > .cell  tr");
+        final List<Topic> result = Lists.newArrayListWithCapacity(elements.size());
+        for (Element item : elements) {
+            result.add(parseItemForNode(item, node));
         }
 
         return result;
     }
 
-    private static Topic parseItem(Element item, Node node) {
+    private static Topic parseItemForTab(Element item) {
         final Elements list = item.children();
 
         final Topic.Builder topicBuilder = new Topic.Builder();
-        topicBuilder.setNode(node);
         parseMember(topicBuilder, list.get(0));
 
         final Element ele = list.get(2);
         parseTitle(topicBuilder, ele.select(".item_title").get(0));
-        parseInfo(topicBuilder, ele.select(".small").get(0));
+        parseInfo(topicBuilder, ele.select(".small").get(0), null);
+
+        parseReplyCount(topicBuilder, list.get(3));
+
+        return topicBuilder.createTopic();
+    }
+
+    private static Topic parseItemForNode(Element item, Node node) {
+        final Elements list = item.children();
+
+        final Topic.Builder topicBuilder = new Topic.Builder();
+        parseMember(topicBuilder, list.get(0));
+
+        final Element ele = list.get(2);
+        parseTitle(topicBuilder, ele.select(".item_title").get(0));
+        parseInfo(topicBuilder, ele.select(".small").get(0), node);
 
         parseReplyCount(topicBuilder, list.get(3));
 
@@ -60,7 +96,16 @@ public class TopicListParser extends Parser {
         topicBuilder.setReplyCount(count);
     }
 
-    private static void parseInfo(Topic.Builder topicBuilder, Element ele) {
+    private static void parseInfo(Topic.Builder topicBuilder, Element ele, Node node) {
+        if (node == null) {
+            final Elements nodeEle = ele.select("> a");
+            final String url = nodeEle.attr("href");
+            final String name = Node.getNameFromUrl(url);
+
+            node = NodeDAO.get(name);
+        }
+        topicBuilder.setNode(node);
+
         final String text = ele.textNodes().get(0).text();
         final Matcher matcher = PATTERN_REPLY_TIME.matcher(text);
         if (!matcher.find()) {

@@ -15,7 +15,7 @@ import android.view.animation.AnimationUtils;
 
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.FatalException;
-import com.czbix.v2ex.model.Node;
+import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.loader.TopicLoader;
@@ -31,9 +31,9 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class TopicListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Topic>>,TopicAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
-    private static final String ARG_NODE = "node";
+    private static final String ARG_PAGE = "page";
 
-    private Node mNode;
+    private Page mPage;
 
     private OnFragmentInteractionListener mListener;
     private RecyclerView mRecyclerView;
@@ -47,10 +47,10 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
      *
      * @return A new instance of fragment TopicListFragment.
      */
-    public static TopicListFragment newInstance(Node node) {
+    public static TopicListFragment newInstance(Page page) {
         TopicListFragment fragment = new TopicListFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_NODE, node);
+        args.putParcelable(ARG_PAGE, page);
         fragment.setArguments(args);
         return fragment;
     }
@@ -63,10 +63,10 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mNode = getArguments().getParcelable(ARG_NODE);
+            mPage = getArguments().getParcelable(ARG_PAGE);
         }
 
-        if (mNode == null) {
+        if (mPage == null) {
             throw new FatalException("node can't be null");
         }
     }
@@ -95,6 +95,7 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        getActivity().setTitle(mPage.getTitle());
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -117,7 +118,7 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<List<Topic>> onCreateLoader(int id, Bundle args) {
-        return new TopicLoader(getActivity(), mNode);
+        return new TopicLoader(getActivity(), mPage);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.Node;
+import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.network.interceptor.UserAgentInterceptor;
 import com.czbix.v2ex.parser.Parser;
@@ -53,13 +54,13 @@ public class RequestHelper {
         return new Cache(cacheDir, cacheSize);
     }
 
-    public static List<Topic> getTopics(Node node) throws ConnectionException, RemoteException {
+    public static List<Topic> getTopics(Page page) throws ConnectionException, RemoteException {
         if (BuildConfig.DEBUG) {
-            Log.v(TAG, "request latest topic for node: " + node.getTitle());
+            Log.v(TAG, "request latest topic for page: " + page.getTitle());
         }
 
         final Request request = new Request.Builder()
-                .url(BASE_URL + node.getUrl())
+                .url(BASE_URL + page.getUrl())
                 .build();
 
         final Response response = sendRequest(request);
@@ -68,7 +69,7 @@ public class RequestHelper {
         final List<Topic> topics;
         try {
             doc = Parser.toDoc(response.body().string());
-            topics = TopicListParser.parseDoc(doc, node);
+            topics = TopicListParser.parseDoc(doc, page);
         } catch (IOException e) {
             throw new ConnectionException(e);
         } catch (SAXException e) {

@@ -7,9 +7,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.czbix.v2ex.R;
-import com.czbix.v2ex.model.Node;
+import com.czbix.v2ex.model.Page;
+import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
+
+import java.util.Random;
 
 
 public class MainActivity extends AppCompatActivity implements TopicListFragment.OnFragmentInteractionListener {
@@ -23,10 +26,10 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     private void addFragmentToView() {
-        Node node = new Node.Builder().setTitle("Linux").setName("linux").createNode();
+        Page page = Tab.ALL_TABS[new Random().nextInt(Tab.ALL_TABS.length)];
 
         getFragmentManager().beginTransaction()
-                .replace(R.id.fragment, TopicListFragment.newInstance(node))
+                .replace(R.id.fragment, TopicListFragment.newInstance(page))
                 .commit();
     }
 

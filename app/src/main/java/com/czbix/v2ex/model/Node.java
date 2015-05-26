@@ -2,6 +2,9 @@ package com.czbix.v2ex.model;
 
 import android.os.Parcel;
 
+import com.czbix.v2ex.common.exception.FatalException;
+
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Node extends Page {
@@ -49,7 +52,11 @@ public class Node extends Page {
     }
 
     public static String getNameFromUrl(String url) {
-        return PATTERN.matcher(url).group(1);
+        final Matcher matcher = PATTERN.matcher(url);
+        if (!matcher.find()) {
+            throw new FatalException("match name for node failed: " + url);
+        }
+        return matcher.group(1);
     }
 
     @Override

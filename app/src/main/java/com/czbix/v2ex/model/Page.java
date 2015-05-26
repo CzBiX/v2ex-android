@@ -10,6 +10,7 @@ public abstract class Page implements Parcelable {
 
     Page(String title) {
         Preconditions.checkArgument(!Strings.isNullOrEmpty(title));
+
         mTitle = title;
     }
 
