@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.support.annotation.Nullable;
 
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
@@ -31,9 +32,9 @@ public class NodeDAO {
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT UNIQUE NOT NULL,"
                 + KEY_TITLE + " TEXT NOT NULL,"
-                + KEY_ALT + " TEXT"
+                + KEY_ALT + " TEXT,"
                 + KEY_AVATAR + " TEXT"
-                + ") WITHOUT ROWID";
+                + ")";
 
         db.execSQL(sql);
 
@@ -42,6 +43,7 @@ public class NodeDAO {
         db.execSQL(sql);
     }
 
+    @Nullable
     public static Node get(String name) {
         final SQLiteDatabase db = getReadDb();
         Cursor cursor = null;

@@ -26,11 +26,7 @@ public class V2exDb extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.beginTransaction();
-
         NodeDAO.createTable(db);
-
-        db.endTransaction();
     }
 
     @Override
