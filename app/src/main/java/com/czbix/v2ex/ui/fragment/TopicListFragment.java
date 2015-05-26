@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ import java.util.List;
  * Use the {@link TopicListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TopicListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Topic>>,TopicAdapter.OnItemClickListener {
+public class TopicListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Topic>>,TopicAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String ARG_NODE = "node";
 
     private Node mNode;
@@ -38,6 +39,7 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     private RecyclerView mRecyclerView;
     private TopicAdapter mAdapter;
     private View mProgressBar;
+    private SwipeRefreshLayout mLayout;
 
     /**
      * Use this factory method to create a new instance of
@@ -73,19 +75,20 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_topic_list,
+        mLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_topic_list,
                 container, false);
+        mLayout.setOnRefreshListener(this);
 
-        mRecyclerView = ((RecyclerView) view.findViewById(R.id.recycle_view));
+        mRecyclerView = ((RecyclerView) mLayout.findViewById(R.id.recycle_view));
         mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(mLayout.getContext()));
 
         mAdapter = new TopicAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
-        mProgressBar = view.findViewById(R.id.progressBar);
+        mProgressBar = mLayout.findViewById(R.id.progressBar);
 
-        return view;
+        return mLayout;
     }
 
     @Override
@@ -128,6 +131,8 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         mRecyclerView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
         mProgressBar.setVisibility(View.GONE);
         mRecyclerView.setVisibility(View.VISIBLE);
+
+        mLayout.setRefreshing(false);
     }
 
     @Override
@@ -138,6 +143,11 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onItemClick(int position, Topic topic) {
         mListener.onFragmentInteraction(topic);
+    }
+
+    @Override
+    public void onRefresh() {
+        getLoaderManager().getLoader(0).forceLoad();
     }
 
     /**
