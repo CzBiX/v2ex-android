@@ -11,7 +11,7 @@ import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
 import com.google.common.base.Preconditions;
 
-public class NodeDAO {
+public class NodeDao {
     private static final String TABLE_NAME = "node";
 
     private static final String KEY_ID = "id";
