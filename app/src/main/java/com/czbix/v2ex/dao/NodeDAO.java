@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.support.annotation.Nullable;
+import android.util.LruCache;
 
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
@@ -24,6 +25,8 @@ public class NodeDAO {
 
     private static final String SQL_GET_BY_NAME = SQLiteQueryBuilder.buildQueryString(false,
             TABLE_NAME, SCHEMA, KEY_NAME + " = ?", null, null, null ,null);
+
+    private static final LruNodeCache CACHE = new LruNodeCache();
 
     public static void createTable(SQLiteDatabase db) {
         Preconditions.checkState(db.inTransaction(), "create table must be in transaction");
@@ -45,6 +48,11 @@ public class NodeDAO {
 
     @Nullable
     public static Node get(String name) {
+        Node node = CACHE.getNode(name);
+        if (node != null) {
+            return node;
+        }
+
         final SQLiteDatabase db = getReadDb();
         Cursor cursor = null;
         try {
@@ -61,7 +69,10 @@ public class NodeDAO {
             final Avatar avatar = new Avatar.Builder().setBaseUrl(cursor.getString(4)).createAvatar();
             builder.setAvatar(avatar);
 
-            return builder.createNode();
+            node = builder.createNode();
+            CACHE.putNode(name, node);
+
+            return node;
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -87,5 +98,22 @@ public class NodeDAO {
         values.put(KEY_AVATAR, node.getAvatar().getBaseUrl());
 
         db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+    }
+
+    public static class LruNodeCache {
+        private final LruCache<String, Node> mLruCache;
+
+        public LruNodeCache() {
+            final int cacheSize = 32;
+            mLruCache = new LruCache<>(cacheSize);
+        }
+
+        public Node getNode(String name) {
+            return mLruCache.get(name);
+        }
+
+        public void putNode(String name, Node node) {
+            mLruCache.put(name, node);
+        }
     }
 }
