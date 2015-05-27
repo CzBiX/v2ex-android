@@ -1,23 +1,22 @@
 package com.czbix.v2ex.ui;
 
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.czbix.v2ex.R;
-import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.ui.fragment.TopicFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
-
-import java.util.Random;
+import com.czbix.v2ex.util.LogUtils;
 
 
 public class MainActivity extends AppCompatActivity implements TopicListFragment.OnFragmentInteractionListener {
+    private static final String TAG = MainActivity.class.getSimpleName();
 
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -26,10 +25,8 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     private void addFragmentToView() {
-        Page page = Tab.ALL_TABS[new Random().nextInt(Tab.ALL_TABS.length)];
-
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fragment, TopicListFragment.newInstance(page))
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment, TopicListFragment.newInstance(Tab.TAB_ALL))
                 .commit();
     }
 
@@ -57,6 +54,11 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
     @Override
     public void onFragmentInteraction(Topic topic) {
-        Toast.makeText(this, topic.getTitle(), Toast.LENGTH_SHORT).show();
+        LogUtils.d(TAG, "load topic: %s", topic.getTitle());
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment, TopicFragment.newInstance(topic))
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit();
     }
 }

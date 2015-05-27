@@ -18,6 +18,7 @@ public class Tab extends Page {
             //new Tab("", "/?tab=nodes"), // why it empty?
             new Tab("关注", "/?tab=members"),
     };
+    public static final Tab TAB_ALL = ALL_TABS[9];
 
     private String mUrl;
 

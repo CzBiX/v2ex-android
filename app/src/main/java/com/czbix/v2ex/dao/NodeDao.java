@@ -117,6 +117,16 @@ public class NodeDao {
         CACHE.put(node.getName(), node);
     }
 
+    public static void updateAvatar(String name, String url) {
+        final SQLiteDatabase db = getWriteDb();
+        final ContentValues values = new ContentValues(1);
+        values.put(KEY_AVATAR, url);
+
+        db.update(TABLE_NAME, values, KEY_NAME + " = ?", new String[]{name});
+
+        CACHE.remove(name);
+    }
+
     public static void putAll(Iterable<Node> nodes) {
         final SQLiteDatabase db = getWriteDb();
         db.beginTransaction();

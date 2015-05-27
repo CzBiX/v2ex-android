@@ -15,4 +15,8 @@ public class RequestException extends RuntimeException {
     public RequestException(Throwable throwable) {
         super(throwable);
     }
+
+    public RequestException(int code) {
+        this("request failed with code: " + code);
+    }
 }

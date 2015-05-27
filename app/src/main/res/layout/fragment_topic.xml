@@ -1,0 +1,14 @@
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             tools:context="com.czbix.v2ex.ui.fragment.TopicFragment">
+    <include layout="@layout/view_topic" android:id="@+id/topic"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/comments"/>
+</android.support.v4.widget.SwipeRefreshLayout>

@@ -1,9 +1,11 @@
 package com.czbix.v2ex.ui.adapter;
 
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.network.ImageLoader;
+import com.google.common.base.Strings;
 
 import java.util.List;
 
@@ -33,7 +36,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_topic, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(this, view);
     }
 
     @Override
@@ -47,18 +50,25 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         return mData == null ? 0 : mData.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ImageLoader.Callback {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ImageLoader.Callback {
         public final TextView mTitle;
         public final ImageView mAvatar;
         public final TextView mUsername;
         public final TextView mNode;
         public final TextView mReplyCount;
         public final TextView mTime;
+        public final TextView mContent;
 
+        private final TopicAdapter mAdapter;
         private int mId;
 
         public ViewHolder(View view) {
+            this(null, view);
+        }
+
+        public ViewHolder(TopicAdapter adapter, View view) {
             super(view);
+            mAdapter = adapter;
 
             view.setOnClickListener(this);
 
@@ -68,10 +78,23 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mNode = ((TextView) view.findViewById(R.id.node_tv));
             mTime = ((TextView) view.findViewById(R.id.time_tv));
             mReplyCount = ((TextView) view.findViewById(R.id.reply_count_tv));
+            mContent = ((TextView) view.findViewById(R.id.content));
+
+            if (adapter == null) {
+                // single topic
+                mTitle.setTypeface(Typeface.DEFAULT_BOLD);
+            } else {
+                // topic list
+                mTitle.setTypeface(Typeface.DEFAULT);
+            }
         }
 
         public void fillData(Topic topic) {
-            if (mId == topic.getId()) {
+            fillData(topic, false);
+        }
+
+        public void fillData(Topic topic, boolean force) {
+            if (mId == topic.getId() && !force) {
                 return;
             }
 
@@ -83,7 +106,18 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mTime.setText(topic.getReplyTime());
             mReplyCount.setText(Integer.toString(topic.getReplyCount()));
 
+            setContent(topic);
             setAvatarImg(topic);
+        }
+
+        private void setContent(Topic topic) {
+            final String content = topic.getContent();
+            if (Strings.isNullOrEmpty(content)) {
+                mContent.setVisibility(View.GONE);
+                return;
+            }
+            mContent.setVisibility(View.VISIBLE);
+            mContent.setText(Html.fromHtml(content));
         }
 
         private void setAvatarImg(Topic topic) {
@@ -94,9 +128,13 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
         @Override
         public void onClick(View v) {
+            if (mAdapter == null) {
+                return;
+            }
+
             final int position = getAdapterPosition();
             if (v == itemView) {
-                mListener.onItemClick(position, mData.get(position));
+                mAdapter.mListener.onItemClick(position, mAdapter.mData.get(position));
             }
         }
 

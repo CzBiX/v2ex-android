@@ -9,11 +9,11 @@ public class LogUtils {
         if (BuildConfig.DEBUG) Log.v(tag, msg);
     }
 
-    public static void v(String tag, String msg, String... args) {
+    public static void v(String tag, String msg, Object... args) {
         if (BuildConfig.DEBUG) Log.v(tag, String.format(msg, args));
     }
 
-    public static void v(String tag, String msg, Throwable tr, String... args) {
+    public static void v(String tag, String msg, Throwable tr, Object... args) {
         if (BuildConfig.DEBUG) Log.v(tag, String.format(msg, args), tr);
     }
 
@@ -25,11 +25,11 @@ public class LogUtils {
         if (BuildConfig.DEBUG) Log.v(cls.getSimpleName(), msg);
     }
 
-    public static void v(Class<?> cls, String msg, String... args) {
+    public static void v(Class<?> cls, String msg, Object... args) {
         if (BuildConfig.DEBUG) Log.v(cls.getSimpleName(), String.format(msg, args));
     }
 
-    public static void v(Class<?> cls, String msg, Throwable tr, String... args) {
+    public static void v(Class<?> cls, String msg, Throwable tr, Object... args) {
         if (BuildConfig.DEBUG) Log.v(cls.getSimpleName(), String.format(msg, args), tr);
     }
 
@@ -41,11 +41,11 @@ public class LogUtils {
         if (BuildConfig.DEBUG) Log.d(tag, msg);
     }
 
-    public static void d(String tag, String msg, String... args) {
+    public static void d(String tag, String msg, Object... args) {
         if (BuildConfig.DEBUG) Log.d(tag, String.format(msg, args));
     }
 
-    public static void d(String tag, String msg, Throwable tr, String... args) {
+    public static void d(String tag, String msg, Throwable tr, Object... args) {
         if (BuildConfig.DEBUG) Log.d(tag, String.format(msg, args), tr);
     }
 
@@ -57,11 +57,11 @@ public class LogUtils {
         if (BuildConfig.DEBUG) Log.d(cls.getSimpleName(), msg);
     }
 
-    public static void d(Class<?> cls, String msg, String... args) {
+    public static void d(Class<?> cls, String msg, Object... args) {
         if (BuildConfig.DEBUG) Log.d(cls.getSimpleName(), String.format(msg, args));
     }
 
-    public static void d(Class<?> cls, String msg, Throwable tr, String... args) {
+    public static void d(Class<?> cls, String msg, Throwable tr, Object... args) {
         if (BuildConfig.DEBUG) Log.d(cls.getSimpleName(), String.format(msg, args), tr);
     }
 
@@ -73,11 +73,11 @@ public class LogUtils {
         if (BuildConfig.DEBUG) Log.i(tag, msg);
     }
 
-    public static void i(String tag, String msg, String... args) {
+    public static void i(String tag, String msg, Object... args) {
         if (BuildConfig.DEBUG) Log.i(tag, String.format(msg, args));
     }
 
-    public static void i(String tag, String msg, Throwable tr, String... args) {
+    public static void i(String tag, String msg, Throwable tr, Object... args) {
         if (BuildConfig.DEBUG) Log.i(tag, String.format(msg, args), tr);
     }
 
@@ -89,11 +89,11 @@ public class LogUtils {
         if (BuildConfig.DEBUG) Log.i(cls.getSimpleName(), msg);
     }
 
-    public static void i(Class<?> cls, String msg, String... args) {
+    public static void i(Class<?> cls, String msg, Object... args) {
         if (BuildConfig.DEBUG) Log.i(cls.getSimpleName(), String.format(msg, args));
     }
 
-    public static void i(Class<?> cls, String msg, Throwable tr, String... args) {
+    public static void i(Class<?> cls, String msg, Throwable tr, Object... args) {
         if (BuildConfig.DEBUG) Log.i(cls.getSimpleName(), String.format(msg, args), tr);
     }
 
@@ -105,11 +105,11 @@ public class LogUtils {
         Log.w(tag, msg);
     }
 
-    public static void w(String tag, String msg, String... args) {
+    public static void w(String tag, String msg, Object... args) {
         Log.w(tag, String.format(msg, args));
     }
 
-    public static void w(String tag, String msg, Throwable tr, String... args) {
+    public static void w(String tag, String msg, Throwable tr, Object... args) {
         Log.w(tag, String.format(msg, args), tr);
     }
 
@@ -121,11 +121,11 @@ public class LogUtils {
         Log.w(cls.getSimpleName(), msg);
     }
 
-    public static void w(Class<?> cls, String msg, String... args) {
+    public static void w(Class<?> cls, String msg, Object... args) {
         Log.w(cls.getSimpleName(), String.format(msg, args));
     }
 
-    public static void w(Class<?> cls, String msg, Throwable tr, String... args) {
+    public static void w(Class<?> cls, String msg, Throwable tr, Object... args) {
         Log.w(cls.getSimpleName(), String.format(msg, args), tr);
     }
 
@@ -137,11 +137,11 @@ public class LogUtils {
         Log.e(tag, msg);
     }
 
-    public static void e(String tag, String msg, String... args) {
+    public static void e(String tag, String msg, Object... args) {
         Log.e(tag, String.format(msg, args));
     }
 
-    public static void e(String tag, String msg, Throwable tr, String... args) {
+    public static void e(String tag, String msg, Throwable tr, Object... args) {
         Log.e(tag, String.format(msg, args), tr);
     }
 
@@ -153,11 +153,11 @@ public class LogUtils {
         Log.e(cls.getSimpleName(), msg);
     }
 
-    public static void e(Class<?> cls, String msg, String... args) {
+    public static void e(Class<?> cls, String msg, Object... args) {
         Log.e(cls.getSimpleName(), String.format(msg, args));
     }
 
-    public static void e(Class<?> cls, String msg, Throwable tr, String... args) {
+    public static void e(Class<?> cls, String msg, Throwable tr, Object... args) {
         Log.e(cls.getSimpleName(), String.format(msg, args), tr);
     }
 

@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.support.annotation.Nullable;
 
 import com.czbix.v2ex.common.exception.FatalException;
+import com.czbix.v2ex.dao.NodeDao;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -68,25 +69,13 @@ public class Node extends Page {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(getTitle());
-        dest.writeInt(mId);
         dest.writeString(mName);
-        dest.writeString(mTitleAlternative);
-        dest.writeInt(mTopics);
-        mAvatar.writeToParcel(dest, flags);
     }
 
     public static final Creator<Node> CREATOR = new Creator<Node>() {
         @Override
         public Node createFromParcel(Parcel source) {
-            return new Builder()
-                    .setTitle(source.readString())
-                    .setId(source.readInt())
-                    .setName(source.readString())
-                    .setTitleAlternative(source.readString())
-                    .setTopics(source.readInt())
-                    .setAvatar(Avatar.CREATOR.createFromParcel(source))
-                    .createNode();
+            return NodeDao.get(source.readString());
         }
 
         @Override

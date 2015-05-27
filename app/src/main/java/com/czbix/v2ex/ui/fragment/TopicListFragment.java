@@ -1,17 +1,17 @@
 package com.czbix.v2ex.ui.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.LoaderManager;
-import android.content.Loader;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
@@ -20,8 +20,10 @@ import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
-import com.czbix.v2ex.ui.loader.TopicLoader;
+import com.czbix.v2ex.ui.loader.TopicListLoader;
+import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
 
 import java.util.List;
@@ -43,7 +45,6 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     private OnFragmentInteractionListener mListener;
     private RecyclerView mRecyclerView;
     private TopicAdapter mAdapter;
-    private View mProgressBar;
     private SwipeRefreshLayout mLayout;
 
     /**
@@ -76,10 +77,6 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
-    public void loadTopic() {
-        getLoaderManager().initLoader(0, null, this);
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -95,8 +92,7 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         mAdapter = new TopicAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
-        mProgressBar = mLayout.findViewById(R.id.progressBar);
-
+        mLayout.setRefreshing(true);
         return mLayout;
     }
 
@@ -104,8 +100,15 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        getActivity().setTitle(mPage.getTitle());
-        
+        final MainActivity activity = (MainActivity) getActivity();
+        activity.setTitle(mPage.getTitle());
+
+        final ActionBar actionBar = activity.getSupportActionBar();
+        Preconditions.checkNotNull(actionBar);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+
+        AppCtx.getEventBus().register(this);
+
         if (ConfigDao.get(ConfigDao.KEY_NODE_ETAG, null) != null) {
             onNodesLoadFinish(null);
         }
@@ -120,8 +123,6 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-
-        AppCtx.getEventBus().register(this);
     }
 
     @Subscribe
@@ -138,21 +139,12 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<List<Topic>> onCreateLoader(int id, Bundle args) {
-        return new TopicLoader(getActivity(), mPage);
+        return new TopicListLoader(getActivity(), mPage);
     }
 
     @Override
     public void onLoadFinished(Loader<List<Topic>> loader, List<Topic> data) {
         mAdapter.setDataSource(data);
-        showTopicList();
-    }
-
-    private void showTopicList() {
-        mProgressBar.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
-        mRecyclerView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
-        mProgressBar.setVisibility(View.GONE);
-        mRecyclerView.setVisibility(View.VISIBLE);
-
         mLayout.setRefreshing(false);
     }
 

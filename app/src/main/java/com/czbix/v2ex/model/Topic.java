@@ -10,12 +10,12 @@ import java.util.regex.Pattern;
 public class Topic extends Page {
     private static final Pattern PATTERN = Pattern.compile("/t/(\\d+?)(?:\\W|$)");
 
-    private int mId;
-    private String mContent;
-    private int mReplies;
-    private Member mMember;
-    private Node mNode;
-    private String mReplyTime;
+    private final int mId;
+    private final String mContent;
+    private final int mReplies;
+    private final Member mMember;
+    private final Node mNode;
+    private final String mReplyTime;
 
     Topic(String title, int id, String content, Member member, Node node, String replyTime, int replies) {
         super(title);
@@ -61,6 +61,10 @@ public class Topic extends Page {
         return Integer.parseInt(idStr);
     }
 
+    public String getContent() {
+        return mContent;
+    }
+
     @Override
     public String getUrl() {
         return buildUrlFromId(mId);
@@ -75,6 +79,17 @@ public class Topic extends Page {
         mMember.writeToParcel(dest, flags);
         mNode.writeToParcel(dest, flags);
         dest.writeString(mReplyTime);
+    }
+
+    public Builder toBuilder() {
+        return new Builder()
+                .setId(mId)
+                .setTitle(getTitle())
+                .setContent(mContent)
+                .setMember(mMember)
+                .setNode(mNode)
+                .setReplyCount(mReplies)
+                .setReplyTime(mReplyTime);
     }
 
     public static final Creator<Topic> CREATOR = new Creator<Topic>() {

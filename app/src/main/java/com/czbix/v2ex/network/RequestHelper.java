@@ -10,10 +10,13 @@ import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.network.interceptor.UserAgentInterceptor;
 import com.czbix.v2ex.parser.Parser;
 import com.czbix.v2ex.parser.TopicListParser;
+import com.czbix.v2ex.parser.TopicParser;
 import com.czbix.v2ex.util.IOUtils;
+import com.czbix.v2ex.util.LogUtils;
 import com.google.common.base.Strings;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.reflect.TypeToken;
@@ -84,6 +87,29 @@ public class RequestHelper {
         return topics;
     }
 
+    public static TopicWithComments getTopicWithComments(Topic topic) throws ConnectionException, RemoteException {
+        LogUtils.v(TAG, "request topic with comments, id: %d, title: %s", topic.getId(), topic.getTitle());
+
+        final Request request = new Request.Builder()
+                .url(BASE_URL + topic.getUrl())
+                .build();
+        final Response response = sendRequest(request);
+
+        final Document doc;
+        final TopicWithComments result;
+
+        try {
+            doc = Parser.toDoc(response.body().string());
+            result = TopicParser.parseDoc(doc, topic);
+        } catch (SAXException e) {
+            throw new RequestException(e);
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        }
+
+        return result;
+    }
+
     public static EtagWithResult<List<Node>> getAllNodes(String etag) throws ConnectionException, RemoteException {
         if (BuildConfig.DEBUG) {
             Log.v(TAG, "request all nodes");
@@ -148,6 +174,6 @@ public class RequestHelper {
             throw new RemoteException();
         }
 
-        throw new RequestException();
+        throw new RequestException(response.code());
     }
 }
