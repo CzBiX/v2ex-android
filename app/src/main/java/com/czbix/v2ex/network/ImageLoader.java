@@ -4,40 +4,53 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.util.ExecutorUtils;
+import com.czbix.v2ex.util.LogUtils;
+import com.czbix.v2ex.util.LruImageCache;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class ImageLoader {
     private static final ImageLoader INSTANCE;
+    private final LruImageCache mImgCache;
 
     static {
         INSTANCE = new ImageLoader();
     }
 
-    private final ExecutorService mExecutorService;
-
     public static ImageLoader getInstance() {
         return INSTANCE;
     }
 
-    public ImageLoader() {
-        mExecutorService = Executors.newCachedThreadPool();
+    private ImageLoader() {
+        mImgCache = new LruImageCache();
     }
 
     public Future<?> add(int taskId, ImageView view, String url, Callback callback) {
-        return mExecutorService.submit(new ImageLoadTask(taskId, view, url, callback));
+        return ExecutorUtils.submit(new ImageLoadTask(taskId, view, url, callback));
     }
 
-    private static class ImageLoadTask implements Runnable {
-        private static final String TAG = ImageLoadTask.class.getSimpleName();
+    private static String getCacheKey(String url, int size) {
+        return String.format("%s#S%d", url, size);
+    }
+
+    private Bitmap getCache(String url, int size) {
+        final String key = getCacheKey(url, size);
+        return mImgCache.getBitmap(key);
+    }
+
+    private void putCache(String url, int size, Bitmap bitmap) {
+        final String key = getCacheKey(url, size);
+        mImgCache.putBitmap(key, bitmap);
+    }
+
+    private class ImageLoadTask implements Runnable {
+        private final String TAG = ImageLoadTask.class.getSimpleName();
 
         private final int mTaskId;
         private final ImageView mView;
@@ -57,21 +70,30 @@ public class ImageLoader {
 
         @Override
         public void run() {
+            final int size = mView.getHeight();
+
+            Bitmap result = getCache(mUrl, size);
+            if (result != null) {
+                LogUtils.v(TAG, "image cache hit");
+                mCallback.onImgLoadFinish(mTaskId, result);
+                return;
+            }
+            LogUtils.v(TAG, "image cache missed");
+
             byte[] bytes;
             try {
                 bytes = RequestHelper.getImage(mUrl);
             } catch (ConnectionException | RemoteException e) {
-                Log.w(TAG, "download image failed", e);
+                LogUtils.w(TAG, "download image failed", e);
                 bytes = null;
             }
 
-            final Bitmap result;
             if (bytes == null) {
                 result = null;
             } else {
                 final Bitmap src = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                final int size = mView.getHeight();
                 result = Bitmap.createScaledBitmap(src, size, size, false);
+                putCache(mUrl, size, result);
             }
 
             mCallback.onImgLoadFinish(mTaskId, result);

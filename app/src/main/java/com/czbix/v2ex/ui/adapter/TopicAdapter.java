@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.czbix.v2ex.R;
-import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.network.ImageLoader;
 
@@ -55,6 +54,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         public final TextView mNode;
         public final TextView mReplyCount;
         public final TextView mTime;
+
         private int mId;
 
         public ViewHolder(View view) {
@@ -83,10 +83,13 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mTime.setText(topic.getReplyTime());
             mReplyCount.setText(Integer.toString(topic.getReplyCount()));
 
+            setAvatarImg(topic);
+        }
+
+        private void setAvatarImg(Topic topic) {
+            final String url = topic.getMember().getAvatar().getUrlByDp(32);
             mAvatar.setImageResource(R.drawable.avatar_default);
-            final Avatar avatar = topic.getMember().getAvatar();
-            ImageLoader.getInstance().add(mId, mAvatar,
-                    avatar.getUrlByDp(32), this);
+            ImageLoader.getInstance().add(mId, mAvatar, url, this);
         }
 
         @Override
