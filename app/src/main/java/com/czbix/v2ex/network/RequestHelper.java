@@ -14,6 +14,8 @@ import com.czbix.v2ex.network.interceptor.UserAgentInterceptor;
 import com.czbix.v2ex.parser.Parser;
 import com.czbix.v2ex.parser.TopicListParser;
 import com.czbix.v2ex.util.IOUtils;
+import com.google.common.base.Strings;
+import com.google.common.net.HttpHeaders;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.OkHttpClient;
@@ -82,7 +84,7 @@ public class RequestHelper {
         return topics;
     }
 
-    public static List<Node> getAllNodes() throws ConnectionException, RemoteException {
+    public static EtagWithResult<List<Node>> getAllNodes(String etag) throws ConnectionException, RemoteException {
         if (BuildConfig.DEBUG) {
             Log.v(TAG, "request all nodes");
         }
@@ -90,9 +92,17 @@ public class RequestHelper {
         final Request request = new Request.Builder().url(API_GET_ALL_NODES).build();
         final Response response = sendRequest(request);
 
+        final String newEtag = response.header(HttpHeaders.ETAG);
+        if (!Strings.isNullOrEmpty(etag) && etag.equals(newEtag)) {
+            return new EtagWithResult<>();
+        }
+
         try {
             final String json = response.body().string();
-            return GsonFactory.getInstance().fromJson(json, new TypeToken<List<Node>>() {}.getType());
+            final List<Node> nodes = GsonFactory.getInstance().fromJson(json, new TypeToken<List<Node>>() {
+            }.getType());
+
+            return new EtagWithResult<>(newEtag, nodes);
         } catch (IOException e) {
             throw new ConnectionException(e);
         }

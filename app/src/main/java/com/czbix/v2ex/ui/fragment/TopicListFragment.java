@@ -13,12 +13,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 
+import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.FatalException;
+import com.czbix.v2ex.dao.ConfigDao;
+import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.loader.TopicLoader;
+import com.google.common.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -31,6 +35,7 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class TopicListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Topic>>,TopicAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+    private static final String TAG = TopicListFragment.class.getSimpleName();
     private static final String ARG_PAGE = "page";
 
     private Page mPage;
@@ -71,6 +76,10 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
+    public void loadTopic() {
+        getLoaderManager().initLoader(0, null, this);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -96,7 +105,10 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         super.onActivityCreated(savedInstanceState);
 
         getActivity().setTitle(mPage.getTitle());
-        getLoaderManager().initLoader(0, null, this);
+        
+        if (ConfigDao.get(ConfigDao.KEY_NODE_ETAG, null) != null) {
+            onNodesLoadFinish(null);
+        }
     }
 
     @Override
@@ -108,12 +120,20 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+        AppCtx.getEventBus().register(this);
+    }
+
+    @Subscribe
+    public void onNodesLoadFinish(BusEvent.GetNodesFinishEvent e) {
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        AppCtx.getEventBus().unregister(this);
     }
 
     @Override
@@ -148,7 +168,11 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onRefresh() {
-        getLoaderManager().getLoader(0).forceLoad();
+        final Loader<Object> loader = getLoaderManager().getLoader(0);
+        if (loader == null) {
+            return;
+        }
+        loader.forceLoad();
     }
 
     /**

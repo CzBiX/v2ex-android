@@ -26,29 +26,29 @@ public class NodeDao {
     private static final String SQL_GET_BY_NAME = SQLiteQueryBuilder.buildQueryString(false,
             TABLE_NAME, SCHEMA, KEY_NAME + " = ?", null, null, null ,null);
 
-    private static final LruNodeCache CACHE = new LruNodeCache();
+    private static final LruCache<String, Node> CACHE = new LruCache<>(16);
 
-    public static void createTable(SQLiteDatabase db) {
+    static void createTable(SQLiteDatabase db) {
         Preconditions.checkState(db.inTransaction(), "create table must be in transaction");
 
-        String sql = "CREATE TABLE " + TABLE_NAME + "("
-                + KEY_ID + " INTEGER PRIMARY KEY,"
-                + KEY_NAME + " TEXT UNIQUE NOT NULL,"
-                + KEY_TITLE + " TEXT NOT NULL,"
-                + KEY_ALT + " TEXT,"
-                + KEY_AVATAR + " TEXT"
-                + ")";
+        String sql = "CREATE TABLE " + TABLE_NAME + "(" +
+                KEY_ID + " INTEGER PRIMARY KEY," +
+                KEY_NAME + " TEXT UNIQUE NOT NULL," +
+                KEY_TITLE + " TEXT NOT NULL," +
+                KEY_ALT + " TEXT," +
+                KEY_AVATAR + " TEXT" +
+                ")";
 
         db.execSQL(sql);
 
-        sql = "CREATE UNIQUE INDEX index_name ON " + TABLE_NAME + "("
-                + KEY_NAME + ")";
+        sql = "CREATE UNIQUE INDEX index_name ON " + TABLE_NAME + "(" +
+                KEY_NAME + ")";
         db.execSQL(sql);
     }
 
     @Nullable
     public static Node get(String name) {
-        Node node = CACHE.getNode(name);
+        Node node = CACHE.get(name);
         if (node != null) {
             return node;
         }
@@ -64,13 +64,21 @@ public class NodeDao {
             Node.Builder builder = new Node.Builder();
             builder.setId(cursor.getInt(0))
                     .setName(cursor.getString(1))
-                    .setTitle(cursor.getString(2))
-                    .setTitleAlternative(cursor.getString(3));
-            final Avatar avatar = new Avatar.Builder().setBaseUrl(cursor.getString(4)).createAvatar();
-            builder.setAvatar(avatar);
+                    .setTitle(cursor.getString(2));
+
+            String str = cursor.getString(3);
+            if (str != null) {
+                builder.setTitleAlternative(str);
+            }
+
+            str = cursor.getString(4);
+            if (str != null) {
+                final Avatar avatar = new Avatar.Builder().setBaseUrl(str).createAvatar();
+                builder.setAvatar(avatar);
+            }
 
             node = builder.createNode();
-            CACHE.putNode(name, node);
+            CACHE.put(name, node);
 
             return node;
         } finally {
@@ -88,32 +96,39 @@ public class NodeDao {
         return V2exDb.getInstance().getReadableDatabase();
     }
 
-    public static void insert(Node node) {
+    public static void put(Node node) {
         final SQLiteDatabase db = getWriteDb();
+        put(db, node);
+    }
+
+    private static void put(SQLiteDatabase db, Node node) {
         final ContentValues values = new ContentValues(5);
         values.put(KEY_ID, node.getId());
         values.put(KEY_NAME, node.getName());
         values.put(KEY_TITLE, node.getTitle());
-        values.put(KEY_ALT, node.getAlternative());
-        values.put(KEY_AVATAR, node.getAvatar().getBaseUrl());
+        values.put(KEY_ALT, node.getTitleAlternative());
+        final Avatar avatar = node.getAvatar();
+        if (avatar != null) {
+            values.put(KEY_AVATAR, avatar.getBaseUrl());
+        }
 
         db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
+        CACHE.put(node.getName(), node);
     }
 
-    public static class LruNodeCache {
-        private final LruCache<String, Node> mLruCache;
+    public static void putAll(Iterable<Node> nodes) {
+        final SQLiteDatabase db = getWriteDb();
+        db.beginTransaction();
+        try {
 
-        public LruNodeCache() {
-            final int cacheSize = 32;
-            mLruCache = new LruCache<>(cacheSize);
-        }
+            for (Node node : nodes) {
+                put(db, node);
+            }
 
-        public Node getNode(String name) {
-            return mLruCache.get(name);
-        }
-
-        public void putNode(String name, Node node) {
-            mLruCache.put(name, node);
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
     }
 }

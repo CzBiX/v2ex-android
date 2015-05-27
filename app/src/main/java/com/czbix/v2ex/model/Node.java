@@ -1,6 +1,7 @@
 package com.czbix.v2ex.model;
 
 import android.os.Parcel;
+import android.support.annotation.Nullable;
 
 import com.czbix.v2ex.common.exception.FatalException;
 
@@ -12,7 +13,7 @@ public class Node extends Page {
 
     private int mId;
     private String mName;
-    private String mAlternative;
+    private String mTitleAlternative;
     private int mTopics;
     private Avatar mAvatar;
 
@@ -23,7 +24,7 @@ public class Node extends Page {
         mId = id;
         mAvatar = avatar;
         mName = name;
-        mAlternative = alternative;
+        mTitleAlternative = alternative;
         mTopics = topics;
     }
 
@@ -31,6 +32,7 @@ public class Node extends Page {
         return mId;
     }
 
+    @Nullable
     public Avatar getAvatar() {
         return mAvatar;
     }
@@ -39,8 +41,8 @@ public class Node extends Page {
         return mName;
     }
 
-    public String getAlternative() {
-        return mAlternative;
+    public String getTitleAlternative() {
+        return mTitleAlternative;
     }
 
     public int getTopics() {
@@ -69,7 +71,7 @@ public class Node extends Page {
         dest.writeString(getTitle());
         dest.writeInt(mId);
         dest.writeString(mName);
-        dest.writeString(mAlternative);
+        dest.writeString(mTitleAlternative);
         dest.writeInt(mTopics);
         mAvatar.writeToParcel(dest, flags);
     }
