@@ -76,12 +76,11 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mTopicView = inflater.inflate(R.layout.view_topic, mCommentsView, false);
         mTopicView.setBackgroundColor(Color.WHITE);
-        mCommentsView.addHeaderView(mTopicView);
 
         mTopicHolder = new TopicAdapter.ViewHolder(mTopicView);
         mTopicHolder.fillData(mTopic);
 
-        mCommentAdapter = new CommentAdapter(getActivity());
+        mCommentAdapter = new CommentAdapter(getActivity(), mTopicView);
         mCommentsView.setAdapter(mCommentAdapter);
 
         return mLayout;
