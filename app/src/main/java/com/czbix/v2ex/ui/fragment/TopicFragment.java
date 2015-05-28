@@ -88,6 +88,14 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        // to avoid bug when added header view into list view
+        mCommentsView.removeHeaderView(mTopicView);
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
