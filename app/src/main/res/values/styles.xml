@@ -1,12 +1,14 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="AppTheme.Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="AppTheme.Toolbar" parent="Widget.AppCompat.Toolbar">
         <item name="android:background">#9e9e9e</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="android:popupTheme" tools:ignore="NewApi">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
     <style name="AppTheme.CardView" parent="CardView">
