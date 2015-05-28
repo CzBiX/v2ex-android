@@ -46,6 +46,8 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     private RecyclerView mRecyclerView;
     private TopicAdapter mAdapter;
     private SwipeRefreshLayout mLayout;
+    private ActionBar mActionBar;
+    private LinearLayoutManager mLayoutManager;
 
     /**
      * Use this factory method to create a new instance of
@@ -86,8 +88,8 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         mLayout.setOnRefreshListener(this);
 
         mRecyclerView = ((RecyclerView) mLayout.findViewById(R.id.recycle_view));
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mLayout.getContext()));
+        mLayoutManager = new LinearLayoutManager(mLayout.getContext());
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         mAdapter = new TopicAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
@@ -103,9 +105,9 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         final MainActivity activity = (MainActivity) getActivity();
         activity.setTitle(mPage.getTitle());
 
-        final ActionBar actionBar = activity.getSupportActionBar();
-        Preconditions.checkNotNull(actionBar);
-        actionBar.setDisplayHomeAsUpEnabled(false);
+        mActionBar = activity.getSupportActionBar();
+        Preconditions.checkNotNull(mActionBar);
+        mActionBar.setDisplayHomeAsUpEnabled(false);
 
         AppCtx.getEventBus().register(this);
 

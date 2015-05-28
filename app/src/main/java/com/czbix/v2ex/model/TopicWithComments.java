@@ -4,10 +4,10 @@ import java.util.List;
 
 public class TopicWithComments {
     public final Topic mTopic;
-    public final List<String> mComments;
+    public final List<Comment> mComments;
 
-    public TopicWithComments(Topic topic, List<String> comments) {
-        mComments = comments;
+    public TopicWithComments(Topic topic, List<Comment> comments) {
         mTopic = topic;
+        mComments = comments;
     }
 }

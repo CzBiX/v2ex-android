@@ -1,14 +1,16 @@
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             tools:context="com.czbix.v2ex.ui.fragment.TopicFragment">
-    <include layout="@layout/view_topic" android:id="@+id/topic"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
-
-    <ListView
+<com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/comments"/>
-</android.support.v4.widget.SwipeRefreshLayout>
+        android:orientation="vertical">
+        <include layout="@layout/view_topic" android:id="@+id/topic"/>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:isScrollContainer="false"
+            android:id="@+id/comments"/>
+    </LinearLayout>
+</com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout>

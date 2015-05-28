@@ -6,18 +6,22 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.ui.MainActivity;
+import com.czbix.v2ex.ui.adapter.CommentAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.loader.TopicLoader;
+import com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout;
 import com.google.common.base.Preconditions;
 
 /**
@@ -29,10 +33,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private static final String ARG_TOPIC = "topic";
 
     private Topic mTopic;
-    private SwipeRefreshLayout mLayout;
-    private View mTopicView;
-    private View mCommentsView;
+    private MultiSwipeRefreshLayout mLayout;
+    private ListView mCommentsView;
     private TopicAdapter.ViewHolder mTopicHolder;
+    private CommentAdapter mCommentAdapter;
 
 
     /**
@@ -64,14 +68,24 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_topic, container, false);
+        mLayout = (MultiSwipeRefreshLayout) inflater.inflate(R.layout.fragment_topic, container, false);
         mLayout.setOnRefreshListener(this);
 
-        mTopicView = mLayout.findViewById(R.id.topic);
-        mCommentsView = mLayout.findViewById(R.id.comments);
+        View topicView = mLayout.findViewById(R.id.topic);
 
-        mTopicHolder = new TopicAdapter.ViewHolder(mTopicView);
+        mCommentsView = ((ListView) mLayout.findViewById(R.id.comments));
+        mLayout.setCanChildScrollUpCallback(new MultiSwipeRefreshLayout.CanChildScrollUpCallback() {
+            @Override
+            public boolean canSwipeRefreshChildScrollUp() {
+                return ViewCompat.canScrollVertically(mCommentsView, -1);
+            }
+        });
+
+        mTopicHolder = new TopicAdapter.ViewHolder(topicView);
         mTopicHolder.fillData(mTopic);
+
+        mCommentAdapter = new CommentAdapter(getActivity());
+        mCommentsView.setAdapter(mCommentAdapter);
 
         return mLayout;
     }
@@ -111,11 +125,12 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onLoadFinished(Loader<TopicWithComments> loader, TopicWithComments data) {
         mTopicHolder.fillData(data.mTopic, true);
+        mCommentAdapter.setDatasource(data.mComments);
         mLayout.setRefreshing(false);
     }
 
     @Override
     public void onLoaderReset(Loader<TopicWithComments> loader) {
-
+        mCommentAdapter.setDatasource(null);
     }
 }
