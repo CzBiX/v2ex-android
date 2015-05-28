@@ -3,6 +3,7 @@ package com.czbix.v2ex.ui;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -21,7 +22,17 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initToolbar();
         addFragmentToView();
+    }
+
+    private void initToolbar() {
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar == null) {
+            return;
+        }
+
+        setSupportActionBar(toolbar);
     }
 
     private void addFragmentToView() {
