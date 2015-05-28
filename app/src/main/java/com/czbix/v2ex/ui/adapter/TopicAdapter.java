@@ -1,9 +1,7 @@
 package com.czbix.v2ex.ui.adapter;
 
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -60,7 +58,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         public final TextView mContent;
 
         private final TopicAdapter mAdapter;
-        private int mId;
+        private volatile int mId;
 
         public ViewHolder(View view) {
             this(null, view);
@@ -139,18 +137,8 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         }
 
         @Override
-        public void onImgLoadFinish(final int taskId, @Nullable final Bitmap bitmap) {
-            if (taskId != mId || bitmap == null) {
-                return;
-            }
-
-            mAvatar.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (taskId != mId) return;
-                    mAvatar.setImageBitmap(bitmap);
-                }
-            });
+        public boolean isTaskIdValid(int taskId) {
+            return mId == taskId;
         }
     }
 

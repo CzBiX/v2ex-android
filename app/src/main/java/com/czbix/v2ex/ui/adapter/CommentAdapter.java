@@ -1,8 +1,6 @@
 package com.czbix.v2ex.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.support.annotation.Nullable;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +54,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
         private final TextView mUsername;
         private final TextView mReplyTime;
 
-        private int mId;
+        private volatile int mId;
 
         public ViewHolder(View view) {
             mAvatar = ((ImageView) view.findViewById(R.id.avatar_img));
@@ -86,18 +84,8 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
         }
 
         @Override
-        public void onImgLoadFinish(final int taskId, @Nullable final Bitmap bitmap) {
-            if (taskId != mId || bitmap == null) {
-                return;
-            }
-
-            mAvatar.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (taskId != mId) return;
-                    mAvatar.setImageBitmap(bitmap);
-                }
-            });
+        public boolean isTaskIdValid(int taskId) {
+            return mId == taskId;
         }
     }
 }

@@ -3,7 +3,6 @@ package com.czbix.v2ex.network;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.RemoteException;
-import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.czbix.v2ex.common.exception.ConnectionException;
@@ -75,7 +74,7 @@ public class ImageLoader {
             Bitmap result = getCache(mUrl, size);
             if (result != null) {
                 LogUtils.v(TAG, "image cache hit");
-                mCallback.onImgLoadFinish(mTaskId, result);
+                deliverResult(result);
                 return;
             }
             LogUtils.v(TAG, "image cache missed");
@@ -96,7 +95,24 @@ public class ImageLoader {
                 putCache(mUrl, size, result);
             }
 
-            mCallback.onImgLoadFinish(mTaskId, result);
+            deliverResult(result);
+        }
+
+        private void deliverResult(final Bitmap bitmap) {
+            if (!mCallback.isTaskIdValid(mTaskId) || bitmap == null) {
+                return;
+            }
+
+            mView.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (!mCallback.isTaskIdValid(mTaskId)) {
+                        return;
+                    }
+
+                    mView.setImageBitmap(bitmap);
+                }
+            });
         }
     }
 
@@ -104,6 +120,6 @@ public class ImageLoader {
         /***
          * it's not called on UI thread.
          */
-        void onImgLoadFinish(int taskId, @Nullable Bitmap bitmap);
+        boolean isTaskIdValid(int taskId);
     }
 }
