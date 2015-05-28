@@ -10,7 +10,7 @@ import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Node;
-import com.czbix.v2ex.network.EtagWithResult;
+import com.czbix.v2ex.network.Etag;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.HandlerExecutor;
@@ -80,9 +80,10 @@ public class AppCtx extends Application {
         }
 
         private void loadAllNodes() {
-            final String etag = ConfigDao.get(ConfigDao.KEY_NODE_ETAG, null);
+            final String etagStr = ConfigDao.get(ConfigDao.KEY_NODE_ETAG, null);
 
-            final EtagWithResult<List<Node>> result;
+            Etag etag = new Etag(etagStr);
+            List<Node> result;
             try {
                 result = RequestHelper.getAllNodes(etag);
             } catch (ConnectionException | RemoteException e) {
@@ -91,11 +92,11 @@ public class AppCtx extends Application {
                 return;
             }
 
-            if (!result.isModified) {
+            if (!etag.isModified()) {
                 LogUtils.d(TAG, "nodes not modified");
             } else {
-                NodeDao.putAll(result.mResult);
-                ConfigDao.put(ConfigDao.KEY_NODE_ETAG, result.mEtag);
+                NodeDao.putAll(result);
+                ConfigDao.put(ConfigDao.KEY_NODE_ETAG, etag.getNewEtag());
             }
             LogUtils.d(TAG, "load nodes finish!");
             mEventBus.post(new BusEvent.GetNodesFinishEvent());

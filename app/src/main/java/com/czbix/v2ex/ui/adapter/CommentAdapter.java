@@ -22,7 +22,7 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
         mInflater = LayoutInflater.from(context);
     }
 
-    public void setDatasource(List<Comment> comments) {
+    public void setDataSource(List<Comment> comments) {
         clear();
         if (comments != null) {
             addAll(comments);

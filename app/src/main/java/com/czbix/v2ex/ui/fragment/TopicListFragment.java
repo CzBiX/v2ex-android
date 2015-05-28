@@ -94,7 +94,6 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         mAdapter = new TopicAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
-        mLayout.setRefreshing(true);
         return mLayout;
     }
 
@@ -109,8 +108,8 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         Preconditions.checkNotNull(mActionBar);
         mActionBar.setDisplayHomeAsUpEnabled(false);
 
+        mLayout.setRefreshing(true);
         AppCtx.getEventBus().register(this);
-
         if (ConfigDao.get(ConfigDao.KEY_NODE_ETAG, null) != null) {
             onNodesLoadFinish(null);
         }

@@ -37,6 +37,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private ListView mCommentsView;
     private TopicAdapter.ViewHolder mTopicHolder;
     private CommentAdapter mCommentAdapter;
+    private View mTopicView;
 
 
     /**
@@ -73,11 +74,11 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mCommentsView = ((ListView) mLayout.findViewById(R.id.comments));
 
-        View topicView = inflater.inflate(R.layout.view_topic, mCommentsView, false);
-        topicView.setBackgroundColor(Color.WHITE);
-        mCommentsView.addHeaderView(topicView);
+        mTopicView = inflater.inflate(R.layout.view_topic, mCommentsView, false);
+        mTopicView.setBackgroundColor(Color.WHITE);
+        mCommentsView.addHeaderView(mTopicView);
 
-        mTopicHolder = new TopicAdapter.ViewHolder(topicView);
+        mTopicHolder = new TopicAdapter.ViewHolder(mTopicView);
         mTopicHolder.fillData(mTopic);
 
         mCommentAdapter = new CommentAdapter(getActivity());
@@ -96,6 +97,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         Preconditions.checkNotNull(actionBar);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        mLayout.setRefreshing(true);
         getLoaderManager().initLoader(0, null, this);
     }
 
@@ -121,12 +123,12 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onLoadFinished(Loader<TopicWithComments> loader, TopicWithComments data) {
         mTopicHolder.fillData(data.mTopic, true);
-        mCommentAdapter.setDatasource(data.mComments);
+        mCommentAdapter.setDataSource(data.mComments);
         mLayout.setRefreshing(false);
     }
 
     @Override
     public void onLoaderReset(Loader<TopicWithComments> loader) {
-        mCommentAdapter.setDatasource(null);
+        mCommentAdapter.setDataSource(null);
     }
 }
