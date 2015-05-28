@@ -26,16 +26,17 @@
         android:text="12h"
         style="@style/AppTheme.CardView.Time"
         android:layout_alignParentEnd="true"
+        android:layout_alignBaseline="@id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="HardcodedText"/>
 
     <TextView
+        android:id="@+id/content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/avatar_img"
+        android:layout_below="@id/username_tv"
         android:layout_alignStart="@id/username_tv"
         android:text="Content"
-        android:id="@+id/content"
         tools:ignore="HardcodedText"/>
 </RelativeLayout>

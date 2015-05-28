@@ -15,7 +15,7 @@ import com.czbix.v2ex.ui.fragment.TopicListFragment;
 import com.czbix.v2ex.util.LogUtils;
 
 
-public class MainActivity extends AppCompatActivity implements TopicListFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements TopicListFragment.TopicListActionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     @Override
-    public void onFragmentInteraction(Topic topic) {
+    public void onTopicOpen(Topic topic) {
         LogUtils.d(TAG, "load topic: %s", topic.getTitle());
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment, TopicFragment.newInstance(topic))

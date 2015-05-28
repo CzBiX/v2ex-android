@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TopicListFragment.OnFragmentInteractionListener} interface
+ * {@link TopicListActionListener} interface
  * to handle interaction events.
  * Use the {@link TopicListFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -42,7 +42,7 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
 
     private Page mPage;
 
-    private OnFragmentInteractionListener mListener;
+    private TopicListActionListener mListener;
     private RecyclerView mRecyclerView;
     private TopicAdapter mAdapter;
     private SwipeRefreshLayout mLayout;
@@ -94,6 +94,7 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         mAdapter = new TopicAdapter(this);
         mRecyclerView.setAdapter(mAdapter);
 
+        mLayout.setRefreshing(true);
         return mLayout;
     }
 
@@ -108,8 +109,8 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         Preconditions.checkNotNull(mActionBar);
         mActionBar.setDisplayHomeAsUpEnabled(false);
 
-        mLayout.setRefreshing(true);
         AppCtx.getEventBus().register(this);
+
         if (ConfigDao.get(ConfigDao.KEY_NODE_ETAG, null) != null) {
             onNodesLoadFinish(null);
         }
@@ -119,10 +120,10 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (TopicListActionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement TopicListActionListener");
         }
     }
 
@@ -156,30 +157,20 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onItemClick(int position, Topic topic) {
-        mListener.onFragmentInteraction(topic);
+        mListener.onTopicOpen(topic);
     }
 
     @Override
     public void onRefresh() {
-        final Loader<Object> loader = getLoaderManager().getLoader(0);
+        final Loader<?> loader = getLoaderManager().getLoader(0);
         if (loader == null) {
             return;
         }
         loader.forceLoad();
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Topic topic);
+    public interface TopicListActionListener {
+        void onTopicOpen(Topic topic);
     }
 
 }
