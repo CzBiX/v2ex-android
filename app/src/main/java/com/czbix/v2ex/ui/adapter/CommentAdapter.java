@@ -1,15 +1,19 @@
 package com.czbix.v2ex.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Comment;
+import com.czbix.v2ex.network.ImageLoader;
 
 import java.util.List;
 
@@ -46,15 +50,54 @@ public class CommentAdapter extends ArrayAdapter<Comment> {
         return convertView;
     }
 
-    private static class ViewHolder {
-        private final TextView mTextView;
+    private static class ViewHolder implements ImageLoader.Callback {
+        private final TextView mContent;
+        private final ImageView mAvatar;
+        private final TextView mUsername;
+        private final TextView mReplyTime;
+
+        private int mId;
 
         public ViewHolder(View view) {
-            mTextView = (TextView) view.findViewById(R.id.textView);
+            mAvatar = ((ImageView) view.findViewById(R.id.avatar_img));
+            mContent = (TextView) view.findViewById(R.id.content);
+            mUsername = (TextView) view.findViewById(R.id.username_tv);
+            mReplyTime = ((TextView) view.findViewById(R.id.time_tv));
         }
 
         public void fillData(Comment comment) {
-            mTextView.setText(Html.fromHtml(comment.getContent()));
+            if (mId == comment.getId()) {
+                return;
+            }
+
+            mId = comment.getId();
+
+            mContent.setText(Html.fromHtml(comment.getContent()));
+            mUsername.setText(comment.getMember().getUsername());
+            mReplyTime.setText(comment.getReplyTime());
+
+            setAvatarImg(comment);
+        }
+
+        public void setAvatarImg(Comment comment) {
+            final String url = comment.getMember().getAvatar().getUrlByDp(32);
+            mAvatar.setImageResource(R.drawable.avatar_default);
+            ImageLoader.getInstance().add(mId, mAvatar, url, this);
+        }
+
+        @Override
+        public void onImgLoadFinish(final int taskId, @Nullable final Bitmap bitmap) {
+            if (taskId != mId || bitmap == null) {
+                return;
+            }
+
+            mAvatar.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (taskId != mId) return;
+                    mAvatar.setImageBitmap(bitmap);
+                }
+            });
         }
     }
 }

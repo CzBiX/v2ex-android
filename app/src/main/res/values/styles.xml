@@ -21,6 +21,7 @@
     </style>
 
     <style name="AppTheme.CardView.Username" parent="AppTheme.CardView.TextView">
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="AppTheme.CardView.Time" parent="AppTheme.CardView.TextView">

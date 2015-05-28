@@ -60,8 +60,8 @@ public class TopicListParser extends Parser {
         parseMember(topicBuilder, list.get(0));
 
         final Element ele = list.get(2);
-        parseTitle(topicBuilder, ele.select(".item_title").get(0));
-        parseInfo(topicBuilder, ele.select(".small").get(0), null);
+        parseTitle(topicBuilder, ele);
+        parseInfo(topicBuilder, ele, null);
 
         parseReplyCount(topicBuilder, list.get(3));
 
@@ -75,8 +75,8 @@ public class TopicListParser extends Parser {
         parseMember(topicBuilder, list.get(0));
 
         final Element ele = list.get(2);
-        parseTitle(topicBuilder, ele.select(".item_title").get(0));
-        parseInfo(topicBuilder, ele.select(".small").get(0), node);
+        parseTitle(topicBuilder, ele);
+        parseInfo(topicBuilder, ele, node);
 
         parseReplyCount(topicBuilder, list.get(3));
 
@@ -97,6 +97,8 @@ public class TopicListParser extends Parser {
     }
 
     private static void parseInfo(Topic.Builder topicBuilder, Element ele, Node node) {
+        ele = ele.select(".small").get(0);
+
         boolean hasNode;
         if (node == null) {
             hasNode = false;
@@ -120,7 +122,7 @@ public class TopicListParser extends Parser {
     }
 
     private static void parseTitle(Topic.Builder topicBuilder, Element ele) {
-        ele = ele.child(0);
+        ele = ele.select(".item_title > a").get(0);
         Preconditions.checkState(ele.tagName().equals("a"));
         String url = ele.attr("href");
 

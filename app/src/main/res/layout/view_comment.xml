@@ -1,9 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:padding="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/avatar_img"
+        style="@style/AppTheme.CardView.Avatar"
+        android:layout_height="32dp"
+        android:layout_width="32dp"
+        android:contentDescription="@string/desc_avatar"/>
+
+    <TextView
+        android:id="@+id/username_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@id/avatar_img"
+        android:text="Username"
+        style="@style/AppTheme.CardView.Username"
+        tools:ignore="HardcodedText"/>
+
+    <TextView
+        android:id="@+id/time_tv"
+        android:text="12h"
+        style="@style/AppTheme.CardView.Time"
+        android:layout_alignParentEnd="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"/>
+        android:layout_below="@id/avatar_img"
+        android:layout_alignStart="@id/username_tv"
+        android:text="Content"
+        android:id="@+id/content"
+        tools:ignore="HardcodedText"/>
 </RelativeLayout>
