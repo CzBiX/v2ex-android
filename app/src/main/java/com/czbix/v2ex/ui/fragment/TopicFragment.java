@@ -2,11 +2,11 @@ package com.czbix.v2ex.ui.fragment;
 
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
@@ -71,15 +71,11 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mLayout = (MultiSwipeRefreshLayout) inflater.inflate(R.layout.fragment_topic, container, false);
         mLayout.setOnRefreshListener(this);
 
-        View topicView = mLayout.findViewById(R.id.topic);
-
         mCommentsView = ((ListView) mLayout.findViewById(R.id.comments));
-        mLayout.setCanChildScrollUpCallback(new MultiSwipeRefreshLayout.CanChildScrollUpCallback() {
-            @Override
-            public boolean canSwipeRefreshChildScrollUp() {
-                return ViewCompat.canScrollVertically(mCommentsView, -1);
-            }
-        });
+
+        View topicView = inflater.inflate(R.layout.view_topic, mCommentsView, false);
+        topicView.setBackgroundColor(Color.WHITE);
+        mCommentsView.addHeaderView(topicView);
 
         mTopicHolder = new TopicAdapter.ViewHolder(topicView);
         mTopicHolder.fillData(mTopic);

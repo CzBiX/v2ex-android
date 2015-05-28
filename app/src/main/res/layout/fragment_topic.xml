@@ -2,15 +2,9 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <LinearLayout
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <include layout="@layout/view_topic" android:id="@+id/topic"/>
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:isScrollContainer="false"
-            android:id="@+id/comments"/>
-    </LinearLayout>
+        android:isScrollContainer="false"
+        android:id="@+id/comments"/>
 </com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout>
