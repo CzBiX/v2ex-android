@@ -23,14 +23,13 @@
 
         <TextView
             android:id="@+id/username_tv"
+            android:layout_toEndOf="@id/avatar_img"
             style="@style/AppTheme.CardView.Username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Username"
             android:textStyle="bold"
             android:layout_marginStart="10dp"
-            android:layout_centerVertical="true"
-            android:layout_toEndOf="@id/avatar_img"
             tools:ignore="HardcodedText"/>
 
         <TextView
@@ -38,7 +37,6 @@
             style="@style/AppTheme.CardView.Node"
             android:text="Node"
             android:textStyle="bold"
-            android:layout_centerVertical="true"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_marginStart="5dp"
@@ -49,17 +47,26 @@
             android:id="@+id/time_tv"
             style="@style/AppTheme.CardView.Time"
             android:text="12m"
+            android:layout_below="@+id/username_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/username_tv"
+            tools:ignore="HardcodedText"/>
+
+        <TextView
+            android:id="@+id/reply_count_tv"
+            style="@style/AppTheme.CardView.Count"
+            android:text="12"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             tools:ignore="HardcodedText"/>
     </RelativeLayout>
 
     <TextView
         android:id="@+id/title_tv"
         style="@style/AppTheme.CardView.TextView"
-        android:layout_marginTop="5dp"
         android:text="Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,10 +79,4 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <TextView
-        android:id="@+id/reply_count_tv"
-        style="@style/AppTheme.CardView.TextView"
-        android:layout_marginTop="5dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 </LinearLayout>

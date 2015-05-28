@@ -28,13 +28,13 @@ public class TopicListParser extends Parser {
         if (page instanceof Node) {
             return parseDocForNode(doc, (Node) page);
         } else if (page instanceof Tab) {
-            return parseDocForTab(doc, (Tab) page);
+            return parseDocForTab(doc);
         } else {
             throw new IllegalArgumentException("unknown page type: " + page);
         }
     }
 
-    private static List<Topic> parseDocForTab(Document doc, Tab tab) throws IOException, SAXException {
+    private static List<Topic> parseDocForTab(Document doc) throws IOException, SAXException {
         final Elements elements = doc.select("#Main > div:nth-child(2) > .item  tr");
         final List<Topic> result = Lists.newArrayListWithCapacity(elements.size());
         for (Element item : elements) {
@@ -97,16 +97,20 @@ public class TopicListParser extends Parser {
     }
 
     private static void parseInfo(Topic.Builder topicBuilder, Element ele, Node node) {
+        boolean hasNode;
         if (node == null) {
+            hasNode = false;
             final Elements nodeEle = ele.select("> a");
             final String url = nodeEle.attr("href");
             final String name = Node.getNameFromUrl(url);
 
             node = NodeDao.get(name);
+        } else {
+            hasNode = true;
         }
         topicBuilder.setNode(node);
 
-        final String text = ele.textNodes().get(0).text();
+        final String text = ele.textNodes().get(hasNode ? 0 : 1).text();
         final Matcher matcher = PATTERN_REPLY_TIME.matcher(text);
         if (!matcher.find()) {
             throw new FatalException("match reply time for topic failed: " + text);
