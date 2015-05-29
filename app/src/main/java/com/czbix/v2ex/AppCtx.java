@@ -28,6 +28,7 @@ public class AppCtx extends Application {
     private static AppCtx mInstance;
     private float mDensity;
     private EventBus mEventBus;
+    private String mUsername;
 
     @Override
     public void onCreate() {
@@ -45,10 +46,19 @@ public class AppCtx extends Application {
         ExecutorUtils.execute(new AsyncInitTask());
     }
 
+    public String getUsername() {
+        return mUsername;
+    }
+
     @Subscribe
     private void onDeadEvent(DeadEvent e) {
         final BusEvent event = (BusEvent) e.getEvent();
         LogUtils.i(TAG, "dead event: %s", event.toString());
+    }
+
+    @Subscribe
+    private void onLoginSuccess(BusEvent.LoginSuccessEvent e) {
+        mUsername = e.mUsername;
     }
 
     public static EventBus getEventBus() {
@@ -76,6 +86,7 @@ public class AppCtx extends Application {
     private class AsyncInitTask implements Runnable {
         @Override
         public void run() {
+            mUsername = ConfigDao.get(ConfigDao.KEY_USERNAME, null);
             loadAllNodes();
         }
 

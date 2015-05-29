@@ -1,14 +1,19 @@
 package com.czbix.v2ex.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
+import com.google.common.base.Strings;
+import com.google.common.eventbus.Subscribe;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -38,9 +43,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        if (Strings.isNullOrEmpty(AppCtx.getInstance().getUsername())) {
+            // not sign in yet
+            AppCtx.getEventBus().register(this);
+            final MenuItem loginMenu = menu.add(R.string.action_sign_in);
+            loginMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                    return true;
+                }
+            });
+        }
+
         return true;
+    }
+
+    @Subscribe
+    private void onLoginSuccess(BusEvent.LoginSuccessEvent e) {
+        invalidateOptionsMenu();
+        AppCtx.getEventBus().unregister(this);
     }
 
     @Override

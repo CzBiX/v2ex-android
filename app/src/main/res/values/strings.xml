@@ -6,6 +6,7 @@
     <string name="desc_avatar">Avatar</string>
     <string name="action_link">Link</string>
     <string name="action_refresh">Refresh</string>
+
     <string name="desc_topic_link">Topic link</string>
     <string name="toast_copied">Copied to clipboard</string>
 </resources>

@@ -20,6 +20,7 @@ public class ConfigDao {
 
     private static final LruCache<String, String> CACHE = new LruCache<>(8);
 
+    public static final String KEY_USERNAME = "username";
     public static final String KEY_NODE_ETAG = "node_etag";
 
     static void createTable(SQLiteDatabase db) {
@@ -37,47 +38,61 @@ public class ConfigDao {
         db.execSQL(sql);
     }
 
-    public static String get(String key, String defVal) {
+    public static String get(final String key, final String defVal) {
         String value = CACHE.get(key);
         if (value != null) {
             return value;
         }
 
-        final SQLiteDatabase db = getReadDb();
-        Cursor cursor = null;
-        try {
-            cursor = db.rawQuery(SQL_GET_BY_NAME, new String[]{key});
-            if (!cursor.moveToFirst()) {
-                return defVal;
+        return execute(new SqlOperation<String>() {
+            @Override
+            public String execute (SQLiteDatabase db){
+                Cursor cursor = null;
+                try {
+                    cursor = db.rawQuery(SQL_GET_BY_NAME, new String[]{key});
+                    if (!cursor.moveToFirst()) {
+                        return defVal;
+                    }
+
+                    String value = cursor.getString(0);
+                    CACHE.put(key, value);
+
+                    return value;
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                }
             }
+        }, false);
+    }
 
-            value = cursor.getString(0);
-            CACHE.put(key, value);
+    public static void put(final String key, final String value) {
+        execute(new SqlOperation<Void>() {
+            @Override
+            public Void execute(SQLiteDatabase db) {
+                final ContentValues values = new ContentValues(2);
+                values.put(KEY_KEY, key);
+                values.put(KEY_VALUE, value);
 
-            return value;
+                db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+
+                CACHE.put(key, value);
+                return null;
+            }
+        }, true);
+    }
+
+    private static <T> T execute(SqlOperation<T> operation, boolean isWrite) {
+        SQLiteDatabase db = null;
+        try {
+            final ConfigDb instance = ConfigDb.getInstance();
+            db = isWrite ? instance.getWritableDatabase() : instance.getReadableDatabase();
+            return operation.execute(db);
         } finally {
-            if (cursor != null) {
-                cursor.close();
+            if (db != null) {
+                db.close();
             }
         }
-    }
-
-    public static void put(String key, String value) {
-        final SQLiteDatabase db = getWriteDb();
-        final ContentValues values = new ContentValues(2);
-        values.put(KEY_KEY, key);
-        values.put(KEY_VALUE, value);
-
-        db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-
-        CACHE.put(key, value);
-    }
-
-    private static SQLiteDatabase getWriteDb() {
-        return ConfigDb.getInstance().getWritableDatabase();
-    }
-
-    private static SQLiteDatabase getReadDb() {
-        return ConfigDb.getInstance().getReadableDatabase();
     }
 }

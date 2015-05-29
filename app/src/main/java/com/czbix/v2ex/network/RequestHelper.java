@@ -3,6 +3,7 @@ package com.czbix.v2ex.network;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RequestException;
@@ -21,8 +22,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Cache;
+import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import org.jsoup.nodes.Document;
@@ -30,6 +33,7 @@ import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.CookieManager;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +42,8 @@ public class RequestHelper {
 
     private static final String TAG = RequestHelper.class.getSimpleName();
     private static final String API_GET_ALL_NODES = BASE_URL + "/api/nodes/all.json";
+    private static final String URL_SIGN_IN = BASE_URL + "/signin";
+    private static final String URL_ONCE_CODE = URL_SIGN_IN;
 
     private static final int SERVER_ERROR_CODE = 500;
 
@@ -51,6 +57,8 @@ public class RequestHelper {
         CLIENT.setReadTimeout(30, TimeUnit.SECONDS);
         CLIENT.networkInterceptors().add(new UserAgentInterceptor());
         CLIENT.setFollowRedirects(false);
+
+        CLIENT.setCookieHandler(new CookieManager(new V2CookieStore(AppCtx.getInstance()), null));
     }
 
     private static Cache buildCache() {
@@ -79,7 +87,7 @@ public class RequestHelper {
         } catch (IOException e) {
             throw new ConnectionException(e);
         } catch (SAXException e) {
-            throw new RequestException(response);
+            throw new RequestException(response, e);
         }
 
         if (BuildConfig.DEBUG) {
@@ -104,7 +112,7 @@ public class RequestHelper {
             doc = Parser.toDoc(response.body().string());
             result = TopicParser.parseDoc(doc, topic);
         } catch (SAXException e) {
-            throw new RequestException(response);
+            throw new RequestException(response, e);
         } catch (IOException e) {
             throw new ConnectionException(e);
         }
@@ -137,6 +145,39 @@ public class RequestHelper {
         }
     }
 
+    public static boolean login(String account, String password) throws ConnectionException, RemoteException {
+        LogUtils.v(TAG, "login user: " + account);
+
+        final String onceCode = getOnceCode();
+        final RequestBody requestBody = new FormEncodingBuilder().add("once", onceCode)
+                .add("u", account)
+                .add("p", password)
+                .build();
+        final Request request = new Request.Builder().url(URL_SIGN_IN)
+                .header(HttpHeaders.REFERER, URL_SIGN_IN)
+                .post(requestBody).build();
+        final Response response = sendRequest(request, false);
+
+        // v2ex will redirect if login success
+        return response.code() == 302;
+    }
+
+    public static String getOnceCode() throws ConnectionException, RemoteException {
+        LogUtils.v(TAG, "get once code");
+
+        final Request request = new Request.Builder().url(URL_ONCE_CODE).build();
+        final Response response = sendRequest(request);
+
+        try {
+            final String html = response.body().string();
+            return Parser.parseOnceCode(html);
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        } catch (SAXException e) {
+            throw new RequestException(response, e);
+        }
+    }
+
     public static byte[] getImage(String url) throws ConnectionException, RemoteException {
         if (BuildConfig.DEBUG) {
             Log.v(TAG, "request image: " + url);
@@ -155,15 +196,20 @@ public class RequestHelper {
             throw new ConnectionException(e);
         }
     }
-
     private static Response sendRequest(Request request) throws ConnectionException, RemoteException {
+        return sendRequest(request, true);
+    }
+
+    private static Response sendRequest(Request request, boolean checkResponse) throws ConnectionException, RemoteException {
         final Response response;
         try {
             response = CLIENT.newCall(request).execute();
         } catch (IOException e) {
             throw new ConnectionException(e);
         }
-        checkResponse(response);
+        if (checkResponse) {
+            checkResponse(response);
+        }
 
         return response;
     }

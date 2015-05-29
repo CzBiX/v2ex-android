@@ -47,58 +47,59 @@ public class NodeDao {
     }
 
     @Nullable
-    public static Node get(String name) {
+    public static Node get(final String name) {
         Node node = CACHE.get(name);
         if (node != null) {
             return node;
         }
 
-        final SQLiteDatabase db = getReadDb();
-        Cursor cursor = null;
-        try {
-            cursor = db.rawQuery(SQL_GET_BY_NAME, new String[]{name});
-            if (!cursor.moveToFirst()) {
+        return execute(new SqlOperation<Node>() {
+            @Override
+            public Node execute(SQLiteDatabase db) {
+                Cursor cursor = null;
+                try {
+                    cursor = db.rawQuery(SQL_GET_BY_NAME, new String[]{name});
+                    if (!cursor.moveToFirst()) {
+                        return null;
+                    }
+
+                    Node.Builder builder = new Node.Builder();
+                    builder.setId(cursor.getInt(0))
+                            .setName(cursor.getString(1))
+                            .setTitle(cursor.getString(2));
+
+                    String str = cursor.getString(3);
+                    if (str != null) {
+                        builder.setTitleAlternative(str);
+                    }
+
+                    str = cursor.getString(4);
+                    if (str != null) {
+                        final Avatar avatar = new Avatar.Builder().setBaseUrl(str).createAvatar();
+                        builder.setAvatar(avatar);
+                    }
+
+                    Node node = builder.createNode();
+                    CACHE.put(name, node);
+
+                    return node;
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                }
+            }
+        }, false);
+    }
+
+    public static void put(final Node node) {
+        execute(new SqlOperation<Void>() {
+            @Override
+            public Void execute(SQLiteDatabase db) {
+                put(db, node);
                 return null;
             }
-
-            Node.Builder builder = new Node.Builder();
-            builder.setId(cursor.getInt(0))
-                    .setName(cursor.getString(1))
-                    .setTitle(cursor.getString(2));
-
-            String str = cursor.getString(3);
-            if (str != null) {
-                builder.setTitleAlternative(str);
-            }
-
-            str = cursor.getString(4);
-            if (str != null) {
-                final Avatar avatar = new Avatar.Builder().setBaseUrl(str).createAvatar();
-                builder.setAvatar(avatar);
-            }
-
-            node = builder.createNode();
-            CACHE.put(name, node);
-
-            return node;
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-    }
-
-    private static SQLiteDatabase getWriteDb() {
-        return V2exDb.getInstance().getWritableDatabase();
-    }
-
-    private static SQLiteDatabase getReadDb() {
-        return V2exDb.getInstance().getReadableDatabase();
-    }
-
-    public static void put(Node node) {
-        final SQLiteDatabase db = getWriteDb();
-        put(db, node);
+        }, true);
     }
 
     private static void put(SQLiteDatabase db, Node node) {
@@ -117,28 +118,53 @@ public class NodeDao {
         CACHE.put(node.getName(), node);
     }
 
-    public static void updateAvatar(String name, String url) {
-        final SQLiteDatabase db = getWriteDb();
-        final ContentValues values = new ContentValues(1);
-        values.put(KEY_AVATAR, url);
+    public static void updateAvatar(final String name, final String url) {
+        execute(new SqlOperation<Void>() {
+            @Override
+            public Void execute(SQLiteDatabase db) {
+                final ContentValues values = new ContentValues(1);
+                values.put(KEY_AVATAR, url);
 
-        db.update(TABLE_NAME, values, KEY_NAME + " = ?", new String[]{name});
+                db.update(TABLE_NAME, values, KEY_NAME + " = ?", new String[]{name});
 
-        CACHE.remove(name);
+                CACHE.remove(name);
+
+                return null;
+            }
+        }, true);
     }
 
-    public static void putAll(Iterable<Node> nodes) {
-        final SQLiteDatabase db = getWriteDb();
-        db.beginTransaction();
-        try {
+    public static void putAll(final Iterable<Node> nodes) {
+        execute(new SqlOperation<Void>() {
+            @Override
+            public Void execute(SQLiteDatabase db) {
+                db.beginTransaction();
+                try {
 
-            for (Node node : nodes) {
-                put(db, node);
+                    for (Node node : nodes) {
+                        put(db, node);
+                    }
+
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+
+                return null;
             }
+        }, true);
+    }
 
-            db.setTransactionSuccessful();
+    private static <T> T execute(SqlOperation<T> operation, boolean isWrite) {
+        SQLiteDatabase db = null;
+        try {
+            final V2exDb instance = V2exDb.getInstance();
+            db = isWrite ? instance.getWritableDatabase() : instance.getReadableDatabase();
+            return operation.execute(db);
         } finally {
-            db.endTransaction();
+            if (db != null) {
+                db.close();
+            }
         }
     }
 }

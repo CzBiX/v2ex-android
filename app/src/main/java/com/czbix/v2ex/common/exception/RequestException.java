@@ -6,7 +6,11 @@ public class RequestException extends RuntimeException {
     private final Response mResponse;
 
     public RequestException(Response response) {
-        super("request failed with code: " + response.code());
+        this(response, null);
+    }
+
+    public RequestException(Response response, Throwable tr) {
+        super("request failed with code: " + response.code(), tr);
 
         mResponse = response;
     }
