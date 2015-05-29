@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.czbix.v2ex.AppCtx;
+import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Tab;
@@ -46,24 +47,46 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-        if (Strings.isNullOrEmpty(AppCtx.getInstance().getUsername())) {
-            // not sign in yet
-            AppCtx.getEventBus().register(this);
-            final MenuItem loginMenu = menu.add(R.string.action_sign_in);
-            loginMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                    return true;
-                }
-            });
-        }
+        enableDebugMenu(menu);
+        enableLoginMenu(menu);
 
         return true;
     }
 
+    private void enableLoginMenu(Menu menu) {
+        if (!Strings.isNullOrEmpty(AppCtx.getInstance().getUsername())) {
+            return;
+        }
+
+        // not sign in yet
+        AppCtx.getEventBus().register(this);
+        final MenuItem loginMenu = menu.add(R.string.action_sign_in);
+        loginMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                return true;
+            }
+        });
+    }
+
+    private void enableDebugMenu(Menu menu) {
+        if (!BuildConfig.DEBUG) {
+            return;
+        }
+
+        final MenuItem item = menu.add("Debug");
+        item.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                startActivity(new Intent(MainActivity.this, DebugActivity.class));
+                return true;
+            }
+        });
+    }
+
     @Subscribe
-    private void onLoginSuccess(BusEvent.LoginSuccessEvent e) {
+    public void onLoginSuccess(BusEvent.LoginSuccessEvent e) {
         invalidateOptionsMenu();
         AppCtx.getEventBus().unregister(this);
     }

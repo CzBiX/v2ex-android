@@ -83,6 +83,16 @@ public class ConfigDao {
         }, true);
     }
 
+    public static void remove(final String key) {
+        execute(new SqlOperation<Void>() {
+            @Override
+            public Void execute(SQLiteDatabase db) {
+                db.delete(TABLE_NAME, KEY_KEY + " = ?", new String[]{key});
+                return null;
+            }
+        }, true);
+    }
+
     private static <T> T execute(SqlOperation<T> operation, boolean isWrite) {
         SQLiteDatabase db = null;
         try {

@@ -51,13 +51,13 @@ public class AppCtx extends Application {
     }
 
     @Subscribe
-    private void onDeadEvent(DeadEvent e) {
+    public void onDeadEvent(DeadEvent e) {
         final BusEvent event = (BusEvent) e.getEvent();
         LogUtils.i(TAG, "dead event: %s", event.toString());
     }
 
     @Subscribe
-    private void onLoginSuccess(BusEvent.LoginSuccessEvent e) {
+    public void onLoginSuccess(BusEvent.LoginSuccessEvent e) {
         mUsername = e.mUsername;
     }
 
