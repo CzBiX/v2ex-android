@@ -1,22 +1,21 @@
 package com.czbix.v2ex.common.exception;
 
+import com.squareup.okhttp.Response;
+
 public class RequestException extends RuntimeException {
-    public RequestException() {
+    private final Response mResponse;
+
+    public RequestException(Response response) {
+        super("request failed with code: " + response.code());
+
+        mResponse = response;
     }
 
-    public RequestException(String detailMessage) {
-        super(detailMessage);
+    public Response getResponse() {
+        return mResponse;
     }
 
-    public RequestException(String detailMessage, Throwable throwable) {
-        super(detailMessage, throwable);
-    }
-
-    public RequestException(Throwable throwable) {
-        super(throwable);
-    }
-
-    public RequestException(int code) {
-        this("request failed with code: " + code);
+    public int getCode() {
+        return mResponse.code();
     }
 }

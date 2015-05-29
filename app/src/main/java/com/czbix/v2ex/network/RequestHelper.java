@@ -50,6 +50,7 @@ public class RequestHelper {
         CLIENT.setWriteTimeout(10, TimeUnit.SECONDS);
         CLIENT.setReadTimeout(30, TimeUnit.SECONDS);
         CLIENT.networkInterceptors().add(new UserAgentInterceptor());
+        CLIENT.setFollowRedirects(false);
     }
 
     private static Cache buildCache() {
@@ -78,7 +79,7 @@ public class RequestHelper {
         } catch (IOException e) {
             throw new ConnectionException(e);
         } catch (SAXException e) {
-            throw new RequestException(e);
+            throw new RequestException(response);
         }
 
         if (BuildConfig.DEBUG) {
@@ -103,7 +104,7 @@ public class RequestHelper {
             doc = Parser.toDoc(response.body().string());
             result = TopicParser.parseDoc(doc, topic);
         } catch (SAXException e) {
-            throw new RequestException(e);
+            throw new RequestException(response);
         } catch (IOException e) {
             throw new ConnectionException(e);
         }
@@ -176,6 +177,6 @@ public class RequestHelper {
             throw new RemoteException();
         }
 
-        throw new RequestException(response.code());
+        throw new RequestException(response);
     }
 }
