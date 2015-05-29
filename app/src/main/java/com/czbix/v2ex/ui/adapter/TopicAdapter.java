@@ -121,7 +121,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         private void setAvatarImg(Topic topic) {
             final String url = topic.getMember().getAvatar().getUrlByDp(32);
             mAvatar.setImageResource(R.drawable.avatar_default);
-            ImageLoader.getInstance().add(mId, mAvatar, url, this);
+            ImageLoader.getInstance().load(mId, mAvatar, url, this);
         }
 
         @Override

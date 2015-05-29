@@ -30,7 +30,7 @@ public class ImageLoader {
         mImgCache = new LruImageCache();
     }
 
-    public Future<?> add(int taskId, ImageView view, String url, Callback callback) {
+    public Future<?> load(int taskId, ImageView view, String url, Callback callback) {
         return ExecutorUtils.submit(new ImageLoadTask(taskId, view, url, callback));
     }
 
