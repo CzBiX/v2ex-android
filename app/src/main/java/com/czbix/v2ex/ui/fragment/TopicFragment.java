@@ -1,7 +1,6 @@
 package com.czbix.v2ex.ui.fragment;
 
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +9,9 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -22,6 +24,7 @@ import com.czbix.v2ex.ui.adapter.CommentAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.loader.TopicLoader;
 import com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout;
+import com.czbix.v2ex.util.UiUtils;
 import com.google.common.base.Preconditions;
 
 /**
@@ -30,6 +33,7 @@ import com.google.common.base.Preconditions;
  * create an instance of this fragment.
  */
 public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener, LoaderManager.LoaderCallbacks<TopicWithComments> {
+    private static final String TAG = TopicFragment.class.getSimpleName();
     private static final String ARG_TOPIC = "topic";
 
     private Topic mTopic;
@@ -64,6 +68,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         if (getArguments() != null) {
             mTopic = getArguments().getParcelable(ARG_TOPIC);
         }
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -109,17 +115,34 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
-    @Override
     public void onRefresh() {
-        final Loader<Object> loader = getLoaderManager().getLoader(0);
+        final Loader<?> loader = getLoaderManager().getLoader(0);
         if (loader == null) {
             return;
         }
         loader.forceLoad();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_topic, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_copy_link:
+                UiUtils.setClipboard(getActivity(), mTopic.getUrl());
+                return true;
+            case R.id.action_refresh:
+                mLayout.setRefreshing(true);
+                onRefresh();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

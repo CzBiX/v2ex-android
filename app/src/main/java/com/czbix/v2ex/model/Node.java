@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.dao.NodeDao;
+import com.czbix.v2ex.network.RequestHelper;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +52,7 @@ public class Node extends Page {
     }
 
     public static String buildUrlByName(String name) {
-        return "/go/" + name;
+        return RequestHelper.BASE_URL + "/go/" + name;
     }
 
     public static String getNameFromUrl(String url) {

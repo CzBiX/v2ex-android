@@ -3,6 +3,7 @@ package com.czbix.v2ex.model;
 import android.os.Parcel;
 
 import com.czbix.v2ex.common.exception.FatalException;
+import com.czbix.v2ex.network.RequestHelper;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,7 +50,7 @@ public class Topic extends Page {
     }
 
     public static String buildUrlFromId(int id) {
-        return "/t/" + Integer.toString(id);
+        return RequestHelper.BASE_URL + "/t/" + Integer.toString(id);
     }
 
     public static int getIdFromUrl(String url) {

@@ -4,7 +4,7 @@ import com.czbix.v2ex.AppCtx;
 
 import java.io.File;
 
-public class IOUtils {
+public class IoUtils {
     public static File getCachePath() {
         return AppCtx.getInstance().getCacheDir();
     }

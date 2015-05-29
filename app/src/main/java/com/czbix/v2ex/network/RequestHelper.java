@@ -15,7 +15,7 @@ import com.czbix.v2ex.network.interceptor.UserAgentInterceptor;
 import com.czbix.v2ex.parser.Parser;
 import com.czbix.v2ex.parser.TopicListParser;
 import com.czbix.v2ex.parser.TopicParser;
-import com.czbix.v2ex.util.IOUtils;
+import com.czbix.v2ex.util.IoUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.net.HttpHeaders;
@@ -34,8 +34,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class RequestHelper {
+    public static final String BASE_URL = "https://www.v2ex.com";
+
     private static final String TAG = RequestHelper.class.getSimpleName();
-    private static final String BASE_URL = "https://www.v2ex.com";
     private static final String API_GET_ALL_NODES = BASE_URL + "/api/nodes/all.json";
 
     private static final int SERVER_ERROR_CODE = 500;
@@ -52,7 +53,7 @@ public class RequestHelper {
     }
 
     private static Cache buildCache() {
-        final File cacheDir = IOUtils.getWebCachePath();
+        final File cacheDir = IoUtils.getWebCachePath();
         final int cacheSize = 128 * 1024 * 1024;
 
         return new Cache(cacheDir, cacheSize);
@@ -64,7 +65,7 @@ public class RequestHelper {
         }
 
         final Request request = new Request.Builder()
-                .url(BASE_URL + page.getUrl())
+                .url(page.getUrl())
                 .build();
 
         final Response response = sendRequest(request);
@@ -91,7 +92,7 @@ public class RequestHelper {
         LogUtils.v(TAG, "request topic with comments, id: %d, title: %s", topic.getId(), topic.getTitle());
 
         final Request request = new Request.Builder()
-                .url(BASE_URL + topic.getUrl())
+                .url(topic.getUrl())
                 .build();
         final Response response = sendRequest(request);
 

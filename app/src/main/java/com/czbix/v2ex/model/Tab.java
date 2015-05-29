@@ -2,6 +2,8 @@ package com.czbix.v2ex.model;
 
 import android.os.Parcel;
 
+import com.czbix.v2ex.network.RequestHelper;
+
 public class Tab extends Page {
     public static final Tab[] ALL_TABS = {
             new Tab("技术", "/?tab=tech"),
@@ -29,7 +31,7 @@ public class Tab extends Page {
 
     @Override
     public String getUrl() {
-        return mUrl;
+        return RequestHelper.BASE_URL + mUrl;
     }
 
     @Override
