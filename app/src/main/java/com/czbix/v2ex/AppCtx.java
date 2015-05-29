@@ -57,7 +57,7 @@ public class AppCtx extends Application {
     }
 
     @Subscribe
-    public void onLoginSuccess(BusEvent.LoginSuccessEvent e) {
+    public void onLoginEvent(BusEvent.LoginEvent e) {
         mUsername = e.mUsername;
     }
 

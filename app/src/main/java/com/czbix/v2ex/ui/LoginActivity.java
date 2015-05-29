@@ -154,7 +154,8 @@ public class LoginActivity extends AppCompatActivity {
     private void onLoginSuccess(String username) {
         Toast.makeText(this, getString(R.string.toast_login_success, username),
                 Toast.LENGTH_LONG).show();
-        AppCtx.getEventBus().post(new BusEvent.LoginSuccessEvent(username));
+        AppCtx.getEventBus().post(new BusEvent.LoginEvent(username));
+        setResult(RESULT_OK);
         finish();
     }
 

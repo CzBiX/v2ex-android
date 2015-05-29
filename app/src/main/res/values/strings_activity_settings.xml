@@ -1,0 +1,8 @@
+<resources>
+    <string name="title_activity_settings">Settings</string>
+    <string name="pref_category_general">General</string>
+    <string name="pref_title_debug">Debug</string>
+    <string name="pref_log_out">Log out</string>
+    <string name="pref_sign_in">Sign in</string>
+    <string name="pref_category_user">User</string>
+</resources>
