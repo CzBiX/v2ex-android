@@ -5,6 +5,5 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:isScrollContainer="false"
         android:id="@+id/comments"/>
 </com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout>

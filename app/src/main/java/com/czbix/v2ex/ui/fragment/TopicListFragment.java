@@ -1,8 +1,8 @@
 package com.czbix.v2ex.ui.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -23,6 +23,7 @@ import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.loader.TopicListLoader;
+import com.czbix.v2ex.util.LogUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
 
@@ -116,17 +117,6 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         }
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mListener = (TopicListActionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement TopicListActionListener");
-        }
-    }
-
     @Subscribe
     public void onNodesLoadFinish(BusEvent.GetNodesFinishEvent e) {
         getLoaderManager().initLoader(0, null, this);
@@ -141,6 +131,8 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public Loader<List<Topic>> onCreateLoader(int id, Bundle args) {
+        LogUtils.d(TAG, "load list: %s", mPage.getTitle());
+
         return new TopicListLoader(getActivity(), mPage);
     }
 
@@ -156,8 +148,12 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onItemClick(int position, Topic topic) {
-        mListener.onTopicOpen(topic);
+    public void onItemClick(int position, View v, Topic topic) {
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment, TopicFragment.newInstance(topic))
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -170,7 +166,6 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     public interface TopicListActionListener {
-        void onTopicOpen(Topic topic);
+        void onTopicOpen(View view, Topic topic);
     }
-
 }

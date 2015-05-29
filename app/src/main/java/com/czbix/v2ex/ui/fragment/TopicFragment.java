@@ -24,6 +24,7 @@ import com.czbix.v2ex.ui.adapter.CommentAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.loader.TopicLoader;
 import com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout;
+import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.UiUtils;
 import com.google.common.base.Preconditions;
 
@@ -147,6 +148,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public Loader<TopicWithComments> onCreateLoader(int id, Bundle args) {
+        LogUtils.d(TAG, "load topic: %s", mTopic.getTitle());
         return new TopicLoader(getActivity(), mTopic);
     }
 

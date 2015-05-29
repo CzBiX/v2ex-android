@@ -132,7 +132,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
             final int position = getAdapterPosition();
             if (v == itemView) {
-                mAdapter.mListener.onItemClick(position, mAdapter.mData.get(position));
+                mAdapter.mListener.onItemClick(position, v, mAdapter.mData.get(position));
             }
         }
 
@@ -143,6 +143,6 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
     }
 
     public interface OnItemClickListener {
-        void onItemClick(int position, Topic topic);
+        void onItemClick(int position, View v, Topic topic);
     }
 }

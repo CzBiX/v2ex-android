@@ -1,7 +1,6 @@
 package com.czbix.v2ex.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -9,13 +8,10 @@ import android.view.MenuItem;
 
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Tab;
-import com.czbix.v2ex.model.Topic;
-import com.czbix.v2ex.ui.fragment.TopicFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
-import com.czbix.v2ex.util.LogUtils;
 
 
-public class MainActivity extends AppCompatActivity implements TopicListFragment.TopicListActionListener {
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,15 +57,5 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onTopicOpen(Topic topic) {
-        LogUtils.d(TAG, "load topic: %s", topic.getTitle());
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment, TopicFragment.newInstance(topic))
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
-                .commit();
     }
 }
