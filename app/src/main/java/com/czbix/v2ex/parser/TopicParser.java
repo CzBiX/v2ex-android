@@ -79,7 +79,7 @@ public class TopicParser extends Parser {
     }
 
     private static void parseContent(Topic.Builder builder, Elements elements) {
-        if (elements.size() != 1) return;
+        if (elements.size() == 0) return;
         final Element ele = elements.get(0);
         builder.setContent(ele.html());
     }
