@@ -96,6 +96,12 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         mRecyclerView.setAdapter(mAdapter);
 
         mLayout.setRefreshing(true);
+
+        AppCtx.getEventBus().register(this);
+
+        if (ConfigDao.get(ConfigDao.KEY_NODE_ETAG, null) != null) {
+            onNodesLoadFinish(null);
+        }
         return mLayout;
     }
 
@@ -109,12 +115,6 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         mActionBar = activity.getSupportActionBar();
         Preconditions.checkNotNull(mActionBar);
         mActionBar.setDisplayHomeAsUpEnabled(false);
-
-        AppCtx.getEventBus().register(this);
-
-        if (ConfigDao.get(ConfigDao.KEY_NODE_ETAG, null) != null) {
-            onNodesLoadFinish(null);
-        }
     }
 
     @Subscribe
@@ -126,6 +126,13 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        AppCtx.getEventBus().unregister(this);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
         AppCtx.getEventBus().unregister(this);
     }
 
