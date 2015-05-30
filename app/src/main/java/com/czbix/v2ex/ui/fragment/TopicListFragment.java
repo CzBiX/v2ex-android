@@ -132,14 +132,8 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     @Override
     public void onDetach() {
         super.onDetach();
+
         mListener = null;
-        AppCtx.getEventBus().unregister(this);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
         AppCtx.getEventBus().unregister(this);
     }
 
