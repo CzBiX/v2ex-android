@@ -1,7 +1,9 @@
 package com.czbix.v2ex.ui.fragment;
 
 
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -136,6 +138,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         switch (item.getItemId()) {
             case R.id.action_copy_link:
                 UiUtils.setClipboard(getActivity(), mTopic.getUrl());
+                return true;
+            case R.id.action_open:
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mTopic.getUrl())));
                 return true;
             case R.id.action_refresh:
                 mLayout.setRefreshing(true);

@@ -9,4 +9,5 @@
 
     <string name="desc_topic_link">Topic link</string>
     <string name="toast_copied">Copied to clipboard</string>
+    <string name="action_open_link">Open link</string>
 </resources>
