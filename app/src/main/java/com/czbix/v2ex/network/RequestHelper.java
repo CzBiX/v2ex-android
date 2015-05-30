@@ -49,6 +49,8 @@ public class RequestHelper {
 
     private static final OkHttpClient CLIENT;
 
+    private static V2CookieStore mCookies;
+
     static {
         CLIENT = new OkHttpClient();
         CLIENT.setCache(buildCache());
@@ -58,7 +60,8 @@ public class RequestHelper {
         CLIENT.networkInterceptors().add(new UserAgentInterceptor());
         CLIENT.setFollowRedirects(false);
 
-        CLIENT.setCookieHandler(new CookieManager(new V2CookieStore(AppCtx.getInstance()), null));
+        mCookies = new V2CookieStore(AppCtx.getInstance());
+        CLIENT.setCookieHandler(new CookieManager(mCookies, null));
     }
 
     private static Cache buildCache() {
@@ -66,6 +69,10 @@ public class RequestHelper {
         final int cacheSize = 128 * 1024 * 1024;
 
         return new Cache(cacheDir, cacheSize);
+    }
+
+    public static void clearCookies() {
+        mCookies.clearAll();
     }
 
     public static List<Topic> getTopics(Page page) throws ConnectionException, RemoteException {

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.eventbus.BusEvent;
+import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.ui.DebugActivity;
 import com.czbix.v2ex.ui.LoginActivity;
 import com.google.common.base.Strings;
@@ -62,6 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
                 logoutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
+                        RequestHelper.clearCookies();
                         ConfigDao.remove(ConfigDao.KEY_USERNAME);
                         AppCtx.getEventBus().post(new BusEvent.LoginEvent());
                         getActivity().recreate();

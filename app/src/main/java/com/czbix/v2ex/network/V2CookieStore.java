@@ -64,6 +64,11 @@ public class V2CookieStore implements CookieStore {
         }
     }
 
+    public synchronized void clearAll() {
+        map.clear();
+        cookiePrefs.edit().clear().apply();
+    }
+
     public synchronized void add(URI uri, HttpCookie cookie) {
         if (cookie == null) {
             throw new NullPointerException("cookie == null");
