@@ -1,8 +1,8 @@
 package com.czbix.v2ex.ui.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -123,6 +123,13 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        mListener = ((TopicListActionListener) activity);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -156,11 +163,7 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Override
     public void onItemClick(int position, View v, Topic topic) {
-        getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment, TopicFragment.newInstance(topic))
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
-                .commit();
+        mListener.onTopicOpen(v, topic);
     }
 
     @Override

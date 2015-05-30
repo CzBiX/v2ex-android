@@ -11,6 +11,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
+            android:theme="@style/AppTheme.Main"
             android:name=".ui.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
@@ -31,6 +32,9 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name=".ui.TopicActivity" >
         </activity>
     </application>
 
