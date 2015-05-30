@@ -41,9 +41,12 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void initUser() {
             final PreferenceCategory user = (PreferenceCategory) findPreference("user");
+            final Preference infoPref = findPreference("user_info");
             final Preference loginPref = findPreference("login");
             final Preference logoutPref = findPreference("logout");
+
             if (Strings.isNullOrEmpty(AppCtx.getInstance().getUsername())) {
+                user.removePreference(infoPref);
                 user.removePreference(logoutPref);
                 loginPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
@@ -53,6 +56,8 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 });
             } else {
+                infoPref.setTitle(AppCtx.getInstance().getUsername());
+                infoPref.setEnabled(false);
                 user.removePreference(loginPref);
                 logoutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override

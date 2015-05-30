@@ -19,6 +19,7 @@ import com.google.common.eventbus.Subscribe;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private boolean mRegisteredEventBus;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         // not sign in yet
         AppCtx.getEventBus().register(this);
+        mRegisteredEventBus = true;
         final MenuItem loginMenu = menu.add(R.string.action_sign_in);
         loginMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -72,6 +74,16 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe
     public void onLoginEvent(BusEvent.LoginEvent e) {
         invalidateOptionsMenu();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mRegisteredEventBus) {
+            AppCtx.getEventBus().unregister(this);
+            mRegisteredEventBus = false;
+        }
     }
 
     @Override

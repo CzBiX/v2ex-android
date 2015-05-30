@@ -9,6 +9,7 @@
     <PreferenceCategory
         android:key="user"
         android:title="@string/pref_category_user">
+        <Preference android:key="user_info"/>
         <Preference android:key="login"
                     android:title="@string/pref_sign_in"/>
         <Preference android:key="logout"
