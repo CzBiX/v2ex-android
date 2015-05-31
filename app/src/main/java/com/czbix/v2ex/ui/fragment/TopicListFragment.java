@@ -49,6 +49,8 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     private SwipeRefreshLayout mLayout;
     private ActionBar mActionBar;
     private LinearLayoutManager mLayoutManager;
+    private boolean mRegisteredEventBus;
+    private TopicListLoader mLoader;
 
     /**
      * Use this factory method to create a new instance of
@@ -86,9 +88,9 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         // Inflate the layout for this fragment
         mLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_topic_list,
                 container, false);
-        mLayout.setOnRefreshListener(this);
-
         mRecyclerView = ((RecyclerView) mLayout.findViewById(R.id.recycle_view));
+
+        mLayout.setOnRefreshListener(this);
         mLayoutManager = new LinearLayoutManager(mLayout.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
@@ -96,12 +98,6 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         mRecyclerView.setAdapter(mAdapter);
 
         mLayout.setRefreshing(true);
-
-        AppCtx.getEventBus().register(this);
-
-        if (ConfigDao.get(ConfigDao.KEY_NODE_ETAG, null) != null) {
-            onNodesLoadFinish(null);
-        }
         return mLayout;
     }
 
@@ -115,6 +111,13 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         mActionBar = activity.getSupportActionBar();
         Preconditions.checkNotNull(mActionBar);
         mActionBar.setDisplayHomeAsUpEnabled(false);
+
+        AppCtx.getEventBus().register(this);
+        mRegisteredEventBus = true;
+
+        if (ConfigDao.get(ConfigDao.KEY_NODE_ETAG, null) != null) {
+            onNodesLoadFinish(null);
+        }
     }
 
     @Subscribe
@@ -134,14 +137,18 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         super.onDetach();
 
         mListener = null;
-        AppCtx.getEventBus().unregister(this);
+        if (mRegisteredEventBus) {
+            AppCtx.getEventBus().unregister(this);
+            mRegisteredEventBus = false;
+        }
     }
 
     @Override
     public Loader<List<Topic>> onCreateLoader(int id, Bundle args) {
         LogUtils.d(TAG, "load list: %s", mPage.getTitle());
 
-        return new TopicListLoader(getActivity(), mPage);
+        mLoader = new TopicListLoader(getActivity(), mPage);
+        return mLoader;
     }
 
     @Override

@@ -13,11 +13,22 @@ import java.util.List;
 public class TopicListLoader extends AsyncTaskLoader<List<Topic>> {
     private final Page mPage;
     private List<Topic> mResult;
+    private boolean mNeedRefresh;
 
     public TopicListLoader(Context context, Page page) {
         super(context);
 
         mPage = page;
+        mNeedRefresh = true;
+    }
+
+    @Override
+    protected void onStartLoading() {
+        if (!mNeedRefresh) {
+            // FIXME: a trick to avoid reload
+            return;
+        }
+        super.onStartLoading();
     }
 
     @Override
@@ -28,5 +39,17 @@ public class TopicListLoader extends AsyncTaskLoader<List<Topic>> {
             e.printStackTrace();
         }
         return mResult;
+    }
+
+    @Override
+    public boolean takeContentChanged() {
+        return mNeedRefresh;
+    }
+
+    @Override
+    public void deliverResult(List<Topic> data) {
+        super.deliverResult(data);
+
+        mNeedRefresh = false;
     }
 }

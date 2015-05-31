@@ -25,7 +25,6 @@ import com.google.common.eventbus.Subscribe;
 public class MainActivity extends AppCompatActivity implements TopicListFragment.TopicListActionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private boolean mRegisteredEventBus;
-    private TopicListFragment mFragment;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,13 +45,9 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
     private void addFragmentToView() {
         final FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.findFragmentById(R.id.fragment) != null) {
-            return;
-        }
-
-        mFragment = TopicListFragment.newInstance(Tab.TAB_ALL);
+        final TopicListFragment fragment = TopicListFragment.newInstance(Tab.TAB_ALL);
         fragmentManager.beginTransaction()
-                .replace(R.id.fragment, mFragment)
+                .replace(R.id.fragment, fragment)
                 .commit();
     }
 
@@ -120,8 +115,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     @Override
     public void onTopicOpen(View view, Topic topic) {
         getSupportFragmentManager().beginTransaction()
-                .hide(mFragment)
-                .add(R.id.fragment, TopicFragment.newInstance(topic))
+                .replace(R.id.fragment, TopicFragment.newInstance(topic))
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit();
