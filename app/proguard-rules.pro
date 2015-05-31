@@ -37,6 +37,14 @@
 # jsoup
 -keeppackagenames org.jsoup.nodes
 
+# glide
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+    **[] $VALUES;
+    public *;
+}
+
+
 # unresolve class in library
 -dontwarn com.google.**
 -dontwarn okio.**

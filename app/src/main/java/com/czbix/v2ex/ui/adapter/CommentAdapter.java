@@ -10,9 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Comment;
-import com.czbix.v2ex.network.ImageLoader;
 import com.google.common.base.Preconditions;
 
 import java.util.List;
@@ -86,7 +86,7 @@ public class CommentAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private static class ViewHolder implements ImageLoader.Callback {
+    private static class ViewHolder {
         private final TextView mContent;
         private final ImageView mAvatar;
         private final TextView mUsername;
@@ -119,13 +119,9 @@ public class CommentAdapter extends BaseAdapter {
 
         public void setAvatarImg(Comment comment) {
             final String url = comment.getMember().getAvatar().getUrlByDp(32);
-            mAvatar.setImageResource(R.drawable.avatar_default);
-            ImageLoader.getInstance().load(mId, mAvatar, url, this);
-        }
-
-        @Override
-        public boolean isTaskIdValid(int taskId) {
-            return mId == taskId;
+            Glide.with(mAvatar.getContext()).load(url)
+                    .placeholder(R.drawable.avatar_default).crossFade()
+                    .into(mAvatar);
         }
     }
 }

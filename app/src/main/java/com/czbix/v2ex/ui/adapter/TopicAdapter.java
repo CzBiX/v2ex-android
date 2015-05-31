@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Topic;
-import com.czbix.v2ex.network.ImageLoader;
 import com.google.common.base.Strings;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         return mData == null ? 0 : mData.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, ImageLoader.Callback {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final TextView mTitle;
         public final ImageView mAvatar;
         public final TextView mUsername;
@@ -122,8 +122,9 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
         private void setAvatarImg(Topic topic) {
             final String url = topic.getMember().getAvatar().getUrlByDp(32);
-            mAvatar.setImageResource(R.drawable.avatar_default);
-            ImageLoader.getInstance().load(mId, mAvatar, url, this);
+            Glide.with(mAvatar.getContext()).load(url)
+                    .placeholder(R.drawable.avatar_default).crossFade()
+                    .into(mAvatar);
         }
 
         @Override
@@ -136,11 +137,6 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             if (v == itemView) {
                 mAdapter.mListener.onItemClick(position, v, mAdapter.mData.get(position));
             }
-        }
-
-        @Override
-        public boolean isTaskIdValid(int taskId) {
-            return mId == taskId;
         }
     }
 

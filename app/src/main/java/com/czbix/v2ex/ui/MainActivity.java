@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
-import com.czbix.v2ex.SettingsActivity;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;

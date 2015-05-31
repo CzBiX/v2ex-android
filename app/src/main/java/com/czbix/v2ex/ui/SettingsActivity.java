@@ -1,4 +1,4 @@
-package com.czbix.v2ex;
+package com.czbix.v2ex.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -7,11 +7,12 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 
+import com.czbix.v2ex.AppCtx;
+import com.czbix.v2ex.BuildConfig;
+import com.czbix.v2ex.R;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.network.RequestHelper;
-import com.czbix.v2ex.ui.DebugActivity;
-import com.czbix.v2ex.ui.LoginActivity;
 import com.google.common.base.Strings;
 
 public class SettingsActivity extends AppCompatActivity {
