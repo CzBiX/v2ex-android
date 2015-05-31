@@ -2,6 +2,7 @@ package com.czbix.v2ex.ui.adapter;
 
 import android.content.Context;
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,6 +109,8 @@ public class CommentAdapter extends BaseAdapter {
             mId = comment.getId();
 
             mContent.setText(Html.fromHtml(comment.getContent()));
+            mContent.setMovementMethod(LinkMovementMethod.getInstance());
+
             mUsername.setText(comment.getMember().getUsername());
             mReplyTime.setText(comment.getReplyTime());
 
