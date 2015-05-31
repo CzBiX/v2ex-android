@@ -6,10 +6,18 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "com.czbix.v2ex.ui.MainActivity"/>
+        className = "com.czbix.v2ex.ui.LoginActivity"/>
       <point      
         x = "500"      
-        y = "96"/>
+        y = "1480"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.czbix.v2ex.SettingsActivity"/>
+      <point      
+        x = "3033"      
+        y = "99"/>
     </statePointEntry>
     <statePointEntry>
       <state      
@@ -18,6 +26,30 @@
       <point      
         x = "1536"      
         y = "80"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.czbix.v2ex.ui.MainActivity"/>
+      <point      
+        x = "500"      
+        y = "96"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.czbix.v2ex.ui.TopicActivity"/>
+      <point      
+        x = "548"      
+        y = "1528"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.czbix.v2ex.ui.DebugActivity"/>
+      <point      
+        x = "600"      
+        y = "1580"/>
     </statePointEntry>
   </locations>
 </navigationModel>
