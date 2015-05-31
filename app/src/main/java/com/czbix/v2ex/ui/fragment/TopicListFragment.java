@@ -44,11 +44,8 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     private Page mPage;
 
     private TopicListActionListener mListener;
-    private RecyclerView mRecyclerView;
     private TopicAdapter mAdapter;
     private SwipeRefreshLayout mLayout;
-    private ActionBar mActionBar;
-    private LinearLayoutManager mLayoutManager;
     private boolean mRegisteredEventBus;
     private TopicListLoader mLoader;
 
@@ -88,14 +85,14 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         // Inflate the layout for this fragment
         mLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_topic_list,
                 container, false);
-        mRecyclerView = ((RecyclerView) mLayout.findViewById(R.id.recycle_view));
+        RecyclerView recyclerView = ((RecyclerView) mLayout.findViewById(R.id.recycle_view));
 
         mLayout.setOnRefreshListener(this);
-        mLayoutManager = new LinearLayoutManager(mLayout.getContext());
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(mLayout.getContext());
+        recyclerView.setLayoutManager(layoutManager);
 
         mAdapter = new TopicAdapter(this);
-        mRecyclerView.setAdapter(mAdapter);
+        recyclerView.setAdapter(mAdapter);
 
         mLayout.setRefreshing(true);
         return mLayout;
@@ -108,9 +105,9 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         final MainActivity activity = (MainActivity) getActivity();
         activity.setTitle(mPage.getTitle());
 
-        mActionBar = activity.getSupportActionBar();
-        Preconditions.checkNotNull(mActionBar);
-        mActionBar.setDisplayHomeAsUpEnabled(false);
+        ActionBar actionBar = activity.getSupportActionBar();
+        Preconditions.checkNotNull(actionBar);
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
         AppCtx.getEventBus().register(this);
         mRegisteredEventBus = true;
