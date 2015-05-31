@@ -2,6 +2,7 @@ package com.czbix.v2ex.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
@@ -25,13 +27,29 @@ import com.google.common.eventbus.Subscribe;
 public class MainActivity extends AppCompatActivity implements TopicListFragment.TopicListActionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private boolean mRegisteredEventBus;
+    private TextView mUsername;
+    private AppBarLayout mAppBar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mUsername = (TextView) findViewById(R.id.username_tv);
+        mAppBar = ((AppBarLayout) findViewById(R.id.appbar));
+
         initToolbar();
-        addFragmentToView();
+        updateUsername();
+        if (savedInstanceState == null) {
+            addFragmentToView();
+        }
+    }
+
+    private void updateUsername() {
+        if (Strings.isNullOrEmpty(AppCtx.getInstance().getUsername())) {
+            mUsername.setVisibility(View.INVISIBLE);
+        } else {
+            mUsername.setText(AppCtx.getInstance().getUsername());
+        }
     }
 
     private void initToolbar() {
@@ -81,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     @Subscribe
     public void onLoginEvent(BusEvent.LoginEvent e) {
         invalidateOptionsMenu();
+        updateUsername();
     }
 
     @Override

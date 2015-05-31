@@ -1,9 +1,9 @@
 <com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:id="@+id/comments"/>
 </com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout>
