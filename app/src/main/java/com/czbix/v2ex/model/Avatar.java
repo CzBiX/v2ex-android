@@ -40,7 +40,7 @@ public class Avatar implements Parcelable {
         return mBaseUrl;
     }
 
-    public String getUrlByDp(int dp) {
+    public String getUrlByDp(float dp) {
         final float size = dp * DENSITY;
         if (size >= SIZE_LARGE) {
             return getLarge();

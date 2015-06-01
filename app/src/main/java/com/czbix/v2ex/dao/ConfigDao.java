@@ -21,6 +21,7 @@ public class ConfigDao {
     private static final LruCache<String, String> CACHE = new LruCache<>(8);
 
     public static final String KEY_USERNAME = "username";
+    public static final String KEY_AVATAR = "avatar";
     public static final String KEY_NODE_ETAG = "node_etag";
 
     static void createTable(SQLiteDatabase db) {

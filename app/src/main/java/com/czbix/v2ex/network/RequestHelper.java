@@ -6,6 +6,7 @@ import android.util.Log;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.Node;
@@ -13,6 +14,7 @@ import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.network.interceptor.UserAgentInterceptor;
+import com.czbix.v2ex.parser.MyselfParser;
 import com.czbix.v2ex.parser.Parser;
 import com.czbix.v2ex.parser.TopicListParser;
 import com.czbix.v2ex.parser.TopicParser;
@@ -34,6 +36,8 @@ import org.xml.sax.SAXException;
 import java.io.File;
 import java.io.IOException;
 import java.net.CookieManager;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -152,21 +156,46 @@ public class RequestHelper {
         }
     }
 
-    public static boolean login(String account, String password) throws ConnectionException, RemoteException {
+    public static MyselfParser.MySelfInfo login(String account, String password) throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "login user: " + account);
 
         final String onceCode = getOnceCode();
         final RequestBody requestBody = new FormEncodingBuilder().add("once", onceCode)
                 .add("u", account)
                 .add("p", password)
+                .add("next", "/settings")
                 .build();
-        final Request request = new Request.Builder().url(URL_SIGN_IN)
+        Request request = new Request.Builder().url(URL_SIGN_IN)
                 .header(HttpHeaders.REFERER, URL_SIGN_IN)
                 .post(requestBody).build();
-        final Response response = sendRequest(request, false);
+        Response response = sendRequest(request, false);
 
         // v2ex will redirect if login success
-        return response.code() == 302;
+        if (response.code() != 302) {
+            return null;
+        }
+
+        final String location = response.header(HttpHeaders.LOCATION);
+        if (!location.equals("/settings")) {
+            return null;
+        }
+
+        try {
+            request = new Request.Builder().url(new URL(request.url(), location)).build();
+        } catch (MalformedURLException e) {
+            throw new FatalException(e);
+        }
+        response = sendRequest(request);
+
+        try {
+            final String html = response.body().string();
+            final Document document = Parser.toDoc(html);
+            return MyselfParser.parseDoc(document);
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        } catch (SAXException e) {
+            throw new RequestException(response, e);
+        }
     }
 
     public static String getOnceCode() throws ConnectionException, RemoteException {

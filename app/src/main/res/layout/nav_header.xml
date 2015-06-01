@@ -8,13 +8,18 @@
               android:theme="@style/ThemeOverlay.AppCompat.Dark"
               android:orientation="vertical"
               android:gravity="bottom">
+    <ImageView
+        android:id="@+id/avatar_img"
+        android:layout_marginBottom="10dp"
+        android:layout_width="@dimen/nav_avatar_size"
+        android:layout_height="@dimen/nav_avatar_size"
+        android:contentDescription="@string/desc_avatar"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/username_tv"
         android:text="Username"
-        android:textColor="#fff"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         tools:ignore="HardcodedText"/>
 

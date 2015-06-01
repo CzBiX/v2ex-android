@@ -21,9 +21,10 @@ import android.widget.Toast;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.ConnectionException;
-import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.network.RequestHelper;
+import com.czbix.v2ex.parser.MyselfParser;
+import com.czbix.v2ex.util.UserUtils;
 
 /**
  * A login screen that offers login via account/password.
@@ -175,8 +176,9 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                if (RequestHelper.login(mAccount, mPassword)) {
-                    ConfigDao.put(ConfigDao.KEY_USERNAME, mAccount);
+                final MyselfParser.MySelfInfo info = RequestHelper.login(mAccount, mPassword);
+                if (info != null) {
+                    UserUtils.login(mAccount, info.mAvatar);
                     return true;
                 }
             } catch (ConnectionException | RemoteException e) {

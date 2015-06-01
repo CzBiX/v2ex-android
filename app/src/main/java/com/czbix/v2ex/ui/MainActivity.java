@@ -1,6 +1,5 @@
 package com.czbix.v2ex.ui;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -13,15 +12,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.eventbus.BusEvent;
+import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.fragment.TopicFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
+import com.czbix.v2ex.util.UserUtils;
 import com.google.common.base.Strings;
 import com.google.common.eventbus.Subscribe;
 
@@ -33,11 +36,13 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     private AppBarLayout mAppBar;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNav;
+    private ImageView mAvatar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mAvatar = ((ImageView) findViewById(R.id.avatar_img));
         mUsername = (TextView) findViewById(R.id.username_tv);
         mAppBar = ((AppBarLayout) findViewById(R.id.appbar));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.layout);
@@ -52,10 +57,17 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
     private void updateUsername() {
         if (Strings.isNullOrEmpty(AppCtx.getInstance().getUsername())) {
+            mAvatar.setVisibility(View.INVISIBLE);
             mUsername.setVisibility(View.INVISIBLE);
-        } else {
-            mUsername.setText(AppCtx.getInstance().getUsername());
+            return;
         }
+
+        mAvatar.setVisibility(View.VISIBLE);
+        mUsername.setVisibility(View.VISIBLE);
+        final Avatar avatar = UserUtils.getAvatar();
+        Glide.with(this).load(avatar.getUrlByDp(getResources().getDimension(R.dimen.nav_avatar_size)))
+                .crossFade().into(mAvatar);
+        mUsername.setText(AppCtx.getInstance().getUsername());
     }
 
     private void initToolbar() {
