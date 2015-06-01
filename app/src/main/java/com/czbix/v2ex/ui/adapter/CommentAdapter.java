@@ -3,7 +3,6 @@ package com.czbix.v2ex.ui.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ForegroundColorSpan;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Comment;
+import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
 
 import java.util.List;
@@ -122,7 +122,7 @@ public class CommentAdapter extends BaseAdapter {
 
             mId = comment.getId();
 
-            mContent.setText(Html.fromHtml(comment.getContent()));
+            ViewUtils.setHtmlIntoTextView(mContent, comment.getContent());
             mContent.setMovementMethod(LinkMovementMethod.getInstance());
             appendThanks(comment);
 

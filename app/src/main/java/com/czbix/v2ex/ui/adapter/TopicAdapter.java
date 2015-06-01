@@ -3,7 +3,6 @@ package com.czbix.v2ex.ui.adapter;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Strings;
 
 import java.util.List;
@@ -122,7 +122,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
                 return;
             }
             mContent.setVisibility(View.VISIBLE);
-            mContent.setText(Html.fromHtml(content));
+            ViewUtils.setHtmlIntoTextView(mContent, topic.getContent());
             mContent.setMovementMethod(LinkMovementMethod.getInstance());
         }
 
