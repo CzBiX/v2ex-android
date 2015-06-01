@@ -8,12 +8,14 @@ public class Comment implements Parcelable {
     private final String mContent;
     private final Member mMember;
     private final String mReplyTime;
+    private final int mThanks;
 
-    Comment(int id, String content, Member member, String replyTime) {
+    Comment(int id, String content, Member member, String replyTime, int thanks) {
         mId = id;
         mContent = content;
         mMember = member;
         mReplyTime = replyTime;
+        mThanks = thanks;
     }
 
     public int getId() {
@@ -32,6 +34,10 @@ public class Comment implements Parcelable {
         return mReplyTime;
     }
 
+    public int getThanks() {
+        return mThanks;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -43,6 +49,7 @@ public class Comment implements Parcelable {
         dest.writeString(mContent);
         mMember.writeToParcel(dest, flags);
         dest.writeString(mReplyTime);
+        dest.writeInt(mThanks);
     }
 
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {
@@ -52,6 +59,7 @@ public class Comment implements Parcelable {
                     .setContent(source.readString())
                     .setMember(Member.CREATOR.createFromParcel(source))
                     .setReplyTime(source.readString())
+                    .setThanks(source.readInt())
                     .createComment();
         }
 
@@ -66,6 +74,7 @@ public class Comment implements Parcelable {
         private String mContent;
         private Member mMember;
         private String mReplyTime;
+        private int mThanks;
 
         public Builder setId(int id) {
             mId = id;
@@ -87,8 +96,13 @@ public class Comment implements Parcelable {
             return this;
         }
 
+        public Builder setThanks(int thanks) {
+            mThanks = thanks;
+            return this;
+        }
+
         public Comment createComment() {
-            return new Comment(mId, mContent, mMember, mReplyTime);
+            return new Comment(mId, mContent, mMember, mReplyTime, mThanks);
         }
     }
 }

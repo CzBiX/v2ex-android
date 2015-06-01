@@ -5,6 +5,7 @@ import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import org.jsoup.nodes.Document;
@@ -12,8 +13,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TopicParser extends Parser {
+    private static final Pattern PATTERN_THANKS = Pattern.compile("\\d+");
+
     public static TopicWithComments parseDoc(Document doc, Topic topic) {
         final Topic.Builder topicBuilder = topic.toBuilder();
 
@@ -61,9 +66,18 @@ public class TopicParser extends Parser {
         final int id = Integer.parseInt(tableEle.id().substring(2));
         builder.setId(id);
 
-        final Element timeEle = ele.select(".small").get(0);
+        final Elements elements = ele.select(".small");
 
+        final Element timeEle = elements.get(0);
         builder.setReplyTime(timeEle.text());
+
+        if (elements.size() == 2) {
+            final Matcher matcher = PATTERN_THANKS.matcher(elements.get(1).text());
+            Preconditions.checkState(matcher.find());
+
+            final int thanks = Integer.parseInt(matcher.group());
+            builder.setThanks(thanks);
+        }
     }
 
     private static void parseMember(Member.Builder builder, Element ele) {

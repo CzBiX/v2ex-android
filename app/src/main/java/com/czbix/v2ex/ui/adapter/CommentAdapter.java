@@ -1,8 +1,14 @@
 package com.czbix.v2ex.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,11 +116,23 @@ public class CommentAdapter extends BaseAdapter {
 
             mContent.setText(Html.fromHtml(comment.getContent()));
             mContent.setMovementMethod(LinkMovementMethod.getInstance());
+            appendThanks(comment);
 
             mUsername.setText(comment.getMember().getUsername());
             mReplyTime.setText(comment.getReplyTime());
 
             setAvatarImg(comment);
+        }
+
+        private void appendThanks(Comment comment) {
+            if (comment.getThanks() > 0) {
+                final String text = "  +" + Integer.toString(comment.getThanks());
+                final SpannableStringBuilder builder = new SpannableStringBuilder(text);
+                builder.setSpan(new StyleSpan(Typeface.BOLD), 0, text.length(), 0);
+                builder.setSpan(new RelativeSizeSpan(0.80f), 0, text.length(), 0);
+                builder.setSpan(new ForegroundColorSpan(Color.GRAY), 0, text.length(), 0);
+                mContent.append(builder);
+            }
         }
 
         public void setAvatarImg(Comment comment) {
