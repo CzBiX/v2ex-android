@@ -31,7 +31,10 @@ public class TopicParser extends Parser {
 
     private static void parseTopicInfo(Topic.Builder topicBuilder, Document doc) {
         final Elements elements = doc.select("#Main > div:nth-child(4) > .cell:nth-child(1) > span");
-        Preconditions.checkState(elements.size() == 1);
+        if (elements.size() == 0) {
+            // empty reply
+            return;
+        }
         final String text = elements.get(0).ownText();
         final Matcher matcher = PATTERN_NUMBERS.matcher(text);
         Preconditions.checkState(matcher.find());
