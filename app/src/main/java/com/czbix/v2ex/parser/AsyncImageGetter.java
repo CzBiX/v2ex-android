@@ -1,5 +1,6 @@
 package com.czbix.v2ex.parser;
 
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -11,7 +12,6 @@ import android.text.Html;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.czbix.v2ex.AppCtx;
@@ -36,7 +36,7 @@ public class AsyncImageGetter implements Html.ImageGetter {
         final NetworkDrawable drawable = new NetworkDrawable();
         final int width = ViewUtils.getExactlyWidth(mTextView, mDimenRes);
         final NetworkDrawableTarget target = new NetworkDrawableTarget(mTextView, drawable, width);
-        Glide.with(mTextView.getContext()).load(source).fitCenter().into(target);
+        Glide.with(mTextView.getContext()).load(source).asBitmap().fitCenter().into(target);
         return drawable;
     }
 
@@ -73,7 +73,7 @@ public class AsyncImageGetter implements Html.ImageGetter {
         }
     }
 
-    private static class NetworkDrawableTarget extends SimpleTarget<GlideDrawable> {
+    private static class NetworkDrawableTarget extends SimpleTarget<Bitmap> {
         private final TextView mTextView;
         private final NetworkDrawable mDrawable;
 
@@ -84,12 +84,12 @@ public class AsyncImageGetter implements Html.ImageGetter {
         }
 
         @Override
-        public void onResourceReady(GlideDrawable resource,
-                                    GlideAnimation<? super GlideDrawable> glideAnimation) {
-            final Rect rect = new Rect(0, 0, resource.getIntrinsicWidth(), resource.getIntrinsicHeight());
-            resource.setBounds(rect);
-            mDrawable.mDrawable = resource;
-            mDrawable.setBounds(rect);
+        public void onResourceReady(Bitmap bitmap,
+                                    GlideAnimation<? super Bitmap> glideAnimation) {
+            final BitmapDrawable bitmapDrawable = new BitmapDrawable(null, bitmap);
+            bitmapDrawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            mDrawable.mDrawable = bitmapDrawable;
+            mDrawable.setBounds(bitmapDrawable.getBounds());
 
             mTextView.setText(mTextView.getText());
         }
