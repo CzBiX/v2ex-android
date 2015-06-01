@@ -58,6 +58,7 @@ public class AsyncImageGetter implements Html.ImageGetter {
 
         @SuppressWarnings("deprecation")
         public NetworkDrawable() {
+            super();
             setBounds(DEFAULT_DRAWABLE.getBounds());
         }
 
