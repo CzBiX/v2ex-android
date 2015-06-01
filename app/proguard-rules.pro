@@ -16,6 +16,11 @@
 #   public *;
 #}
 
+# rules
+-keep class android.support.design.widget.* {
+    public *;
+}
+
 # for stacktrace
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable
