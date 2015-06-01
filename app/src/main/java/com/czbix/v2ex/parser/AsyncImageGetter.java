@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.DimenRes;
 import android.text.Html;
 import android.widget.TextView;
 
@@ -21,9 +22,11 @@ import com.google.common.base.Preconditions;
 public class AsyncImageGetter implements Html.ImageGetter {
     private static final String TAG = AsyncImageGetter.class.getSimpleName();
     private final TextView mTextView;
+    private final int mDimenRes;
 
-    public AsyncImageGetter(TextView textView) {
+    public AsyncImageGetter(TextView textView, @DimenRes int dimenRes) {
         mTextView = textView;
+        mDimenRes = dimenRes;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class AsyncImageGetter implements Html.ImageGetter {
         LogUtils.v(TAG, "load image for text view: %s", source);
 
         final NetworkDrawable drawable = new NetworkDrawable();
-        final int width = ViewUtils.getExactlyWidth(mTextView);
+        final int width = ViewUtils.getExactlyWidth(mTextView, mDimenRes);
         final NetworkDrawableTarget target = new NetworkDrawableTarget(mTextView, drawable, width);
         Glide.with(mTextView.getContext()).load(source).fitCenter().into(target);
         return drawable;

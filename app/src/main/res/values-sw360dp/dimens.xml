@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="topic_picture_max_width">348dp</dimen>
+    <dimen name="comment_picture_max_width">312dp</dimen>
+</resources>

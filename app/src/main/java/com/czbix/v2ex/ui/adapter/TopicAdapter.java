@@ -122,7 +122,8 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
                 return;
             }
             mContent.setVisibility(View.VISIBLE);
-            ViewUtils.setHtmlIntoTextView(mContent, topic.getContent());
+            ViewUtils.setHtmlIntoTextView(mContent, topic.getContent(),
+                    R.dimen.topic_picture_max_width);
             mContent.setMovementMethod(LinkMovementMethod.getInstance());
         }
 
