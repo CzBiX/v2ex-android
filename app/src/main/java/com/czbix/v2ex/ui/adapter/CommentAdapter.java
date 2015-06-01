@@ -58,7 +58,15 @@ public class CommentAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return position;
+        if (position == 0) {
+            return 0;
+        }
+        position--;
+        if (mCommentList == null) {
+            return -1;
+        }
+
+        return mCommentList.get(position).getId();
     }
 
     @Override

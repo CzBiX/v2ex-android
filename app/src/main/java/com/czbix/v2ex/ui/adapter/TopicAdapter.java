@@ -24,6 +24,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
     public TopicAdapter(@NonNull OnItemClickListener listener) {
         mListener = listener;
+        setHasStableIds(true);
     }
 
     public void setDataSource(List<Topic> data) {
@@ -42,6 +43,11 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Topic topic = mData.get(position);
         holder.fillData(topic);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return mData == null ? RecyclerView.NO_ID : mData.get(position).getId();
     }
 
     @Override

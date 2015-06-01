@@ -10,6 +10,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -77,6 +80,8 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         if (mPage == null) {
             throw new FatalException("node can't be null");
         }
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -171,6 +176,25 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
             return;
         }
         loader.forceLoad();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_topic_list, menu);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                mLayout.setRefreshing(true);
+                onRefresh();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public interface TopicListActionListener {
