@@ -80,6 +80,9 @@ public class TopicParser extends Parser {
         final int id = Integer.parseInt(tableEle.id().substring(2));
         builder.setId(id);
 
+        final String text = ele.select(".no").text();
+        builder.setFloor(Integer.parseInt(text));
+
         final Elements elements = ele.select(".small");
 
         final Element timeEle = elements.get(0);

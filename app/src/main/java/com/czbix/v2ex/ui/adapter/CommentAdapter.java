@@ -105,6 +105,7 @@ public class CommentAdapter extends BaseAdapter {
         private final ImageView mAvatar;
         private final TextView mUsername;
         private final TextView mReplyTime;
+        private final TextView mFloor;
 
         private volatile int mId;
 
@@ -113,6 +114,7 @@ public class CommentAdapter extends BaseAdapter {
             mContent = (TextView) view.findViewById(R.id.content);
             mUsername = (TextView) view.findViewById(R.id.username_tv);
             mReplyTime = ((TextView) view.findViewById(R.id.time_tv));
+            mFloor = ((TextView) view.findViewById(R.id.floor));
         }
 
         public void fillData(Comment comment) {
@@ -128,6 +130,7 @@ public class CommentAdapter extends BaseAdapter {
 
             mUsername.setText(comment.getMember().getUsername());
             mReplyTime.setText(comment.getReplyTime());
+            mFloor.setText(Integer.toString(comment.getFloor()) + "L");
 
             setAvatarImg(comment);
         }

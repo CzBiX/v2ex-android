@@ -41,4 +41,15 @@
         android:layout_alignStart="@id/username_tv"
         android:text="Content"
         tools:ignore="HardcodedText"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBaseline="@id/username_tv"
+        style="@style/AppTheme.CardView.Time"
+        android:textSize="12sp"
+        android:text="23L"
+        android:id="@+id/floor"
+        tools:ignore="HardcodedText"/>
 </RelativeLayout>

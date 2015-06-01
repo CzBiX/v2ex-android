@@ -9,13 +9,15 @@ public class Comment implements Parcelable {
     private final Member mMember;
     private final String mReplyTime;
     private final int mThanks;
+    private final int mFloor;
 
-    Comment(int id, String content, Member member, String replyTime, int thanks) {
+    Comment(int id, String content, Member member, String replyTime, int thanks, int floor) {
         mId = id;
         mContent = content;
         mMember = member;
         mReplyTime = replyTime;
         mThanks = thanks;
+        mFloor = floor;
     }
 
     public int getId() {
@@ -38,6 +40,10 @@ public class Comment implements Parcelable {
         return mThanks;
     }
 
+    public int getFloor() {
+        return mFloor;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -50,6 +56,7 @@ public class Comment implements Parcelable {
         mMember.writeToParcel(dest, flags);
         dest.writeString(mReplyTime);
         dest.writeInt(mThanks);
+        dest.writeInt(mFloor);
     }
 
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {
@@ -60,6 +67,7 @@ public class Comment implements Parcelable {
                     .setMember(Member.CREATOR.createFromParcel(source))
                     .setReplyTime(source.readString())
                     .setThanks(source.readInt())
+                    .setFloor(source.readInt())
                     .createComment();
         }
 
@@ -75,6 +83,7 @@ public class Comment implements Parcelable {
         private Member mMember;
         private String mReplyTime;
         private int mThanks;
+        private int mFloor;
 
         public Builder setId(int id) {
             mId = id;
@@ -101,8 +110,13 @@ public class Comment implements Parcelable {
             return this;
         }
 
+        public Builder setFloor(int floor) {
+            mFloor = floor;
+            return this;
+        }
+
         public Comment createComment() {
-            return new Comment(mId, mContent, mMember, mReplyTime, mThanks);
+            return new Comment(mId, mContent, mMember, mReplyTime, mThanks, mFloor);
         }
     }
 }
