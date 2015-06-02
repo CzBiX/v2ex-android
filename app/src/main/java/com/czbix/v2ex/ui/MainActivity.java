@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         if (item.isChecked()) return false;
 
         switch (item.getItemId()) {
-            case R.id.drawer_all:
+            case R.id.drawer_explore:
                 switchFragment(getTopicListFragment());
                 return true;
             case R.id.drawer_nodes:

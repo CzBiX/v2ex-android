@@ -2,11 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/drawer_all"
+            android:id="@+id/drawer_explore"
             android:checked="true"
-            android:title="@string/drawer_all"
+            android:icon="@drawable/ic_explore_black_24dp"
+            android:title="@string/drawer_explore"
             />
         <item android:id="@+id/drawer_nodes"
+              android:icon="@drawable/ic_dashboard_black_24dp"
               android:title="@string/title_fragment_nodes"/>
     </group>
 </menu>

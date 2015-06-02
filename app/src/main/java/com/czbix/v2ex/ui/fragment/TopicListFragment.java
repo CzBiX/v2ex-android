@@ -109,7 +109,7 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
 
         final MainActivity activity = (MainActivity) getActivity();
         activity.setTitle(mPage.getTitle());
-        activity.setNavSelected(R.id.drawer_all);
+        activity.setNavSelected(R.id.drawer_explore);
 
         ActionBar actionBar = activity.getSupportActionBar();
         Preconditions.checkNotNull(actionBar);
