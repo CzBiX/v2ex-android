@@ -33,6 +33,7 @@ public class TopicParser extends Parser {
         final Elements elements = doc.select("#Main > div:nth-child(4) > .cell:nth-child(1) > span");
         if (elements.size() == 0) {
             // empty reply
+            topicBuilder.setReplyCount(0);
             return;
         }
         final String text = elements.get(0).ownText();
