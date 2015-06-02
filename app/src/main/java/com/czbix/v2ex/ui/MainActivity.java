@@ -1,6 +1,7 @@
 package com.czbix.v2ex.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.AppBarLayout;
@@ -35,6 +36,8 @@ import com.google.common.eventbus.Subscribe;
 public class MainActivity extends AppCompatActivity implements TopicListFragment.TopicListActionListener,
         NavigationView.OnNavigationItemSelectedListener, NodeListFragment.OnNodeActionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String PREF_DRAWER_SHOWED = "drawer_showed";
+
     private boolean mRegisteredEventBus;
     private TextView mUsername;
     private AppBarLayout mAppBar;
@@ -43,11 +46,13 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     private ImageView mAvatar;
     private TopicListFragment mTopicListFragment;
     private NodeListFragment mNodeListFragment;
+    private SharedPreferences mPreferences;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mPreferences = getPreferences(MODE_PRIVATE);
         mAvatar = ((ImageView) findViewById(R.id.avatar_img));
         mUsername = (TextView) findViewById(R.id.username_tv);
         mAppBar = ((AppBarLayout) findViewById(R.id.appbar));
@@ -64,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
     private void initNavDrawer() {
         mNav.setNavigationItemSelectedListener(this);
+        if (!mPreferences.getBoolean(PREF_DRAWER_SHOWED, false)) {
+            mDrawerLayout.openDrawer(mNav);
+            mPreferences.edit().putBoolean(PREF_DRAWER_SHOWED, true).apply();
+        }
     }
 
     @Override

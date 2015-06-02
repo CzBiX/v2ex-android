@@ -1,13 +1,7 @@
 package com.czbix.v2ex.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,6 +100,7 @@ public class CommentAdapter extends BaseAdapter {
         private final TextView mUsername;
         private final TextView mReplyTime;
         private final TextView mFloor;
+        private final TextView mThanks;
 
         private volatile int mId;
 
@@ -115,6 +110,7 @@ public class CommentAdapter extends BaseAdapter {
             mUsername = (TextView) view.findViewById(R.id.username_tv);
             mReplyTime = ((TextView) view.findViewById(R.id.time_tv));
             mFloor = ((TextView) view.findViewById(R.id.floor));
+            mThanks = ((TextView) view.findViewById(R.id.thanks));
         }
 
         public void fillData(Comment comment) {
@@ -138,12 +134,11 @@ public class CommentAdapter extends BaseAdapter {
 
         private void appendThanks(Comment comment) {
             if (comment.getThanks() > 0) {
-                final String text = "  +" + Integer.toString(comment.getThanks());
-                final SpannableStringBuilder builder = new SpannableStringBuilder(text);
-                builder.setSpan(new StyleSpan(Typeface.BOLD), 0, text.length(), 0);
-                builder.setSpan(new RelativeSizeSpan(0.80f), 0, text.length(), 0);
-                builder.setSpan(new ForegroundColorSpan(Color.GRAY), 0, text.length(), 0);
-                mContent.append(builder);
+                final String text = "+" + Integer.toString(comment.getThanks());
+                mThanks.setText(text);
+                mThanks.setVisibility(View.VISIBLE);
+            } else {
+                mThanks.setVisibility(View.INVISIBLE);
             }
         }
 

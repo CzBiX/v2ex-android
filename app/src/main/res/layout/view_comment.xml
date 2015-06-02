@@ -33,6 +33,18 @@
         tools:ignore="HardcodedText"/>
 
     <TextView
+        android:id="@+id/thanks"
+        android:text="+1"
+        android:layout_toEndOf="@id/time_tv"
+        android:textColor="#888"
+        android:textSize="12sp"
+        android:layout_marginStart="5dp"
+        android:layout_alignBaseline="@id/username_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText"/>
+
+    <TextView
         android:id="@+id/content"
         style="@style/AppTheme.CardView.Content"
         android:layout_width="match_parent"
