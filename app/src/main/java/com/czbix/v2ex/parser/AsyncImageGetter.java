@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.czbix.v2ex.AppCtx;
+import com.czbix.v2ex.R;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
@@ -41,32 +42,53 @@ public class AsyncImageGetter implements Html.ImageGetter {
     }
 
     private static class NetworkDrawable extends BitmapDrawable {
-        private static final Drawable DEFAULT_DRAWABLE;
+        private static final Drawable DRAWABLE_LOADING;
+        private static final Drawable DRAWABLE_FAILED;
+        private static final Rect DRAWABLE_BOUNDS;
         private static final Paint PAINT;
+        private boolean isFailed;
         private Drawable mDrawable;
 
+
         static {
-            DEFAULT_DRAWABLE = AppCtx.getInstance().getResources().getDrawable(android.R.drawable.presence_offline);
-            Preconditions.checkNotNull(DEFAULT_DRAWABLE);
-            final Rect rect = new Rect(0, 0, DEFAULT_DRAWABLE.getIntrinsicWidth(),
-                    DEFAULT_DRAWABLE.getIntrinsicHeight());
-            DEFAULT_DRAWABLE.setBounds(rect);
+            DRAWABLE_LOADING = AppCtx.getInstance().getResources().getDrawable(R.drawable.ic_sync_white_24dp);
+            DRAWABLE_FAILED = AppCtx.getInstance().getResources().getDrawable(R.drawable.ic_sync_problem_white_24dp);
+            Preconditions.checkNotNull(DRAWABLE_LOADING);
+            Preconditions.checkNotNull(DRAWABLE_FAILED);
+
+            DRAWABLE_BOUNDS = new Rect(0, 0, DRAWABLE_FAILED.getIntrinsicWidth(),
+                    DRAWABLE_FAILED.getIntrinsicHeight());
+            DRAWABLE_LOADING.setBounds(DRAWABLE_BOUNDS);
+            DRAWABLE_FAILED.setBounds(DRAWABLE_BOUNDS);
 
             PAINT = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
-            PAINT.setColor(Color.GRAY);
+            PAINT.setColor(Color.LTGRAY);
         }
 
         @SuppressWarnings("deprecation")
         public NetworkDrawable() {
             super();
-            setBounds(DEFAULT_DRAWABLE.getBounds());
+            setBounds(DRAWABLE_BOUNDS);
+        }
+
+        public void setDrawable(Drawable drawable) {
+            if (drawable == null) {
+                isFailed = true;
+                return;
+            }
+            mDrawable = drawable;
+            setBounds(mDrawable.getBounds());
         }
 
         @Override
         public void draw(Canvas canvas) {
             if (mDrawable == null) {
                 canvas.drawRect(getBounds(), PAINT);
-                DEFAULT_DRAWABLE.draw(canvas);
+                if (isFailed) {
+                    DRAWABLE_FAILED.draw(canvas);
+                } else {
+                    DRAWABLE_LOADING.draw(canvas);
+                }
                 return;
             }
 
@@ -89,8 +111,7 @@ public class AsyncImageGetter implements Html.ImageGetter {
                                     GlideAnimation<? super Bitmap> glideAnimation) {
             final BitmapDrawable bitmapDrawable = new BitmapDrawable(null, bitmap);
             bitmapDrawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
-            mDrawable.mDrawable = bitmapDrawable;
-            mDrawable.setBounds(bitmapDrawable.getBounds());
+            mDrawable.setDrawable(bitmapDrawable);
 
             mTextView.setText(mTextView.getText());
         }
