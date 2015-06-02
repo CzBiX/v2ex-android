@@ -51,7 +51,9 @@ public class AsyncImageGetter implements Html.ImageGetter {
 
 
         static {
+            //noinspection deprecation
             DRAWABLE_LOADING = AppCtx.getInstance().getResources().getDrawable(R.drawable.ic_sync_white_24dp);
+            //noinspection deprecation
             DRAWABLE_FAILED = AppCtx.getInstance().getResources().getDrawable(R.drawable.ic_sync_problem_white_24dp);
             Preconditions.checkNotNull(DRAWABLE_LOADING);
             Preconditions.checkNotNull(DRAWABLE_FAILED);

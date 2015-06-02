@@ -2,6 +2,7 @@ package com.czbix.v2ex.util;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 
 import java.util.concurrent.Executor;
 
@@ -13,7 +14,7 @@ public class HandlerExecutor implements Executor {
     }
 
     @Override
-    public void execute(Runnable command) {
+    public void execute(@NonNull Runnable command) {
         mHandler.post(command);
     }
 }

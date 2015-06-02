@@ -7,7 +7,8 @@
               android:padding="16dp"
               android:theme="@style/ThemeOverlay.AppCompat.Dark"
               android:orientation="vertical"
-              android:gravity="bottom">
+              android:gravity="bottom"
+              tools:ignore="Overdraw">
     <ImageView
         android:id="@+id/avatar_img"
         android:layout_marginBottom="10dp"
