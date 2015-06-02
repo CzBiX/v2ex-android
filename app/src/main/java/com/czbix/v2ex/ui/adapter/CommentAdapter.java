@@ -131,7 +131,7 @@ public class CommentAdapter extends BaseAdapter {
 
             mUsername.setText(comment.getMember().getUsername());
             mReplyTime.setText(comment.getReplyTime());
-            mFloor.setText(Integer.toString(comment.getFloor()) + "L");
+            mFloor.setText(Integer.toString(comment.getFloor()));
 
             setAvatarImg(comment);
         }
