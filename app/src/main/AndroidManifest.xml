@@ -10,12 +10,14 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <meta-data android:name="com.czbix.v2ex.network.GlideConfig" android:value="GlideModule" />
+        <meta-data
+            android:name="com.czbix.v2ex.network.GlideConfig"
+            android:value="GlideModule" />
 
         <activity
-            android:theme="@style/AppTheme.Main"
             android:name=".ui.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.Main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,8 +38,7 @@
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name=".ui.TopicActivity" >
-        </activity>
+            android:name=".ui.TopicActivity"/>
     </application>
 
 </manifest>

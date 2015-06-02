@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -25,7 +26,6 @@ import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
-import com.czbix.v2ex.ui.fragment.TopicFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
 import com.czbix.v2ex.util.UserUtils;
 import com.google.common.base.Strings;
@@ -72,18 +72,10 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
         switch (item.getItemId()) {
             case R.id.drawer_all:
-                closeDrawer();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment, getTopicListFragment())
-                        .addToBackStack(null)
-                        .commit();
+                switchFragment(getTopicListFragment());
                 return true;
             case R.id.drawer_nodes:
-                closeDrawer();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment, getNodeListFragment())
-                        .addToBackStack(null)
-                        .commit();
+                switchFragment(getNodeListFragment());
                 return true;
         }
 
@@ -95,8 +87,14 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         menu.findItem(menuId).setChecked(true);
     }
 
-    private void closeDrawer() {
+    private void switchFragment(Fragment fragment) {
         mDrawerLayout.closeDrawer(mNav);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void updateUsername() {
@@ -219,11 +217,10 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
     @Override
     public void onTopicOpen(View view, Topic topic) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment, TopicFragment.newInstance(topic))
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
-                .commit();
+        final Intent intent = new Intent(this, TopicActivity.class);
+        intent.putExtra(TopicActivity.KEY_TOPIC, topic);
+
+        startActivity(intent);
     }
 
     @Override

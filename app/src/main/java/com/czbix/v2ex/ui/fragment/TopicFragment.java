@@ -21,7 +21,7 @@ import android.widget.ListView;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
-import com.czbix.v2ex.ui.MainActivity;
+import com.czbix.v2ex.ui.TopicActivity;
 import com.czbix.v2ex.ui.adapter.CommentAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.loader.TopicLoader;
@@ -99,7 +99,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        final MainActivity activity = (MainActivity) getActivity();
+        final TopicActivity activity = (TopicActivity) getActivity();
         activity.setTitle(null);
         final ActionBar actionBar = activity.getSupportActionBar();
         Preconditions.checkNotNull(actionBar);
