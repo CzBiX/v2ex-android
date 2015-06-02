@@ -1,10 +1,14 @@
 package com.czbix.v2ex.util;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.czbix.v2ex.parser.AsyncImageGetter;
@@ -36,5 +40,14 @@ public class ViewUtils {
     public static void setHtmlIntoTextView(TextView view, String html, @DimenRes int dimenRes) {
         final Spanned spanned = Html.fromHtml(html, new AsyncImageGetter(view, dimenRes), null);
         view.setText(spanned);
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static void setImageTintList(ImageView view, @ColorRes int colorId) {
+        if (!MiscUtils.HAS_L) {
+            return;
+        }
+
+        view.setImageTintList(view.getResources().getColorStateList(colorId));
     }
 }

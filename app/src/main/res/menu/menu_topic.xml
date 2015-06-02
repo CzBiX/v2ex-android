@@ -4,6 +4,10 @@
     <item android:id="@+id/action_refresh"
         android:title="@string/action_refresh"
         app:showAsAction="never"/>
+    <item android:id="@+id/action_reply"
+          android:title="@string/action_reply"
+          android:icon="@drawable/ic_insert_comment_white_24dp"
+          app:showAsAction="ifRoom"/>
     <item android:id="@+id/action_open"
           android:title="@string/action_open_link"
           app:showAsAction="never"/>

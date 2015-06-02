@@ -156,14 +156,31 @@ public class RequestHelper {
         }
     }
 
+    public static boolean reply(Topic topic, String content) throws ConnectionException, RemoteException {
+        LogUtils.v(TAG, "reply to topic: %s", topic.getTitle());
+
+        final String onceCode = getOnceCode();
+        final RequestBody requestBody = new FormEncodingBuilder().add("once", onceCode)
+                .add("content", content)
+                .build();
+
+        final Request request = new Request.Builder().url(topic.getUrl())
+                .post(requestBody).build();
+        final Response response = sendRequest(request, false);
+
+        // v2ex will redirect if reply success
+        return response.code() == 302;
+    }
+
     public static MyselfParser.MySelfInfo login(String account, String password) throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "login user: " + account);
 
         final String onceCode = getOnceCode();
+        final String nextUrl = "/settings";
         final RequestBody requestBody = new FormEncodingBuilder().add("once", onceCode)
                 .add("u", account)
                 .add("p", password)
-                .add("next", "/settings")
+                .add("next", nextUrl)
                 .build();
         Request request = new Request.Builder().url(URL_SIGN_IN)
                 .header(HttpHeaders.REFERER, URL_SIGN_IN)
@@ -176,7 +193,7 @@ public class RequestHelper {
         }
 
         final String location = response.header(HttpHeaders.LOCATION);
-        if (!location.equals("/settings")) {
+        if (!location.equals(nextUrl)) {
             return null;
         }
 
@@ -214,24 +231,6 @@ public class RequestHelper {
         }
     }
 
-    public static byte[] getImage(String url) throws ConnectionException, RemoteException {
-        if (BuildConfig.DEBUG) {
-            Log.v(TAG, "request image: " + url);
-        }
-
-        final Request request = new Request.Builder().url(url).build();
-        final Response response = sendRequest(request);
-
-        if (BuildConfig.DEBUG) {
-            Log.v(TAG, "response image from cache: " + (response.cacheResponse() != null));
-        }
-
-        try {
-            return response.body().bytes();
-        } catch (IOException e) {
-            throw new ConnectionException(e);
-        }
-    }
     private static Response sendRequest(Request request) throws ConnectionException, RemoteException {
         return sendRequest(request, true);
     }

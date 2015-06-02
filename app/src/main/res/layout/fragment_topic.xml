@@ -1,9 +1,23 @@
-<com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <ListView
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout
+        android:id="@+id/layout"
+        android:layout_above="@+id/reply_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/comments"/>
-</com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout>
+        android:layout_height="match_parent">
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/comments"/>
+    </com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout>
+
+    <ViewStub android:id="@+id/reply_form"
+              android:layout="@layout/view_reply"
+              android:inflatedId="@id/reply_form"
+              android:layout_alignParentBottom="true"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"/>
+</RelativeLayout>

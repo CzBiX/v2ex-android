@@ -12,4 +12,9 @@
     <string name="action_open_link">Open link</string>
     <string name="drawer_explore">Explore</string>
     <string name="title_fragment_nodes">Nodes</string>
+    <string name="action_reply">Reply</string>
+    <string name="desc_add_reply">Add a reply</string>
+    <string name="toast_sending">Sending…</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="toast_cancel_failed">Cancel failed!</string>
 </resources>

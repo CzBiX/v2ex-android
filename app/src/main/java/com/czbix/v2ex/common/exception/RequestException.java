@@ -1,5 +1,6 @@
 package com.czbix.v2ex.common.exception;
 
+import com.google.common.net.HttpHeaders;
 import com.squareup.okhttp.Response;
 
 public class RequestException extends RuntimeException {
@@ -21,5 +22,16 @@ public class RequestException extends RuntimeException {
 
     public int getCode() {
         return mResponse.code();
+    }
+
+    @Override
+    public String getMessage() {
+        final StringBuilder sb = new StringBuilder(super.getMessage());
+        if (mResponse.isRedirect()) {
+            sb.append(", location: ");
+            sb.append(mResponse.header(HttpHeaders.LOCATION));
+        }
+
+        return sb.toString();
     }
 }
