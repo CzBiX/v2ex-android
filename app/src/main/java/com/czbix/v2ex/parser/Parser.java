@@ -1,5 +1,7 @@
 package com.czbix.v2ex.parser;
 
+import com.czbix.v2ex.BuildConfig;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -9,7 +11,12 @@ import java.io.IOException;
 
 public abstract class Parser {
     public static Document toDoc(String html) throws IOException, SAXException {
-        return Jsoup.parse(html);
+        final Document document = Jsoup.parse(html);
+        if (!BuildConfig.DEBUG) {
+            final Document.OutputSettings settings = document.outputSettings().prettyPrint(false);
+            document.outputSettings(settings);
+        }
+        return document;
     }
 
     public static String parseOnceCode(String html) throws IOException, SAXException {

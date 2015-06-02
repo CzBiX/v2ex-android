@@ -112,7 +112,11 @@ public class TopicParser extends Parser {
 
     private static void parseContent(Topic.Builder builder, Elements elements) {
         if (elements.size() == 0) return;
-        final Element ele = elements.get(0);
+        Element ele = elements.get(0);
+        if (ele.children().size() == 1 && ele.child(0).hasClass("markdown_body")) {
+            // remove markdown body div
+            ele = ele.child(0);
+        }
         builder.setContent(ele.html());
     }
 }

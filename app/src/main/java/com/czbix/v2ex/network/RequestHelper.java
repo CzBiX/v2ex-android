@@ -76,7 +76,7 @@ public class RequestHelper {
     }
 
     public static void clearCookies() {
-        mCookies.clearAll();
+        mCookies.removeAll();
     }
 
     public static List<Topic> getTopics(Page page) throws ConnectionException, RemoteException {
