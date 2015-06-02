@@ -11,4 +11,5 @@
     <string name="toast_copied">Copied to clipboard</string>
     <string name="action_open_link">Open link</string>
     <string name="drawer_all">All</string>
+    <string name="title_fragment_nodes">Nodes</string>
 </resources>

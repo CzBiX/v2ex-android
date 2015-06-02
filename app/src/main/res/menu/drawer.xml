@@ -6,5 +6,7 @@
             android:checked="true"
             android:title="@string/drawer_all"
             />
+        <item android:id="@+id/drawer_nodes"
+              android:title="@string/title_fragment_nodes"/>
     </group>
 </menu>

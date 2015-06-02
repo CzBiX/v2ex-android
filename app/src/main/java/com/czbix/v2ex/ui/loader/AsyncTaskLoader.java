@@ -38,6 +38,8 @@ public abstract class AsyncTaskLoader<T> extends android.support.v4.content.Asyn
     protected void onReset() {
         super.onReset();
 
+        stopLoading();
+
         mResult = null;
     }
 }

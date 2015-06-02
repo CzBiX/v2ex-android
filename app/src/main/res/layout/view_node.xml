@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:tools="http://schemas.android.com/tools"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    style="@style/AppTheme.CardView">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textSize="16sp"
+            android:text="Title"
+            tools:ignore="HardcodedText"/>
+        <TextView
+            android:id="@+id/alertTitle"
+            android:text="Alter"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textSize="14sp"
+            android:layout_below="@id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            tools:ignore="HardcodedText"/>
+        <ImageView
+            android:layout_width="@dimen/node_avatar_size"
+            android:layout_height="@dimen/node_avatar_size"
+            android:contentDescription="@string/desc_avatar"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/avatar_img"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

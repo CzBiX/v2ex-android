@@ -2,6 +2,7 @@ package com.czbix.v2ex.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
@@ -20,8 +21,10 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Avatar;
+import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.TopicFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
 import com.czbix.v2ex.util.UserUtils;
@@ -29,7 +32,8 @@ import com.google.common.base.Strings;
 import com.google.common.eventbus.Subscribe;
 
 
-public class MainActivity extends AppCompatActivity implements TopicListFragment.TopicListActionListener {
+public class MainActivity extends AppCompatActivity implements TopicListFragment.TopicListActionListener,
+        NavigationView.OnNavigationItemSelectedListener, NodeListFragment.OnNodeActionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private boolean mRegisteredEventBus;
     private TextView mUsername;
@@ -37,6 +41,8 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     private DrawerLayout mDrawerLayout;
     private NavigationView mNav;
     private ImageView mAvatar;
+    private TopicListFragment mTopicListFragment;
+    private NodeListFragment mNodeListFragment;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +56,47 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
         initToolbar();
         updateUsername();
+        initNavDrawer();
         if (savedInstanceState == null) {
             addFragmentToView();
         }
+    }
+
+    private void initNavDrawer() {
+        mNav.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        if (item.isChecked()) return false;
+
+        switch (item.getItemId()) {
+            case R.id.drawer_all:
+                closeDrawer();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment, getTopicListFragment())
+                        .addToBackStack(null)
+                        .commit();
+                return true;
+            case R.id.drawer_nodes:
+                closeDrawer();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment, getNodeListFragment())
+                        .addToBackStack(null)
+                        .commit();
+                return true;
+        }
+
+        return false;
+    }
+
+    public void setNavSelected(@IdRes int menuId) {
+        final Menu menu = mNav.getMenu();
+        menu.findItem(menuId).setChecked(true);
+    }
+
+    private void closeDrawer() {
+        mDrawerLayout.closeDrawer(mNav);
     }
 
     private void updateUsername() {
@@ -81,10 +125,25 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
     private void addFragmentToView() {
         final FragmentManager fragmentManager = getSupportFragmentManager();
-        final TopicListFragment fragment = TopicListFragment.newInstance(Tab.TAB_ALL);
         fragmentManager.beginTransaction()
-                .replace(R.id.fragment, fragment)
+                .replace(R.id.fragment, getTopicListFragment())
                 .commit();
+    }
+
+    private TopicListFragment getTopicListFragment() {
+        if (mTopicListFragment == null) {
+            mTopicListFragment = TopicListFragment.newInstance(Tab.TAB_ALL);
+        }
+
+        return mTopicListFragment;
+    }
+
+    private NodeListFragment getNodeListFragment() {
+        if (mNodeListFragment == null) {
+            mNodeListFragment = NodeListFragment.newInstance();
+        }
+
+        return mNodeListFragment;
     }
 
     @Override
@@ -162,6 +221,15 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     public void onTopicOpen(View view, Topic topic) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment, TopicFragment.newInstance(topic))
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onNodeClick(Node node) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment, TopicListFragment.newInstance(node))
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit();
