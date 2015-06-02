@@ -193,6 +193,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onReply(final CharSequence content) {
+        mLayout.setRefreshing(true);
         final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
             @Override
             public void run() {
@@ -229,11 +230,11 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private void onCancelReply(Future<?> future, CharSequence content) {
         if (future.cancel(false)) {
+            mLayout.setRefreshing(false);
             mReplyForm.setContent(content);
             return;
         }
 
-        Snackbar.make(mLayout, R.string.toast_cancel_failed, Snackbar.LENGTH_LONG)
-                .show();
+        Snackbar.make(mLayout, R.string.toast_cancel_failed, Snackbar.LENGTH_LONG).show();
     }
 }

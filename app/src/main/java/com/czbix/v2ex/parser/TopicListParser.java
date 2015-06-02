@@ -1,7 +1,6 @@
 package com.czbix.v2ex.parser;
 
 import com.czbix.v2ex.common.exception.FatalException;
-import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Node;
@@ -103,10 +102,11 @@ public class TopicListParser extends Parser {
         if (node == null) {
             hasNode = false;
             final Elements nodeEle = ele.select("> a");
+            final String title = nodeEle.text();
             final String url = nodeEle.attr("href");
             final String name = Node.getNameFromUrl(url);
 
-            node = NodeDao.get(name);
+            node = new Node.Builder().setTitle(title).setName(name).createNode();
         } else {
             hasNode = true;
         }
