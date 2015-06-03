@@ -9,10 +9,14 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +28,7 @@ import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,9 +42,13 @@ import java.util.List;
  * Use the {@link NodeListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NodeListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Node>> {
+public class NodeListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Node>>, SearchView.OnQueryTextListener {
+    private static final String KEY_QUERY = "query";
+
     private OnNodeActionListener mListener;
     private NodeAdapter mAdapter;
+    private SearchView mSearchView;
+    private CharSequence mQueryText;
 
     public static NodeListFragment newInstance() {
         return new NodeListFragment();
@@ -52,6 +61,34 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_nodes, menu);
+
+        mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        mSearchView.setSubmitButtonEnabled(false);
+        mSearchView.setOnQueryTextListener(this);
+        if (mQueryText != null) {
+            mSearchView.setIconified(false);
+            mSearchView.setQuery(mQueryText, false);
+        }
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            mQueryText = savedInstanceState.getCharSequence(KEY_QUERY);
+        } else {
+            mQueryText = null;
+        }
     }
 
     @Override
@@ -97,6 +134,18 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        final CharSequence query = mSearchView.getQuery();
+        if (TextUtils.isEmpty(query)) {
+            return;
+        }
+
+        outState.putCharSequence(KEY_QUERY, query);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -117,6 +166,17 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
         mAdapter.setDataSource(null);
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        mAdapter.filterText(newText);
+        return true;
+    }
+
     public interface OnNodeActionListener {
         void onNodeClick(Node node);
     }
@@ -124,6 +184,7 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
     private static class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.ViewHolder> {
         private final OnNodeActionListener mListener;
         private List<Node> mData;
+        private List<Node> mAllData;
 
         public NodeAdapter(OnNodeActionListener listener) {
             mListener = listener;
@@ -133,6 +194,26 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
 
         public void setDataSource(List<Node> data) {
             mData = data;
+            mAllData = mData;
+            notifyDataSetChanged();
+        }
+
+        public void filterText(String query) {
+            if (Strings.isNullOrEmpty(query)) {
+                mData = mAllData;
+                notifyDataSetChanged();
+                return;
+            }
+
+            List<Node> result = Lists.newArrayList();
+            for (Node node : mAllData) {
+                if (node.getName().contains(query) ||
+                        node.getTitle().contains(query) ||
+                        (node.getTitleAlternative() != null && node.getTitleAlternative().contains(query)))
+                    result.add(node);
+            }
+
+            mData = result;
             notifyDataSetChanged();
         }
 
