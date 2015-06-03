@@ -2,7 +2,10 @@ package com.czbix.v2ex.ui.adapter;
 
 import android.content.Context;
 import android.text.method.LinkMovementMethod;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -20,11 +23,13 @@ import java.util.List;
 public class CommentAdapter extends BaseAdapter {
     private final LayoutInflater mInflater;
     private final View mHeaderView;
+    private final OnCommentActionListener mListener;
     private List<Comment> mCommentList;
 
-    public CommentAdapter(Context context, View headerView) {
+    public CommentAdapter(Context context, View headerView, OnCommentActionListener listener) {
         mInflater = LayoutInflater.from(context);
         mHeaderView = headerView;
+        mListener = listener;
     }
 
     public void setDataSource(List<Comment> comments) {
@@ -81,7 +86,7 @@ public class CommentAdapter extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.view_comment, parent , false);
-            viewHolder = new ViewHolder(convertView);
+            viewHolder = new ViewHolder(convertView, mListener);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = ((ViewHolder) convertView.getTag());
@@ -94,31 +99,35 @@ public class CommentAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private static class ViewHolder {
+    private static class ViewHolder implements View.OnCreateContextMenuListener, View.OnClickListener, MenuItem.OnMenuItemClickListener {
         private final TextView mContent;
         private final ImageView mAvatar;
         private final TextView mUsername;
         private final TextView mReplyTime;
         private final TextView mFloor;
         private final TextView mThanks;
+        private final OnCommentActionListener mListener;
+        private Comment mComment;
 
-        private volatile int mId;
-
-        public ViewHolder(View view) {
+        public ViewHolder(View view, OnCommentActionListener listener) {
             mAvatar = ((ImageView) view.findViewById(R.id.avatar_img));
             mContent = (TextView) view.findViewById(R.id.content);
             mUsername = (TextView) view.findViewById(R.id.username_tv);
             mReplyTime = ((TextView) view.findViewById(R.id.time_tv));
             mFloor = ((TextView) view.findViewById(R.id.floor));
             mThanks = ((TextView) view.findViewById(R.id.thanks));
+
+            mListener = listener;
+            view.setOnClickListener(this);
+            mContent.setOnClickListener(this);
+            view.setOnCreateContextMenuListener(this);
         }
 
         public void fillData(Comment comment) {
-            if (mId == comment.getId()) {
+            if (mComment != null && mComment.getId() == comment.getId()) {
                 return;
             }
-
-            mId = comment.getId();
+            mComment = comment;
 
             ViewUtils.setHtmlIntoTextView(mContent, comment.getContent(),
                     R.dimen.comment_picture_max_width);
@@ -149,5 +158,47 @@ public class CommentAdapter extends BaseAdapter {
                     .placeholder(R.drawable.avatar_default).crossFade()
                     .into(mAvatar);
         }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            final MenuInflater inflater = new MenuInflater(mContent.getContext());
+            inflater.inflate(R.menu.menu_comment, menu);
+            for (int i = 0; i < menu.size(); i++) {
+                menu.getItem(i).setOnMenuItemClickListener(this);
+            }
+
+            menu.setHeaderTitle(R.string.menu_title_comment);
+        }
+
+        @Override
+        public void onClick(View v) {
+            v.showContextMenu();
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_thanks:
+                    mListener.onCommentThanks(mComment);
+                    return true;
+                case R.id.action_reply:
+                    mListener.onCommentReply(mComment);
+                    return true;
+                case R.id.action_ignore:
+                    mListener.onCommentIgnore(mComment);
+                    return true;
+                case R.id.action_copy:
+                    mListener.onCommentCopy(mComment);
+                    return true;
+            }
+            return false;
+        }
+    }
+
+    public interface OnCommentActionListener {
+        void onCommentThanks(Comment comment);
+        void onCommentReply(Comment comment);
+        void onCommentIgnore(Comment comment);
+        void onCommentCopy(Comment comment);
     }
 }

@@ -70,4 +70,12 @@ public class ReplyFormHelper implements TextWatcher, View.OnClickListener {
         }
         setVisibility(true);
     }
+
+    public Editable getContent() {
+        return mContent.getText();
+    }
+
+    public void requestFocus() {
+        mContent.requestFocus();
+    }
 }

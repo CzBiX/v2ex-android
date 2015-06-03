@@ -9,6 +9,7 @@ import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.eventbus.BusEvent;
+import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.network.Etag;
 import com.czbix.v2ex.network.RequestHelper;
@@ -62,7 +63,7 @@ public class AppCtx extends Application {
     }
 
     @Subscribe
-    public void onLoginEvent(BusEvent.LoginEvent e) {
+    public void onLoginEvent(LoginEvent e) {
         mUsername = e.mUsername;
     }
 

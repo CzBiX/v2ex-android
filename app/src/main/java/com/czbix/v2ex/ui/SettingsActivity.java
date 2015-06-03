@@ -11,7 +11,7 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.dao.ConfigDao;
-import com.czbix.v2ex.eventbus.BusEvent;
+import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Strings;
 
@@ -66,7 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
                     public boolean onPreferenceClick(Preference preference) {
                         RequestHelper.clearCookies();
                         ConfigDao.remove(ConfigDao.KEY_USERNAME);
-                        AppCtx.getEventBus().post(new BusEvent.LoginEvent());
+                        AppCtx.getEventBus().post(new LoginEvent());
                         getActivity().recreate();
                         return true;
                     }

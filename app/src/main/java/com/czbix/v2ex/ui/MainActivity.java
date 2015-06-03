@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
-import com.czbix.v2ex.eventbus.BusEvent;
+import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Tab;
@@ -165,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     @Subscribe
-    public void onLoginEvent(BusEvent.LoginEvent e) {
+    public void onLoginEvent(LoginEvent e) {
         invalidateOptionsMenu();
         updateUsername();
     }

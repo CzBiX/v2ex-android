@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -24,6 +25,8 @@ import android.widget.ListView;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.eventbus.CommentEvent;
+import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.network.RequestHelper;
@@ -37,6 +40,7 @@ import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.UiUtils;
 import com.google.common.base.Preconditions;
+import com.google.common.eventbus.Subscribe;
 
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
@@ -49,7 +53,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         LoaderManager.LoaderCallbacks<TopicWithComments>,
-        ReplyFormHelper.OnReplyListener {
+        ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener {
     private static final String TAG = TopicFragment.class.getSimpleName();
     private static final String ARG_TOPIC = "topic";
 
@@ -105,7 +109,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mTopicHolder = new TopicAdapter.ViewHolder(mTopicView);
         mTopicHolder.fillData(mTopic);
 
-        mCommentAdapter = new CommentAdapter(getActivity(), mTopicView);
+        mCommentAdapter = new CommentAdapter(getActivity(), mTopicView, this);
         mCommentsView.setAdapter(mCommentAdapter);
 
         return rootView;
@@ -117,6 +121,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         final TopicActivity activity = (TopicActivity) getActivity();
         activity.setTitle(null);
+
         final ActionBar actionBar = activity.getSupportActionBar();
         Preconditions.checkNotNull(actionBar);
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -149,7 +154,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_copy_link:
-                UiUtils.setClipboard(getActivity(), mTopic.getUrl());
+                UiUtils.setClipboard(getActivity(), getString(R.string.desc_topic_link),
+                        mTopic.getUrl());
                 return true;
             case R.id.action_open:
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mTopic.getUrl())));
@@ -199,6 +205,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onReply(final CharSequence content) {
         mLayout.setRefreshing(true);
+        AppCtx.getEventBus().register(this);
         final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
             @Override
             public void run() {
@@ -209,7 +216,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     return;
                 }
 
-                onReplyFinish();
+                AppCtx.getEventBus().post(new CommentEvent());
             }
         }, 3, TimeUnit.SECONDS);
         mReplyForm.setVisibility(false);
@@ -223,17 +230,15 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 }).show();
     }
 
-    private void onReplyFinish() {
-        mCommentsView.post(new Runnable() {
-            @Override
-            public void run() {
-                mReplyForm.setContent(null);
-                onRefresh();
-            }
-        });
+    @Subscribe
+    private void onReplyFinish(CommentEvent e) {
+        AppCtx.getEventBus().unregister(this);
+        mReplyForm.setContent(null);
+        onRefresh();
     }
 
     private void onCancelReply(Future<?> future, CharSequence content) {
+        AppCtx.getEventBus().unregister(this);
         if (future.cancel(false)) {
             mLayout.setRefreshing(false);
             mReplyForm.setContent(content);
@@ -241,5 +246,33 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         }
 
         Snackbar.make(mLayout, R.string.toast_cancel_failed, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onCommentIgnore(Comment comment) {
+
+    }
+
+    @Override
+    public void onCommentThanks(Comment comment) {
+
+    }
+
+    @Override
+    public void onCommentReply(Comment comment) {
+        if (mReplyForm == null) {
+            toggleReplyForm();
+        } else {
+            mReplyForm.setVisibility(true);
+        }
+
+        mReplyForm.getContent().append("@").append(comment.getMember().getUsername()).append(" ");
+        mReplyForm.requestFocus();
+    }
+
+    @Override
+    public void onCommentCopy(Comment comment) {
+        final FragmentActivity context = getActivity();
+        UiUtils.setClipboard(context, null, comment.getContent());
     }
 }
