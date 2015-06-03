@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,7 +26,6 @@ import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.loader.TopicListLoader;
 import com.czbix.v2ex.util.LogUtils;
-import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
 
 import java.util.List;
@@ -110,10 +108,6 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
         final MainActivity activity = (MainActivity) getActivity();
         activity.setTitle(mPage.getTitle());
         activity.setNavSelected(R.id.drawer_explore);
-
-        ActionBar actionBar = activity.getSupportActionBar();
-        Preconditions.checkNotNull(actionBar);
-        actionBar.setDisplayHomeAsUpEnabled(false);
 
         AppCtx.getEventBus().register(this);
         mRegisteredEventBus = true;

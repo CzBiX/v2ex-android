@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -36,7 +37,6 @@ import com.google.common.eventbus.Subscribe;
 public class MainActivity extends AppCompatActivity implements TopicListFragment.TopicListActionListener,
         NavigationView.OnNavigationItemSelectedListener, NodeListFragment.OnNodeActionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private static final String KEY_FRAGMENT = "fragment";
     private static final String PREF_DRAWER_SHOWED = "drawer_showed";
 
     private TextView mUsername;
@@ -45,6 +45,8 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     private NavigationView mNav;
     private ImageView mAvatar;
     private SharedPreferences mPreferences;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private Toolbar mToolbar;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +82,17 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
             mDrawerLayout.openDrawer(mNav);
             mPreferences.edit().putBoolean(PREF_DRAWER_SHOWED, true).apply();
         }
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
+                R.string.desc_open_drawer, R.string.desc_close_drawer);
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        mDrawerToggle.syncState();
     }
 
     @Override
@@ -128,12 +141,12 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     private void initToolbar() {
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar == null) {
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (mToolbar == null) {
             return;
         }
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
     }
 
     private void addFragmentToView(Fragment fragment) {
@@ -190,9 +203,6 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         int id = item.getItemId();
 
         switch (id) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
             case R.id.action_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;

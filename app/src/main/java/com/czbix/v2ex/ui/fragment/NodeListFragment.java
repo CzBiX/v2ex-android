@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -26,7 +25,6 @@ import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -110,10 +108,6 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
         final MainActivity activity = (MainActivity) getActivity();
         activity.setNavSelected(R.id.drawer_nodes);
         activity.setTitle(R.string.title_fragment_nodes);
-
-        final ActionBar actionBar = activity.getSupportActionBar();
-        Preconditions.checkNotNull(actionBar);
-        actionBar.setDisplayHomeAsUpEnabled(false);
 
         getLoaderManager().initLoader(0, null, this);
     }
