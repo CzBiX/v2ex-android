@@ -24,4 +24,5 @@
     <string name="menu_action_reply">Reply to comment</string>
     <string name="menu_action_ignore">Ignore this comment</string>
     <string name="menu_action_copy">Copy comment text</string>
+    <string name="user_anonymous">Anonymous</string>
 </resources>

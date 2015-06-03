@@ -109,12 +109,11 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     private void updateUsername() {
         if (Strings.isNullOrEmpty(AppCtx.getInstance().getUsername())) {
             mAvatar.setVisibility(View.INVISIBLE);
-            mUsername.setVisibility(View.INVISIBLE);
+            mUsername.setText(R.string.user_anonymous);
             return;
         }
 
         mAvatar.setVisibility(View.VISIBLE);
-        mUsername.setVisibility(View.VISIBLE);
         final Avatar avatar = UserUtils.getAvatar();
         Glide.with(this).load(avatar.getUrlByDp(getResources().getDimension(R.dimen.nav_avatar_size)))
                 .crossFade().into(mAvatar);
