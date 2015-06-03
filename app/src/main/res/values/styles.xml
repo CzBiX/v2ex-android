@@ -40,7 +40,7 @@
     </style>
 
     <style name="AppTheme.CardView.Node" parent="AppTheme.CardView.TextView">
-        <item name="android:textColor">#4caf50</item>
+        <item name="android:textColor">@color/highlight_green</item>
     </style>
 
     <style name="AppTheme.CardView.Content" parent="AppTheme.CardView.TextView">

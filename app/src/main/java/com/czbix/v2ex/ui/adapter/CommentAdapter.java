@@ -1,7 +1,9 @@
 package com.czbix.v2ex.ui.adapter;
 
 import android.content.Context;
+import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ForegroundColorSpan;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -143,13 +145,23 @@ public class CommentAdapter extends BaseAdapter {
         }
 
         private void appendThanks(Comment comment) {
-            if (comment.getThanks() > 0) {
-                final String text = "+" + Integer.toString(comment.getThanks());
-                mThanks.setText(text);
-                mThanks.setVisibility(View.VISIBLE);
-            } else {
+            if (comment.getThanks() <= 0) {
                 mThanks.setVisibility(View.INVISIBLE);
+                return;
             }
+
+            final String text = "+" + Integer.toString(comment.getThanks());
+            if (comment.isThanked()) {
+                final ForegroundColorSpan span = new ForegroundColorSpan(
+                        mThanks.getContext().getResources().getColor(R.color.highlight_green));
+                final SpannableString string = new SpannableString(text);
+                string.setSpan(span, 0, text.length(), 0);
+
+                mThanks.setText(string);
+            } else {
+                mThanks.setText(text);
+            }
+            mThanks.setVisibility(View.VISIBLE);
         }
 
         public void setAvatarImg(Comment comment) {
