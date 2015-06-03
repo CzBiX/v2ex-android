@@ -36,6 +36,7 @@ import com.google.common.eventbus.Subscribe;
 public class MainActivity extends AppCompatActivity implements TopicListFragment.TopicListActionListener,
         NavigationView.OnNavigationItemSelectedListener, NodeListFragment.OnNodeActionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String KEY_FRAGMENT = "fragment";
     private static final String PREF_DRAWER_SHOWED = "drawer_showed";
 
     private boolean mRegisteredEventBus;
@@ -44,8 +45,6 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     private DrawerLayout mDrawerLayout;
     private NavigationView mNav;
     private ImageView mAvatar;
-    private TopicListFragment mTopicListFragment;
-    private NodeListFragment mNodeListFragment;
     private SharedPreferences mPreferences;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +61,9 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         initToolbar();
         updateUsername();
         initNavDrawer();
+
         if (savedInstanceState == null) {
-            addFragmentToView();
+            addFragmentToView(TopicListFragment.newInstance(Tab.TAB_ALL));
         }
     }
 
@@ -81,10 +81,10 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
         switch (item.getItemId()) {
             case R.id.drawer_explore:
-                switchFragment(getTopicListFragment());
+                switchFragment(TopicListFragment.newInstance(Tab.TAB_ALL));
                 return true;
             case R.id.drawer_nodes:
-                switchFragment(getNodeListFragment());
+                switchFragment(NodeListFragment.newInstance());
                 return true;
         }
 
@@ -130,27 +130,11 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         setSupportActionBar(toolbar);
     }
 
-    private void addFragmentToView() {
+    private void addFragmentToView(Fragment fragment) {
         final FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.fragment, getTopicListFragment())
+                .replace(R.id.fragment, fragment)
                 .commit();
-    }
-
-    private TopicListFragment getTopicListFragment() {
-        if (mTopicListFragment == null) {
-            mTopicListFragment = TopicListFragment.newInstance(Tab.TAB_ALL);
-        }
-
-        return mTopicListFragment;
-    }
-
-    private NodeListFragment getNodeListFragment() {
-        if (mNodeListFragment == null) {
-            mNodeListFragment = NodeListFragment.newInstance();
-        }
-
-        return mNodeListFragment;
     }
 
     @Override
@@ -234,8 +218,10 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
     @Override
     public void onNodeClick(Node node) {
+        final TopicListFragment topicListFragment = TopicListFragment.newInstance(node);
+
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment, TopicListFragment.newInstance(node))
+                .replace(R.id.fragment, topicListFragment)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit();

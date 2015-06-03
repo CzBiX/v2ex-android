@@ -43,11 +43,8 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class NodeListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Node>>, SearchView.OnQueryTextListener {
-    private static final String KEY_QUERY = "query";
-
     private OnNodeActionListener mListener;
     private NodeAdapter mAdapter;
-    private SearchView mSearchView;
     private CharSequence mQueryText;
 
     public static NodeListFragment newInstance() {
@@ -69,26 +66,15 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_nodes, menu);
 
-        mSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        mSearchView.setSubmitButtonEnabled(false);
-        mSearchView.setOnQueryTextListener(this);
+        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSubmitButtonEnabled(false);
+        searchView.setOnQueryTextListener(this);
         if (mQueryText != null) {
-            mSearchView.setIconified(false);
-            mSearchView.setQuery(mQueryText, false);
+            searchView.setIconified(false);
+            searchView.setQuery(mQueryText, false);
         }
 
         super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            mQueryText = savedInstanceState.getCharSequence(KEY_QUERY);
-        } else {
-            mQueryText = null;
-        }
     }
 
     @Override
@@ -134,18 +120,6 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        final CharSequence query = mSearchView.getQuery();
-        if (TextUtils.isEmpty(query)) {
-            return;
-        }
-
-        outState.putCharSequence(KEY_QUERY, query);
-    }
-
-    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -159,6 +133,7 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoadFinished(Loader<List<Node>> loader, List<Node> data) {
         mAdapter.setDataSource(data);
+        mAdapter.filterText(mQueryText);
     }
 
     @Override
@@ -174,6 +149,7 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public boolean onQueryTextChange(String newText) {
         mAdapter.filterText(newText);
+        mQueryText = newText;
         return true;
     }
 
@@ -198,8 +174,8 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
             notifyDataSetChanged();
         }
 
-        public void filterText(String query) {
-            if (Strings.isNullOrEmpty(query)) {
+        public void filterText(CharSequence query) {
+            if (TextUtils.isEmpty(query)) {
                 mData = mAllData;
                 notifyDataSetChanged();
                 return;
