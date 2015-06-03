@@ -31,7 +31,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -272,12 +271,7 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
         @Override
         public List<Node> loadInBackground() {
             final List<Node> list = NodeDao.getAll();
-            Collections.sort(list, new Comparator<Node>() {
-                @Override
-                public int compare(Node lhs, Node rhs) {
-                    return lhs.getName().compareTo(rhs.getName());
-                }
-            });
+            Collections.sort(list);
 
             return list;
         }

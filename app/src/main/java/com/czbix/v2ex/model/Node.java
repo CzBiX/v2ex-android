@@ -1,6 +1,7 @@
 package com.czbix.v2ex.model;
 
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.czbix.v2ex.common.exception.FatalException;
@@ -8,11 +9,14 @@ import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Objects;
 
+import java.text.Collator;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Node extends Page {
+public class Node extends Page implements Comparable<Node> {
     private static final Pattern PATTERN = Pattern.compile("/go/(.+?)(?:\\W|$)");
+    private static final Collator COLLATOR = Collator.getInstance(Locale.CHINA);
 
     private int mId;
     private String mName;
@@ -102,6 +106,11 @@ public class Node extends Page {
             return new Node[size];
         }
     };
+
+    @Override
+    public int compareTo(@NonNull Node another) {
+        return COLLATOR.compare(getTitle(), another.getTitle());
+    }
 
     public static class Builder {
         private int mId;
