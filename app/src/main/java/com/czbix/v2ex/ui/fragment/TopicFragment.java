@@ -231,7 +231,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 .setAction(R.string.action_cancel, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        cancelReplyRequest(future, content);
+                        if (cancelRequest(future)) {
+                            mReplyForm.setContent(content);
+                        }
                     }
                 }).show();
 
@@ -239,27 +241,12 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Subscribe
-    public void onReplyFinish(CommentEvent e) {
+    public void onCommentRequestFinish(CommentEvent e) {
         AppCtx.getEventBus().unregister(this);
         if (e.mIsReply) {
             mReplyForm.setContent(null);
         }
         onRefresh();
-    }
-
-    private void cancelReplyRequest(Future<?> future, CharSequence content) {
-        if (future.cancel(false)) {
-            AppCtx.getEventBus().unregister(this);
-            mLayout.setRefreshing(false);
-            mReplyForm.setContent(content);
-            return;
-        }
-
-        showCancelFailed();
-    }
-
-    private void showCancelFailed() {
-        Snackbar.make(mLayout, R.string.toast_cancel_failed, Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -279,29 +266,49 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             }
         }, 3, TimeUnit.SECONDS);
 
+        showSendingMsg(future);
+    }
+
+    private void showSendingMsg(final ScheduledFuture<?> future) {
         mLayout.setRefreshing(true);
         Snackbar.make(mLayout, R.string.toast_sending, Snackbar.LENGTH_LONG)
                 .setAction(R.string.action_cancel, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        cancelIgnoreRequest(future);
+                        cancelRequest(future);
                     }
                 }).show();
     }
 
-    private void cancelIgnoreRequest(Future<?> future) {
+    private boolean cancelRequest(Future<?> future) {
         if (future.cancel(false)) {
             AppCtx.getEventBus().unregister(this);
             mLayout.setRefreshing(false);
-            return;
+            return true;
         }
 
-        showCancelFailed();
+        Snackbar.make(mLayout, R.string.toast_cancel_failed, Snackbar.LENGTH_LONG).show();
+        return false;
     }
 
     @Override
-    public void onCommentThanks(Comment comment) {
-        // TODO
+    public void onCommentThank(final Comment comment) {
+        AppCtx.getEventBus().register(this);
+        final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    RequestHelper.thank(comment, mCsrfToken);
+                } catch (ConnectionException | RemoteException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                AppCtx.getEventBus().post(new CommentEvent());
+            }
+        }, 3, TimeUnit.SECONDS);
+
+        showSendingMsg(future);
     }
 
     @Override

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.util.ViewUtils;
@@ -172,14 +173,17 @@ public class CommentAdapter extends BaseAdapter {
 
         @Override
         public void onClick(View v) {
+            if (mComment.getMember().getUsername().equals(AppCtx.getInstance().getUsername())) {
+                return;
+            }
             v.showContextMenu();
         }
 
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.action_thanks:
-                    mListener.onCommentThanks(mComment);
+                case R.id.action_thank:
+                    mListener.onCommentThank(mComment);
                     return true;
                 case R.id.action_reply:
                     mListener.onCommentReply(mComment);
@@ -196,7 +200,7 @@ public class CommentAdapter extends BaseAdapter {
     }
 
     public interface OnCommentActionListener {
-        void onCommentThanks(Comment comment);
+        void onCommentThank(Comment comment);
         void onCommentReply(Comment comment);
         void onCommentIgnore(Comment comment);
         void onCommentCopy(Comment comment);

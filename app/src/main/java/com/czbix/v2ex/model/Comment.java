@@ -50,6 +50,10 @@ public class Comment implements Parcelable {
         return String.format("%s/ignore/reply/%d", RequestHelper.BASE_URL, mId);
     }
 
+    public String getThankUrl() {
+        return String.format("%s/thank/reply/%d", RequestHelper.BASE_URL, mId);
+    }
+
     @Override
     public int describeContents() {
         return 0;

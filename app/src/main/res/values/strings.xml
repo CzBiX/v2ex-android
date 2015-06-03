@@ -20,7 +20,7 @@
     <string name="action_search">Search</string>
     
     <string name="menu_title_comment">Comment options</string>
-    <string name="menu_action_thanks">+1 comment</string>
+    <string name="menu_action_thank">+1 comment</string>
     <string name="menu_action_reply">Reply to comment</string>
     <string name="menu_action_ignore">Ignore this comment</string>
     <string name="menu_action_copy">Copy comment text</string>

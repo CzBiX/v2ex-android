@@ -183,6 +183,13 @@ public class RequestHelper {
         sendRequest(request);
     }
 
+    public static void thank(Comment comment, String csrfToken) throws ConnectionException, RemoteException {
+        final Request request = new Request.Builder().url(comment.getThankUrl() + "?t=" + csrfToken)
+                .post(null).build();
+
+        sendRequest(request);
+    }
+
     public static MyselfParser.MySelfInfo login(String account, String password) throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "login user: " + account);
 
