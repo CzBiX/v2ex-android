@@ -52,7 +52,7 @@ public class AppCtx extends Application {
         return mUsername;
     }
 
-    public boolean isLogined() {
+    public boolean isLoggedIn() {
         return !Strings.isNullOrEmpty(mUsername);
     }
 

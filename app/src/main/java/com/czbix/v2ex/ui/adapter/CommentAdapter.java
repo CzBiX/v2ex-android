@@ -20,6 +20,7 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import java.util.List;
 
@@ -189,7 +190,8 @@ public class CommentAdapter extends BaseAdapter {
 
         @Override
         public void onClick(View v) {
-            if (mComment.getMember().getUsername().equals(AppCtx.getInstance().getUsername())) {
+            final String username = AppCtx.getInstance().getUsername();
+            if (Strings.isNullOrEmpty(username) || mComment.getMember().getUsername().equals(username)) {
                 return;
             }
             v.showContextMenu();

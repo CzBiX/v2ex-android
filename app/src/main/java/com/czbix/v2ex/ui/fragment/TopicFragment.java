@@ -145,7 +145,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_topic, menu);
 
-        if (!AppCtx.getInstance().isLogined()) {
+        if (!AppCtx.getInstance().isLoggedIn()) {
             menu.findItem(R.id.action_reply).setVisible(false);
         }
 

@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     private static final String KEY_FRAGMENT = "fragment";
     private static final String PREF_DRAWER_SHOWED = "drawer_showed";
 
-    private boolean mRegisteredEventBus;
     private TextView mUsername;
     private AppBarLayout mAppBar;
     private DrawerLayout mDrawerLayout;
@@ -58,13 +57,21 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         mDrawerLayout = (DrawerLayout) findViewById(R.id.layout);
         mNav = ((NavigationView) findViewById(R.id.nav));
 
+        AppCtx.getEventBus().register(this);
+
         initToolbar();
-        updateUsername();
         initNavDrawer();
 
         if (savedInstanceState == null) {
             addFragmentToView(TopicListFragment.newInstance(Tab.TAB_ALL));
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        updateUsername();
     }
 
     private void initNavDrawer() {
@@ -146,13 +153,11 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     private void enableLoginMenu(Menu menu) {
-        if (!Strings.isNullOrEmpty(AppCtx.getInstance().getUsername())) {
+        if (AppCtx.getInstance().isLoggedIn()) {
             return;
         }
 
         // not sign in yet
-        AppCtx.getEventBus().register(this);
-        mRegisteredEventBus = true;
         final MenuItem loginMenu = menu.add(R.string.action_sign_in);
         loginMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
@@ -166,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     @Subscribe
     public void onLoginEvent(LoginEvent e) {
         invalidateOptionsMenu();
+
         updateUsername();
     }
 
@@ -173,10 +179,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     protected void onDestroy() {
         super.onDestroy();
 
-        if (mRegisteredEventBus) {
-            AppCtx.getEventBus().unregister(this);
-            mRegisteredEventBus = false;
-        }
+        AppCtx.getEventBus().unregister(this);
     }
 
     @Override
