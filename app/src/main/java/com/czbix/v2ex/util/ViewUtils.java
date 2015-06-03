@@ -6,7 +6,9 @@ import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.text.Html;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,10 +38,17 @@ public class ViewUtils {
         return width;
     }
 
-    @SuppressWarnings("ConstantConditions")
     public static void setHtmlIntoTextView(TextView view, String html, @DimenRes int dimenRes) {
         final Spanned spanned = Html.fromHtml(html, new AsyncImageGetter(view, dimenRes), null);
-        view.setText(spanned);
+        final SpannableStringBuilder builder = (SpannableStringBuilder) spanned;
+        final int length = builder.length();
+        if (length > 32) {
+            final CharSequence subSequence = builder.subSequence(length - 2, length);
+            if (TextUtils.equals(subSequence, "\n\n")) {
+                builder.delete(length - 2, length);
+            }
+        }
+        view.setText(builder);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
