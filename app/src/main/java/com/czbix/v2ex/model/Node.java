@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.network.RequestHelper;
+import com.google.common.base.Objects;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,6 +50,23 @@ public class Node extends Page {
 
     public int getTopics() {
         return mTopics;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Node)) return false;
+        Node node = (Node) o;
+        return Objects.equal(mId, node.mId) &&
+                Objects.equal(mTopics, node.mTopics) &&
+                Objects.equal(mName, node.mName) &&
+                Objects.equal(mTitleAlternative, node.mTitleAlternative) &&
+                Objects.equal(mAvatar, node.mAvatar);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(mId, mName, mTitleAlternative, mTopics, mAvatar);
     }
 
     public static String buildUrlByName(String name) {

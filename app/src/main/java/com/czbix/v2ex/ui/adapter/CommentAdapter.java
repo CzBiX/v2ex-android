@@ -125,7 +125,7 @@ public class CommentAdapter extends BaseAdapter {
         }
 
         public void fillData(Comment comment) {
-            if (mComment != null && mComment.getId() == comment.getId()) {
+            if (comment.equals(mComment)) {
                 return;
             }
             mComment = comment;
@@ -165,7 +165,11 @@ public class CommentAdapter extends BaseAdapter {
             final MenuInflater inflater = new MenuInflater(mContent.getContext());
             inflater.inflate(R.menu.menu_comment, menu);
             for (int i = 0; i < menu.size(); i++) {
-                menu.getItem(i).setOnMenuItemClickListener(this);
+                final MenuItem item = menu.getItem(i);
+                item.setOnMenuItemClickListener(this);
+                if (item.getItemId() == R.id.action_thank) {
+                    item.setEnabled(!mComment.isThanked());
+                }
             }
 
             menu.setHeaderTitle(R.string.menu_title_comment);

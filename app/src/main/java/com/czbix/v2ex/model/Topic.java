@@ -4,6 +4,7 @@ import android.os.Parcel;
 
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.network.RequestHelper;
+import com.google.common.base.Objects;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -91,6 +92,23 @@ public class Topic extends Page {
                 .setNode(mNode)
                 .setReplyCount(mReplies)
                 .setReplyTime(mReplyTime);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Topic)) return false;
+        Topic topic = (Topic) o;
+        return Objects.equal(mId, topic.mId) &&
+                Objects.equal(mReplies, topic.mReplies) &&
+                Objects.equal(mContent, topic.mContent) &&
+                Objects.equal(mNode, topic.mNode) &&
+                Objects.equal(mReplyTime, topic.mReplyTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(mId, mContent, mReplies, mNode, mReplyTime);
     }
 
     public static final Creator<Topic> CREATOR = new Creator<Topic>() {

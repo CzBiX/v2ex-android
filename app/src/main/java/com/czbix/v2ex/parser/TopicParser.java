@@ -103,6 +103,9 @@ public class TopicParser extends Parser {
         final int id = Integer.parseInt(tableEle.id().substring(2));
         builder.setId(id);
 
+        final boolean thanked = ele.select(".thank_area").hasClass("thanked");
+        builder.setThanked(thanked);
+
         final String text = ele.select(".no").text();
         builder.setFloor(Integer.parseInt(text));
 

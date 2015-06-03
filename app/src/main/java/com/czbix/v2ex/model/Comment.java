@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.czbix.v2ex.network.RequestHelper;
+import com.google.common.base.Objects;
 
 public class Comment implements Parcelable {
     private final int mId;
@@ -12,14 +13,16 @@ public class Comment implements Parcelable {
     private final String mReplyTime;
     private final int mThanks;
     private final int mFloor;
+    private final boolean mThanked;
 
-    Comment(int id, String content, Member member, String replyTime, int thanks, int floor) {
+    Comment(int id, String content, Member member, String replyTime, int thanks, int floor, boolean thanked) {
         mId = id;
         mContent = content;
         mMember = member;
         mReplyTime = replyTime;
         mThanks = thanks;
         mFloor = floor;
+        mThanked = thanked;
     }
 
     public int getId() {
@@ -46,12 +49,32 @@ public class Comment implements Parcelable {
         return mFloor;
     }
 
+    public boolean isThanked() {
+        return mThanked;
+    }
+
     public String getIgnoreUrl() {
         return String.format("%s/ignore/reply/%d", RequestHelper.BASE_URL, mId);
     }
 
     public String getThankUrl() {
         return String.format("%s/thank/reply/%d", RequestHelper.BASE_URL, mId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Comment)) return false;
+        Comment comment = (Comment) o;
+        return Objects.equal(mId, comment.mId) &&
+                Objects.equal(mThanks, comment.mThanks) &&
+                Objects.equal(mContent, comment.mContent) &&
+                Objects.equal(mReplyTime, comment.mReplyTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(mId, mContent, mReplyTime, mThanks);
     }
 
     @Override
@@ -94,6 +117,7 @@ public class Comment implements Parcelable {
         private String mReplyTime;
         private int mThanks;
         private int mFloor;
+        private boolean mThanked;
 
         public Builder setId(int id) {
             mId = id;
@@ -125,8 +149,13 @@ public class Comment implements Parcelable {
             return this;
         }
 
+        public Builder setThanked(boolean thanked) {
+            mThanked = thanked;
+            return this;
+        }
+
         public Comment createComment() {
-            return new Comment(mId, mContent, mMember, mReplyTime, mThanks, mFloor);
+            return new Comment(mId, mContent, mMember, mReplyTime, mThanks, mFloor, mThanked);
         }
     }
 }
