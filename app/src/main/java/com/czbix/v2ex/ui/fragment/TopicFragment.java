@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.ListView;
 
+import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.model.Topic;
@@ -136,6 +137,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_topic, menu);
+
+        if (!AppCtx.getInstance().isLogined()) {
+            menu.findItem(R.id.action_reply).setVisible(false);
+        }
 
         super.onCreateOptionsMenu(menu, inflater);
     }

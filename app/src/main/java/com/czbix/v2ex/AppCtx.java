@@ -15,6 +15,7 @@ import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.HandlerExecutor;
 import com.czbix.v2ex.util.LogUtils;
+import com.google.common.base.Strings;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
@@ -48,6 +49,10 @@ public class AppCtx extends Application {
 
     public String getUsername() {
         return mUsername;
+    }
+
+    public boolean isLogined() {
+        return !Strings.isNullOrEmpty(mUsername);
     }
 
     @Subscribe
