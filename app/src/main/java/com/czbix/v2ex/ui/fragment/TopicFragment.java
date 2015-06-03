@@ -64,6 +64,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private CommentAdapter mCommentAdapter;
     private View mTopicView;
     private ReplyFormHelper mReplyForm;
+    private String mCsrfToken;
+    private String mOnceToken;
 
 
     /**
@@ -195,22 +197,79 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mTopicHolder.fillData(data.mTopic, true);
         mCommentAdapter.setDataSource(data.mComments);
         mLayout.setRefreshing(false);
+
+        mCsrfToken = data.mCsrfToken;
+        mOnceToken = data.mOnceToken;
     }
 
     @Override
     public void onLoaderReset(Loader<TopicWithComments> loader) {
         mCommentAdapter.setDataSource(null);
+        mCsrfToken = null;
+        mOnceToken = null;
     }
 
     @Override
     public void onReply(final CharSequence content) {
-        mLayout.setRefreshing(true);
         AppCtx.getEventBus().register(this);
         final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
             @Override
             public void run() {
                 try {
-                    RequestHelper.reply(mTopic, content.toString());
+                    RequestHelper.reply(mTopic, content.toString(), mOnceToken);
+                } catch (ConnectionException | RemoteException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                AppCtx.getEventBus().post(new CommentEvent(true));
+            }
+        }, 3, TimeUnit.SECONDS);
+
+        mLayout.setRefreshing(true);
+        Snackbar.make(mLayout, R.string.toast_sending, Snackbar.LENGTH_LONG)
+                .setAction(R.string.action_cancel, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        cancelReplyRequest(future, content);
+                    }
+                }).show();
+
+        mReplyForm.setVisibility(false);
+    }
+
+    @Subscribe
+    public void onReplyFinish(CommentEvent e) {
+        AppCtx.getEventBus().unregister(this);
+        if (e.mIsReply) {
+            mReplyForm.setContent(null);
+        }
+        onRefresh();
+    }
+
+    private void cancelReplyRequest(Future<?> future, CharSequence content) {
+        if (future.cancel(false)) {
+            AppCtx.getEventBus().unregister(this);
+            mLayout.setRefreshing(false);
+            mReplyForm.setContent(content);
+            return;
+        }
+
+        showCancelFailed();
+    }
+
+    private void showCancelFailed() {
+        Snackbar.make(mLayout, R.string.toast_cancel_failed, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onCommentIgnore(final Comment comment) {
+        AppCtx.getEventBus().register(this);
+        final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    RequestHelper.ignore(comment, mOnceToken);
                 } catch (ConnectionException | RemoteException e) {
                     e.printStackTrace();
                     return;
@@ -219,43 +278,30 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 AppCtx.getEventBus().post(new CommentEvent());
             }
         }, 3, TimeUnit.SECONDS);
-        mReplyForm.setVisibility(false);
 
+        mLayout.setRefreshing(true);
         Snackbar.make(mLayout, R.string.toast_sending, Snackbar.LENGTH_LONG)
                 .setAction(R.string.action_cancel, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onCancelReply(future, content);
+                        cancelIgnoreRequest(future);
                     }
                 }).show();
     }
 
-    @Subscribe
-    private void onReplyFinish(CommentEvent e) {
-        AppCtx.getEventBus().unregister(this);
-        mReplyForm.setContent(null);
-        onRefresh();
-    }
-
-    private void onCancelReply(Future<?> future, CharSequence content) {
-        AppCtx.getEventBus().unregister(this);
+    private void cancelIgnoreRequest(Future<?> future) {
         if (future.cancel(false)) {
+            AppCtx.getEventBus().unregister(this);
             mLayout.setRefreshing(false);
-            mReplyForm.setContent(content);
             return;
         }
 
-        Snackbar.make(mLayout, R.string.toast_cancel_failed, Snackbar.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onCommentIgnore(Comment comment) {
-
+        showCancelFailed();
     }
 
     @Override
     public void onCommentThanks(Comment comment) {
-
+        // TODO
     }
 
     @Override

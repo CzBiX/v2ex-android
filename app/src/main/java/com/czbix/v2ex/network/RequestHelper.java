@@ -8,6 +8,7 @@ import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RequestException;
+import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
@@ -21,6 +22,7 @@ import com.czbix.v2ex.parser.TopicParser;
 import com.czbix.v2ex.util.IoUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Cache;
@@ -156,11 +158,13 @@ public class RequestHelper {
         }
     }
 
-    public static boolean reply(Topic topic, String content) throws ConnectionException, RemoteException {
+    public static boolean reply(Topic topic, String content, String once) throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "reply to topic: %s", topic.getTitle());
 
-        final String onceCode = getOnceCode();
-        final RequestBody requestBody = new FormEncodingBuilder().add("once", onceCode)
+        if (Strings.isNullOrEmpty(once)) {
+            once = getOnceCode();
+        }
+        final RequestBody requestBody = new FormEncodingBuilder().add("once", once)
                 .add("content", content)
                 .build();
 
@@ -170,6 +174,13 @@ public class RequestHelper {
 
         // v2ex will redirect if reply success
         return response.code() == 302;
+    }
+
+    public static void ignore(Comment comment, String onceToken) throws ConnectionException, RemoteException {
+        final Request request = new Request.Builder().url(comment.getIgnoreUrl() + "?once=" + onceToken)
+                .post(null).build();
+
+        sendRequest(request);
     }
 
     public static MyselfParser.MySelfInfo login(String account, String password) throws ConnectionException, RemoteException {

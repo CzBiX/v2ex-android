@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class TopicParser extends Parser {
+    private static final Pattern PATTERN_CSRF_TOKEN = Pattern.compile("var csrfToken = \"(\\w{32})\"");
     private static final Pattern PATTERN_NUMBERS = Pattern.compile("\\d+");
 
     public static TopicWithComments parseDoc(Document doc, Topic topic) {
@@ -26,7 +27,28 @@ public class TopicParser extends Parser {
         parseTopicInfo(topicBuilder, doc);
         List<Comment> comments = parseComments(doc.select("#Main > div:nth-child(4) tr"));
 
-        return new TopicWithComments(topicBuilder.createTopic(), comments);
+        final String csrfToken = parseCsrfToken(doc);
+        final String onceToken = parseOnceToken(doc);
+        return new TopicWithComments(topicBuilder.createTopic(), comments, csrfToken, onceToken);
+    }
+
+    private static String parseCsrfToken(Document doc) {
+        final String html = doc.head().html();
+        final Matcher matcher = PATTERN_CSRF_TOKEN.matcher(html);
+        if (!matcher.find()) {
+            return null;
+        }
+
+        return matcher.group(1);
+    }
+
+    private static String parseOnceToken(Document doc) {
+        final Elements elements = doc.select("form > input[name=once]");
+        if (elements.size() != 1) {
+            return null;
+        }
+
+        return elements.get(0).val();
     }
 
     private static void parseTopicInfo(Topic.Builder topicBuilder, Document doc) {

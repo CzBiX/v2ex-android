@@ -3,6 +3,8 @@ package com.czbix.v2ex.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.czbix.v2ex.network.RequestHelper;
+
 public class Comment implements Parcelable {
     private final int mId;
     private final String mContent;
@@ -42,6 +44,10 @@ public class Comment implements Parcelable {
 
     public int getFloor() {
         return mFloor;
+    }
+
+    public String getIgnoreUrl() {
+        return String.format("%s/ignore/reply/%d", RequestHelper.BASE_URL, mId);
     }
 
     @Override
