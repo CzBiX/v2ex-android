@@ -13,6 +13,7 @@ import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.network.Etag;
 import com.czbix.v2ex.network.RequestHelper;
+import com.czbix.v2ex.res.GoogleImg;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.HandlerExecutor;
 import com.czbix.v2ex.util.LogUtils;
@@ -45,6 +46,7 @@ public class AppCtx extends Application {
         mEventBus.register(this);
         mDensity = getDensity(this);
 
+        GoogleImg.preload(this);
         ExecutorUtils.execute(new AsyncInitTask());
     }
 

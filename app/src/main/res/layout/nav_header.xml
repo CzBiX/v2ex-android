@@ -5,7 +5,7 @@
               android:layout_height="160dp"
               android:background="?attr/colorPrimary"
               android:padding="16dp"
-              android:theme="@style/ThemeOverlay.AppCompat.Dark"
+              android:id="@id/layout"
               android:orientation="vertical"
               android:gravity="bottom"
               tools:ignore="Overdraw">
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/username_tv"
         android:text="Username"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="#fff"
         tools:ignore="HardcodedText"/>
 
 </LinearLayout>

@@ -20,6 +20,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.ViewTarget;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.eventbus.LoginEvent;
@@ -27,6 +30,8 @@ import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.model.url.GooglePhotoUrlLoader;
+import com.czbix.v2ex.res.GoogleImg;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
 import com.czbix.v2ex.util.UserUtils;
@@ -47,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     private SharedPreferences mPreferences;
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar mToolbar;
+    private View mNavBg;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +64,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         mAppBar = ((AppBarLayout) findViewById(R.id.appbar));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.layout);
         mNav = ((NavigationView) findViewById(R.id.nav));
+        mNavBg = mNav.findViewById(R.id.layout);
 
         AppCtx.getEventBus().register(this);
 
@@ -74,6 +81,18 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         super.onStart();
 
         updateUsername();
+        updateNavBackground();
+    }
+
+    private void updateNavBackground() {
+        String url = GoogleImg.ALL_LOCATION[GoogleImg.getLocationIndex()][GoogleImg.getTimeIndex()];
+        Glide.with(this).using(GooglePhotoUrlLoader.getInstance()).load(url)
+                .crossFade().centerCrop().into(new ViewTarget<View, GlideDrawable>(mNavBg) {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        mNavBg.setBackground(resource);
+                    }
+                });
     }
 
     private void initNavDrawer() {
