@@ -11,4 +11,11 @@
               android:icon="@drawable/ic_dashboard_black_24dp"
               android:title="@string/title_fragment_nodes"/>
     </group>
+    <group android:menuCategory="secondary" android:id="@+id/secondary"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/drawer_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/action_settings"/>
+    </group>
 </menu>

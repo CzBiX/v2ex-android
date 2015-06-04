@@ -125,6 +125,9 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
             case R.id.drawer_nodes:
                 switchFragment(NodeListFragment.newInstance());
                 return true;
+            case R.id.drawer_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
         }
 
         return false;
@@ -177,8 +180,6 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
         enableLoginMenu(menu);
 
         return true;
