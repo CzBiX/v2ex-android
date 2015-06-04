@@ -2,16 +2,15 @@
     <PreferenceCategory
         android:key="general"
         android:title="@string/pref_category_general">
-        <Preference
-            android:key="debug"
-            android:title="@string/pref_title_debug"/>
+        <Preference android:key="debug"
+                    android:title="Debug"/>
+        <Preference android:key="login"
+                    android:title="@string/pref_sign_in"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="user"
         android:title="@string/pref_category_user">
         <Preference android:key="user_info"/>
-        <Preference android:key="login"
-                    android:title="@string/pref_sign_in"/>
         <Preference android:key="logout"
                     android:title="@string/pref_log_out"/>
     </PreferenceCategory>

@@ -6,7 +6,7 @@
     <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_up"><u>Sign up right now!</u></string>
-    <string name="desc_v2ex">V2EX = way to explore\n一个关于分享和探索的地方</string>
+    <string name="desc_v2ex" translatable="false">V2EX = way to explore\n一个关于分享和探索的地方</string>
     <string name="toast_login_success">Welcome back, %s!</string>
 
     <string name="error_incorrect_password">Login failed!</string>

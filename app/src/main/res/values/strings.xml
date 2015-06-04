@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">V2EX+</string>
+    <string name="app_name" translatable="false">V2EX+</string>
 
     <string name="action_settings">Settings</string>
 
