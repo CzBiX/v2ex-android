@@ -38,6 +38,7 @@
         android:layout_toEndOf="@id/time_tv"
         android:textColor="#888"
         android:textSize="12sp"
+        android:textStyle="bold"
         android:layout_marginStart="5dp"
         android:layout_alignBaseline="@id/username_tv"
         android:layout_width="wrap_content"
