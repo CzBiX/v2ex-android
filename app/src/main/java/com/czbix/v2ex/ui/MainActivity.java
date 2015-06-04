@@ -124,6 +124,17 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
                 R.string.desc_open_drawer, R.string.desc_close_drawer);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        mNavBg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (AppCtx.getInstance().isLoggedIn()) {
+                    // TODO: jump to user info page
+                } else {
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                }
+            }
+        });
     }
 
     @Override
