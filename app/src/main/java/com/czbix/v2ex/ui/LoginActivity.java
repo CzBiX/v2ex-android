@@ -18,10 +18,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.ConnectionException;
-import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.parser.MyselfParser;
 import com.czbix.v2ex.util.UserUtils;
@@ -155,7 +153,6 @@ public class LoginActivity extends AppCompatActivity {
     private void onLoginSuccess(String username) {
         Toast.makeText(this, getString(R.string.toast_login_success, username),
                 Toast.LENGTH_LONG).show();
-        AppCtx.getEventBus().post(new LoginEvent(username));
         setResult(RESULT_OK);
         finish();
     }

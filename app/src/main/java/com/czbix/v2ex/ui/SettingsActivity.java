@@ -10,10 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.R;
-import com.czbix.v2ex.dao.ConfigDao;
-import com.czbix.v2ex.eventbus.LoginEvent;
-import com.czbix.v2ex.network.RequestHelper;
-import com.google.common.base.Strings;
+import com.czbix.v2ex.util.UserUtils;
 
 public class SettingsActivity extends AppCompatActivity {
     private static final String TAG = SettingsActivity.class.getSimpleName();
@@ -43,40 +40,32 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void initUser() {
             final PreferenceCategory user = (PreferenceCategory) findPreference("user");
+            if (!AppCtx.getInstance().isLoggedIn()) {
+                getPreferenceScreen().removePreference(user);
+                return;
+            }
+
             final Preference infoPref = findPreference("user_info");
-            final Preference loginPref = findPreference("login");
             final Preference logoutPref = findPreference("logout");
 
-            if (Strings.isNullOrEmpty(AppCtx.getInstance().getUsername())) {
-                user.removePreference(infoPref);
-                user.removePreference(logoutPref);
-                loginPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        startActivityForResult(new Intent(getActivity(), LoginActivity.class), 0);
-                        return true;
-                    }
-                });
-            } else {
-                infoPref.setTitle(AppCtx.getInstance().getUsername());
-                infoPref.setEnabled(false);
-                user.removePreference(loginPref);
-                logoutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference) {
-                        RequestHelper.clearCookies();
-                        ConfigDao.remove(ConfigDao.KEY_USERNAME);
-                        AppCtx.getEventBus().post(new LoginEvent());
-                        getActivity().recreate();
-                        return true;
-                    }
-                });
-            }
+            infoPref.setTitle(AppCtx.getInstance().getUsername());
+            // TODO: jump to user info page
+            infoPref.setEnabled(false);
+            logoutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    UserUtils.logout();
+                    getActivity().recreate();
+                    return true;
+                }
+            });
         }
 
         private void initGeneral() {
             final PreferenceCategory general = (PreferenceCategory) findPreference("general");
             final Preference debugPref = findPreference("debug");
+            final Preference loginPref = findPreference("login");
+
             if (BuildConfig.DEBUG) {
                 debugPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
@@ -87,6 +76,18 @@ public class SettingsActivity extends AppCompatActivity {
                 });
             } else {
                 general.removePreference(debugPref);
+            }
+
+            if (AppCtx.getInstance().isLoggedIn()) {
+                general.removePreference(loginPref);
+            } else {
+                loginPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference) {
+                        startActivityForResult(new Intent(getActivity(), LoginActivity.class), 0);
+                        return true;
+                    }
+                });
             }
         }
 
