@@ -1,5 +1,6 @@
 package com.czbix.v2ex.parser;
 
+import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.Member;
@@ -10,6 +11,7 @@ import com.google.common.collect.Lists;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.regex.Pattern;
 
 public class TopicParser extends Parser {
     private static final Pattern PATTERN_CSRF_TOKEN = Pattern.compile("var csrfToken = \"(\\w{32})\"");
+    private static final Pattern PATTERN_TOPIC_REPLY_TIME = Pattern.compile("·\\s*(.+?)(?:\\s+·|$)");
     private static final Pattern PATTERN_NUMBERS = Pattern.compile("\\d+");
 
     public static TopicWithComments parseDoc(Document doc, Topic topic) {
@@ -51,7 +54,36 @@ public class TopicParser extends Parser {
         return elements.get(0).val();
     }
 
-    private static void parseTopicInfo(Topic.Builder topicBuilder, Document doc) {
+    private static void parseTopicInfo(Topic.Builder builder, Document doc) {
+        parseTopicReplyCount(builder, doc);
+
+        final Element headerEle = doc.select("#Main .header").get(0);
+        parseTopicReplyTime(builder, headerEle.select(".gray").get(0).textNodes().get(0));
+        builder.setNode(TopicListParser.parseNode(headerEle.select(".chevron").get(0).nextElementSibling()));
+        parseTopicTitle(builder, headerEle);
+
+        if (!builder.hasInfo()) {
+            TopicListParser.parseMember(builder, headerEle.child(0));
+        }
+    }
+
+    static void parseTopicReplyTime(Topic.Builder topicBuilder, TextNode textNode) {
+        final String text = textNode.text();
+        final Matcher matcher = PATTERN_TOPIC_REPLY_TIME.matcher(text);
+        if (!matcher.find()) {
+            throw new FatalException("match reply time for topic failed: " + text);
+        }
+        final String time = matcher.group(1);
+        topicBuilder.setReplyTime(time);
+    }
+
+    private static void parseTopicTitle(Topic.Builder builder, Element headerEle) {
+        final String title = headerEle.select("h1").text();
+
+        builder.setTitle(title);
+    }
+
+    private static void parseTopicReplyCount(Topic.Builder topicBuilder, Document doc) {
         final Elements elements = doc.select("#Main > div:nth-child(4) > .cell:nth-child(1) > span");
         if (elements.size() == 0) {
             // empty reply

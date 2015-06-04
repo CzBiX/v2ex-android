@@ -22,11 +22,17 @@ public class Tab extends Page {
     };
     public static final Tab TAB_ALL = ALL_TABS[9];
 
-    private String mUrl;
+    private final String mTitle;
+    private final String mUrl;
 
     Tab(String title, String url) {
-        super(title);
+        mTitle = title;
         mUrl = url;
+    }
+
+    @Override
+    public String getTitle() {
+        return mTitle;
     }
 
     @Override
@@ -36,17 +42,14 @@ public class Tab extends Page {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(getTitle());
+        dest.writeString(mTitle);
         dest.writeString(mUrl);
     }
 
     public static final Creator<Tab> CREATOR = new Creator<Tab>() {
         @Override
         public Tab createFromParcel(Parcel source) {
-            return new Builder()
-                    .setTitle(source.readString())
-                    .setUrl(source.readString())
-                    .createTab();
+            return new Tab(source.readString(), source.readString());
         }
 
         @Override
@@ -54,23 +57,4 @@ public class Tab extends Page {
             return new Tab[size];
         }
     };
-
-    public static class Builder {
-        private String mTitle;
-        private String mUrl;
-
-        public Builder setTitle(String title) {
-            mTitle = title;
-            return this;
-        }
-
-        public Builder setUrl(String url) {
-            mUrl = url;
-            return this;
-        }
-
-        public Tab createTab() {
-            return new Tab(mTitle, mUrl);
-        }
-    }
 }

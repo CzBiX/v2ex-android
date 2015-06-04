@@ -12,6 +12,7 @@ import com.google.common.collect.Lists;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.xml.sax.SAXException;
 
@@ -102,17 +103,25 @@ public class TopicListParser extends Parser {
         if (node == null) {
             hasNode = false;
             final Elements nodeEle = ele.select("> a");
-            final String title = nodeEle.text();
-            final String url = nodeEle.attr("href");
-            final String name = Node.getNameFromUrl(url);
-
-            node = new Node.Builder().setTitle(title).setName(name).createNode();
+            node = parseNode(nodeEle.get(0));
         } else {
             hasNode = true;
         }
         topicBuilder.setNode(node);
 
-        final String text = ele.textNodes().get(hasNode ? 0 : 1).text();
+        parseReplyTime(topicBuilder, ele.textNodes().get(hasNode ? 0 : 1));
+    }
+
+    static Node parseNode(Element nodeEle) {
+        final String title = nodeEle.text();
+        final String url = nodeEle.attr("href");
+        final String name = Node.getNameFromUrl(url);
+
+        return new Node.Builder().setTitle(title).setName(name).createNode();
+    }
+
+    private static void parseReplyTime(Topic.Builder topicBuilder, TextNode textNode) {
+        final String text = textNode.text();
         final Matcher matcher = PATTERN_REPLY_TIME.matcher(text);
         if (!matcher.find()) {
             throw new FatalException("match reply time for topic failed: " + text);
@@ -130,7 +139,7 @@ public class TopicListParser extends Parser {
         topicBuilder.setTitle(ele.text());
     }
 
-    private static void parseMember(Topic.Builder builder, Element ele) {
+    static void parseMember(Topic.Builder builder, Element ele) {
         final Member.Builder memberBuilder = new Member.Builder();
 
         // get member url

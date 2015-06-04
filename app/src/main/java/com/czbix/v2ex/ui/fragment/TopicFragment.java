@@ -142,6 +142,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (!mTopic.hasInfo()) {
+            return;
+        }
+
         inflater.inflate(R.menu.menu_topic, menu);
 
         if (!AppCtx.getInstance().isLoggedIn()) {
@@ -187,15 +191,17 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public Loader<TopicWithComments> onCreateLoader(int id, Bundle args) {
-        LogUtils.d(TAG, "load topic: %s", mTopic.getTitle());
+        LogUtils.d(TAG, "load topic, id: %d, title: %s", mTopic.getId(), mTopic.getTitle());
         return new TopicLoader(getActivity(), mTopic);
     }
 
     @Override
     public void onLoadFinished(Loader<TopicWithComments> loader, TopicWithComments data) {
-        mTopicHolder.fillData(data.mTopic, true);
+        mTopic = data.mTopic;
+        mTopicHolder.fillData(mTopic, true);
         mCommentAdapter.setDataSource(data.mComments);
         mLayout.setRefreshing(false);
+        getActivity().invalidateOptionsMenu();
 
         mCsrfToken = data.mCsrfToken;
         mOnceToken = data.mOnceToken;

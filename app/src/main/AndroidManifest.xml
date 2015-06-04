@@ -38,7 +38,19 @@
             android:label="@string/title_activity_settings" >
         </activity>
         <activity
-            android:name=".ui.TopicActivity"/>
+            android:name=".ui.TopicActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" android:host="v2ex.com" android:pathPrefix="/t/" />
+                <data android:scheme="https" android:host="v2ex.com" android:pathPrefix="/t/" />
+                <data android:scheme="http" android:host="www.v2ex.com" android:pathPrefix="/t/" />
+                <data android:scheme="https" android:host="www.v2ex.com" android:pathPrefix="/t/" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

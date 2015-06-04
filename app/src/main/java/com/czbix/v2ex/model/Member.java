@@ -3,6 +3,8 @@ package com.czbix.v2ex.model;
 import android.os.Parcel;
 
 import com.czbix.v2ex.common.exception.FatalException;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,11 +12,14 @@ import java.util.regex.Pattern;
 public class Member extends Page {
     private static final Pattern PATTERN = Pattern.compile("/member/(.+?)(?:\\W|$)");
 
+    private String mUsername;
     private String mTagLine;
     private Avatar mAvatar;
 
     public Member(String username, Avatar avatar, String tagLine) {
-        super(username);
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(username));
+
+        mUsername = username;
         mAvatar = avatar;
         mTagLine = tagLine;
     }
@@ -28,7 +33,12 @@ public class Member extends Page {
     }
 
     public String getUsername() {
-        return getTitle();
+        return mUsername;
+    }
+
+    @Override
+    public String getTitle() {
+        return getUsername();
     }
 
     public static String getNameFromUrl(String url) {

@@ -102,6 +102,11 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             if (mId == topic.getId() && !force) {
                 return;
             }
+            if (!topic.hasInfo()) {
+                itemView.setVisibility(View.INVISIBLE);
+                return;
+            }
+            itemView.setVisibility(View.VISIBLE);
 
             mId = topic.getId();
 

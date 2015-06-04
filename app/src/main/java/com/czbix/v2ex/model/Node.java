@@ -8,6 +8,8 @@ import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 import java.text.Collator;
 import java.util.Locale;
@@ -18,25 +20,35 @@ public class Node extends Page implements Comparable<Node> {
     private static final Pattern PATTERN = Pattern.compile("/go/(.+?)(?:\\W|$)");
     private static final Collator COLLATOR = Collator.getInstance(Locale.CHINA);
 
-    private int mId;
-    private String mName;
-    private String mTitleAlternative;
-    private int mTopics;
-    private Avatar mAvatar;
+    private final int mId;
+    private final String mTitle;
+    private final String mName;
+    private final String mTitleAlternative;
+    private final int mTopics;
+    private final Avatar mAvatar;
+    private final boolean mHasInfo;
 
     public Node(String title, int id, Avatar avatar, String name, String alternative,
                 int topics) {
-        super(title);
-
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(name));
         mId = id;
+
+        mTitle = title;
         mAvatar = avatar;
         mName = name;
         mTitleAlternative = alternative;
         mTopics = topics;
+
+        mHasInfo = !Strings.isNullOrEmpty(title);
     }
 
     public int getId() {
         return mId;
+    }
+
+    @Override
+    public String getTitle() {
+        return mTitle;
     }
 
     @Nullable

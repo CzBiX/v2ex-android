@@ -5,6 +5,7 @@ import android.os.Parcel;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,21 +14,31 @@ public class Topic extends Page {
     private static final Pattern PATTERN = Pattern.compile("/t/(\\d+?)(?:\\W|$)");
 
     private final int mId;
+    private final String mTitle;
     private final String mContent;
     private final int mReplies;
     private final Member mMember;
     private final Node mNode;
     private final String mReplyTime;
+    private final boolean mHasInfo;
 
     Topic(String title, int id, String content, Member member, Node node, String replyTime, int replies) {
-        super(title);
+        Preconditions.checkArgument(id != 0);
 
         mId = id;
+
+        mTitle = title;
         mContent = content;
         mMember = member;
         mNode = node;
         mReplies = replies;
         mReplyTime = replyTime;
+
+        mHasInfo = member != null;
+    }
+
+    public boolean hasInfo() {
+        return mHasInfo;
     }
 
     public int getId() {
@@ -36,6 +47,11 @@ public class Topic extends Page {
 
     public String getReplyTime() {
         return mReplyTime;
+    }
+
+    @Override
+    public String getTitle() {
+        return mTitle;
     }
 
     public Member getMember() {
@@ -74,7 +90,7 @@ public class Topic extends Page {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(getTitle());
+        dest.writeString(mTitle);
         dest.writeInt(mId);
         dest.writeString(mContent);
         dest.writeInt(mReplies);
@@ -86,7 +102,7 @@ public class Topic extends Page {
     public Builder toBuilder() {
         return new Builder()
                 .setId(mId)
-                .setTitle(getTitle())
+                .setTitle(mTitle)
                 .setContent(mContent)
                 .setMember(mMember)
                 .setNode(mNode)
@@ -173,6 +189,10 @@ public class Topic extends Page {
         public Builder setReplyTime(String replyTime) {
             mReplyTime = replyTime;
             return this;
+        }
+
+        public boolean hasInfo() {
+            return mMember != null;
         }
 
         public Topic createTopic() {
