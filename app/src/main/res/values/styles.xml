@@ -49,10 +49,7 @@
 
     <style name="AppTheme.CardView.Count" parent="AppTheme.CardView.TextView">
         <item name="android:textSize">12sp</item>
-        <item name="android:background">#9e9e9e</item>
+        <item name="android:background">@drawable/count_background</item>
         <item name="android:textColor">#fff</item>
-        <item name="android:paddingStart">4dp</item>
-        <item name="android:paddingEnd">4dp</item>
     </style>
-
 </resources>
