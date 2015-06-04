@@ -1,10 +1,5 @@
 package com.czbix.v2ex.res;
 
-import android.content.Context;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-
 import java.util.Calendar;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -116,15 +111,6 @@ public class GoogleImg {
             return INDEX_DUSK;
         } else {
             return INDEX_NIGHT;
-        }
-    }
-
-    public static void preload(Context context) {
-        final RequestManager manager = Glide.with(context);
-        for (String[] location : ALL_LOCATION) {
-            for (String time : location) {
-                manager.load(time).preload();
-            }
         }
     }
 }
