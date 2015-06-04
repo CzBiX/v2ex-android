@@ -35,7 +35,6 @@ import com.czbix.v2ex.ui.adapter.CommentAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.helper.ReplyFormHelper;
 import com.czbix.v2ex.ui.loader.TopicLoader;
-import com.czbix.v2ex.ui.widget.MultiSwipeRefreshLayout;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.UiUtils;
@@ -58,7 +57,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private static final String ARG_TOPIC = "topic";
 
     private Topic mTopic;
-    private MultiSwipeRefreshLayout mLayout;
+    private SwipeRefreshLayout mLayout;
     private ListView mCommentsView;
     private TopicAdapter.ViewHolder mTopicHolder;
     private CommentAdapter mCommentAdapter;
@@ -100,7 +99,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_topic, container, false);
-        mLayout = ((MultiSwipeRefreshLayout) rootView.findViewById(R.id.layout));
+        mLayout = ((SwipeRefreshLayout) rootView.findViewById(R.id.layout));
         mLayout.setOnRefreshListener(this);
 
         mCommentsView = ((ListView) mLayout.findViewById(R.id.comments));
