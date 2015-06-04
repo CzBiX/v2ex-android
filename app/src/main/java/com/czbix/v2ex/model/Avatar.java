@@ -8,7 +8,7 @@ import com.czbix.v2ex.AppCtx;
 import java.util.regex.Pattern;
 
 public class Avatar implements Parcelable {
-    public static final float DENSITY = AppCtx.getInstance().getDensity();
+    public static final float DENSITY;
     public static final int SIZE_LARGE = 73;
     public static final int SIZE_NORMAL = 48;
     public static final int SIZE_MINI = 24;
@@ -19,6 +19,10 @@ public class Avatar implements Parcelable {
     private static final String MINI = "mini";
 
     private final String mBaseUrl;
+
+    static {
+        DENSITY = AppCtx.getInstance().getResources().getDisplayMetrics().density;
+    }
 
     Avatar(String baseUrl) {
         mBaseUrl = baseUrl;
@@ -84,7 +88,6 @@ public class Avatar implements Parcelable {
     };
 
     public static class Builder {
-        private String mUrl;
         private String mBaseUrl;
 
         public Builder setUrl(String url) {

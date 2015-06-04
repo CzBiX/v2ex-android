@@ -1,9 +1,7 @@
 package com.czbix.v2ex;
 
 import android.app.Application;
-import android.content.Context;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.dao.ConfigDao;
@@ -28,7 +26,6 @@ public class AppCtx extends Application {
     private static final String TAG = AppCtx.class.getSimpleName();
 
     private static AppCtx mInstance;
-    private float mDensity;
     private EventBus mEventBus;
     private String mUsername;
 
@@ -43,7 +40,6 @@ public class AppCtx extends Application {
     private void init() {
         mEventBus = new AsyncEventBus(new HandlerExecutor());
         mEventBus.register(this);
-        mDensity = getDensity(this);
 
         ExecutorUtils.execute(new AsyncInitTask());
     }
@@ -71,22 +67,8 @@ public class AppCtx extends Application {
         return mInstance.mEventBus;
     }
 
-    private static float getDensity(Context context) {
-        final float density = context.getResources().getDisplayMetrics().density;
-
-        if (BuildConfig.DEBUG) {
-            Log.v(TAG, "density: " + density);
-        }
-
-        return density;
-    }
-
     public static AppCtx getInstance() {
         return mInstance;
-    }
-
-    public float getDensity() {
-        return mDensity;
     }
 
     private class AsyncInitTask implements Runnable {
