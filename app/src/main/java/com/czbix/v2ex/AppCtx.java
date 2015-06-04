@@ -11,7 +11,7 @@ import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.network.Etag;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.ExecutorUtils;
-import com.czbix.v2ex.util.HandlerExecutor;
+import com.czbix.v2ex.eventbus.executor.HandlerExecutor;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.DeadEvent;

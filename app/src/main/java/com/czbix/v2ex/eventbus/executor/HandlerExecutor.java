@@ -1,4 +1,4 @@
-package com.czbix.v2ex.util;
+package com.czbix.v2ex.eventbus.executor;
 
 import android.os.Handler;
 import android.os.Looper;
