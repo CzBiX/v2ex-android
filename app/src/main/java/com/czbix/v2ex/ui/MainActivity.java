@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -46,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         NavigationView.OnNavigationItemSelectedListener, NodeListFragment.OnNodeActionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String PREF_DRAWER_SHOWED = "drawer_showed";
+    private static final String PREF_LAST_NODE = "last_node";
 
     private TextView mUsername;
     private AppBarLayout mAppBar;
@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar mToolbar;
     private View mNavBg;
+    private Node mLastNode;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,19 +70,15 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         mNav = ((NavigationView) findViewById(R.id.nav));
         mNavBg = mNav.findViewById(R.id.layout);
 
-        AppCtx.getEventBus().register(this);
-
         initToolbar();
         initNavDrawer();
 
-        if (savedInstanceState == null) {
-            final Page page = getPageFromIntent();
-            addFragmentToView(TopicListFragment.newInstance(page));
-        }
+        final Page page = getLastPage();
+        addFragmentToView(TopicListFragment.newInstance(page));
     }
 
-    @NonNull
-    private Page getPageFromIntent() {
+    private Page getLastPage() {
+        mLastNode = null;
         final Intent intent = getIntent();
         if (intent.getAction().equals(Intent.ACTION_VIEW)) {
             final String url = intent.getDataString();
@@ -92,12 +89,23 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
             }
         }
 
+        final String nodeName = mPreferences.getString(PREF_LAST_NODE, null);
+        if (!Strings.isNullOrEmpty(nodeName)) {
+            final Node node = NodeDao.get(nodeName);
+            if (node != null) {
+                mLastNode = node;
+                return node;
+            }
+        }
+
         return Tab.TAB_ALL;
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        AppCtx.getEventBus().register(this);
 
         updateUsername();
         updateNavBackground();
@@ -239,10 +247,14 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
 
         AppCtx.getEventBus().unregister(this);
+
+        if (mLastNode != null) {
+            mPreferences.edit().putString(PREF_LAST_NODE, mLastNode.getName()).apply();
+        }
     }
 
     @Override
@@ -287,5 +299,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit();
+
+        mLastNode = node;
     }
 }
