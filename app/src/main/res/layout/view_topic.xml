@@ -18,8 +18,8 @@
         <ImageView
             android:id="@+id/avatar_img"
             style="@style/AppTheme.CardView.Avatar"
-            android:layout_height="@dimen/avatar_size"
-            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/topic_avatar_size"
+            android:layout_width="@dimen/topic_avatar_size"
             android:contentDescription="@string/desc_avatar"/>
 
         <TextView

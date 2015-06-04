@@ -4,7 +4,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     
     <dimen name="nav_avatar_size">64dp</dimen>
-    <dimen name="avatar_size">32dp</dimen>
+    <dimen name="topic_avatar_size">32dp</dimen>
+    <dimen name="comment_avatar_size">24dp</dimen>
     <dimen name="node_avatar_size">48dp</dimen>
 
     <dimen name="topic_picture_max_width">-1dp</dimen>
