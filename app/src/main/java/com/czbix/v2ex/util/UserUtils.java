@@ -1,12 +1,12 @@
 package com.czbix.v2ex.util;
 
 import com.czbix.v2ex.AppCtx;
+import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 
 public class UserUtils {
     public static void login(String username, Avatar avatar) {
@@ -16,7 +16,7 @@ public class UserUtils {
     }
 
     public static Avatar getAvatar() {
-        Preconditions.checkState(!Strings.isNullOrEmpty(AppCtx.getInstance().getUsername()));
+        Preconditions.checkState(!UserState.getInstance().isAnonymous());
 
         final String url = ConfigDao.get(ConfigDao.KEY_AVATAR, null);
         Preconditions.checkNotNull(url);

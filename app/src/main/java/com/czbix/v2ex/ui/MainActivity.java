@@ -25,6 +25,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ViewTarget;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
@@ -136,10 +137,10 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         mNavBg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (AppCtx.getInstance().isLoggedIn()) {
-                    // TODO: jump to user info page
-                } else {
+                if (UserState.getInstance().isAnonymous()) {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                } else {
+                    // TODO: jump to user info page
                 }
             }
         });
@@ -187,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     private void updateUsername() {
-        if (Strings.isNullOrEmpty(AppCtx.getInstance().getUsername())) {
+        if (UserState.getInstance().isAnonymous()) {
             mAvatar.setVisibility(View.INVISIBLE);
             mUsername.setText(R.string.user_anonymous);
             return;
@@ -197,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         final Avatar avatar = UserUtils.getAvatar();
         Glide.with(this).load(avatar.getUrlByDp(getResources().getDimension(R.dimen.nav_avatar_size)))
                 .crossFade().into(mAvatar);
-        mUsername.setText(AppCtx.getInstance().getUsername());
+        mUsername.setText(UserState.getInstance().getUsername());
     }
 
     private void initToolbar() {
@@ -224,11 +225,10 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     private void enableLoginMenu(Menu menu) {
-        if (AppCtx.getInstance().isLoggedIn()) {
+        if (!UserState.getInstance().isAnonymous()) {
             return;
         }
 
-        // not sign in yet
         final MenuItem loginMenu = menu.add(R.string.action_sign_in);
         loginMenu.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override

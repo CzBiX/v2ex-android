@@ -119,7 +119,12 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
 
     @Subscribe
     public void onNodesLoadFinish(BusEvent.GetNodesFinishEvent e) {
-        getLoaderManager().initLoader(0, null, this);
+        final LoaderManager loaderManager = getLoaderManager();
+        if (loaderManager.getLoader(0) != null) {
+            // already loaded
+            return;
+        }
+        loaderManager.initLoader(0, null, this);
     }
 
     @Override

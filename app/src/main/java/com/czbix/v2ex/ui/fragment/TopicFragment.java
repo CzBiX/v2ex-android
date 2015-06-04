@@ -22,6 +22,7 @@ import android.widget.ListView;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.eventbus.CommentEvent;
 import com.czbix.v2ex.model.Comment;
@@ -146,7 +147,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         inflater.inflate(R.menu.menu_topic, menu);
 
-        if (!AppCtx.getInstance().isLoggedIn()) {
+        if (UserState.getInstance().isAnonymous()) {
             menu.findItem(R.id.action_reply).setVisible(false);
         }
 

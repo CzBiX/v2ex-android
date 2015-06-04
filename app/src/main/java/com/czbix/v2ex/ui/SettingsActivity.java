@@ -7,9 +7,9 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 
-import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.util.UserUtils;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -40,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void initUser() {
             final PreferenceCategory user = (PreferenceCategory) findPreference("user");
-            if (!AppCtx.getInstance().isLoggedIn()) {
+            if (UserState.getInstance().isAnonymous()) {
                 getPreferenceScreen().removePreference(user);
                 return;
             }
@@ -48,7 +48,7 @@ public class SettingsActivity extends AppCompatActivity {
             final Preference infoPref = findPreference("user_info");
             final Preference logoutPref = findPreference("logout");
 
-            infoPref.setTitle(AppCtx.getInstance().getUsername());
+            infoPref.setTitle(UserState.getInstance().getUsername());
             // TODO: jump to user info page
             infoPref.setEnabled(false);
             logoutPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -78,9 +78,7 @@ public class SettingsActivity extends AppCompatActivity {
                 general.removePreference(debugPref);
             }
 
-            if (AppCtx.getInstance().isLoggedIn()) {
-                general.removePreference(loginPref);
-            } else {
+            if (UserState.getInstance().isAnonymous()) {
                 loginPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {
@@ -88,6 +86,8 @@ public class SettingsActivity extends AppCompatActivity {
                         return true;
                     }
                 });
+            } else {
+                general.removePreference(loginPref);
             }
         }
 

@@ -7,14 +7,12 @@ import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.eventbus.BusEvent;
-import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.network.Etag;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.HandlerExecutor;
 import com.czbix.v2ex.util.LogUtils;
-import com.google.common.base.Strings;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
@@ -27,7 +25,6 @@ public class AppCtx extends Application {
 
     private static AppCtx mInstance;
     private EventBus mEventBus;
-    private String mUsername;
 
     @Override
     public void onCreate() {
@@ -38,29 +35,17 @@ public class AppCtx extends Application {
     }
 
     private void init() {
+        // event bus is the first
         mEventBus = new AsyncEventBus(new HandlerExecutor());
         mEventBus.register(this);
 
         ExecutorUtils.execute(new AsyncInitTask());
     }
 
-    public String getUsername() {
-        return mUsername;
-    }
-
-    public boolean isLoggedIn() {
-        return !Strings.isNullOrEmpty(mUsername);
-    }
-
     @Subscribe
     public void onDeadEvent(DeadEvent e) {
         final BusEvent event = (BusEvent) e.getEvent();
         LogUtils.i(TAG, "dead event: %s", event.toString());
-    }
-
-    @Subscribe
-    public void onLoginEvent(LoginEvent e) {
-        mUsername = e.mUsername;
     }
 
     public static EventBus getEventBus() {
@@ -74,7 +59,6 @@ public class AppCtx extends Application {
     private class AsyncInitTask implements Runnable {
         @Override
         public void run() {
-            mUsername = ConfigDao.get(ConfigDao.KEY_USERNAME, null);
             loadAllNodes();
         }
 

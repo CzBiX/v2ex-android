@@ -15,12 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 
 import java.util.List;
 
@@ -190,8 +189,14 @@ public class CommentAdapter extends BaseAdapter {
 
         @Override
         public void onClick(View v) {
-            final String username = AppCtx.getInstance().getUsername();
-            if (Strings.isNullOrEmpty(username) || mComment.getMember().getUsername().equals(username)) {
+            if (UserState.getInstance().isAnonymous()) {
+                // anonymous can't do anything
+                return;
+            }
+
+            final String username = UserState.getInstance().getUsername();
+            if (mComment.getMember().getUsername().equals(username)) {
+                // can't do action on comment by myself
                 return;
             }
             v.showContextMenu();
