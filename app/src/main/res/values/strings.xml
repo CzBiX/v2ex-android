@@ -9,11 +9,10 @@
 
     <string name="desc_topic_link">Topic link</string>
     <string name="toast_copied">Copied to clipboard</string>
-    <string name="action_open_link">Open link</string>
     <string name="drawer_explore">Explore</string>
     <string name="title_fragment_nodes">Nodes</string>
     <string name="action_reply">Reply</string>
-    <string name="desc_add_reply">Add a reply</string>
+    <string name="desc_add_reply">Add reply</string>
     <string name="toast_sending">Sending…</string>
     <string name="action_cancel">Cancel</string>
     <string name="toast_cancel_failed">Cancel failed!</string>
@@ -26,6 +25,6 @@
     <string name="menu_action_copy">Copy comment text</string>
     <string name="user_anonymous">Anonymous</string>
 
-    <string name="desc_open_drawer">Open drawer</string>
-    <string name="desc_close_drawer">Close drawer</string>
+    <string name="desc_open_drawer">Open navigation drawer</string>
+    <string name="desc_close_drawer">Close navigation drawer</string>
 </resources>

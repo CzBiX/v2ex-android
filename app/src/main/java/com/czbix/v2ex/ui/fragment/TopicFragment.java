@@ -1,9 +1,7 @@
 package com.czbix.v2ex.ui.fragment;
 
 
-import android.content.Intent;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
@@ -161,9 +159,6 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             case R.id.action_copy_link:
                 UiUtils.setClipboard(getActivity(), getString(R.string.desc_topic_link),
                         mTopic.getUrl());
-                return true;
-            case R.id.action_open:
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mTopic.getUrl())));
                 return true;
             case R.id.action_refresh:
                 mLayout.setRefreshing(true);
