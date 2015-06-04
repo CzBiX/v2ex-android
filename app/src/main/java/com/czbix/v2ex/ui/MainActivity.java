@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -25,9 +26,11 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ViewTarget;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
+import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.url.GooglePhotoUrlLoader;
@@ -72,8 +75,24 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         initNavDrawer();
 
         if (savedInstanceState == null) {
-            addFragmentToView(TopicListFragment.newInstance(Tab.TAB_ALL));
+            final Page page = getPageFromIntent();
+            addFragmentToView(TopicListFragment.newInstance(page));
         }
+    }
+
+    @NonNull
+    private Page getPageFromIntent() {
+        final Intent intent = getIntent();
+        if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+            final String url = intent.getDataString();
+            final String name = Node.getNameFromUrl(url);
+            final Node node = NodeDao.get(name);
+            if (node != null) {
+                return node;
+            }
+        }
+
+        return Tab.TAB_ALL;
     }
 
     @Override
@@ -88,11 +107,11 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         String url = GoogleImg.ALL_LOCATION[GoogleImg.getLocationIndex()][GoogleImg.getTimeIndex()];
         Glide.with(this).using(GooglePhotoUrlLoader.getInstance()).load(url)
                 .crossFade().centerCrop().into(new ViewTarget<View, GlideDrawable>(mNavBg) {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                        mNavBg.setBackground(resource);
-                    }
-                });
+            @Override
+            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                mNavBg.setBackground(resource);
+            }
+        });
     }
 
     private void initNavDrawer() {

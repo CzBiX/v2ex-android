@@ -23,6 +23,17 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" android:host="v2ex.com" android:pathPrefix="/go/" />
+                <data android:scheme="https" android:host="v2ex.com" android:pathPrefix="/go/" />
+                <data android:scheme="http" android:host="www.v2ex.com" android:pathPrefix="/go/" />
+                <data android:scheme="https" android:host="www.v2ex.com" android:pathPrefix="/go/" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.LoginActivity"
