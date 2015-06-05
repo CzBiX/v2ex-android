@@ -27,6 +27,7 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.dao.NodeDao;
+import com.czbix.v2ex.eventbus.BusEvent.NewUnreadEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     private Toolbar mToolbar;
     private View mNavBg;
     private Node mLastNode;
+    private MenuItem mNotificationsItem;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,6 +112,17 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
         updateUsername();
         updateNavBackground();
+        updateNotifications();
+    }
+
+    private void updateNotifications() {
+        if (UserState.getInstance().isAnonymous()) {
+            mNotificationsItem.setEnabled(false);
+        } else {
+            mNotificationsItem.setIcon(UserState.getInstance().hasUnread()
+                    ? R.drawable.ic_notifications_black_24dp
+                    : R.drawable.ic_notifications_none_black_24dp);
+        }
     }
 
     private void updateNavBackground() {
@@ -129,6 +142,9 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
             mDrawerLayout.openDrawer(mNav);
             mPreferences.edit().putBoolean(PREF_DRAWER_SHOWED, true).apply();
         }
+        final Menu menu = mNav.getMenu();
+        mNotificationsItem = menu.findItem(R.id.drawer_notifications);
+        updateNotifications();
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
                 R.string.desc_open_drawer, R.string.desc_close_drawer);
@@ -244,6 +260,12 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         invalidateOptionsMenu();
 
         updateUsername();
+        updateNotifications();
+    }
+
+    @Subscribe
+    public void onNewUnreadEvent(NewUnreadEvent e) {
+        updateNotifications();
     }
 
     @Override

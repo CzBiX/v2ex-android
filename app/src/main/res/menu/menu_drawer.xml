@@ -10,6 +10,9 @@
         <item android:id="@+id/drawer_nodes"
               android:icon="@drawable/ic_dashboard_black_24dp"
               android:title="@string/title_fragment_nodes"/>
+        <item android:id="@+id/drawer_notifications"
+              android:icon="@drawable/ic_notifications_none_black_24dp"
+              android:title="@string/drawer_notifications"/>
     </group>
     <group android:menuCategory="secondary" android:id="@+id/secondary"
         android:checkableBehavior="single">

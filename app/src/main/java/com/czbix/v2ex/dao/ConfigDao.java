@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.util.LruCache;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 public class ConfigDao extends DaoBase {
     private static final String TABLE_NAME = "config";
@@ -23,6 +24,7 @@ public class ConfigDao extends DaoBase {
     public static final String KEY_USERNAME = "username";
     public static final String KEY_AVATAR = "avatar";
     public static final String KEY_NODE_ETAG = "node_etag";
+    public static final String KEY_NOTIFICATION_COUNT = "notification_count";
 
     static void createTable(SQLiteDatabase db) {
         Preconditions.checkState(db.inTransaction(), "create table must be in transaction");
@@ -65,6 +67,15 @@ public class ConfigDao extends DaoBase {
                 }
             }
         }, false);
+    }
+
+    public static int get(final String key, final int defVal) {
+        final String val = get(key, null);
+        if (Strings.isNullOrEmpty(val)) {
+            return defVal;
+        }
+
+        return Integer.parseInt(val);
     }
 
     public static void put(final String key, final String value) {
