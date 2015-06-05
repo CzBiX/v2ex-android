@@ -29,10 +29,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="http" android:host="v2ex.com" android:pathPrefix="/go/" />
-                <data android:scheme="https" android:host="v2ex.com" android:pathPrefix="/go/" />
-                <data android:scheme="http" android:host="www.v2ex.com" android:pathPrefix="/go/" />
-                <data android:scheme="https" android:host="www.v2ex.com" android:pathPrefix="/go/" />
+                <data android:scheme="@string/scheme_http" android:host="@string/master_host" android:pathPrefix="@string/node_url_prefix" />
+                <data android:scheme="@string/scheme_https" android:host="@string/master_host" android:pathPrefix="@string/node_url_prefix" />
+                <data android:scheme="@string/scheme_http" android:host="@string/www_host" android:pathPrefix="@string/node_url_prefix" />
+                <data android:scheme="@string/scheme_https" android:host="@string/www_host" android:pathPrefix="@string/node_url_prefix" />
             </intent-filter>
         </activity>
         <activity
@@ -56,10 +56,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="http" android:host="v2ex.com" android:pathPrefix="/t/" />
-                <data android:scheme="https" android:host="v2ex.com" android:pathPrefix="/t/" />
-                <data android:scheme="http" android:host="www.v2ex.com" android:pathPrefix="/t/" />
-                <data android:scheme="https" android:host="www.v2ex.com" android:pathPrefix="/t/" />
+                <data android:scheme="@string/scheme_http" android:host="@string/master_host" android:pathPrefix="@string/topic_url_prefix" />
+                <data android:scheme="@string/scheme_https" android:host="@string/master_host" android:pathPrefix="@string/topic_url_prefix" />
+                <data android:scheme="@string/scheme_http" android:host="@string/www_host" android:pathPrefix="@string/topic_url_prefix" />
+                <data android:scheme="@string/scheme_https" android:host="@string/www_host" android:pathPrefix="@string/topic_url_prefix" />
             </intent-filter>
         </activity>
     </application>
