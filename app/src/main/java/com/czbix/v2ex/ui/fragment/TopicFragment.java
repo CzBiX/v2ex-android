@@ -39,9 +39,10 @@ import com.czbix.v2ex.ui.adapter.CommentAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.helper.ReplyFormHelper;
 import com.czbix.v2ex.ui.loader.TopicLoader;
+import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
-import com.czbix.v2ex.util.UiUtils;
+import com.czbix.v2ex.util.MiscUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
 
@@ -56,7 +57,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         LoaderManager.LoaderCallbacks<TopicWithComments>,
-        ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener {
+        ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener, HtmlMovementMethod.OnHtmlActionListener {
     private static final String TAG = TopicFragment.class.getSimpleName();
     private static final String ARG_TOPIC = "topic";
 
@@ -113,6 +114,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mTopicView.setBackgroundColor(Color.WHITE);
 
         mTopicHolder = new TopicAdapter.ViewHolder(mTopicView);
+        mTopicHolder.setContentListener(this);
         mTopicHolder.fillData(mTopic);
 
         mCommentAdapter = new CommentAdapter(getActivity(), mTopicView, this);
@@ -182,7 +184,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_copy_link:
-                UiUtils.setClipboard(getActivity(), getString(R.string.desc_topic_link),
+                MiscUtils.setClipboard(getActivity(), getString(R.string.desc_topic_link),
                         mTopic.getUrl());
                 return true;
             case R.id.action_refresh:
@@ -379,6 +381,16 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onCommentCopy(Comment comment) {
         final FragmentActivity context = getActivity();
-        UiUtils.setClipboard(context, null, comment.getContent());
+        MiscUtils.setClipboard(context, null, comment.getContent());
+    }
+
+    @Override
+    public void onCommentUrlClick(String url) {
+        onUrlClick(url);
+    }
+
+    @Override
+    public void onUrlClick(String url) {
+        startActivity(MiscUtils.getUrlIntent(url));
     }
 }

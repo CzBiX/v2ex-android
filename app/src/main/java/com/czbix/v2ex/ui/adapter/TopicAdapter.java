@@ -3,7 +3,6 @@ package com.czbix.v2ex.ui.adapter;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
+import com.czbix.v2ex.ui.widget.HtmlMovementMethod.OnHtmlActionListener;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Strings;
 
@@ -65,7 +66,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         public final TextView mContent;
 
         private final TopicAdapter mAdapter;
-        private volatile int mId;
+        private int mId;
 
         public ViewHolder(View view) {
             this(null, view);
@@ -92,6 +93,10 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
                 // topic list
                 mTitle.setTypeface(Typeface.DEFAULT);
             }
+        }
+
+        public void setContentListener(OnHtmlActionListener listener) {
+            mContent.setMovementMethod(new HtmlMovementMethod(listener));
         }
 
         public void fillData(Topic topic) {
@@ -135,7 +140,6 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mContent.setVisibility(View.VISIBLE);
             ViewUtils.setHtmlIntoTextView(mContent, topic.getContent(),
                     R.dimen.topic_picture_max_width);
-            mContent.setMovementMethod(LinkMovementMethod.getInstance());
         }
 
         private void setAvatarImg(Topic topic) {

@@ -2,7 +2,6 @@ package com.czbix.v2ex.ui.adapter;
 
 import android.content.Context;
 import android.text.SpannableString;
-import android.text.method.LinkMovementMethod;
 import android.text.style.ForegroundColorSpan;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -18,6 +17,8 @@ import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.model.Comment;
+import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
+import com.czbix.v2ex.ui.widget.HtmlMovementMethod.OnHtmlActionListener;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
 
@@ -102,7 +103,7 @@ public class CommentAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private static class ViewHolder implements View.OnCreateContextMenuListener, View.OnClickListener, MenuItem.OnMenuItemClickListener {
+    private static class ViewHolder implements View.OnCreateContextMenuListener, View.OnClickListener, MenuItem.OnMenuItemClickListener, OnHtmlActionListener {
         private final TextView mContent;
         private final ImageView mAvatar;
         private final TextView mUsername;
@@ -124,6 +125,7 @@ public class CommentAdapter extends BaseAdapter {
             view.setOnClickListener(this);
             mContent.setOnClickListener(this);
             view.setOnCreateContextMenuListener(this);
+            mContent.setMovementMethod(new HtmlMovementMethod(this));
         }
 
         public void fillData(Comment comment) {
@@ -134,7 +136,6 @@ public class CommentAdapter extends BaseAdapter {
 
             ViewUtils.setHtmlIntoTextView(mContent, comment.getContent(),
                     R.dimen.comment_picture_max_width);
-            mContent.setMovementMethod(LinkMovementMethod.getInstance());
             appendThanks(comment);
 
             mUsername.setText(comment.getMember().getUsername());
@@ -220,6 +221,11 @@ public class CommentAdapter extends BaseAdapter {
             }
             return false;
         }
+
+        @Override
+        public void onUrlClick(String url) {
+            mListener.onCommentUrlClick(url);
+        }
     }
 
     public interface OnCommentActionListener {
@@ -227,5 +233,6 @@ public class CommentAdapter extends BaseAdapter {
         void onCommentReply(Comment comment);
         void onCommentIgnore(Comment comment);
         void onCommentCopy(Comment comment);
+        void onCommentUrlClick(String url);
     }
 }
