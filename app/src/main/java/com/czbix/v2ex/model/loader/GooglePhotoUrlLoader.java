@@ -1,4 +1,4 @@
-package com.czbix.v2ex.model.url;
+package com.czbix.v2ex.model.loader;
 
 import android.content.Context;
 

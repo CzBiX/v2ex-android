@@ -33,7 +33,7 @@ import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
-import com.czbix.v2ex.model.url.GooglePhotoUrlLoader;
+import com.czbix.v2ex.model.loader.GooglePhotoUrlLoader;
 import com.czbix.v2ex.res.GoogleImg;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
