@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.czbix.v2ex.common.exception.FatalException;
-import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -103,23 +102,6 @@ public class Node extends Page implements Comparable<Node> {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mName);
-    }
-
-    public static final Creator<Node> CREATOR = new Creator<Node>() {
-        @Override
-        public Node createFromParcel(Parcel source) {
-            return NodeDao.get(source.readString());
-        }
-
-        @Override
-        public Node[] newArray(int size) {
-            return new Node[size];
-        }
-    };
-
-    @Override
     public int compareTo(@NonNull Node another) {
         return COLLATOR.compare(getTitle(), another.getTitle());
     }
@@ -166,4 +148,35 @@ public class Node extends Page implements Comparable<Node> {
             return new Node(mTitle, mId, mAvatar, mName, mTitleAlternative, mTopics);
         }
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.mId);
+        dest.writeString(this.mTitle);
+        dest.writeString(this.mName);
+        dest.writeString(this.mTitleAlternative);
+        dest.writeInt(this.mTopics);
+        dest.writeParcelable(this.mAvatar, 0);
+        dest.writeByte(mHasInfo ? (byte) 1 : (byte) 0);
+    }
+
+    protected Node(Parcel in) {
+        this.mId = in.readInt();
+        this.mTitle = in.readString();
+        this.mName = in.readString();
+        this.mTitleAlternative = in.readString();
+        this.mTopics = in.readInt();
+        this.mAvatar = in.readParcelable(Avatar.class.getClassLoader());
+        this.mHasInfo = in.readByte() != 0;
+    }
+
+    public static final Creator<Node> CREATOR = new Creator<Node>() {
+        public Node createFromParcel(Parcel source) {
+            return new Node(source);
+        }
+
+        public Node[] newArray(int size) {
+            return new Node[size];
+        }
+    };
 }

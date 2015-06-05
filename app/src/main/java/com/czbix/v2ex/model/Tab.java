@@ -42,17 +42,20 @@ public class Tab extends Page {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mTitle);
-        dest.writeString(mUrl);
+        dest.writeString(this.mTitle);
+        dest.writeString(this.mUrl);
+    }
+
+    protected Tab(Parcel in) {
+        this.mTitle = in.readString();
+        this.mUrl = in.readString();
     }
 
     public static final Creator<Tab> CREATOR = new Creator<Tab>() {
-        @Override
         public Tab createFromParcel(Parcel source) {
-            return new Tab(source.readString(), source.readString());
+            return new Tab(source);
         }
 
-        @Override
         public Tab[] newArray(int size) {
             return new Tab[size];
         }

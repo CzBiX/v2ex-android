@@ -63,30 +63,6 @@ public class Avatar implements Parcelable {
         return PATTERN.matcher(url).replaceFirst("%s");
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mBaseUrl);
-    }
-
-    public static final Creator<Avatar> CREATOR = new Creator<Avatar>() {
-        @Override
-        public Avatar createFromParcel(Parcel source) {
-            return new Builder()
-                    .setBaseUrl(source.readString())
-                    .createAvatar();
-        }
-
-        @Override
-        public Avatar[] newArray(int size) {
-            return new Avatar[size];
-        }
-    };
-
     public static class Builder {
         private String mBaseUrl;
 
@@ -104,4 +80,28 @@ public class Avatar implements Parcelable {
             return new Avatar(mBaseUrl);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mBaseUrl);
+    }
+
+    protected Avatar(Parcel in) {
+        this.mBaseUrl = in.readString();
+    }
+
+    public static final Creator<Avatar> CREATOR = new Creator<Avatar>() {
+        public Avatar createFromParcel(Parcel source) {
+            return new Avatar(source);
+        }
+
+        public Avatar[] newArray(int size) {
+            return new Avatar[size];
+        }
+    };
 }

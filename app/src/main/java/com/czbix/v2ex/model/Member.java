@@ -58,29 +58,6 @@ public class Member extends Page {
         return buildUrlFromName(getUsername());
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(getUsername());
-        mAvatar.writeToParcel(dest, flags);
-        dest.writeString(mTagLine);
-    }
-
-    public static final Creator<Member> CREATOR = new Creator<Member>() {
-        @Override
-        public Member createFromParcel(Parcel source) {
-            return new Builder()
-                    .setUsername(source.readString())
-                    .setAvatar(Avatar.CREATOR.createFromParcel(source))
-                    .setTagLine(source.readString())
-                    .createMember();
-        }
-
-        @Override
-        public Member[] newArray(int size) {
-            return new Member[size];
-        }
-    };
-
     public static class Builder {
         private String mUsername;
         private Avatar mAvatar;
@@ -105,4 +82,27 @@ public class Member extends Page {
             return new Member(mUsername, mAvatar, mTagLine);
         }
     }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.mUsername);
+        dest.writeString(this.mTagLine);
+        dest.writeParcelable(this.mAvatar, 0);
+    }
+
+    protected Member(Parcel in) {
+        this.mUsername = in.readString();
+        this.mTagLine = in.readString();
+        this.mAvatar = in.readParcelable(Avatar.class.getClassLoader());
+    }
+
+    public static final Creator<Member> CREATOR = new Creator<Member>() {
+        public Member createFromParcel(Parcel source) {
+            return new Member(source);
+        }
+
+        public Member[] newArray(int size) {
+            return new Member[size];
+        }
+    };
 }

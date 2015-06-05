@@ -77,39 +77,6 @@ public class Comment implements Parcelable {
         return Objects.hashCode(mId, mContent, mReplyTime, mThanks);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mId);
-        dest.writeString(mContent);
-        mMember.writeToParcel(dest, flags);
-        dest.writeString(mReplyTime);
-        dest.writeInt(mThanks);
-        dest.writeInt(mFloor);
-    }
-
-    public static final Creator<Comment> CREATOR = new Creator<Comment>() {
-        @Override
-        public Comment createFromParcel(Parcel source) {
-            return new Comment.Builder()
-                    .setContent(source.readString())
-                    .setMember(Member.CREATOR.createFromParcel(source))
-                    .setReplyTime(source.readString())
-                    .setThanks(source.readInt())
-                    .setFloor(source.readInt())
-                    .createComment();
-        }
-
-        @Override
-        public Comment[] newArray(int size) {
-            return new Comment[size];
-        }
-    };
-
     public static class Builder {
         private int mId;
         private String mContent;
@@ -158,4 +125,40 @@ public class Comment implements Parcelable {
             return new Comment(mId, mContent, mMember, mReplyTime, mThanks, mFloor, mThanked);
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.mId);
+        dest.writeString(this.mContent);
+        dest.writeParcelable(this.mMember, 0);
+        dest.writeString(this.mReplyTime);
+        dest.writeInt(this.mThanks);
+        dest.writeInt(this.mFloor);
+        dest.writeByte(mThanked ? (byte) 1 : (byte) 0);
+    }
+
+    protected Comment(Parcel in) {
+        this.mId = in.readInt();
+        this.mContent = in.readString();
+        this.mMember = in.readParcelable(Member.class.getClassLoader());
+        this.mReplyTime = in.readString();
+        this.mThanks = in.readInt();
+        this.mFloor = in.readInt();
+        this.mThanked = in.readByte() != 0;
+    }
+
+    public static final Creator<Comment> CREATOR = new Creator<Comment>() {
+        public Comment createFromParcel(Parcel source) {
+            return new Comment(source);
+        }
+
+        public Comment[] newArray(int size) {
+            return new Comment[size];
+        }
+    };
 }

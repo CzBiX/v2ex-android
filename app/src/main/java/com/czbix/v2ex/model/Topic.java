@@ -90,14 +90,36 @@ public class Topic extends Page {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mTitle);
-        dest.writeInt(mId);
-        dest.writeString(mContent);
-        dest.writeInt(mReplies);
-        mMember.writeToParcel(dest, flags);
-        mNode.writeToParcel(dest, flags);
-        dest.writeString(mReplyTime);
+        dest.writeInt(this.mId);
+        dest.writeByte(mHasInfo ? (byte) 1 : (byte) 0);
+        dest.writeString(this.mTitle);
+        dest.writeString(this.mContent);
+        dest.writeInt(this.mReplies);
+        dest.writeParcelable(this.mMember, 0);
+        dest.writeParcelable(this.mNode, 0);
+        dest.writeString(this.mReplyTime);
     }
+
+    protected Topic(Parcel in) {
+        this.mId = in.readInt();
+        this.mHasInfo = in.readByte() != 0;
+        this.mTitle = in.readString();
+        this.mContent = in.readString();
+        this.mReplies = in.readInt();
+        this.mMember = in.readParcelable(Member.class.getClassLoader());
+        this.mNode = in.readParcelable(Node.class.getClassLoader());
+        this.mReplyTime = in.readString();
+    }
+
+    public static final Creator<Topic> CREATOR = new Creator<Topic>() {
+        public Topic createFromParcel(Parcel source) {
+            return new Topic(source);
+        }
+
+        public Topic[] newArray(int size) {
+            return new Topic[size];
+        }
+    };
 
     public Builder toBuilder() {
         return new Builder()
@@ -126,26 +148,6 @@ public class Topic extends Page {
     public int hashCode() {
         return Objects.hashCode(mId, mContent, mReplies, mNode, mReplyTime);
     }
-
-    public static final Creator<Topic> CREATOR = new Creator<Topic>() {
-        @Override
-        public Topic createFromParcel(Parcel source) {
-            return new Builder()
-                    .setTitle(source.readString())
-                    .setId(source.readInt())
-                    .setContent(source.readString())
-                    .setReplyCount(source.readInt())
-                    .setMember(Member.CREATOR.createFromParcel(source))
-                    .setNode(Node.CREATOR.createFromParcel(source))
-                    .setReplyTime(source.readString())
-                    .createTopic();
-        }
-
-        @Override
-        public Topic[] newArray(int size) {
-            return new Topic[size];
-        }
-    };
 
     public static class Builder {
         private int mId;
