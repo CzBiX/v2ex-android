@@ -38,7 +38,7 @@ public class MyselfParser extends Parser {
             return null;
         }
 
-        final String text = ele.select(".inner .fade").get(0).text();
+        final String text = ele.select(".inner > strong > a").get(0).text();
         final Matcher matcher = PATTERN_UNREAD_NUM.matcher(text);
         Preconditions.checkState(matcher.find());
         final int num = Integer.parseInt(matcher.group());
