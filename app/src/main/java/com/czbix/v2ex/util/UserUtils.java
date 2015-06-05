@@ -12,6 +12,7 @@ public class UserUtils {
     public static void login(String username, Avatar avatar) {
         ConfigDao.put(ConfigDao.KEY_AVATAR, avatar.getBaseUrl());
         ConfigDao.put(ConfigDao.KEY_USERNAME, username);
+
         AppCtx.getEventBus().post(new LoginEvent(username));
     }
 
@@ -26,7 +27,10 @@ public class UserUtils {
 
     public static void logout() {
         RequestHelper.clearCookies();
+
         ConfigDao.remove(ConfigDao.KEY_USERNAME);
+        ConfigDao.remove(ConfigDao.KEY_AVATAR);
+
         AppCtx.getEventBus().post(new LoginEvent());
     }
 }

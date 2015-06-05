@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         if (UserState.getInstance().isAnonymous()) {
             mNotificationsItem.setEnabled(false);
         } else {
+            mNotificationsItem.setEnabled(true);
             mNotificationsItem.setIcon(UserState.getInstance().hasUnread()
                     ? R.drawable.ic_notifications_black_24dp
                     : R.drawable.ic_notifications_none_black_24dp);
