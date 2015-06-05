@@ -97,7 +97,7 @@ public class ConfigDao {
     private static <T> T execute(SqlOperation<T> operation, boolean isWrite) {
         SQLiteDatabase db = null;
         try {
-            final ConfigDb instance = ConfigDb.getInstance();
+            final V2exDb instance = V2exDb.getInstance();
             db = isWrite ? instance.getWritableDatabase() : instance.getReadableDatabase();
             return operation.execute(db);
         } finally {
