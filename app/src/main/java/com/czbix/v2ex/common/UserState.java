@@ -3,6 +3,8 @@ package com.czbix.v2ex.common;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.eventbus.LoginEvent;
+import com.czbix.v2ex.parser.MyselfParser;
+import com.czbix.v2ex.util.UserUtils;
 import com.google.common.eventbus.Subscribe;
 
 public class UserState {
@@ -22,6 +24,13 @@ public class UserState {
         mUsername = ConfigDao.get(ConfigDao.KEY_USERNAME, null);
 
         AppCtx.getEventBus().register(this);
+    }
+
+    public void handleInfo(MyselfParser.MySelfInfo info) {
+        if (info == null) {
+            UserUtils.logout();
+            return;
+        }
     }
 
     @Subscribe

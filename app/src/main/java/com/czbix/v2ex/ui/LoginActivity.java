@@ -20,8 +20,8 @@ import android.widget.Toast;
 
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.network.RequestHelper;
-import com.czbix.v2ex.parser.MyselfParser;
 import com.czbix.v2ex.util.UserUtils;
 
 /**
@@ -173,9 +173,9 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                final MyselfParser.MySelfInfo info = RequestHelper.login(mAccount, mPassword);
-                if (info != null) {
-                    UserUtils.login(mAccount, info.mAvatar);
+                final Avatar avatar = RequestHelper.login(mAccount, mPassword);
+                if (avatar != null) {
+                    UserUtils.login(mAccount, avatar);
                     return true;
                 }
             } catch (ConnectionException | RemoteException e) {

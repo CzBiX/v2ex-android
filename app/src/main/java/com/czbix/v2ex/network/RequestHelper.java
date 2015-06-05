@@ -5,9 +5,11 @@ import android.util.Log;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
+import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RequestException;
+import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.Node;
@@ -97,6 +99,7 @@ public class RequestHelper {
         try {
             doc = Parser.toDoc(response.body().string());
             topics = TopicListParser.parseDoc(doc, page);
+            processUserState(doc);
         } catch (IOException e) {
             throw new ConnectionException(e);
         } catch (SAXException e) {
@@ -124,6 +127,7 @@ public class RequestHelper {
         try {
             doc = Parser.toDoc(response.body().string());
             result = TopicParser.parseDoc(doc, topic);
+            processUserState(doc);
         } catch (SAXException e) {
             throw new RequestException(response, e);
         } catch (IOException e) {
@@ -131,6 +135,11 @@ public class RequestHelper {
         }
 
         return result;
+    }
+
+    private static void processUserState(Document doc) {
+        final MyselfParser.MySelfInfo info = MyselfParser.parseDoc(doc);
+        UserState.getInstance().handleInfo(info);
     }
 
     public static List<Node> getAllNodes(Etag etag) throws ConnectionException, RemoteException {
@@ -190,7 +199,7 @@ public class RequestHelper {
         sendRequest(request);
     }
 
-    public static MyselfParser.MySelfInfo login(String account, String password) throws ConnectionException, RemoteException {
+    public static Avatar login(String account, String password) throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "login user: " + account);
 
         final String onceCode = getOnceCode();
@@ -225,7 +234,7 @@ public class RequestHelper {
         try {
             final String html = response.body().string();
             final Document document = Parser.toDoc(html);
-            return MyselfParser.parseDoc(document);
+            return MyselfParser.parseAvatarOnly(document);
         } catch (IOException e) {
             throw new ConnectionException(e);
         } catch (SAXException e) {
