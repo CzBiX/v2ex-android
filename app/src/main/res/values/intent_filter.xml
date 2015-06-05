@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="scheme_http">http</string>
-    <string name="scheme_https">http</string>
+    <string name="scheme_https">https</string>
 
     <string name="master_host">v2ex.com</string>
     <string name="www_host">www.v2ex.com</string>
