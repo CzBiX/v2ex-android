@@ -138,6 +138,10 @@ public class RequestHelper {
     }
 
     private static void processUserState(Document doc) {
+        if (UserState.getInstance().isAnonymous()) {
+            return;
+        }
+
         final MyselfParser.MySelfInfo info = MyselfParser.parseDoc(doc);
         UserState.getInstance().handleInfo(info);
     }

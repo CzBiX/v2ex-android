@@ -34,8 +34,7 @@ public class ConfigDao {
                 ")";
         db.execSQL(sql);
 
-        sql = "CREATE UNIQUE INDEX index_name ON " + TABLE_NAME + "(" +
-                KEY_KEY + ")";
+        sql = String.format("CREATE UNIQUE INDEX %1$s_%2$s ON %1$s(%2$s)", TABLE_NAME, KEY_KEY);
         db.execSQL(sql);
     }
 
