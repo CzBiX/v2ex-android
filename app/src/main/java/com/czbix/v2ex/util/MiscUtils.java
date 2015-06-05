@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.czbix.v2ex.AppCtx;
+import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.network.RequestHelper;
 
@@ -16,7 +18,24 @@ import static android.os.Build.VERSION;
 import static android.os.Build.VERSION_CODES;
 
 public class MiscUtils {
-    public static final boolean HAS_L = VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP;
+    private static final String HOST_MASTER;
+    private static final String HOST_WWW;
+    private static final String PREFIX_TOPIC;
+    private static final String PREFIX_NODE;
+
+    public static final boolean HAS_L;
+
+    static {
+        final AppCtx context = AppCtx.getInstance();
+        HOST_MASTER = context.getString(R.string.master_host);
+        HOST_WWW = context.getString(R.string.www_host);
+
+        PREFIX_TOPIC = context.getString(R.string.topic_url_prefix);
+        PREFIX_NODE = context.getString(R.string.node_url_prefix);
+
+        final int sdkInt = VERSION.SDK_INT;
+        HAS_L = sdkInt >= VERSION_CODES.LOLLIPOP;
+    }
 
     public static void setClipboard(Context context,@Nullable String title, String str) {
         final ClipboardManager manager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
@@ -31,6 +50,15 @@ public class MiscUtils {
             uri = Uri.parse(RequestHelper.BASE_URL + url);
         }
 
-        return new Intent(Intent.ACTION_VIEW, uri);
+        final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+        final String host = uri.getHost();
+        final String path = uri.getPath();
+        if ((host.equals(HOST_MASTER) || host.equals(HOST_WWW))
+                && (path.startsWith(PREFIX_TOPIC) || path.startsWith(PREFIX_NODE))) {
+            intent.setPackage(BuildConfig.APPLICATION_ID);
+        }
+
+        return intent;
     }
 }
