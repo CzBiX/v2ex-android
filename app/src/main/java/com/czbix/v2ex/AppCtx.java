@@ -3,6 +3,7 @@ package com.czbix.v2ex;
 import android.app.Application;
 import android.os.RemoteException;
 
+import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.dao.NodeDao;
@@ -38,6 +39,8 @@ public class AppCtx extends Application {
         // event bus is the first
         mEventBus = new AsyncEventBus(new HandlerExecutor());
         mEventBus.register(this);
+
+        UserState.getInstance().init();
 
         ExecutorUtils.execute(new AsyncInitTask());
     }

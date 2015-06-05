@@ -20,7 +20,7 @@ public class UserState {
         return instance;
     }
 
-    public UserState() {
+    public void init() {
         mUsername = ConfigDao.get(ConfigDao.KEY_USERNAME, null);
 
         AppCtx.getEventBus().register(this);
