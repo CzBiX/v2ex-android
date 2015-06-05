@@ -31,4 +31,5 @@
     <string name="drawer_notifications">Notifications</string>
     <string name="action_thank">Thank</string>
     <string name="action_ignore">Ignore</string>
+    <string name="action_share">Share</string>
 </resources>

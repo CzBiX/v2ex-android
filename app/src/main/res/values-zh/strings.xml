@@ -39,4 +39,5 @@
     <string name="drawer_notifications">通知</string>
     <string name="action_thank">感谢</string>
     <string name="action_ignore">忽略</string>
+    <string name="action_share">分享</string>
 </resources>

@@ -12,6 +12,10 @@
           android:title="@string/action_thank"/>
     <item android:id="@+id/action_ignore"
           android:title="@string/action_ignore"/>
+    <item android:id="@+id/action_share"
+          android:title="@string/action_share"
+          app:showAsAction="ifRoom"
+          app:actionProviderClass="android.support.v7.widget.ShareActionProvider"/>
     <item android:id="@+id/action_copy_link"
           android:title="@string/action_link"
           app:showAsAction="never" />

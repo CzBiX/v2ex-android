@@ -1,6 +1,7 @@
 package com.czbix.v2ex.ui.fragment;
 
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -9,8 +10,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.ShareActionProvider;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -62,6 +65,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener, HtmlMovementMethod.OnHtmlActionListener {
     private static final String TAG = TopicFragment.class.getSimpleName();
     private static final String ARG_TOPIC = "topic";
+    private static final int[] MENU_REQUIRED_LOGGED_IN = {R.id.action_ignore, R.id.action_reply, R.id.action_thank};
 
     private Topic mTopic;
     private SwipeRefreshLayout mLayout;
@@ -176,10 +180,23 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         inflater.inflate(R.menu.menu_topic, menu);
 
         if (UserState.getInstance().isAnonymous()) {
-            menu.findItem(R.id.action_reply).setVisible(false);
+            for (int i : MENU_REQUIRED_LOGGED_IN) {
+                menu.findItem(i).setVisible(false);
+            }
         }
 
+        setupShareActionMenu(menu);
+
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void setupShareActionMenu(Menu menu) {
+        final ShareActionProvider actionProvider = ((ShareActionProvider)
+                MenuItemCompat.getActionProvider(menu.findItem(R.id.action_share)));
+        final Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, mTopic.getUrl());
+        actionProvider.setShareIntent(shareIntent);
     }
 
     @Override
