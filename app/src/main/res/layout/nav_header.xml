@@ -22,6 +22,7 @@
         android:id="@+id/username_tv"
         android:text="Username"
         android:textColor="#fff"
+        android:textStyle="bold"
         tools:ignore="HardcodedText"/>
 
 </LinearLayout>
