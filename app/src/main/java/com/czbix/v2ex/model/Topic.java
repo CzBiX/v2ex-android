@@ -10,7 +10,7 @@ import com.google.common.base.Preconditions;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Topic extends Page {
+public class Topic extends Page implements ThankAble, IgnoreAble {
     private static final Pattern PATTERN = Pattern.compile("/t/(\\d+?)(?:\\W|$)");
 
     private final int mId;
@@ -86,6 +86,16 @@ public class Topic extends Page {
     @Override
     public String getUrl() {
         return buildUrlFromId(mId);
+    }
+
+    @Override
+    public String getIgnoreUrl() {
+        return String.format("%s/ignore/topic/%d", RequestHelper.BASE_URL, mId);
+    }
+
+    @Override
+    public String getThankUrl() {
+        return String.format("%s/thank/topic/%d", RequestHelper.BASE_URL, mId);
     }
 
     @Override

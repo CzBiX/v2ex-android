@@ -37,4 +37,6 @@
     <string name="user_anonymous">匿名</string>
     <string name="toast_reply_saved_as_draft">评论已保存为草稿。</string>
     <string name="drawer_notifications">通知</string>
+    <string name="action_thank">感谢</string>
+    <string name="action_ignore">忽略</string>
 </resources>

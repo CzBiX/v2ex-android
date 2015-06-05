@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Objects;
 
-public class Comment implements Parcelable {
+public class Comment implements Parcelable, ThankAble, IgnoreAble {
     private final int mId;
     private final String mContent;
     private final Member mMember;
@@ -53,10 +53,12 @@ public class Comment implements Parcelable {
         return mThanked;
     }
 
+    @Override
     public String getIgnoreUrl() {
         return String.format("%s/ignore/reply/%d", RequestHelper.BASE_URL, mId);
     }
 
+    @Override
     public String getThankUrl() {
         return String.format("%s/thank/reply/%d", RequestHelper.BASE_URL, mId);
     }

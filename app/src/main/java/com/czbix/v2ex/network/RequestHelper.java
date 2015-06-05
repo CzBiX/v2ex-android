@@ -10,10 +10,11 @@ import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.model.Avatar;
-import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.GsonFactory;
+import com.czbix.v2ex.model.IgnoreAble;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
+import com.czbix.v2ex.model.ThankAble;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.network.interceptor.UserAgentInterceptor;
@@ -189,15 +190,15 @@ public class RequestHelper {
         return response.code() == 302;
     }
 
-    public static void ignore(Comment comment, String onceToken) throws ConnectionException, RemoteException {
-        final Request request = new Request.Builder().url(comment.getIgnoreUrl() + "?once=" + onceToken)
+    public static void ignore(IgnoreAble obj, String onceToken) throws ConnectionException, RemoteException {
+        final Request request = new Request.Builder().url(obj.getIgnoreUrl() + "?once=" + onceToken)
                 .post(null).build();
 
         sendRequest(request);
     }
 
-    public static void thank(Comment comment, String csrfToken) throws ConnectionException, RemoteException {
-        final Request request = new Request.Builder().url(comment.getThankUrl() + "?t=" + csrfToken)
+    public static void thank(ThankAble obj, String csrfToken) throws ConnectionException, RemoteException {
+        final Request request = new Request.Builder().url(obj.getThankUrl() + "?t=" + csrfToken)
                 .post(null).build();
 
         sendRequest(request);

@@ -29,4 +29,6 @@
     <string name="desc_open_drawer">Open navigation drawer</string>
     <string name="desc_close_drawer">Close navigation drawer</string>
     <string name="drawer_notifications">Notifications</string>
+    <string name="action_thank">Thank</string>
+    <string name="action_ignore">Ignore</string>
 </resources>

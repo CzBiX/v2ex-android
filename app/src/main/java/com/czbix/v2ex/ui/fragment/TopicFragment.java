@@ -30,6 +30,8 @@ import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.eventbus.CommentEvent;
 import com.czbix.v2ex.model.Comment;
+import com.czbix.v2ex.model.IgnoreAble;
+import com.czbix.v2ex.model.ThankAble;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.model.db.Draft;
@@ -194,6 +196,12 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             case R.id.action_reply:
                 toggleReplyForm();
                 return true;
+            case R.id.action_thank:
+                onThank(mTopic);
+                return true;
+            case R.id.action_ignore:
+                onIgnore(mTopic);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -306,12 +314,16 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onCommentIgnore(final Comment comment) {
+        onIgnore(comment);
+    }
+
+    private void onIgnore(final IgnoreAble obj) {
         AppCtx.getEventBus().register(this);
         final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
             @Override
             public void run() {
                 try {
-                    RequestHelper.ignore(comment, mOnceToken);
+                    RequestHelper.ignore(obj, mOnceToken);
                 } catch (ConnectionException | RemoteException e) {
                     e.printStackTrace();
                     return;
@@ -348,12 +360,16 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onCommentThank(final Comment comment) {
+        onThank(comment);
+    }
+
+    private void onThank(final ThankAble obj) {
         AppCtx.getEventBus().register(this);
         final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
             @Override
             public void run() {
                 try {
-                    RequestHelper.thank(comment, mCsrfToken);
+                    RequestHelper.thank(obj, mCsrfToken);
                 } catch (ConnectionException | RemoteException e) {
                     e.printStackTrace();
                     return;
