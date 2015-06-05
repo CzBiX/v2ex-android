@@ -21,6 +21,10 @@
     public *;
 }
 
+-keep class android.support.v7.widget.* {
+    public *;
+}
+
 # for stacktrace
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable
