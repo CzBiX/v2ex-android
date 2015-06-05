@@ -6,6 +6,7 @@ import android.os.RemoteException;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.dao.ConfigDao;
+import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Node;
@@ -62,6 +63,7 @@ public class AppCtx extends Application {
     private class AsyncInitTask implements Runnable {
         @Override
         public void run() {
+            DraftDao.cleanExpired();
             loadAllNodes();
         }
 

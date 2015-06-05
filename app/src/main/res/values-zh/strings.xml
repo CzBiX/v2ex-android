@@ -35,4 +35,5 @@
     <string name="toast_cancel_failed">取消失败！</string>
     <string name="action_cancel">取消</string>
     <string name="user_anonymous">匿名</string>
+    <string name="toast_reply_saved_as_draft">评论已保存为草稿。</string>
 </resources>

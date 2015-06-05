@@ -8,7 +8,7 @@ import android.util.LruCache;
 
 import com.google.common.base.Preconditions;
 
-public class ConfigDao {
+public class ConfigDao extends DaoBase {
     private static final String TABLE_NAME = "config";
 
     private static final String KEY_ID = "id";
@@ -91,18 +91,5 @@ public class ConfigDao {
                 return null;
             }
         }, true);
-    }
-
-    private static <T> T execute(SqlOperation<T> operation, boolean isWrite) {
-        SQLiteDatabase db = null;
-        try {
-            final V2exDb instance = V2exDb.getInstance();
-            db = isWrite ? instance.getWritableDatabase() : instance.getReadableDatabase();
-            return operation.execute(db);
-        } finally {
-            if (db != null) {
-                db.close();
-            }
-        }
     }
 }

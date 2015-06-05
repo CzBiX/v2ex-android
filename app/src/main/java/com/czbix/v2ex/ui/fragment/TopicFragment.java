@@ -11,6 +11,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,15 +21,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.eventbus.CommentEvent;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
+import com.czbix.v2ex.model.db.Draft;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.ui.TopicActivity;
 import com.czbix.v2ex.ui.adapter.CommentAdapter;
@@ -64,6 +69,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private ReplyFormHelper mReplyForm;
     private String mCsrfToken;
     private String mOnceToken;
+    private Draft mDraft;
 
 
     /**
@@ -128,6 +134,24 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mLayout.setRefreshing(true);
         getLoaderManager().initLoader(0, null, this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        mDraft = null;
+        final Draft draft = DraftDao.get(mTopic.getId());
+        if (draft == null) {
+            return;
+        }
+
+        if (draft.isExpired()) {
+            DraftDao.delete(draft.mId);
+            return;
+        }
+
+        mDraft = draft;
     }
 
     @Override
@@ -201,6 +225,16 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mCsrfToken = data.mCsrfToken;
         mOnceToken = data.mOnceToken;
+
+        if (mDraft != null) {
+            Preconditions.checkState(mReplyForm == null);
+
+            toggleReplyForm();
+            mReplyForm.setContent(mDraft.mContent);
+
+            DraftDao.delete(mDraft.mId);
+            mDraft = null;
+        }
     }
 
     @Override
@@ -208,6 +242,24 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mCommentAdapter.setDataSource(null);
         mCsrfToken = null;
         mOnceToken = null;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (mReplyForm == null) {
+            return;
+        }
+
+        final Editable content = mReplyForm.getContent();
+        if (TextUtils.isEmpty(content)) {
+            return;
+        }
+
+        DraftDao.insert(mTopic.getId(), content.toString());
+
+        Toast.makeText(getActivity(), R.string.toast_reply_saved_as_draft, Toast.LENGTH_LONG).show();
     }
 
     @Override

@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
-public class NodeDao {
+public class NodeDao extends DaoBase {
     private static final String TABLE_NAME = "node";
 
     private static final String KEY_ID = "id";
@@ -188,18 +188,5 @@ public class NodeDao {
                 }
             }
         }, false);
-    }
-
-    private static <T> T execute(SqlOperation<T> operation, boolean isWrite) {
-        SQLiteDatabase db = null;
-        try {
-            final V2exDb instance = V2exDb.getInstance();
-            db = isWrite ? instance.getWritableDatabase() : instance.getReadableDatabase();
-            return operation.execute(db);
-        } finally {
-            if (db != null) {
-                db.close();
-            }
-        }
     }
 }

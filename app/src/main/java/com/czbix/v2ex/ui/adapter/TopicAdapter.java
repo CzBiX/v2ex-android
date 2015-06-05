@@ -114,7 +114,13 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mUsername.setText(topic.getMember().getUsername());
             mNode.setText("› " + topic.getNode().getTitle());
             mTime.setText(topic.getReplyTime());
-            mReplyCount.setText(Integer.toString(topic.getReplyCount()));
+            final int replyCount = topic.getReplyCount();
+            if (replyCount > 0) {
+                mReplyCount.setVisibility(View.VISIBLE);
+                mReplyCount.setText(Integer.toString(replyCount));
+            } else {
+                mReplyCount.setVisibility(View.INVISIBLE);
+            }
 
             setContent(topic);
             setAvatarImg(topic);
