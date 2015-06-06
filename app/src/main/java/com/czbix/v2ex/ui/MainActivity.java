@@ -3,6 +3,7 @@ package com.czbix.v2ex.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.annotation.IdRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -26,7 +28,9 @@ import com.bumptech.glide.request.target.ViewTarget;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
+import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.dao.NodeDao;
+import com.czbix.v2ex.eventbus.BusEvent.DailyAwardEvent;
 import com.czbix.v2ex.eventbus.BusEvent.NewUnreadEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
@@ -35,9 +39,11 @@ import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.loader.GooglePhotoUrlLoader;
+import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.res.GoogleImg;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
+import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.UserUtils;
 import com.google.common.base.Strings;
 import com.google.common.eventbus.Subscribe;
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     private View mNavBg;
     private Node mLastNode;
     private MenuItem mNotificationsItem;
+    private View mAwardButton;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         mPreferences = getPreferences(MODE_PRIVATE);
         mAvatar = ((ImageView) findViewById(R.id.avatar_img));
         mUsername = (TextView) findViewById(R.id.username_tv);
+        mAwardButton = findViewById(R.id.award);
         mAppBar = ((AppBarLayout) findViewById(R.id.appbar));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.layout);
         mNav = ((NavigationView) findViewById(R.id.nav));
@@ -113,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         updateUsername();
         updateNavBackground();
         updateNotifications();
+        setAwardVisibility(UserState.getInstance().hasAward());
     }
 
     private void updateNotifications() {
@@ -137,6 +146,18 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         });
     }
 
+    @Subscribe
+    public void onDailyMissionEvent(DailyAwardEvent e) {
+        if (!e.mHasAward) {
+            Toast.makeText(this, R.string.toast_daily_award_received, Toast.LENGTH_LONG).show();
+        }
+        setAwardVisibility(e.mHasAward);
+    }
+
+    private void setAwardVisibility(boolean visibility) {
+        mAwardButton.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
+    }
+
     private void initNavDrawer() {
         mNav.setNavigationItemSelectedListener(this);
         if (!mPreferences.getBoolean(PREF_DRAWER_SHOWED, false)) {
@@ -146,6 +167,25 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         final Menu menu = mNav.getMenu();
         mNotificationsItem = menu.findItem(R.id.drawer_notifications);
         updateNotifications();
+
+        mAwardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ExecutorUtils.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            RequestHelper.dailyMission();
+                        } catch (ConnectionException | RemoteException e) {
+                            e.printStackTrace();
+                        }
+
+                        AppCtx.getEventBus().post(new DailyAwardEvent(false));
+                    }
+                });
+            }
+        });
+        setAwardVisibility(UserState.getInstance().hasAward());
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
                 R.string.desc_open_drawer, R.string.desc_close_drawer);

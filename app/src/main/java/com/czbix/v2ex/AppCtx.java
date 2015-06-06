@@ -9,6 +9,7 @@ import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.eventbus.BusEvent;
+import com.czbix.v2ex.eventbus.BusEvent.GetNodesFinishEvent;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.network.Etag;
 import com.czbix.v2ex.network.RequestHelper;
@@ -65,6 +66,7 @@ public class AppCtx extends Application {
         public void run() {
             DraftDao.cleanExpired();
             loadAllNodes();
+            checkDailyAward();
         }
 
         private void loadAllNodes() {
@@ -80,14 +82,27 @@ public class AppCtx extends Application {
                 return;
             }
 
-            if (!etag.isModified()) {
-                LogUtils.d(TAG, "nodes not modified");
-            } else {
+            if (etag.isModified()) {
                 NodeDao.putAll(result);
                 ConfigDao.put(ConfigDao.KEY_NODE_ETAG, etag.getNewEtag());
+            } else {
+                LogUtils.d(TAG, "nodes not modified");
             }
             LogUtils.d(TAG, "load nodes finish!");
-            mEventBus.post(new BusEvent.GetNodesFinishEvent());
+            mEventBus.post(new GetNodesFinishEvent());
+        }
+
+        private void checkDailyAward() {
+            try {
+                final boolean hasAward = RequestHelper.hasDailyAward();
+                if (hasAward) {
+                    mEventBus.post(new BusEvent.DailyAwardEvent(true));
+                }
+            } catch (ConnectionException | RemoteException e) {
+                // TODO
+                e.printStackTrace();
+                return;
+            }
         }
     }
 }

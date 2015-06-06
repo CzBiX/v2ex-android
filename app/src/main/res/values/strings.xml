@@ -32,4 +32,6 @@
     <string name="action_thank">Thank</string>
     <string name="action_ignore">Ignore</string>
     <string name="action_share">Share</string>
+    <string name="tv_daily_award">Daily award</string>
+    <string name="toast_daily_award_received">Daily award received</string>
 </resources>

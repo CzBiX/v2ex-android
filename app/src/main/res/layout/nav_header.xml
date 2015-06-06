@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="160dp"
               android:background="?attr/colorPrimary"
               android:padding="16dp"
               android:id="@id/layout"
-              android:orientation="vertical"
               android:gravity="bottom"
               tools:ignore="Overdraw">
     <ImageView
@@ -17,12 +16,24 @@
         android:contentDescription="@string/desc_avatar"/>
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/avatar_img"
         android:id="@+id/username_tv"
         android:text="Username"
         android:textColor="#fff"
         android:textStyle="bold"
         tools:ignore="HardcodedText"/>
-
-</LinearLayout>
+    
+    <TextView
+        android:id="@+id/award"
+        android:drawableStart="@drawable/ic_card_giftcard_white_24dp"
+        android:text="@string/tv_daily_award"
+        android:textColor="#fff"
+        android:textStyle="bold|italic"
+        android:gravity="center_vertical"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBaseline="@id/username_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"/>
+</RelativeLayout>

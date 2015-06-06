@@ -27,7 +27,7 @@ public class MyselfParser extends Parser {
     /**
      * @return null if user signed out
      */
-    public static MySelfInfo parseDoc(Document doc) {
+    public static MySelfInfo parseDoc(Document doc, boolean isTab) {
         final Elements elements = doc.select("#Rightbar > div:nth-child(2)");
         Preconditions.checkState(elements.size() == 1);
 
@@ -38,19 +38,37 @@ public class MyselfParser extends Parser {
             return null;
         }
 
+        final int num = getNotificationsNum(ele);
+        final boolean hasAward = isTab && hasAwardInTab(doc);
+
+        return new MySelfInfo(num, hasAward);
+    }
+
+    public static boolean hasAwardInTab(Document doc) {
+        final Elements elements = doc.select("#Rightbar .fa-gift");
+        return elements.size() == 1;
+    }
+
+    public static boolean hasAward(String html) throws IOException, SAXException {
+        final Document doc = toDoc(html);
+        final Elements elements = doc.select(".fa-ok-sign");
+        return elements.size() == 1;
+    }
+
+    private static int getNotificationsNum(Element ele) {
         final String text = ele.select(".inner a[href=/notifications]").get(0).text();
         final Matcher matcher = PATTERN_UNREAD_NUM.matcher(text);
         Preconditions.checkState(matcher.find());
-        final int num = Integer.parseInt(matcher.group());
-
-        return new MySelfInfo(num);
+        return Integer.parseInt(matcher.group());
     }
 
     public static class MySelfInfo {
         public final int mUnread;
+        public final boolean mHasAward;
 
-        public MySelfInfo(int unread) {
+        public MySelfInfo(int unread, boolean hasAward) {
             mUnread = unread;
+            mHasAward = hasAward;
         }
     }
 }

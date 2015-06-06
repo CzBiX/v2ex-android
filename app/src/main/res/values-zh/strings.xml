@@ -40,4 +40,6 @@
     <string name="action_thank">感谢</string>
     <string name="action_ignore">忽略</string>
     <string name="action_share">分享</string>
+    <string name="toast_daily_award_received">每日登录奖励已领取</string>
+    <string name="tv_daily_award">每日奖励</string>
 </resources>

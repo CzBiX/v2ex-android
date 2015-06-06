@@ -14,6 +14,7 @@ import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.IgnoreAble;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
+import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.ThankAble;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
@@ -52,6 +53,7 @@ public class RequestHelper {
     private static final String TAG = RequestHelper.class.getSimpleName();
     private static final String API_GET_ALL_NODES = BASE_URL + "/api/nodes/all.json";
     private static final String URL_SIGN_IN = BASE_URL + "/signin";
+    private static final String URL_MISSION_DAILY = BASE_URL + "/mission/daily";
     private static final String URL_ONCE_CODE = URL_SIGN_IN;
 
     private static final int SERVER_ERROR_CODE = 500;
@@ -100,7 +102,7 @@ public class RequestHelper {
         try {
             doc = Parser.toDoc(response.body().string());
             topics = TopicListParser.parseDoc(doc, page);
-            processUserState(doc);
+            processUserState(doc, page instanceof Tab);
         } catch (IOException e) {
             throw new ConnectionException(e);
         } catch (SAXException e) {
@@ -137,14 +139,17 @@ public class RequestHelper {
 
         return result;
     }
-
     private static void processUserState(Document doc) {
+        processUserState(doc, false);
+    }
+
+    private static void processUserState(Document doc, boolean isTab) {
         if (UserState.getInstance().isAnonymous()) {
             return;
         }
 
-        final MyselfParser.MySelfInfo info = MyselfParser.parseDoc(doc);
-        UserState.getInstance().handleInfo(info);
+        final MyselfParser.MySelfInfo info = MyselfParser.parseDoc(doc, isTab);
+        UserState.getInstance().handleInfo(info, isTab);
     }
 
     public static List<Node> getAllNodes(Etag etag) throws ConnectionException, RemoteException {
@@ -202,6 +207,38 @@ public class RequestHelper {
                 .post(null).build();
 
         sendRequest(request);
+    }
+
+    public static void dailyMission() throws ConnectionException, RemoteException {
+        final String onceCode = getOnceCode();
+        final Request request = new Request.Builder().url(String.format("%s/redeem?once=%s",
+                URL_MISSION_DAILY, onceCode))
+                .header(HttpHeaders.REFERER, URL_MISSION_DAILY)
+                .build();
+
+        final Response response = sendRequest(request, false);
+
+        if (response.code() != 302) {
+            throw new RequestException(response);
+        }
+    }
+
+    public static boolean hasDailyAward() throws ConnectionException, RemoteException {
+        final Request request = new Request.Builder().url(URL_MISSION_DAILY).build();
+
+        final Response response = sendRequest(request);
+
+        final String html;
+        try {
+            html = response.body().string();
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        }
+        try {
+            return MyselfParser.hasAward(html);
+        } catch (IOException | SAXException e) {
+            throw new RequestException(response, e);
+        }
     }
 
     public static Avatar login(String account, String password) throws ConnectionException, RemoteException {
