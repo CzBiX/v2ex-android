@@ -35,17 +35,16 @@ import com.czbix.v2ex.eventbus.BusEvent.NewUnreadEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
-import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.loader.GooglePhotoUrlLoader;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.res.GoogleImg;
+import com.czbix.v2ex.ui.fragment.CategoryTabFragment;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.UserUtils;
-import com.google.common.base.Strings;
 import com.google.common.eventbus.Subscribe;
 
 
@@ -53,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         NavigationView.OnNavigationItemSelectedListener, NodeListFragment.OnNodeActionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String PREF_DRAWER_SHOWED = "drawer_showed";
-    private static final String PREF_LAST_NODE = "last_node";
 
     private TextView mUsername;
     private AppBarLayout mAppBar;
@@ -77,39 +75,28 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         mUsername = (TextView) findViewById(R.id.username_tv);
         mAwardButton = findViewById(R.id.award);
         mAppBar = ((AppBarLayout) findViewById(R.id.appbar));
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.layout);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNav = ((NavigationView) findViewById(R.id.nav));
-        mNavBg = mNav.findViewById(R.id.layout);
+        mNavBg = mNav.findViewById(R.id.nav_layout);
 
         initToolbar();
         initNavDrawer();
 
-        final Page page = getLastPage();
-        addFragmentToView(TopicListFragment.newInstance(page));
+        addFragmentToView(getFragmentToShow());
     }
 
-    private Page getLastPage() {
-        mLastNode = null;
+    private Fragment getFragmentToShow() {
         final Intent intent = getIntent();
         if (intent.getAction().equals(Intent.ACTION_VIEW)) {
             final String url = intent.getDataString();
             final String name = Node.getNameFromUrl(url);
             final Node node = NodeDao.get(name);
             if (node != null) {
-                return node;
+                return TopicListFragment.newInstance(node);
             }
         }
 
-        final String nodeName = mPreferences.getString(PREF_LAST_NODE, null);
-        if (!Strings.isNullOrEmpty(nodeName)) {
-            final Node node = NodeDao.get(nodeName);
-            if (node != null) {
-                mLastNode = node;
-                return node;
-            }
-        }
-
-        return Tab.TAB_ALL;
+        return CategoryTabFragment.newInstance();
     }
 
     @Override
@@ -313,10 +300,6 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         super.onStop();
 
         AppCtx.getEventBus().unregister(this);
-
-        if (mLastNode != null) {
-            mPreferences.edit().putString(PREF_LAST_NODE, mLastNode.getName()).apply();
-        }
     }
 
     @Override

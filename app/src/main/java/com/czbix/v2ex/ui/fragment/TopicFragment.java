@@ -111,7 +111,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_topic, container, false);
-        mLayout = ((SwipeRefreshLayout) rootView.findViewById(R.id.layout));
+        mLayout = ((SwipeRefreshLayout) rootView.findViewById(R.id.comments_layout));
         mLayout.setOnRefreshListener(this);
 
         mCommentsView = ((ListView) mLayout.findViewById(R.id.comments));

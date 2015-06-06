@@ -14,6 +14,10 @@
         <item name="android:windowTranslucentStatus" tools:ignore="NewApi">true</item>
     </style>
 
+    <style name="AppTheme.TabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabMode">scrollable</item>
+    </style>
+
     <style name="AppTheme.Toolbar" parent="Widget.AppCompat.Toolbar">
         <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
         <item name="popupTheme" tools:ignore="NewApi">@style/ThemeOverlay.AppCompat.Light</item>

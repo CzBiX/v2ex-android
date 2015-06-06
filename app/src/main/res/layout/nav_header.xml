@@ -5,7 +5,7 @@
               android:layout_height="160dp"
               android:background="?attr/colorPrimary"
               android:padding="16dp"
-              android:id="@id/layout"
+              android:id="@+id/nav_layout"
               android:gravity="bottom"
               tools:ignore="Overdraw">
     <ImageView

@@ -22,7 +22,6 @@ import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
-import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.loader.TopicListLoader;
 import com.czbix.v2ex.util.LogUtils;
@@ -47,7 +46,6 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     private TopicListActionListener mListener;
     private TopicAdapter mAdapter;
     private SwipeRefreshLayout mLayout;
-    private boolean mRegisteredEventBus;
     private TopicListLoader mLoader;
 
     /**
@@ -102,15 +100,10 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        final MainActivity activity = (MainActivity) getActivity();
-        activity.setTitle(mPage.getTitle());
-        activity.setNavSelected(R.id.drawer_explore);
+    public void onStart() {
+        super.onStart();
 
         AppCtx.getEventBus().register(this);
-        mRegisteredEventBus = true;
 
         if (ConfigDao.get(ConfigDao.KEY_NODE_ETAG, null) != null) {
             onNodesLoadFinish(null);
@@ -135,14 +128,17 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+
+        AppCtx.getEventBus().unregister(this);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
 
         mListener = null;
-        if (mRegisteredEventBus) {
-            AppCtx.getEventBus().unregister(this);
-            mRegisteredEventBus = false;
-        }
     }
 
     @Override

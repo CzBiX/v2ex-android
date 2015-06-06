@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <com.czbix.v2ex.ui.widget.ExSwipeRefreshLayout
-        android:id="@+id/layout"
+        android:id="@+id/comments_layout"
         android:layout_above="@+id/reply_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

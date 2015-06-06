@@ -6,6 +6,8 @@ import com.czbix.v2ex.network.RequestHelper;
 
 public class Tab extends Page {
     public static final Tab[] ALL_TABS = {
+            new Tab("全部", "/?tab=all"),
+            new Tab("最热", "/?tab=hot"),
             new Tab("技术", "/?tab=tech"),
             new Tab("创意", "/?tab=creative"),
             new Tab("好玩", "/?tab=play"),
@@ -14,13 +16,11 @@ public class Tab extends Page {
             new Tab("交易", "/?tab=deals"),
             new Tab("城市", "/?tab=city"),
             new Tab("问与答", "/?tab=qna"),
-            new Tab("最热", "/?tab=hot"),
-            new Tab("全部", "/?tab=all"),
             new Tab("R2", "/?tab=r2"),
             //new Tab("", "/?tab=nodes"), // why it empty?
             new Tab("关注", "/?tab=members"),
     };
-    public static final Tab TAB_ALL = ALL_TABS[9];
+    public static final Tab TAB_ALL = ALL_TABS[0];
 
     private final String mTitle;
     private final String mUrl;

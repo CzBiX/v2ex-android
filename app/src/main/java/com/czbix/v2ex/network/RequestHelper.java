@@ -9,6 +9,7 @@ import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RequestException;
+import com.czbix.v2ex.common.exception.UnauthorizedException;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.IgnoreAble;
@@ -325,6 +326,10 @@ public class RequestHelper {
 
         if (response.code() >= SERVER_ERROR_CODE) {
             throw new RemoteException();
+        }
+
+        if (response.isRedirect() && response.header(HttpHeaders.LOCATION).startsWith("/signin")) {
+            throw new UnauthorizedException(response);
         }
 
         throw new RequestException(response);
