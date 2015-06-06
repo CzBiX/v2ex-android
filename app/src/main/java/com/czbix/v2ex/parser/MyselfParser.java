@@ -52,7 +52,7 @@ public class MyselfParser extends Parser {
     public static boolean hasAward(String html) throws IOException, SAXException {
         final Document doc = toDoc(html);
         final Elements elements = doc.select(".fa-ok-sign");
-        return elements.size() == 1;
+        return elements.size() == 0;
     }
 
     private static int getNotificationsNum(Element ele) {

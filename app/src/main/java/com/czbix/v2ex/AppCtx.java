@@ -93,6 +93,10 @@ public class AppCtx extends Application {
         }
 
         private void checkDailyAward() {
+            if (UserState.getInstance().isAnonymous()) {
+                return;
+            }
+
             try {
                 final boolean hasAward = RequestHelper.hasDailyAward();
                 if (hasAward) {

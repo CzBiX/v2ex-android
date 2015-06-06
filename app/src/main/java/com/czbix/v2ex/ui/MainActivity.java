@@ -185,7 +185,6 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
                 });
             }
         });
-        setAwardVisibility(UserState.getInstance().hasAward());
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
                 R.string.desc_open_drawer, R.string.desc_close_drawer);
