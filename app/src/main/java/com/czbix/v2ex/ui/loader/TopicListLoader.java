@@ -12,7 +12,6 @@ import java.util.List;
 
 public class TopicListLoader extends AsyncTaskLoader<List<Topic>> {
     private final Page mPage;
-    private List<Topic> mResult;
 
     public TopicListLoader(Context context, Page page) {
         super(context);
