@@ -153,7 +153,9 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         }
         final Menu menu = mNav.getMenu();
         mNotificationsItem = menu.findItem(R.id.drawer_notifications);
-        updateNotifications();
+        // not implemented yet
+        mNotificationsItem.setVisible(false);
+//        updateNotifications();
 
         mAwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
