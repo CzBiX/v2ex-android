@@ -1,12 +1,10 @@
 package com.czbix.v2ex.ui.helper;
 
-import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewStub;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -56,9 +54,7 @@ public class ReplyFormHelper implements TextWatcher, View.OnClickListener {
         mRootView.setVisibility(visible ? View.VISIBLE : View.GONE);
 
         if (!isShown) {
-            final InputMethodManager manager = (InputMethodManager) mRootView.getContext()
-                    .getSystemService(Context.INPUT_METHOD_SERVICE);
-            manager.hideSoftInputFromWindow(mRootView.getWindowToken(), 0);
+            ViewUtils.hideInputMethod(mRootView);
         }
     }
 

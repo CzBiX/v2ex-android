@@ -26,6 +26,7 @@ import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader;
+import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -242,6 +243,7 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
             @Override
             public void onClick(View v) {
                 final int position = getAdapterPosition();
+                ViewUtils.hideInputMethod(mTitle);
                 mListener.onNodeClick(mData.get(position));
             }
 
