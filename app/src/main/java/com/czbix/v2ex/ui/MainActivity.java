@@ -35,7 +35,6 @@ import com.czbix.v2ex.eventbus.BusEvent.NewUnreadEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
-import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.loader.GooglePhotoUrlLoader;
 import com.czbix.v2ex.network.RequestHelper;
@@ -204,7 +203,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
         switch (item.getItemId()) {
             case R.id.drawer_explore:
-                switchFragment(TopicListFragment.newInstance(Tab.TAB_ALL));
+                switchFragment(CategoryTabFragment.newInstance());
                 return true;
             case R.id.drawer_nodes:
                 switchFragment(NodeListFragment.newInstance());

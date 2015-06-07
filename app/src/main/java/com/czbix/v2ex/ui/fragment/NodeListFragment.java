@@ -268,6 +268,7 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
             final List<Node> list = NodeDao.getAll();
             Collections.sort(list);
 
+            mResult = list;
             return list;
         }
     }
