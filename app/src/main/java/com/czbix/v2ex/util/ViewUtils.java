@@ -26,12 +26,14 @@ public class ViewUtils {
         if (width <= 0) {
             view.measure(View.MeasureSpec.EXACTLY, View.MeasureSpec.UNSPECIFIED);
             width = view.getMeasuredWidth();
-        }
-        if (width <= 0) {
-            width = view.getContext().getResources().getDimensionPixelSize(dimenRes);
+
             if (width <= 0) {
-                // fallback to percent
-                width = (int) (getScreenWidthPixel(view.getContext()) * 0.8f);
+                width = view.getContext().getResources().getDimensionPixelSize(dimenRes);
+
+                if (width <= 0) {
+                    // fallback to percent
+                    width = (int) (getScreenWidthPixel(view.getContext()) * 0.8f);
+                }
             }
         }
 
