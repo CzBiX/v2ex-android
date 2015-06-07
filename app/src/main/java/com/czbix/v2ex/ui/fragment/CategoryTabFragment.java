@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.ui.MainActivity;
+import com.google.common.collect.Lists;
+
+import java.util.List;
 
 public class CategoryTabFragment extends Fragment {
     public static CategoryTabFragment newInstance() {
@@ -32,8 +35,8 @@ public class CategoryTabFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.tab_layout, container, false);
-        final ViewPager viewPager = ((ViewPager) view.findViewById(R.id.view_pager));
-        final FragmentPagerAdapter adapter = new CategoryFragmentAdapter(getActivity().getSupportFragmentManager());
+        ViewPager viewPager = ((ViewPager) view.findViewById(R.id.view_pager));
+        FragmentPagerAdapter adapter = new CategoryFragmentAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
 
         final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
@@ -52,17 +55,24 @@ public class CategoryTabFragment extends Fragment {
     }
 
     private class CategoryFragmentAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragments;
+
         public CategoryFragmentAdapter(FragmentManager manager) {
             super(manager);
+
+            mFragments = Lists.newArrayListWithCapacity(Tab.ALL_TABS.length);
+            for (Tab tab : Tab.ALL_TABS) {
+                mFragments.add(TopicListFragment.newInstance(tab));
+            }
         }
 
         public Fragment getItem(int position) {
-            return TopicListFragment.newInstance(Tab.ALL_TABS[position]);
+            return mFragments.get(position);
         }
 
         @Override
         public int getCount() {
-            return Tab.ALL_TABS.length;
+            return mFragments.size();
         }
 
         @Override
