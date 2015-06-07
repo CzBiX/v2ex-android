@@ -40,7 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         private void initUser() {
             final PreferenceCategory user = (PreferenceCategory) findPreference("user");
-            if (UserState.getInstance().isAnonymous()) {
+            if (UserState.getInstance().isGuest()) {
                 getPreferenceScreen().removePreference(user);
                 return;
             }
@@ -78,7 +78,7 @@ public class SettingsActivity extends AppCompatActivity {
                 general.removePreference(debugPref);
             }
 
-            if (UserState.getInstance().isAnonymous()) {
+            if (UserState.getInstance().isGuest()) {
                 loginPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                     @Override
                     public boolean onPreferenceClick(Preference preference) {

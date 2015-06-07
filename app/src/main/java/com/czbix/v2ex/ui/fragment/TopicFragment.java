@@ -179,7 +179,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         inflater.inflate(R.menu.menu_topic, menu);
 
-        if (UserState.getInstance().isAnonymous()) {
+        if (UserState.getInstance().isGuest()) {
             for (int i : MENU_REQUIRED_LOGGED_IN) {
                 menu.findItem(i).setVisible(false);
             }

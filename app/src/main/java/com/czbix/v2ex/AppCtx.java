@@ -93,7 +93,7 @@ public class AppCtx extends Application {
         }
 
         private void checkDailyAward() {
-            if (UserState.getInstance().isAnonymous()) {
+            if (UserState.getInstance().isGuest()) {
                 return;
             }
 

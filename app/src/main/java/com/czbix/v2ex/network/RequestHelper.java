@@ -145,7 +145,7 @@ public class RequestHelper {
     }
 
     private static void processUserState(Document doc, boolean isTab) {
-        if (UserState.getInstance().isAnonymous()) {
+        if (UserState.getInstance().isGuest()) {
             return;
         }
 

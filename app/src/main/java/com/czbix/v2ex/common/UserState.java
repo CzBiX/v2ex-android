@@ -62,7 +62,7 @@ public class UserState {
         mLastAward = e.mHasAward;
     }
 
-    public boolean isAnonymous() {
+    public boolean isGuest() {
         return mUsername == null;
     }
 

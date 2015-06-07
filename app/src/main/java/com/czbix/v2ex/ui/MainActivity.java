@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     private void updateNotifications() {
-        if (UserState.getInstance().isAnonymous()) {
+        if (UserState.getInstance().isGuest()) {
             mNotificationsItem.setEnabled(false);
         } else {
             mNotificationsItem.setEnabled(true);
@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         mNavBg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (UserState.getInstance().isAnonymous()) {
+                if (UserState.getInstance().isGuest()) {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 } else {
                     // TODO: jump to user info page
@@ -233,9 +233,9 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     private void updateUsername() {
-        if (UserState.getInstance().isAnonymous()) {
+        if (UserState.getInstance().isGuest()) {
             mAvatar.setVisibility(View.INVISIBLE);
-            mUsername.setText(R.string.user_anonymous);
+            mUsername.setText(R.string.action_sign_in);
             return;
         }
 
@@ -270,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     private void enableLoginMenu(Menu menu) {
-        if (!UserState.getInstance().isAnonymous()) {
+        if (!UserState.getInstance().isGuest()) {
             return;
         }
 

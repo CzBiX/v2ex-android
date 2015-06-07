@@ -190,7 +190,7 @@ public class CommentAdapter extends BaseAdapter {
 
         @Override
         public void onClick(View v) {
-            if (UserState.getInstance().isAnonymous()) {
+            if (UserState.getInstance().isGuest()) {
                 // anonymous can't do anything
                 return;
             }

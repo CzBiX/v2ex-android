@@ -17,7 +17,7 @@ public class UserUtils {
     }
 
     public static Avatar getAvatar() {
-        Preconditions.checkState(!UserState.getInstance().isAnonymous());
+        Preconditions.checkState(!UserState.getInstance().isGuest());
 
         final String url = ConfigDao.get(ConfigDao.KEY_AVATAR, null);
         Preconditions.checkNotNull(url);
