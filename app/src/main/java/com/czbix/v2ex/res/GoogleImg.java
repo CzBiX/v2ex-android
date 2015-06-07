@@ -1,5 +1,7 @@
 package com.czbix.v2ex.res;
 
+import com.czbix.v2ex.BuildConfig;
+
 import java.util.Calendar;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -94,8 +96,14 @@ public class GoogleImg {
     };
 
     public static int getLocationIndex() {
-        final long hours = TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis());
-        return new Random(hours).nextInt(ALL_LOCATION.length);
+        final Random random;
+        if (BuildConfig.DEBUG) {
+            random = new Random();
+        } else {
+            final long hours = TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis());
+            random = new Random(hours);
+        }
+        return random.nextInt(ALL_LOCATION.length);
     }
 
     public static int getTimeIndex() {

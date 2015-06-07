@@ -2,6 +2,8 @@ package com.czbix.v2ex.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.LightingColorFilter;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.IdRes;
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
                 .crossFade().centerCrop().into(new ViewTarget<View, GlideDrawable>(mNavBg) {
             @Override
             public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                resource.setColorFilter(new LightingColorFilter(Color.rgb(180, 180, 180), 0));
                 mNavBg.setBackground(resource);
             }
         });
