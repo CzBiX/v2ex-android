@@ -33,4 +33,7 @@
     <string name="action_share">Share</string>
     <string name="tv_daily_award">Daily award</string>
     <string name="toast_daily_award_received">Daily award received</string>
+    <string name="toast_need_sign_in">Please sign in first!</string>
+    <string name="toast_connection_exception">Connect to server failed…</string>
+    <string name="toast_remote_exception">Server return error, please try later!</string>
 </resources>

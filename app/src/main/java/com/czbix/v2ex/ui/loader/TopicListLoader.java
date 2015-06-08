@@ -1,9 +1,7 @@
 package com.czbix.v2ex.ui.loader;
 
 import android.content.Context;
-import android.os.RemoteException;
 
-import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.network.RequestHelper;
@@ -20,12 +18,7 @@ public class TopicListLoader extends AsyncTaskLoader<List<Topic>> {
     }
 
     @Override
-    public List<Topic> loadInBackground() {
-        try {
-            mResult = RequestHelper.getTopics(mPage);
-        } catch (ConnectionException | RemoteException e) {
-            e.printStackTrace();
-        }
-        return mResult;
+    public List<Topic> loadInBackgroundWithException() throws Exception {
+        return RequestHelper.getTopics(mPage);
     }
 }

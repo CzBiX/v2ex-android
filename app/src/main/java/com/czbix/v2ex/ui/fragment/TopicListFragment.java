@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,7 +24,9 @@ import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
+import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.ui.loader.TopicListLoader;
+import com.czbix.v2ex.util.ExceptionUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.common.eventbus.Subscribe;
 
@@ -37,7 +40,7 @@ import java.util.List;
  * Use the {@link TopicListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TopicListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Topic>>,TopicAdapter.OnTopicActionListener, SwipeRefreshLayout.OnRefreshListener {
+public class TopicListFragment extends Fragment implements LoaderCallbacks<LoaderResult<List<Topic>>>, TopicAdapter.OnTopicActionListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = TopicListFragment.class.getSimpleName();
     private static final String ARG_PAGE = "page";
 
@@ -142,7 +145,7 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public Loader<List<Topic>> onCreateLoader(int id, Bundle args) {
+    public Loader<LoaderResult<List<Topic>>> onCreateLoader(int id, Bundle args) {
         LogUtils.d(TAG, "load list: %s", mPage.getTitle());
 
         mLoader = new TopicListLoader(getActivity(), mPage);
@@ -150,13 +153,17 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Topic>> loader, List<Topic> data) {
-        mAdapter.setDataSource(data);
+    public void onLoadFinished(Loader<LoaderResult<List<Topic>>> loader, LoaderResult<List<Topic>> result) {
+        if (result.hasException()) {
+            ExceptionUtils.handleExceptionNoCatch(this, result.mException);
+            return;
+        }
+        mAdapter.setDataSource(result.mResult);
         mLayout.setRefreshing(false);
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Topic>> loader) {
+    public void onLoaderReset(Loader<LoaderResult<List<Topic>>> loader) {
         mAdapter.setDataSource(null);
     }
 

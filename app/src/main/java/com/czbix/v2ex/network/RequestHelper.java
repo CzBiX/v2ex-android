@@ -1,6 +1,5 @@
 package com.czbix.v2ex.network;
 
-import android.os.RemoteException;
 import android.util.Log;
 
 import com.czbix.v2ex.AppCtx;
@@ -8,6 +7,7 @@ import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.FatalException;
+import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.common.exception.UnauthorizedException;
 import com.czbix.v2ex.model.Avatar;

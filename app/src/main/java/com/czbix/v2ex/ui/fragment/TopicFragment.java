@@ -4,7 +4,6 @@ package com.czbix.v2ex.ui.fragment;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -30,6 +29,7 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.eventbus.CommentEvent;
 import com.czbix.v2ex.model.Comment;
@@ -45,8 +45,10 @@ import com.czbix.v2ex.ui.TopicActivity;
 import com.czbix.v2ex.ui.adapter.CommentAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.helper.ReplyFormHelper;
+import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.ui.loader.TopicLoader;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
+import com.czbix.v2ex.util.ExceptionUtils;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.MiscUtils;
@@ -63,7 +65,7 @@ import java.util.concurrent.TimeUnit;
  * create an instance of this fragment.
  */
 public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
-        LoaderManager.LoaderCallbacks<TopicWithComments>,
+        LoaderManager.LoaderCallbacks<LoaderResult<TopicWithComments>>,
         ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener, HtmlMovementMethod.OnHtmlActionListener, NodeListFragment.OnNodeActionListener {
     private static final String TAG = TopicFragment.class.getSimpleName();
     private static final String ARG_TOPIC = "topic";
@@ -240,13 +242,19 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Override
-    public Loader<TopicWithComments> onCreateLoader(int id, Bundle args) {
+    public Loader<LoaderResult<TopicWithComments>> onCreateLoader(int id, Bundle args) {
         LogUtils.d(TAG, "load topic, id: %d, title: %s", mTopic.getId(), mTopic.getTitle());
         return new TopicLoader(getActivity(), mTopic);
     }
 
     @Override
-    public void onLoadFinished(Loader<TopicWithComments> loader, TopicWithComments data) {
+    public void onLoadFinished(Loader<LoaderResult<TopicWithComments>> loader, LoaderResult<TopicWithComments> result) {
+        if (result.hasException()) {
+            ExceptionUtils.handleExceptionNoCatch(this, result.mException);
+            return;
+        }
+        final TopicWithComments data = result.mResult;
+
         mTopic = data.mTopic;
         mTopicHolder.fillData(mTopic);
         mCommentAdapter.setDataSource(data.mComments);
@@ -268,7 +276,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Override
-    public void onLoaderReset(Loader<TopicWithComments> loader) {
+    public void onLoaderReset(Loader<LoaderResult<TopicWithComments>> loader) {
         mCommentAdapter.setDataSource(null);
         mCsrfToken = null;
         mOnceToken = null;

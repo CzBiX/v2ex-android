@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -20,6 +19,7 @@ import android.widget.Toast;
 
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.UserUtils;

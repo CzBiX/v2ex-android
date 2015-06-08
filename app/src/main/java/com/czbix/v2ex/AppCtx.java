@@ -1,20 +1,20 @@
 package com.czbix.v2ex;
 
 import android.app.Application;
-import android.os.RemoteException;
 
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.eventbus.BusEvent.GetNodesFinishEvent;
+import com.czbix.v2ex.eventbus.executor.HandlerExecutor;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.network.Etag;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.ExecutorUtils;
-import com.czbix.v2ex.eventbus.executor.HandlerExecutor;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.DeadEvent;

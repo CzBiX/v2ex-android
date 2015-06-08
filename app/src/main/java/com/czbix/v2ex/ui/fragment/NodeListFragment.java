@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,7 +26,9 @@ import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader;
+import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.util.ViewUtils;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
@@ -41,7 +43,7 @@ import java.util.List;
  * Use the {@link NodeListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NodeListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Node>>, SearchView.OnQueryTextListener {
+public class NodeListFragment extends Fragment implements LoaderCallbacks<LoaderResult<List<Node>>>, SearchView.OnQueryTextListener {
     private OnNodeActionListener mListener;
     private NodeAdapter mAdapter;
     private CharSequence mQueryText;
@@ -121,18 +123,19 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public Loader<List<Node>> onCreateLoader(int id, Bundle args) {
+    public Loader<LoaderResult<List<Node>>> onCreateLoader(int id, Bundle args) {
         return new NodeLoader(getActivity());
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Node>> loader, List<Node> data) {
-        mAdapter.setDataSource(data);
+    public void onLoadFinished(Loader<LoaderResult<List<Node>>> loader, LoaderResult<List<Node>> result) {
+        Preconditions.checkState(!result.hasException());
+        mAdapter.setDataSource(result.mResult);
         mAdapter.filterText(mQueryText);
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Node>> loader) {
+    public void onLoaderReset(Loader<LoaderResult<List<Node>>> loader) {
         mAdapter.setDataSource(null);
     }
 
@@ -266,11 +269,10 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
         }
 
         @Override
-        public List<Node> loadInBackground() {
+        public List<Node> loadInBackgroundWithException() {
             final List<Node> list = NodeDao.getAll();
             Collections.sort(list);
 
-            mResult = list;
             return list;
         }
     }

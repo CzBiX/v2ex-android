@@ -1,9 +1,9 @@
 package com.czbix.v2ex.ui.loader;
 
 import android.content.Context;
-import android.os.RemoteException;
 
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.network.RequestHelper;
@@ -18,13 +18,7 @@ public class TopicLoader extends AsyncTaskLoader<TopicWithComments> {
     }
 
     @Override
-    public TopicWithComments loadInBackground() {
-        try {
-            mResult = RequestHelper.getTopicWithComments(mTopic);
-        } catch (ConnectionException | RemoteException e) {
-            e.printStackTrace();
-        }
-
-        return mResult;
+    public TopicWithComments loadInBackgroundWithException() throws ConnectionException, RemoteException {
+        return RequestHelper.getTopicWithComments(mTopic);
     }
 }

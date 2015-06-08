@@ -7,10 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.czbix.v2ex.dao.NodeDao;
-import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Topic;
-import com.czbix.v2ex.util.UserUtils;
 
 public class DebugActivity extends AppCompatActivity {
 
@@ -33,14 +30,7 @@ public class DebugActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final Intent intent = new Intent(DebugActivity.this, TopicActivity.class);
 
-                final Member member = new Member.Builder().setUsername("CzBiX")
-                        .setAvatar(UserUtils.getAvatar()).createMember();
-                final Topic topic = new Topic.Builder()
-                        .setId(130605)
-                        .setTitle("Test")
-                        .setNode(NodeDao.get("sandbox"))
-                        .setMember(member)
-                        .createTopic();
+                final Topic topic = new Topic.Builder().setId(130605).createTopic();
                 intent.putExtra(TopicActivity.KEY_TOPIC, topic);
 
                 startActivity(intent);
