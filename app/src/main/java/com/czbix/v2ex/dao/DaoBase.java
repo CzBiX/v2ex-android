@@ -7,7 +7,7 @@ public abstract class DaoBase {
         return execute(operation, false);
     }
 
-    protected static <T> T execute(SqlOperation<T> operation, boolean isWrite) {
+    protected static synchronized <T> T execute(SqlOperation<T> operation, boolean isWrite) {
         SQLiteDatabase db = null;
         try {
             final V2exDb instance = V2exDb.getInstance();
