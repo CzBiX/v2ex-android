@@ -13,15 +13,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textStyle="bold"
             android:textSize="16sp"
             android:text="Title"
             tools:ignore="HardcodedText"/>
         <TextView
             android:id="@+id/alertTitle"
             android:text="Alter"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textSize="14sp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             android:layout_below="@id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

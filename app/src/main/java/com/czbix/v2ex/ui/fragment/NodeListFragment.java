@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.LayoutManager;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -85,7 +85,7 @@ public class NodeListFragment extends Fragment implements LoaderCallbacks<Loader
         final View layout = inflater.inflate(R.layout.fragment_node_list, container, false);
         final RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.recycle_view);
 
-        final LinearLayoutManager layoutManager = new GridLayoutManager(layout.getContext(), 2);
+        final LayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
         mAdapter = new NodeAdapter(mListener);
