@@ -3,6 +3,7 @@
     package="com.czbix.v2ex" >
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".AppCtx"
@@ -47,6 +48,10 @@
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/title_activity_settings" >
+            <intent-filter>
+                <action android:name="android.intent.action.MANAGE_NETWORK_USAGE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ui.TopicActivity">

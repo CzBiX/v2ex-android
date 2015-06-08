@@ -1,6 +1,5 @@
 package com.czbix.v2ex.parser;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -37,53 +36,60 @@ public class AsyncImageGetter implements Html.ImageGetter {
     public Drawable getDrawable(String source) {
         LogUtils.v(TAG, "load image for text view: %s", source);
 
-        if (PrefStore.getInstance().isLoadImageOnMobileNetwork()) {
-            final NetworkDrawable drawable = new NetworkDrawable();
+        boolean shouldLoadImage = PrefStore.getInstance().shouldLoadImage();
+        final NetworkDrawable drawable = new NetworkDrawable(shouldLoadImage);
+        if (shouldLoadImage) {
             final int width = ViewUtils.getExactlyWidth(mTextView, mDimenRes);
             final NetworkDrawableTarget target = new NetworkDrawableTarget(mTextView, drawable, width);
             Glide.with(mTextView.getContext()).load(source).asBitmap().fitCenter().into(target);
-            return drawable;
-        } else {
-            return ContextCompat.getDrawable(mTextView.getContext(), R.drawable.ic_sync_disabled_white_24dp);
         }
+        return drawable;
     }
 
     private static class NetworkDrawable extends BitmapDrawable {
         private static final Drawable DRAWABLE_LOADING;
-        private static final Drawable DRAWABLE_FAILED;
+        private static final Drawable DRAWABLE_PROBLEM;
+        private static final Drawable DRAWABLE_DISABLED;
         private static final Rect DRAWABLE_BOUNDS;
         private static final Paint PAINT;
-        private boolean isFailed;
+
+        private boolean mIsDisabled;
+        private boolean mIsFailed;
         private Drawable mDrawable;
 
 
         static {
-            final Resources resources = AppCtx.getInstance().getResources();
-            //noinspection deprecation
-            DRAWABLE_LOADING = resources.getDrawable(R.drawable.ic_sync_white_24dp);
-            //noinspection deprecation
-            DRAWABLE_FAILED = resources.getDrawable(R.drawable.ic_sync_problem_white_24dp);
-            Preconditions.checkNotNull(DRAWABLE_LOADING);
-            Preconditions.checkNotNull(DRAWABLE_FAILED);
+            DRAWABLE_LOADING = ContextCompat.getDrawable(AppCtx.getInstance(),
+                    R.drawable.ic_sync_white_24dp);
+            DRAWABLE_PROBLEM = ContextCompat.getDrawable(AppCtx.getInstance(),
+                    R.drawable.ic_sync_problem_white_24dp);
+            DRAWABLE_DISABLED = ContextCompat.getDrawable(AppCtx.getInstance(),
+                    R.drawable.ic_sync_disabled_white_24dp);
 
-            DRAWABLE_BOUNDS = new Rect(0, 0, DRAWABLE_FAILED.getIntrinsicWidth(),
-                    DRAWABLE_FAILED.getIntrinsicHeight());
+            Preconditions.checkNotNull(DRAWABLE_LOADING);
+            Preconditions.checkNotNull(DRAWABLE_PROBLEM);
+            Preconditions.checkNotNull(DRAWABLE_DISABLED);
+
+            DRAWABLE_BOUNDS = new Rect(0, 0, DRAWABLE_PROBLEM.getIntrinsicWidth(),
+                    DRAWABLE_PROBLEM.getIntrinsicHeight());
             DRAWABLE_LOADING.setBounds(DRAWABLE_BOUNDS);
-            DRAWABLE_FAILED.setBounds(DRAWABLE_BOUNDS);
+            DRAWABLE_PROBLEM.setBounds(DRAWABLE_BOUNDS);
+            DRAWABLE_DISABLED.setBounds(DRAWABLE_BOUNDS);
 
             PAINT = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
             PAINT.setColor(Color.LTGRAY);
         }
 
         @SuppressWarnings("deprecation")
-        public NetworkDrawable() {
+        public NetworkDrawable(boolean shoudLoadImage) {
             super();
             setBounds(DRAWABLE_BOUNDS);
+            mIsDisabled = !shoudLoadImage;
         }
 
         public void setDrawable(Drawable drawable) {
             if (drawable == null) {
-                isFailed = true;
+                mIsFailed = true;
                 return;
             }
             mDrawable = drawable;
@@ -92,17 +98,19 @@ public class AsyncImageGetter implements Html.ImageGetter {
 
         @Override
         public void draw(Canvas canvas) {
-            if (mDrawable == null) {
-                canvas.drawRect(getBounds(), PAINT);
-                if (isFailed) {
-                    DRAWABLE_FAILED.draw(canvas);
-                } else {
-                    DRAWABLE_LOADING.draw(canvas);
-                }
+            if (mDrawable != null) {
+                mDrawable.draw(canvas);
                 return;
             }
 
-            mDrawable.draw(canvas);
+            canvas.drawRect(getBounds(), PAINT);
+            if (mIsDisabled) {
+                DRAWABLE_DISABLED.draw(canvas);
+            } else if (mIsFailed) {
+                DRAWABLE_PROBLEM.draw(canvas);
+            } else {
+                DRAWABLE_LOADING.draw(canvas);
+            }
         }
     }
 

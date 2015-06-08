@@ -25,6 +25,10 @@ public class PrefStore {
     }
 
     public boolean isLoadImageOnMobileNetwork() {
-        return mPreferences.getBoolean(PREF_LOAD_IMAGE_ON_MOBILE_NETWORK, true);
+        return mPreferences.getBoolean(PREF_LOAD_IMAGE_ON_MOBILE_NETWORK, false);
+    }
+
+    public boolean shouldLoadImage() {
+        return isLoadImageOnMobileNetwork() || !DeviceStatus.getInstance().isMobileNetwork();
     }
 }
