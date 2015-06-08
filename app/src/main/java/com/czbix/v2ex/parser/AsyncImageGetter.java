@@ -1,5 +1,6 @@
 package com.czbix.v2ex.parser;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DimenRes;
+import android.support.v4.content.ContextCompat;
 import android.text.Html;
 import android.widget.TextView;
 
@@ -16,6 +18,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.common.PrefStore;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
@@ -34,11 +37,15 @@ public class AsyncImageGetter implements Html.ImageGetter {
     public Drawable getDrawable(String source) {
         LogUtils.v(TAG, "load image for text view: %s", source);
 
-        final NetworkDrawable drawable = new NetworkDrawable();
-        final int width = ViewUtils.getExactlyWidth(mTextView, mDimenRes);
-        final NetworkDrawableTarget target = new NetworkDrawableTarget(mTextView, drawable, width);
-        Glide.with(mTextView.getContext()).load(source).asBitmap().fitCenter().into(target);
-        return drawable;
+        if (PrefStore.getInstance().isLoadImageOnMobileNetwork()) {
+            final NetworkDrawable drawable = new NetworkDrawable();
+            final int width = ViewUtils.getExactlyWidth(mTextView, mDimenRes);
+            final NetworkDrawableTarget target = new NetworkDrawableTarget(mTextView, drawable, width);
+            Glide.with(mTextView.getContext()).load(source).asBitmap().fitCenter().into(target);
+            return drawable;
+        } else {
+            return ContextCompat.getDrawable(mTextView.getContext(), R.drawable.ic_sync_disabled_white_24dp);
+        }
     }
 
     private static class NetworkDrawable extends BitmapDrawable {
@@ -51,10 +58,11 @@ public class AsyncImageGetter implements Html.ImageGetter {
 
 
         static {
+            final Resources resources = AppCtx.getInstance().getResources();
             //noinspection deprecation
-            DRAWABLE_LOADING = AppCtx.getInstance().getResources().getDrawable(R.drawable.ic_sync_white_24dp);
+            DRAWABLE_LOADING = resources.getDrawable(R.drawable.ic_sync_white_24dp);
             //noinspection deprecation
-            DRAWABLE_FAILED = AppCtx.getInstance().getResources().getDrawable(R.drawable.ic_sync_problem_white_24dp);
+            DRAWABLE_FAILED = resources.getDrawable(R.drawable.ic_sync_problem_white_24dp);
             Preconditions.checkNotNull(DRAWABLE_LOADING);
             Preconditions.checkNotNull(DRAWABLE_FAILED);
 
