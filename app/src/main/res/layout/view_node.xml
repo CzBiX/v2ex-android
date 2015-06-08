@@ -13,6 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textStyle="bold"
             android:textSize="16sp"
             android:text="Title"
             tools:ignore="HardcodedText"/>
