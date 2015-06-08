@@ -120,6 +120,8 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             itemView.setVisibility(View.VISIBLE);
             mTopic = topic;
 
+            updateForRead();
+
             mTitle.setText(topic.getTitle());
             mUsername.setText(topic.getMember().getUsername());
             mNode.setText("› " + topic.getNode().getTitle());
@@ -134,6 +136,14 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
             setContent(topic);
             setAvatarImg(topic);
+        }
+
+        public void updateForRead() {
+            if (mTopic.hasRead()) {
+                mReplyCount.setAlpha(0.3f);
+            } else {
+                mReplyCount.setAlpha(1);
+            }
         }
 
         private void setContent(Topic topic) {
@@ -161,13 +171,16 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
                 return;
             }
 
-            if (v == itemView) {
-                mListener.onTopicOpen(mTopic);
+            if (mListener.onTopicOpen(mTopic)) {
+                updateForRead();
             }
         }
     }
 
     public interface OnTopicActionListener {
-        void onTopicOpen(Topic topic);
+        /**
+         * @return should refresh data
+         */
+        boolean onTopicOpen(Topic topic);
     }
 }

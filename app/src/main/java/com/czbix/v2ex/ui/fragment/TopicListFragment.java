@@ -24,6 +24,7 @@ import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
+import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.ui.loader.TopicListLoader;
 import com.czbix.v2ex.util.ExceptionUtils;
@@ -35,18 +36,18 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link TopicListActionListener} interface
+ * {@link OnTopicActionListener} interface
  * to handle interaction events.
  * Use the {@link TopicListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TopicListFragment extends Fragment implements LoaderCallbacks<LoaderResult<List<Topic>>>, TopicAdapter.OnTopicActionListener, SwipeRefreshLayout.OnRefreshListener {
+public class TopicListFragment extends Fragment implements LoaderCallbacks<LoaderResult<List<Topic>>>, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = TopicListFragment.class.getSimpleName();
     private static final String ARG_PAGE = "page";
 
     private Page mPage;
 
-    private TopicListActionListener mListener;
+    private OnTopicActionListener mListener;
     private TopicAdapter mAdapter;
     private SwipeRefreshLayout mLayout;
     private TopicListLoader mLoader;
@@ -95,7 +96,7 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
         LinearLayoutManager layoutManager = new LinearLayoutManager(mLayout.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new TopicAdapter(this);
+        mAdapter = new TopicAdapter(mListener);
         recyclerView.setAdapter(mAdapter);
 
         mLayout.setRefreshing(true);
@@ -127,7 +128,7 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        mListener = ((TopicListActionListener) activity);
+        mListener = ((OnTopicActionListener) activity);
     }
 
     @Override
@@ -168,11 +169,6 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
     }
 
     @Override
-    public void onTopicOpen(Topic topic) {
-        mListener.onTopicOpen(topic);
-    }
-
-    @Override
     public void onRefresh() {
         final Loader<?> loader = getLoaderManager().getLoader(0);
         if (loader == null) {
@@ -198,9 +194,5 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public interface TopicListActionListener {
-        void onTopicOpen(Topic topic);
     }
 }

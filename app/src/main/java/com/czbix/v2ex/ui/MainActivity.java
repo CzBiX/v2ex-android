@@ -33,6 +33,7 @@ import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.dao.NodeDao;
+import com.czbix.v2ex.dao.TopicDao;
 import com.czbix.v2ex.eventbus.BusEvent.DailyAwardEvent;
 import com.czbix.v2ex.eventbus.BusEvent.NewUnreadEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
@@ -42,6 +43,7 @@ import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.loader.GooglePhotoUrlLoader;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.res.GoogleImg;
+import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
 import com.czbix.v2ex.ui.fragment.CategoryTabFragment;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
@@ -50,7 +52,7 @@ import com.czbix.v2ex.util.UserUtils;
 import com.google.common.eventbus.Subscribe;
 
 
-public class MainActivity extends AppCompatActivity implements TopicListFragment.TopicListActionListener,
+public class MainActivity extends AppCompatActivity implements OnTopicActionListener,
         NavigationView.OnNavigationItemSelectedListener, NodeListFragment.OnNodeActionListener, FragmentManager.OnBackStackChangedListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String PREF_DRAWER_SHOWED = "drawer_showed";
@@ -346,11 +348,19 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     @Override
-    public void onTopicOpen(Topic topic) {
+    public boolean onTopicOpen(Topic topic) {
         final Intent intent = new Intent(this, TopicActivity.class);
         intent.putExtra(TopicActivity.KEY_TOPIC, topic);
 
         startActivity(intent);
+
+        if (topic.getReplyCount() > 0) {
+            TopicDao.setLastRead(topic.getId(), topic.getReplyCount());
+            topic.setHasRead();
+            return true;
+        }
+
+        return false;
     }
 
     @Override

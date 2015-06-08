@@ -2,7 +2,7 @@ package com.czbix.v2ex.dao;
 
 import android.database.sqlite.SQLiteDatabase;
 
-public class DaoBase {
+public abstract class DaoBase {
     protected static <T> T execute(SqlOperation<T> operation) {
         return execute(operation, false);
     }

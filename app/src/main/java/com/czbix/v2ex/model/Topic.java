@@ -21,6 +21,7 @@ public class Topic extends Page implements ThankAble, IgnoreAble {
     private final Node mNode;
     private final String mReplyTime;
     private final boolean mHasInfo;
+    private boolean mHasRead;
 
     Topic(String title, int id, String content, Member member, Node node, String replyTime, int replies) {
         Preconditions.checkArgument(id != 0);
@@ -96,6 +97,14 @@ public class Topic extends Page implements ThankAble, IgnoreAble {
     @Override
     public String getThankUrl() {
         return String.format("%s/thank/topic/%d", RequestHelper.BASE_URL, mId);
+    }
+
+    public boolean hasRead() {
+        return mHasRead;
+    }
+
+    public void setHasRead() {
+        mHasRead = true;
     }
 
     @Override

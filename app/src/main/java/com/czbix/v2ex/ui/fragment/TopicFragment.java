@@ -290,6 +290,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             return;
         }
 
+        // remember comment draft
         final Editable content = mReplyForm.getContent();
         if (TextUtils.isEmpty(content)) {
             return;
