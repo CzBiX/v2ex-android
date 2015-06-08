@@ -149,7 +149,7 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     public interface OnNodeActionListener {
-        void onNodeClick(Node node);
+        void onNodeOpen(Node node);
     }
 
     private static class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.ViewHolder> {
@@ -244,7 +244,7 @@ public class NodeListFragment extends Fragment implements LoaderManager.LoaderCa
             public void onClick(View v) {
                 final int position = getAdapterPosition();
                 ViewUtils.hideInputMethod(mTitle);
-                mListener.onNodeClick(mData.get(position));
+                mListener.onNodeOpen(mData.get(position));
             }
 
             public void setAvatarImg(Node avatarImg) {

@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         NavigationView.OnNavigationItemSelectedListener, NodeListFragment.OnNodeActionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String PREF_DRAWER_SHOWED = "drawer_showed";
+    public static final String BUNDLE_NODE = "node";
 
     private TextView mUsername;
     private AppBarLayout mAppBar;
@@ -63,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     private ActionBarDrawerToggle mDrawerToggle;
     private Toolbar mToolbar;
     private View mNavBg;
-    private Node mLastNode;
     private MenuItem mNotificationsItem;
     private View mAwardButton;
 
@@ -88,13 +88,17 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
     private Fragment getFragmentToShow() {
         final Intent intent = getIntent();
-        if (intent.getAction().equals(Intent.ACTION_VIEW)) {
+        Node node = null;
+        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             final String url = intent.getDataString();
             final String name = Node.getNameFromUrl(url);
-            final Node node = NodeDao.get(name);
-            if (node != null) {
-                return TopicListFragment.newInstance(node);
-            }
+            node = NodeDao.get(name);
+        } else if (intent.hasExtra(BUNDLE_NODE)) {
+            node = intent.getParcelableExtra(BUNDLE_NODE);
+        }
+
+        if (node != null) {
+            return TopicListFragment.newInstance(node);
         }
 
         return CategoryTabFragment.newInstance();
@@ -332,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     @Override
-    public void onTopicOpen(View view, Topic topic) {
+    public void onTopicOpen(Topic topic) {
         final Intent intent = new Intent(this, TopicActivity.class);
         intent.putExtra(TopicActivity.KEY_TOPIC, topic);
 
@@ -340,7 +344,7 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     @Override
-    public void onNodeClick(Node node) {
+    public void onNodeOpen(Node node) {
         final TopicListFragment topicListFragment = TopicListFragment.newInstance(node);
 
         getSupportFragmentManager().beginTransaction()
@@ -348,7 +352,5 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit();
-
-        mLastNode = node;
     }
 }

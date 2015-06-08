@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.ui.fragment.NodeListFragment.OnNodeActionListener;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod.OnHtmlActionListener;
 import com.czbix.v2ex.util.ViewUtils;
@@ -20,10 +21,10 @@ import com.google.common.base.Strings;
 import java.util.List;
 
 public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> {
-    private final OnItemClickListener mListener;
+    private final OnTopicActionListener mListener;
     private List<Topic> mData;
 
-    public TopicAdapter(@NonNull OnItemClickListener listener) {
+    public TopicAdapter(@NonNull OnTopicActionListener listener) {
         mListener = listener;
         setHasStableIds(true);
     }
@@ -37,7 +38,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_topic, parent, false);
-        return new ViewHolder(this, view);
+        return new ViewHolder(mListener, view);
     }
 
     @Override
@@ -65,16 +66,16 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         public final TextView mTime;
         public final TextView mContent;
 
-        private final TopicAdapter mAdapter;
-        private int mId;
+        private final OnTopicActionListener mListener;
+        private Topic mTopic;
 
         public ViewHolder(View view) {
             this(null, view);
         }
 
-        public ViewHolder(TopicAdapter adapter, View view) {
+        public ViewHolder(OnTopicActionListener listener, View view) {
             super(view);
-            mAdapter = adapter;
+            mListener = listener;
 
             view.setOnClickListener(this);
 
@@ -86,7 +87,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mReplyCount = ((TextView) view.findViewById(R.id.reply_count_tv));
             mContent = ((TextView) view.findViewById(R.id.content));
 
-            if (adapter == null) {
+            if (listener == null) {
                 // single topic
                 mTitle.setTypeface(Typeface.DEFAULT_BOLD);
             } else {
@@ -99,12 +100,17 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mContent.setMovementMethod(new HtmlMovementMethod(listener));
         }
 
-        public void fillData(Topic topic) {
-            fillData(topic, false);
+        public void setNodeListener(final OnNodeActionListener listener) {
+            mNode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onNodeOpen(mTopic.getNode());
+                }
+            });
         }
 
-        public void fillData(Topic topic, boolean force) {
-            if (mId == topic.getId() && !force) {
+        public void fillData(Topic topic) {
+            if (topic.equals(mTopic)) {
                 return;
             }
             if (!topic.hasInfo()) {
@@ -112,8 +118,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
                 return;
             }
             itemView.setVisibility(View.VISIBLE);
-
-            mId = topic.getId();
+            mTopic = topic;
 
             mTitle.setText(topic.getTitle());
             mUsername.setText(topic.getMember().getUsername());
@@ -152,18 +157,17 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
         @Override
         public void onClick(View v) {
-            if (mAdapter == null) {
+            if (mListener == null) {
                 return;
             }
 
-            final int position = getAdapterPosition();
             if (v == itemView) {
-                mAdapter.mListener.onItemClick(position, v, mAdapter.mData.get(position));
+                mListener.onTopicOpen(mTopic);
             }
         }
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(int position, View v, Topic topic);
+    public interface OnTopicActionListener {
+        void onTopicOpen(Topic topic);
     }
 }

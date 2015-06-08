@@ -37,7 +37,7 @@ import java.util.List;
  * Use the {@link TopicListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TopicListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Topic>>,TopicAdapter.OnItemClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class TopicListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Topic>>,TopicAdapter.OnTopicActionListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = TopicListFragment.class.getSimpleName();
     private static final String ARG_PAGE = "page";
 
@@ -161,8 +161,8 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     @Override
-    public void onItemClick(int position, View v, Topic topic) {
-        mListener.onTopicOpen(v, topic);
+    public void onTopicOpen(Topic topic) {
+        mListener.onTopicOpen(topic);
     }
 
     @Override
@@ -194,6 +194,6 @@ public class TopicListFragment extends Fragment implements LoaderManager.LoaderC
     }
 
     public interface TopicListActionListener {
-        void onTopicOpen(View view, Topic topic);
+        void onTopicOpen(Topic topic);
     }
 }

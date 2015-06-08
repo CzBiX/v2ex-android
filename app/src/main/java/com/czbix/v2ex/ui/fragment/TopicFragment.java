@@ -34,11 +34,13 @@ import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.eventbus.CommentEvent;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.IgnoreAble;
+import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.ThankAble;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.model.db.Draft;
 import com.czbix.v2ex.network.RequestHelper;
+import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.TopicActivity;
 import com.czbix.v2ex.ui.adapter.CommentAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
@@ -62,7 +64,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         LoaderManager.LoaderCallbacks<TopicWithComments>,
-        ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener, HtmlMovementMethod.OnHtmlActionListener {
+        ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener, HtmlMovementMethod.OnHtmlActionListener, NodeListFragment.OnNodeActionListener {
     private static final String TAG = TopicFragment.class.getSimpleName();
     private static final String ARG_TOPIC = "topic";
     private static final int[] MENU_REQUIRED_LOGGED_IN = {R.id.action_ignore, R.id.action_reply, R.id.action_thank};
@@ -121,6 +123,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mTopicHolder = new TopicAdapter.ViewHolder(mTopicView);
         mTopicHolder.setContentListener(this);
+        mTopicHolder.setNodeListener(this);
         mTopicHolder.fillData(mTopic);
 
         mCommentAdapter = new CommentAdapter(getActivity(), mTopicView, this);
@@ -245,7 +248,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onLoadFinished(Loader<TopicWithComments> loader, TopicWithComments data) {
         mTopic = data.mTopic;
-        mTopicHolder.fillData(mTopic, true);
+        mTopicHolder.fillData(mTopic);
         mCommentAdapter.setDataSource(data.mComments);
         mLayout.setRefreshing(false);
         getActivity().invalidateOptionsMenu();
@@ -425,5 +428,12 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onUrlClick(String url) {
         startActivity(MiscUtils.getUrlIntent(url));
+    }
+
+    @Override
+    public void onNodeOpen(Node node) {
+        final Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.putExtra(MainActivity.BUNDLE_NODE, node);
+        startActivity(intent);
     }
 }
