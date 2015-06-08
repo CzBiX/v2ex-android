@@ -1,6 +1,9 @@
 package com.czbix.v2ex.common;
 
+import android.widget.Toast;
+
 import com.czbix.v2ex.AppCtx;
+import com.czbix.v2ex.R;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.eventbus.BusEvent.DailyAwardEvent;
 import com.czbix.v2ex.eventbus.BusEvent.NewUnreadEvent;
@@ -58,6 +61,7 @@ public class UserState {
         mUsername = e.mUsername;
 
         if (isGuest()) {
+            Toast.makeText(AppCtx.getInstance(), R.string.toast_has_sign_out, Toast.LENGTH_LONG).show();
             return;
         }
         ExecutorUtils.execute(new Runnable() {
