@@ -11,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -50,7 +51,7 @@ import com.google.common.eventbus.Subscribe;
 
 
 public class MainActivity extends AppCompatActivity implements TopicListFragment.TopicListActionListener,
-        NavigationView.OnNavigationItemSelectedListener, NodeListFragment.OnNodeActionListener {
+        NavigationView.OnNavigationItemSelectedListener, NodeListFragment.OnNodeActionListener, FragmentManager.OnBackStackChangedListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String PREF_DRAWER_SHOWED = "drawer_showed";
     public static final String BUNDLE_NODE = "node";
@@ -83,7 +84,8 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         initToolbar();
         initNavDrawer();
 
-        addFragmentToView(getFragmentToShow());
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+        switchFragment(getFragmentToShow(), false);
     }
 
     private Fragment getFragmentToShow() {
@@ -102,6 +104,12 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         }
 
         return CategoryTabFragment.newInstance();
+    }
+
+    public void setAppBarShadow(boolean isShown) {
+        final int elevation = isShown
+                ? getResources().getDimensionPixelSize(R.dimen.appbar_elevation) : 0;
+        ViewCompat.setElevation(mAppBar, elevation);
     }
 
     @Override
@@ -210,9 +218,11 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
 
         switch (item.getItemId()) {
             case R.id.drawer_explore:
+                mDrawerLayout.closeDrawer(mNav);
                 switchFragment(CategoryTabFragment.newInstance());
                 return true;
             case R.id.drawer_nodes:
+                mDrawerLayout.closeDrawer(mNav);
                 switchFragment(NodeListFragment.newInstance());
                 return true;
             case R.id.drawer_settings:
@@ -229,13 +239,20 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
     }
 
     private void switchFragment(Fragment fragment) {
-        mDrawerLayout.closeDrawer(mNav);
+        switchFragment(fragment, true);
+    }
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
-                .commit();
+    private void switchFragment(Fragment fragment, boolean addToBackStack) {
+        final FragmentManager fragmentManager = getSupportFragmentManager();
+        final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(null);
+        }
+        fragmentTransaction.commit();
+
+        setAppBarShadow(shouldHasAppBarShadow(fragment));
     }
 
     private void updateUsername() {
@@ -259,13 +276,6 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
         }
 
         setSupportActionBar(mToolbar);
-    }
-
-    private void addFragmentToView(Fragment fragment) {
-        final FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragment, fragment)
-                .commit();
     }
 
     @Override
@@ -352,5 +362,15 @@ public class MainActivity extends AppCompatActivity implements TopicListFragment
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
+        setAppBarShadow(shouldHasAppBarShadow(fragment));
+    }
+
+    private static boolean shouldHasAppBarShadow(Fragment fragment) {
+        return !(fragment instanceof CategoryTabFragment);
     }
 }
