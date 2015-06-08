@@ -249,6 +249,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onLoadFinished(Loader<LoaderResult<TopicWithComments>> loader, LoaderResult<TopicWithComments> result) {
+        mLayout.setRefreshing(false);
         if (result.hasException()) {
             ExceptionUtils.handleExceptionNoCatch(this, result.mException);
             return;
@@ -258,7 +259,6 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mTopic = data.mTopic;
         mTopicHolder.fillData(mTopic);
         mCommentAdapter.setDataSource(data.mComments);
-        mLayout.setRefreshing(false);
         getActivity().invalidateOptionsMenu();
 
         mCsrfToken = data.mCsrfToken;

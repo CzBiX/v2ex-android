@@ -155,12 +155,12 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
 
     @Override
     public void onLoadFinished(Loader<LoaderResult<List<Topic>>> loader, LoaderResult<List<Topic>> result) {
+        mLayout.setRefreshing(false);
         if (result.hasException()) {
             ExceptionUtils.handleExceptionNoCatch(this, result.mException);
             return;
         }
         mAdapter.setDataSource(result.mResult);
-        mLayout.setRefreshing(false);
     }
 
     @Override
