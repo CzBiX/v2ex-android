@@ -27,6 +27,7 @@ import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.ui.loader.TopicListLoader;
+import com.czbix.v2ex.ui.widget.DividerItemDecoration;
 import com.czbix.v2ex.util.ExceptionUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.common.eventbus.Subscribe;
@@ -95,6 +96,7 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
         mLayout.setOnRefreshListener(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mLayout.getContext());
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
 
         mAdapter = new TopicAdapter(mListener);
         recyclerView.setAdapter(mAdapter);
