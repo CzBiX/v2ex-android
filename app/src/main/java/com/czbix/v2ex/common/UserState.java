@@ -6,6 +6,7 @@ import com.czbix.v2ex.eventbus.BusEvent.DailyAwardEvent;
 import com.czbix.v2ex.eventbus.BusEvent.NewUnreadEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.parser.MyselfParser;
+import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.UserUtils;
 import com.google.common.base.Strings;
 import com.google.common.eventbus.EventBus;
@@ -17,7 +18,7 @@ public class UserState {
     private String mUsername;
     private int mLastReadCount;
     private boolean mHasUnread;
-    private boolean mLastAward;
+    private boolean mHasAward;
 
     static {
         instance = new UserState();
@@ -47,7 +48,7 @@ public class UserState {
             mHasUnread = true;
             eventBus.post(new NewUnreadEvent());
         }
-        if (isTab && info.mHasAward != mLastAward) {
+        if (isTab && info.mHasAward != mHasAward) {
             eventBus.post(new DailyAwardEvent(info.mHasAward));
         }
     }
@@ -55,11 +56,21 @@ public class UserState {
     @Subscribe
     public void onLoginEvent(LoginEvent e) {
         mUsername = e.mUsername;
+
+        if (isGuest()) {
+            return;
+        }
+        ExecutorUtils.execute(new Runnable() {
+            @Override
+            public void run() {
+                UserUtils.checkDailyAward();
+            }
+        });
     }
 
     @Subscribe
     public void onDailyMissionEvent(DailyAwardEvent e) {
-        mLastAward = e.mHasAward;
+        mHasAward = e.mHasAward;
     }
 
     public boolean isGuest() {
@@ -75,6 +86,6 @@ public class UserState {
     }
 
     public boolean hasAward() {
-        return mLastAward;
+        return mHasAward;
     }
 }

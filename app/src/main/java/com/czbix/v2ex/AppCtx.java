@@ -16,6 +16,7 @@ import com.czbix.v2ex.network.Etag;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
+import com.czbix.v2ex.util.UserUtils;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.DeadEvent;
 import com.google.common.eventbus.EventBus;
@@ -66,7 +67,7 @@ public class AppCtx extends Application {
         public void run() {
             DraftDao.cleanExpired();
             loadAllNodes();
-            checkDailyAward();
+            UserUtils.checkDailyAward();
         }
 
         private void loadAllNodes() {
@@ -90,23 +91,6 @@ public class AppCtx extends Application {
             }
             LogUtils.d(TAG, "load nodes finish!");
             mEventBus.post(new GetNodesFinishEvent());
-        }
-
-        private void checkDailyAward() {
-            if (UserState.getInstance().isGuest()) {
-                return;
-            }
-
-            try {
-                final boolean hasAward = RequestHelper.hasDailyAward();
-                if (hasAward) {
-                    mEventBus.post(new BusEvent.DailyAwardEvent(true));
-                }
-            } catch (ConnectionException | RemoteException e) {
-                // TODO
-                e.printStackTrace();
-                return;
-            }
         }
     }
 }
