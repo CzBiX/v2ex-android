@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
 
         AppCtx.getEventBus().register(this);
 
+        supportInvalidateOptionsMenu();
         updateUsername();
         updateNavBackground();
         updateNotifications();
@@ -299,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
     public boolean onCreateOptionsMenu(final Menu menu) {
         enableLoginMenu(menu);
 
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void enableLoginMenu(Menu menu) {
@@ -319,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
 
     @Subscribe
     public void onLoginEvent(LoginEvent e) {
-        invalidateOptionsMenu();
+        supportInvalidateOptionsMenu();
 
         updateUsername();
         updateNotifications();
