@@ -117,9 +117,11 @@ public class AsyncImageGetter implements Html.ImageGetter {
     private static class NetworkDrawableTarget extends SimpleTarget<Bitmap> {
         private final TextView mTextView;
         private final NetworkDrawable mDrawable;
+        private final int mMaxWidth;
 
         private NetworkDrawableTarget(TextView textView, NetworkDrawable drawable, int maxWidth) {
             super(maxWidth, SIZE_ORIGINAL);
+            mMaxWidth = maxWidth;
             mTextView = textView;
             mDrawable = drawable;
         }
@@ -128,9 +130,18 @@ public class AsyncImageGetter implements Html.ImageGetter {
         public void onResourceReady(Bitmap bitmap,
                                     GlideAnimation<? super Bitmap> glideAnimation) {
             final BitmapDrawable bitmapDrawable = new BitmapDrawable(null, bitmap);
-            bitmapDrawable.setBounds(0, 0, bitmap.getWidth(), bitmap.getHeight());
-            mDrawable.setDrawable(bitmapDrawable);
 
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+            if (width < mMaxWidth) {
+                float fitWidth = Math.min(ViewUtils.convertDp2Pixel(mTextView.getContext(), width),
+                        mMaxWidth);
+                height *= fitWidth / width;
+                width = (int) fitWidth;
+            }
+
+            bitmapDrawable.setBounds(0, 0, width, height);
+            mDrawable.setDrawable(bitmapDrawable);
             mTextView.setText(mTextView.getText());
         }
     }

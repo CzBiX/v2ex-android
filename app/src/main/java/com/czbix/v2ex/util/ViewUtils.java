@@ -18,6 +18,10 @@ import com.czbix.v2ex.parser.AsyncImageGetter;
 import com.czbix.v2ex.ui.helper.TagHandler;
 
 public class ViewUtils {
+    public static float convertDp2Pixel(Context context, float dp) {
+        return context.getResources().getDisplayMetrics().density * dp;
+    }
+
     public static int getScreenWidthPixel(Context context) {
         return context.getResources().getDisplayMetrics().widthPixels;
     }
