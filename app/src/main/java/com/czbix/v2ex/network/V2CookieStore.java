@@ -3,18 +3,13 @@ package com.czbix.v2ex.network;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.czbix.v2ex.common.exception.NotImplementedException;
+import com.czbix.v2ex.util.LogUtils;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.gson.Gson;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.URI;
@@ -22,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -39,6 +33,7 @@ public class V2CookieStore implements CookieStore {
 
     private final Map<String, Set<HttpCookie>> mCache;
     private final SharedPreferences cookiePrefs;
+    private final Gson mGson;
 
     /**
      * Construct a persistent cookie store.
@@ -49,8 +44,14 @@ public class V2CookieStore implements CookieStore {
     public V2CookieStore(Context context) {
         cookiePrefs = context.getSharedPreferences(COOKIE_PREFS, 0);
         mCache = Maps.newHashMap();
+        mGson = new Gson();
 
-        loadFromStore();
+        try {
+            loadFromStore();
+        } catch (Exception e) {
+            LogUtils.w(TAG, "read cookies failed, remove all", e);
+            removeAll();
+        }
     }
 
     private void loadFromStore() {
@@ -104,7 +105,7 @@ public class V2CookieStore implements CookieStore {
 
         Set<String> strings = Sets.newHashSet();
         for (HttpCookie httpCookie : cookies) {
-            strings.add(encodeCookie(new SerializableHttpCookie(httpCookie)));
+            strings.add(encodeCookie(httpCookie));
         }
 
         prefsWriter.putStringSet(COOKIE_NAME_PREFIX + host, strings);
@@ -165,20 +166,11 @@ public class V2CookieStore implements CookieStore {
      *            cookie to be encoded, can be null
      * @return cookie encoded as String
      */
-    protected String encodeCookie(SerializableHttpCookie cookie) {
+    protected String encodeCookie(HttpCookie cookie) {
         if (cookie == null)
             return null;
 
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        try {
-            ObjectOutputStream outputStream = new ObjectOutputStream(os);
-            outputStream.writeObject(cookie);
-        } catch (IOException e) {
-            Log.d(TAG, "IOException in encodeCookie", e);
-            return null;
-        }
-
-        return byteArrayToHexString(os.toByteArray());
+        return mGson.toJson(cookie);
     }
 
     /**
@@ -189,104 +181,6 @@ public class V2CookieStore implements CookieStore {
      * @return decoded cookie or null if exception occurred
      */
     protected HttpCookie decodeCookie(String cookieString) {
-        byte[] bytes = hexStringToByteArray(cookieString);
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(
-                bytes);
-
-        HttpCookie cookie = null;
-        try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(
-                    byteArrayInputStream);
-            cookie = ((SerializableHttpCookie) objectInputStream.readObject())
-                    .getCookie();
-        } catch (IOException e) {
-            Log.d(TAG, "IOException in decodeCookie", e);
-        } catch (ClassNotFoundException e) {
-            Log.d(TAG, "ClassNotFoundException in decodeCookie", e);
-        }
-
-        return cookie;
-    }
-
-    /**
-     * Using some super basic byte array &lt;-&gt; hex conversions so we don't
-     * have to rely on any large Base64 libraries. Can be overridden if you
-     * like!
-     *
-     * @param bytes
-     *            byte array to be converted
-     * @return string containing hex values
-     */
-    protected String byteArrayToHexString(byte[] bytes) {
-        StringBuilder sb = new StringBuilder(bytes.length * 2);
-        for (byte element : bytes) {
-            int v = element & 0xff;
-            if (v < 16) {
-                sb.append('0');
-            }
-            sb.append(Integer.toHexString(v));
-        }
-        return sb.toString().toUpperCase(Locale.US);
-    }
-
-    /**
-     * Converts hex values from strings to byte array
-     *
-     * @param hexString
-     *            string of hex-encoded values
-     * @return decoded byte array
-     */
-    protected byte[] hexStringToByteArray(String hexString) {
-        int len = hexString.length();
-        byte[] data = new byte[len / 2];
-        for (int i = 0; i < len; i += 2) {
-            data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character
-                    .digit(hexString.charAt(i + 1), 16));
-        }
-        return data;
-    }
-
-    private static class SerializableHttpCookie implements Serializable {
-        private static final long serialVersionUID = -6051428667568260064L;
-
-        private transient HttpCookie cookie;
-
-        public SerializableHttpCookie(HttpCookie cookie) {
-            this.cookie = cookie;
-        }
-
-        public HttpCookie getCookie() {
-            return cookie;
-        }
-
-        private void writeObject(ObjectOutputStream out) throws IOException {
-            out.writeObject(cookie.getName());
-            out.writeObject(cookie.getValue());
-            out.writeObject(cookie.getComment());
-            out.writeObject(cookie.getCommentURL());
-            out.writeBoolean(cookie.getDiscard());
-            out.writeObject(cookie.getDomain());
-            out.writeLong(cookie.getMaxAge());
-            out.writeObject(cookie.getPath());
-            out.writeObject(cookie.getPortlist());
-            out.writeBoolean(cookie.getSecure());
-            out.writeInt(cookie.getVersion());
-        }
-
-        private void readObject(ObjectInputStream in) throws IOException,
-                ClassNotFoundException {
-            String name = (String) in.readObject();
-            String value = (String) in.readObject();
-            cookie = new HttpCookie(name, value);
-            cookie.setComment((String) in.readObject());
-            cookie.setCommentURL((String) in.readObject());
-            cookie.setDiscard(in.readBoolean());
-            cookie.setDomain((String) in.readObject());
-            cookie.setMaxAge(in.readLong());
-            cookie.setPath((String) in.readObject());
-            cookie.setPortlist((String) in.readObject());
-            cookie.setSecure(in.readBoolean());
-            cookie.setVersion(in.readInt());
-        }
+        return mGson.fromJson(cookieString, HttpCookie.class);
     }
 }

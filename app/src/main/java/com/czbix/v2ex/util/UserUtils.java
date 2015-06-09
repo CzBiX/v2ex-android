@@ -4,6 +4,7 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
+import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
@@ -47,10 +48,11 @@ public class UserUtils {
         boolean hasAward;
         try {
             hasAward = RequestHelper.hasDailyAward();
-        } catch (ConnectionException | RemoteException e) {
+        } catch (ConnectionException | RemoteException | RequestException e) {
             LogUtils.v(TAG, "check daily award failed", e);
             return;
         }
+
         if (hasAward) {
             AppCtx.getEventBus().post(new BusEvent.DailyAwardEvent(true));
         }
