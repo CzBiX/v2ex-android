@@ -153,7 +153,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
                 return;
             }
             mContent.setVisibility(View.VISIBLE);
-            ViewUtils.setHtmlIntoTextView(mContent, topic.getContent(),
+            ViewUtils.setHtmlIntoTextView(mContent, content,
                     R.dimen.topic_picture_max_width);
         }
 
@@ -167,10 +167,6 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
         @Override
         public void onClick(View v) {
-            if (mListener == null) {
-                return;
-            }
-
             if (mListener.onTopicOpen(mTopic)) {
                 updateForRead();
             }

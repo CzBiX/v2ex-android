@@ -192,7 +192,7 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
             case R.id.action_refresh:
                 mLayout.setRefreshing(true);
                 onRefresh();
-                break;
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
