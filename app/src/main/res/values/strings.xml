@@ -42,10 +42,13 @@
     <string name="toast_has_sign_out">Account has sign out!</string>
     <string name="title_fragment_notifications">Notifications</string>
     
-    <string name="notification_action_unknown">Unknown action</string>
-    <string name="notification_action_reply_topic">Reply your topic</string>
-    <string name="notification_action_thank_topic">Thank your topic</string>
-    <string name="notification_action_fav_topic">Fav your topic</string>
-    <string name="notification_action_reply_comment">Reply your comment</string>
-    <string name="notification_action_thank_comment">Thank your comment</string>
+    <string name="notification_unknown">Unknown action</string>
+    <string name="notification_reply_topic">Reply your topic</string>
+    <string name="notification_thank_topic">Thank your topic</string>
+    <string name="notification_fav_topic">Fav your topic</string>
+    <string name="notification_reply_comment">Reply your comment</string>
+    <string name="notification_thank_comment">Thank your comment</string>
+    
+    <string name="ntf_title_new_notifications">New notifications</string>
+    <string name="ntf_desc_from_v2ex">From V2EX</string>
 </resources>

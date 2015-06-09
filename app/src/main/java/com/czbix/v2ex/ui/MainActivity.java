@@ -57,7 +57,10 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
         NavigationView.OnNavigationItemSelectedListener, NodeListFragment.OnNodeActionListener, FragmentManager.OnBackStackChangedListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String PREF_DRAWER_SHOWED = "drawer_showed";
+    public static final String GOTO_NOTIFICATIONS = "notifications";
+
     public static final String BUNDLE_NODE = "node";
+    public static final String BUNDLE_GOTO = "goto";
 
     private TextView mUsername;
     private AppBarLayout mAppBar;
@@ -88,11 +91,10 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
         initNavDrawer();
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
-        switchFragment(getFragmentToShow(), false);
+        switchFragment(getFragmentToShow(getIntent()), false);
     }
 
-    private Fragment getFragmentToShow() {
-        final Intent intent = getIntent();
+    private Fragment getFragmentToShow(Intent intent) {
         Node node = null;
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             final String url = intent.getDataString();
@@ -100,6 +102,14 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
             node = NodeDao.get(name);
         } else if (intent.hasExtra(BUNDLE_NODE)) {
             node = intent.getParcelableExtra(BUNDLE_NODE);
+        } else if (intent.hasExtra(BUNDLE_GOTO)) {
+            final String dest = intent.getStringExtra(BUNDLE_GOTO);
+            switch (dest) {
+                case GOTO_NOTIFICATIONS:
+                    return NotificationListFragment.newInstance();
+                default:
+                    throw new IllegalArgumentException("unknown goto dest: " + dest);
+            }
         }
 
         if (node != null) {
@@ -224,6 +234,15 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
         super.onPostCreate(savedInstanceState);
 
         mDrawerToggle.syncState();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        final Fragment fragment = getFragmentToShow(intent);
+        mDrawerLayout.closeDrawer(mNav);
+        switchFragment(fragment, true);
     }
 
     @Override

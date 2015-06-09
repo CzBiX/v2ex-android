@@ -49,7 +49,7 @@ public class UserState {
         final EventBus eventBus = AppCtx.getEventBus();
         if (info.mUnread > 0) {
             mHasUnread = true;
-            eventBus.post(new NewUnreadEvent());
+            eventBus.post(new NewUnreadEvent(info.mUnread));
         }
         if (isTab && info.mHasAward != mHasAward) {
             eventBus.post(new DailyAwardEvent(info.mHasAward));
@@ -91,7 +91,7 @@ public class UserState {
 
     public void clearUnread() {
         mHasUnread = false;
-        AppCtx.getEventBus().post(new NewUnreadEvent());
+        AppCtx.getEventBus().post(new NewUnreadEvent(0));
     }
 
     public boolean hasAward() {

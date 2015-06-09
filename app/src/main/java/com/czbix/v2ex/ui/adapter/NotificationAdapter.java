@@ -109,23 +109,23 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             int resId;
             switch (type) {
                 case Notification.TYPE_REPLY_TOPIC:
-                    resId = R.string.notification_action_reply_topic;
+                    resId = R.string.notification_reply_topic;
                     break;
                 case Notification.TYPE_THANK_TOPIC:
-                    resId = R.string.notification_action_thank_topic;
+                    resId = R.string.notification_thank_topic;
                     break;
                 case Notification.TYPE_FAV_TOPIC:
-                    resId = R.string.notification_action_fav_topic;
+                    resId = R.string.notification_fav_topic;
                     break;
                 case Notification.TYPE_REPLY_COMMENT:
-                    resId = R.string.notification_action_reply_comment;
+                    resId = R.string.notification_reply_comment;
                     break;
                 case Notification.TYPE_THANK_COMMENT:
-                    resId = R.string.notification_action_thank_comment;
+                    resId = R.string.notification_thank_comment;
                     break;
                 case Notification.TYPE_UNKNOWN:
                 default:
-                    resId = R.string.notification_action_unknown;
+                    resId = R.string.notification_unknown;
                     break;
             }
 

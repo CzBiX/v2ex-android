@@ -2,6 +2,7 @@ package com.czbix.v2ex;
 
 import android.app.Application;
 
+import com.czbix.v2ex.common.NotificationStatus;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
@@ -44,6 +45,7 @@ public class AppCtx extends Application {
         mEventBus.register(this);
 
         UserState.getInstance().init();
+        NotificationStatus.getInstance().init();
 
         ExecutorUtils.execute(new AsyncInitTask());
     }
