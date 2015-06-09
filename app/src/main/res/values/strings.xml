@@ -28,6 +28,7 @@
     <string name="desc_open_drawer">Open navigation drawer</string>
     <string name="desc_close_drawer">Close navigation drawer</string>
     <string name="drawer_notifications">Notifications</string>
+    <string name="drawer_unread_notifications">Unread</string>
     <string name="action_thank">Thank</string>
     <string name="action_ignore">Ignore</string>
     <string name="action_share">Share</string>
@@ -39,4 +40,12 @@
     <string name="pref_title_load_image_on_mobile_network">Load image on mobile network</string>
     <string name="pref_summary_load_image_on_mobile_network">Load image in topic/comment on mobile network</string>
     <string name="toast_has_sign_out">Account has sign out!</string>
+    <string name="title_fragment_notifications">Notifications</string>
+    
+    <string name="notification_action_unknown">Unknown action</string>
+    <string name="notification_action_reply_topic">Reply your topic</string>
+    <string name="notification_action_thank_topic">Thank your topic</string>
+    <string name="notification_action_fav_topic">Fav your topic</string>
+    <string name="notification_action_reply_comment">Reply your comment</string>
+    <string name="notification_action_thank_comment">Thank your comment</string>
 </resources>

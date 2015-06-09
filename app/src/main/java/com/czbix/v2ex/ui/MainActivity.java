@@ -46,6 +46,7 @@ import com.czbix.v2ex.res.GoogleImg;
 import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
 import com.czbix.v2ex.ui.fragment.CategoryTabFragment;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
+import com.czbix.v2ex.ui.fragment.NotificationListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.UserUtils;
@@ -127,14 +128,26 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
     }
 
     private void updateNotifications() {
+        boolean isEnable;
+        int iconId;
+        int titleId;
         if (UserState.getInstance().isGuest()) {
-            mNotificationsItem.setEnabled(false);
+            isEnable = false;
+            iconId = R.drawable.ic_notifications_none_black_24dp;
+            titleId = R.string.drawer_notifications;
+        } else if (UserState.getInstance().hasUnread()) {
+            isEnable = true;
+            iconId = R.drawable.ic_notifications_black_24dp;
+            titleId = R.string.drawer_unread_notifications;
         } else {
-            mNotificationsItem.setEnabled(true);
-            mNotificationsItem.setIcon(UserState.getInstance().hasUnread()
-                    ? R.drawable.ic_notifications_black_24dp
-                    : R.drawable.ic_notifications_none_black_24dp);
+            isEnable = true;
+            iconId = R.drawable.ic_notifications_none_black_24dp;
+            titleId = R.string.drawer_notifications;
         }
+
+        mNotificationsItem.setEnabled(isEnable);
+        mNotificationsItem.setIcon(iconId);
+        mNotificationsItem.setTitle(titleId);
     }
 
     private void updateNavBackground() {
@@ -169,9 +182,7 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
         }
         final Menu menu = mNav.getMenu();
         mNotificationsItem = menu.findItem(R.id.drawer_notifications);
-        // not implemented yet
-        mNotificationsItem.setVisible(false);
-//        updateNotifications();
+        updateNotifications();
 
         mAwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,6 +237,10 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
             case R.id.drawer_nodes:
                 mDrawerLayout.closeDrawer(mNav);
                 switchFragment(NodeListFragment.newInstance());
+                return true;
+            case R.id.drawer_notifications:
+                mDrawerLayout.closeDrawer(mNav);
+                switchFragment(NotificationListFragment.newInstance());
                 return true;
             case R.id.drawer_settings:
                 startActivity(new Intent(this, SettingsActivity.class));

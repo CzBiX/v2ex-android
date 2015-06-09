@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:padding="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/avatar_img"
+        style="@style/AppTheme.CardView.Avatar"
+        android:layout_height="@dimen/comment_avatar_size"
+        android:layout_width="@dimen/comment_avatar_size"
+        android:contentDescription="@string/desc_avatar"/>
+
+    <TextView
+        android:id="@+id/username_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@id/avatar_img"
+        android:text="Username"
+        style="@style/AppTheme.CardView.Username"
+        tools:ignore="HardcodedText"/>
+
+    <TextView
+        android:id="@+id/time_tv"
+        android:text="12h"
+        style="@style/AppTheme.CardView.Time"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBaseline="@id/username_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText"/>
+
+    <TextView
+        android:id="@+id/action"
+        android:text="Thanks"
+        android:textSize="12sp"
+        android:layout_marginStart="5dp"
+        android:layout_alignBaseline="@id/username_tv"
+        android:layout_toEndOf="@id/username_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText"/>
+
+    <TextView
+        android:id="@+id/title_tv"
+        style="@style/AppTheme.CardView.TextView"
+        android:text="Title"
+        android:textStyle="bold"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/avatar_img"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText"/>
+
+    <TextView
+        android:id="@+id/content"
+        style="@style/AppTheme.CardView.Content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_tv"
+        android:layout_marginTop="5dp"
+        android:text="Content"
+        tools:ignore="HardcodedText"/>
+</RelativeLayout>

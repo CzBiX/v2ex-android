@@ -89,6 +89,11 @@ public class UserState {
         return mHasUnread;
     }
 
+    public void clearUnread() {
+        mHasUnread = false;
+        AppCtx.getEventBus().post(new NewUnreadEvent());
+    }
+
     public boolean hasAward() {
         return mHasAward;
     }

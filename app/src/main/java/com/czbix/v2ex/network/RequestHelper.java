@@ -14,6 +14,7 @@ import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.IgnoreAble;
 import com.czbix.v2ex.model.Node;
+import com.czbix.v2ex.model.Notification;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.ThankAble;
@@ -21,6 +22,7 @@ import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.network.interceptor.UserAgentInterceptor;
 import com.czbix.v2ex.parser.MyselfParser;
+import com.czbix.v2ex.parser.NotificationParser;
 import com.czbix.v2ex.parser.Parser;
 import com.czbix.v2ex.parser.TopicListParser;
 import com.czbix.v2ex.parser.TopicParser;
@@ -56,6 +58,7 @@ public class RequestHelper {
     private static final String URL_SIGN_IN = BASE_URL + "/signin";
     private static final String URL_MISSION_DAILY = BASE_URL + "/mission/daily";
     private static final String URL_ONCE_CODE = URL_SIGN_IN;
+    private static final String URL_NOTIFICATIONS = BASE_URL + "/notifications";
 
     private static final int SERVER_ERROR_CODE = 500;
 
@@ -175,6 +178,25 @@ public class RequestHelper {
             }.getType());
         } catch (IOException e) {
             throw new ConnectionException(e);
+        }
+    }
+
+    public static List<Notification> getNotifications() throws ConnectionException, RemoteException {
+        Preconditions.checkState(!UserState.getInstance().isGuest(), "guest can't check notifications");
+        LogUtils.v(TAG, "get notifications");
+
+        final Request request = new Request.Builder().url(URL_NOTIFICATIONS).build();
+        final Response response = sendRequest(request);
+
+        try {
+            final String html = response.body().string();
+
+            final Document doc = Parser.toDoc(html);
+            return NotificationParser.parseDoc(doc);
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        } catch (SAXException e) {
+            throw new RequestException(response, e);
         }
     }
 
