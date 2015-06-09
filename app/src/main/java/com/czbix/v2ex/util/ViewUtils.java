@@ -15,12 +15,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.czbix.v2ex.parser.AsyncImageGetter;
+import com.czbix.v2ex.ui.helper.TagHandler;
 
 public class ViewUtils {
     public static int getScreenWidthPixel(Context context) {
         return context.getResources().getDisplayMetrics().widthPixels;
     }
 
+    /**
+     * @param dimenRes dimen resources id for fallback
+     */
     public static int getExactlyWidth(View view, @DimenRes int dimenRes) {
         int width = view.getWidth();
         if (width <= 0) {
@@ -42,7 +46,7 @@ public class ViewUtils {
     }
 
     public static void setHtmlIntoTextView(TextView view, String html, @DimenRes int dimenRes) {
-        final Spanned spanned = Html.fromHtml(html, new AsyncImageGetter(view, dimenRes), null);
+        final Spanned spanned = Html.fromHtml(html, new AsyncImageGetter(view, dimenRes), TagHandler.getInstance());
         final SpannableStringBuilder builder = (SpannableStringBuilder) spanned;
         final int length = builder.length();
         if (length > 32) {
