@@ -38,6 +38,7 @@ public class CategoryTabFragment extends Fragment {
         ViewPager viewPager = ((ViewPager) view.findViewById(R.id.view_pager));
         FragmentPagerAdapter adapter = new CategoryFragmentAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
+        viewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin));
 
         final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(viewPager);
