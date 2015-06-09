@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 public class TagHandler implements Html.TagHandler {
     private static final String TAG = TagHandler.class.getSimpleName();
     private static final Pattern PATTERN_GIST = Pattern.compile("(https?://gist.github.com/.*?).js");
+    private static final Pattern PATTERN_YOUTUBE = Pattern.compile("//www.youtube.com/embed/(.*)");
     private static final TagHandler instance;
 
     static {
@@ -50,12 +51,16 @@ public class TagHandler implements Html.TagHandler {
     private void handleOpening(String tag, Editable output, XMLReader xmlReader) throws SAXNotRecognizedException, SAXNotSupportedException {
         if (tag.equalsIgnoreCase("script")) {
             startScript(output, xmlReader);
+        } else if (tag.equalsIgnoreCase("iframe")) {
+            startIframe(output, xmlReader);
         }
     }
 
     private void handleEnding(String tag, Editable output, XMLReader xmlReader) {
         if (tag.equalsIgnoreCase("script")) {
             endScript(output);
+        } else if (tag.equalsIgnoreCase("iframe")) {
+            endIframe(output);
         }
     }
 
@@ -83,6 +88,38 @@ public class TagHandler implements Html.TagHandler {
         if (matcher.matches()) {
             // remove the js ext for gist
             url = matcher.group(1);
+        }
+
+        text.insert(where, url);
+        int length = text.length();
+
+        text.setSpan(new URLSpan(url), where, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+
+    private void startIframe(Editable text, XMLReader xmlReader) throws SAXNotRecognizedException, SAXNotSupportedException {
+        String url = getAttribute(xmlReader, "src");
+
+        int length = text.length();
+        text.setSpan(new Iframe(url), length, length, Spanned.SPAN_MARK_MARK);
+    }
+
+    private void endIframe(Editable text) {
+        Object obj = getLast(text, Iframe.class);
+        int where = text.getSpanStart(obj);
+
+        text.removeSpan(obj);
+
+        Iframe iframe = ((Iframe) obj);
+        Preconditions.checkNotNull(iframe);
+        String url = iframe.mUrl;
+        if (Strings.isNullOrEmpty(url)) {
+            return;
+        }
+
+        Matcher matcher = PATTERN_YOUTUBE.matcher(url);
+        if (matcher.matches()) {
+            // replace with youtube full url
+            url = String.format("https://www.youtube.com/watch?v=%s", matcher.group(1));
         }
 
         text.insert(where, url);
@@ -120,6 +157,14 @@ public class TagHandler implements Html.TagHandler {
 
         if (where != len) {
             text.setSpan(repl, where, len, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+    }
+
+    private static class Iframe {
+        public final String mUrl;
+
+        public Iframe(String url) {
+            mUrl = url;
         }
     }
 
