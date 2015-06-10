@@ -168,6 +168,10 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
         @Override
         public void onClick(View v) {
+            if (mListener == null) {
+                return;
+            }
+
             if (mListener.onTopicOpen(mTopic)) {
                 updateForRead();
             }
