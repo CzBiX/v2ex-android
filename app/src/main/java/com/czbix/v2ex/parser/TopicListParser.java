@@ -136,7 +136,7 @@ public class TopicListParser extends Parser {
         String url = ele.attr("href");
 
         topicBuilder.setId(Topic.getIdFromUrl(url));
-        topicBuilder.setTitle(ele.text());
+        topicBuilder.setTitle(ele.html());
     }
 
     static void parseMember(Topic.Builder builder, Element ele) {

@@ -78,7 +78,7 @@ public class TopicParser extends Parser {
     }
 
     private static void parseTopicTitle(Topic.Builder builder, Element headerEle) {
-        final String title = headerEle.select("h1").text();
+        final String title = headerEle.select("h1").html();
 
         builder.setTitle(title);
     }

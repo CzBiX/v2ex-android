@@ -18,6 +18,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.PrefStore;
+import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
@@ -26,20 +27,35 @@ public class AsyncImageGetter implements Html.ImageGetter {
     private static final String TAG = AsyncImageGetter.class.getSimpleName();
     private final TextView mTextView;
     private final int mDimenRes;
+    private final int mPixel;
 
-    public AsyncImageGetter(TextView textView, @DimenRes int dimenRes) {
+    AsyncImageGetter(TextView textView, @DimenRes int dimenRes, int pixel) {
         mTextView = textView;
         mDimenRes = dimenRes;
+        mPixel = pixel;
+    }
+
+    public static AsyncImageGetter fromRes(TextView textView, @DimenRes int dimenRes) {
+        Preconditions.checkArgument(dimenRes > 0);
+        return new AsyncImageGetter(textView, dimenRes, 0);
+    }
+
+    public static AsyncImageGetter fromPixel(TextView textView, int pixel) {
+        Preconditions.checkArgument(pixel > 0);
+        return new AsyncImageGetter(textView, 0, pixel);
     }
 
     @Override
     public Drawable getDrawable(String source) {
+        if (source.startsWith("/")) {
+            source = RequestHelper.BASE_URL + source;
+        }
         LogUtils.v(TAG, "load image for text view: %s", source);
 
         boolean shouldLoadImage = PrefStore.getInstance().shouldLoadImage();
         final NetworkDrawable drawable = new NetworkDrawable(shouldLoadImage);
         if (shouldLoadImage) {
-            final int width = ViewUtils.getExactlyWidth(mTextView, mDimenRes);
+            final int width = mPixel > 0 ? mPixel : ViewUtils.getExactlyWidth(mTextView, mDimenRes);
             final NetworkDrawableTarget target = new NetworkDrawableTarget(mTextView, drawable, width);
             Glide.with(mTextView.getContext()).load(source).asBitmap().fitCenter().into(target);
         }

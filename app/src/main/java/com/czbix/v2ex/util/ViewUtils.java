@@ -49,8 +49,16 @@ public class ViewUtils {
         return width;
     }
 
-    public static void setHtmlIntoTextView(TextView view, String html, @DimenRes int dimenRes) {
-        final Spanned spanned = Html.fromHtml(html, new AsyncImageGetter(view, dimenRes), TagHandler.getInstance());
+    public static void setHtmlIntoTextViewWithRes(TextView view, String html, @DimenRes int dimenRes) {
+        setHtmlIntoTextView(view, html, AsyncImageGetter.fromRes(view, dimenRes));
+    }
+
+    public static void setHtmlIntoTextViewWithPixel(TextView view, String html, int pixel) {
+        setHtmlIntoTextView(view, html, AsyncImageGetter.fromPixel(view, pixel));
+    }
+
+    private static void setHtmlIntoTextView(TextView view, String html, AsyncImageGetter imageGetter) {
+        final Spanned spanned = Html.fromHtml(html, imageGetter, TagHandler.getInstance());
         final SpannableStringBuilder builder = (SpannableStringBuilder) spanned;
         final int length = builder.length();
         if (length > 32) {

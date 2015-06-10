@@ -93,7 +93,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 return;
             }
             mContent.setVisibility(View.VISIBLE);
-            ViewUtils.setHtmlIntoTextView(mContent, content,
+            ViewUtils.setHtmlIntoTextViewWithRes(mContent, content,
                     R.dimen.topic_picture_max_width);
         }
 

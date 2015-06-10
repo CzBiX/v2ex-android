@@ -134,7 +134,7 @@ public class CommentAdapter extends BaseAdapter {
             }
             mComment = comment;
 
-            ViewUtils.setHtmlIntoTextView(mContent, comment.getContent(),
+            ViewUtils.setHtmlIntoTextViewWithRes(mContent, comment.getContent(),
                     R.dimen.comment_picture_max_width);
             appendThanks(comment);
 
