@@ -21,4 +21,6 @@ public abstract class BusEvent {
             mHasAward = hasAward;
         }
     }
+
+    public static class ContextInitFinishEvent extends BusEvent {}
 }

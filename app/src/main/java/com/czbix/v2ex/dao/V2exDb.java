@@ -11,7 +11,7 @@ import com.google.common.base.Preconditions;
 public class V2exDb extends SQLiteOpenHelper {
     private static final String TAG = V2exDb.class.getSimpleName();
     private static final String DB_NAME = "v2ex.db";
-    private static final int CURRENT_VERSION = 2;
+    private static final int CURRENT_VERSION = 3;
 
     private static final V2exDb INSTANCE;
 
@@ -42,7 +42,19 @@ public class V2exDb extends SQLiteOpenHelper {
             TopicDao.createTable(db);
             oldVersion = 2;
         }
+        if (oldVersion == 2) {
+            LogUtils.i(TAG, "upgrade database from %d to %d", oldVersion, newVersion);
+            TopicDao.upgradeTableZero2One(db);
+            oldVersion = 3;
+        }
 
         Preconditions.checkState(oldVersion == newVersion, "old version not match new version");
+    }
+
+    /**
+     * it may use a lot of time
+     */
+    public void init() {
+        getWritableDatabase();
     }
 }

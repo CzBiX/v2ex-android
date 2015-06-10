@@ -9,6 +9,7 @@ import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.dao.NodeDao;
+import com.czbix.v2ex.dao.V2exDb;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.eventbus.BusEvent.GetNodesFinishEvent;
 import com.czbix.v2ex.eventbus.executor.HandlerExecutor;
@@ -30,6 +31,7 @@ public class AppCtx extends Application {
 
     private static AppCtx mInstance;
     private EventBus mEventBus;
+    private volatile boolean mIsInited;
 
     @Override
     public void onCreate() {
@@ -39,13 +41,14 @@ public class AppCtx extends Application {
         init();
     }
 
+    public boolean isInited() {
+        return mIsInited;
+    }
+
     private void init() {
         // event bus is the first
         mEventBus = new AsyncEventBus(new HandlerExecutor());
         mEventBus.register(this);
-
-        UserState.getInstance().init();
-        NotificationStatus.getInstance().init();
 
         ExecutorUtils.execute(new AsyncInitTask());
     }
@@ -67,6 +70,14 @@ public class AppCtx extends Application {
     private class AsyncInitTask implements Runnable {
         @Override
         public void run() {
+            V2exDb.getInstance().init();
+
+            UserState.getInstance().init();
+            NotificationStatus.getInstance().init();
+
+            mIsInited = true;
+            mEventBus.post(new BusEvent.ContextInitFinishEvent());
+
             DraftDao.cleanExpired();
             loadAllNodes();
             UserUtils.checkDailyAward();

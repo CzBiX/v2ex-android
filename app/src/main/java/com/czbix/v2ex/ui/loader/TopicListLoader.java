@@ -22,7 +22,7 @@ public class TopicListLoader extends AsyncTaskLoader<List<Topic>> {
     public List<Topic> loadInBackgroundWithException() throws Exception {
         final List<Topic> topics = RequestHelper.getTopics(mPage);
         for (Topic topic : topics) {
-            final int lastRead = TopicDao.getLastRead(topic.getId());
+            final int lastRead = TopicDao.getLastReadReply(topic.getId());
             if (lastRead >= topic.getReplyCount()) {
                 topic.setHasRead();
             }

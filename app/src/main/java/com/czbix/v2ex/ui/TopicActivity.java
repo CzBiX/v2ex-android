@@ -2,7 +2,6 @@ package com.czbix.v2ex.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.czbix.v2ex.R;
@@ -10,7 +9,7 @@ import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.fragment.TopicFragment;
 import com.google.common.base.Strings;
 
-public class TopicActivity extends AppCompatActivity {
+public class TopicActivity extends BaseActivity {
     public static final String KEY_TOPIC = "topic";
 
     @Override

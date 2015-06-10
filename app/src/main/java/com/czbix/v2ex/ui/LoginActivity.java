@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -27,7 +26,7 @@ import com.czbix.v2ex.util.UserUtils;
 /**
  * A login screen that offers login via account/password.
  */
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */

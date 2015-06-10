@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,7 +52,7 @@ import com.czbix.v2ex.util.UserUtils;
 import com.google.common.eventbus.Subscribe;
 
 
-public class MainActivity extends AppCompatActivity implements OnTopicActionListener,
+public class MainActivity extends BaseActivity implements OnTopicActionListener,
         NavigationView.OnNavigationItemSelectedListener, NodeListFragment.OnNodeActionListener, FragmentManager.OnBackStackChangedListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String PREF_DRAWER_SHOWED = "drawer_showed";
@@ -393,8 +392,8 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
 
         startActivity(intent);
 
+        TopicDao.setLastReadReply(topic.getId(), topic.getReplyCount());
         if (topic.getReplyCount() > 0) {
-            TopicDao.setLastRead(topic.getId(), topic.getReplyCount());
             topic.setHasRead();
             return true;
         }
