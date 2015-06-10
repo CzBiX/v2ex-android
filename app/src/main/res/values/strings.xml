@@ -51,4 +51,6 @@
     
     <string name="ntf_title_new_notifications">New notifications</string>
     <string name="ntf_desc_from_v2ex">From V2EX</string>
+    <string name="drawer_about">About</string>
+    <string name="toast_app_version">Version: %s</string>
 </resources>

@@ -28,6 +28,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.ViewTarget;
 import com.czbix.v2ex.AppCtx;
+import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
@@ -263,6 +264,10 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
                 return true;
             case R.id.drawer_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.drawer_about:
+                Toast.makeText(this, getString(R.string.toast_app_version, BuildConfig.VERSION_NAME),
+                        Toast.LENGTH_SHORT).show();
                 return true;
         }
 

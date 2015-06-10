@@ -20,5 +20,9 @@
             android:id="@+id/drawer_settings"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/action_settings"/>
+        <item
+            android:id="@+id/drawer_about"
+            android:icon="@drawable/ic_info_outline_black_24dp"
+            android:title="@string/drawer_about"/>
     </group>
 </menu>
