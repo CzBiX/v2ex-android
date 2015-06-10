@@ -57,4 +57,6 @@
     <string name="drawer_unread_notifications">未读提醒</string>
     <string name="ntf_desc_from_v2ex">来自 V2EX</string>
     <string name="ntf_title_new_notifications">新提醒</string>
+    <string name="drawer_history">@string/title_fragment_history</string>
+    <string name="title_fragment_history">浏览历史</string>
 </resources>

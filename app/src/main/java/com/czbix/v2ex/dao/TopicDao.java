@@ -5,7 +5,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 
+import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.model.db.ViewHistory;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+
+import java.util.List;
 
 public class TopicDao extends DaoBase {
     private static final String TABLE_NAME = "topic";
@@ -17,6 +23,9 @@ public class TopicDao extends DaoBase {
 
     private static final String SQL_GET_REPLY_BY_TOPIC_ID = SQLiteQueryBuilder.buildQueryString(false,
             TABLE_NAME, new String[]{KEY_LAST_READ_REPLY}, KEY_TOPIC_ID + " = ?", null, null, null, null);
+    private static final String SQL_GET_HISTORY = SQLiteQueryBuilder.buildQueryString(false,
+            TABLE_NAME, new String[]{KEY_TOPIC_ID, KEY_TITLE, KEY_LAST_READ_TIME}, null, null, null,
+            KEY_LAST_READ_TIME + " DESC", "20");
 
     static void createTable(SQLiteDatabase db) {
         Preconditions.checkState(db.inTransaction());
@@ -27,6 +36,9 @@ public class TopicDao extends DaoBase {
                 KEY_LAST_READ_REPLY + " INTEGER NOT NULL," +
                 KEY_LAST_READ_TIME + " INTEGER NOT NULL" +
                 ")";
+        db.execSQL(sql);
+
+        sql = String.format("CREATE INDEX %1$s_%2$s ON %1$s(%2$s DESC)", TABLE_NAME, KEY_LAST_READ_TIME);
         db.execSQL(sql);
     }
 
@@ -58,15 +70,16 @@ public class TopicDao extends DaoBase {
         });
     }
 
-    public static void setLastReadReply(final int topicId, final int num) {
-        Preconditions.checkArgument(num > 0);
+    public static void updateLastRead(final Topic topic) {
+        Preconditions.checkArgument(!Strings.isNullOrEmpty(topic.getTitle()));
 
         execute(new SqlOperation<Void>() {
             @Override
             public Void execute(SQLiteDatabase db) {
-                final ContentValues values = new ContentValues(2);
-                values.put(KEY_TOPIC_ID, topicId);
-                values.put(KEY_LAST_READ_REPLY, num);
+                final ContentValues values = new ContentValues();
+                values.put(KEY_TOPIC_ID, topic.getId());
+                values.put(KEY_TITLE, topic.getTitle());
+                values.put(KEY_LAST_READ_REPLY, topic.getReplyCount());
                 values.put(KEY_LAST_READ_TIME, System.currentTimeMillis());
 
                 db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
@@ -74,5 +87,34 @@ public class TopicDao extends DaoBase {
                 return null;
             }
         }, true);
+    }
+
+    public static List<ViewHistory> getViewHistory() {
+        return execute(new SqlOperation<List<ViewHistory>>() {
+            @Override
+            public List<ViewHistory> execute(SQLiteDatabase db) {
+                List<ViewHistory> result = Lists.newArrayList();
+
+                Cursor cursor = null;
+                try {
+                    cursor = db.rawQuery(SQL_GET_HISTORY, null);
+
+                    while (cursor.moveToNext()) {
+                        final int id = cursor.getInt(0);
+                        final String title = cursor.getString(1);
+                        final long time = cursor.getLong(2);
+
+                        final Topic topic = new Topic.Builder().setId(id).setTitle(title).createTopic();
+                        result.add(new ViewHistory(topic, time));
+                    }
+
+                    return result;
+                } finally {
+                    if (cursor != null) {
+                        cursor.close();
+                    }
+                }
+            }
+        });
     }
 }

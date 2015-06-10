@@ -82,7 +82,7 @@ public class NodeListFragment extends Fragment implements LoaderCallbacks<Loader
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View layout = inflater.inflate(R.layout.fragment_node_list, container, false);
+        final View layout = inflater.inflate(R.layout.recycle_view, container, false);
         final RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.recycle_view);
 
         final LayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);

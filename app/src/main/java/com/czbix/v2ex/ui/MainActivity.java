@@ -44,6 +44,7 @@ import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.res.GoogleImg;
 import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
 import com.czbix.v2ex.ui.fragment.CategoryTabFragment;
+import com.czbix.v2ex.ui.fragment.HistoryFragment;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.NotificationListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
@@ -261,6 +262,10 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
                 mDrawerLayout.closeDrawer(mNav);
                 switchFragment(NotificationListFragment.newInstance());
                 return true;
+            case R.id.drawer_history:
+                mDrawerLayout.closeDrawer(mNav);
+                switchFragment(HistoryFragment.newInstance());
+                return true;
             case R.id.drawer_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
@@ -392,7 +397,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
         startActivity(intent);
 
-        TopicDao.setLastReadReply(topic.getId(), topic.getReplyCount());
+        TopicDao.updateLastRead(topic);
         if (topic.getReplyCount() > 0) {
             topic.setHasRead();
             return true;
