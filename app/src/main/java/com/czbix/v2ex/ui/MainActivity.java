@@ -32,7 +32,6 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
-import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.dao.TopicDao;
 import com.czbix.v2ex.eventbus.BusEvent.DailyAwardEvent;
 import com.czbix.v2ex.eventbus.BusEvent.NewUnreadEvent;
@@ -99,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements OnTopicActionList
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             final String url = intent.getDataString();
             final String name = Node.getNameFromUrl(url);
-            node = NodeDao.get(name);
+            node = new Node.Builder().setName(name).createNode();
         } else if (intent.hasExtra(BUNDLE_NODE)) {
             node = intent.getParcelableExtra(BUNDLE_NODE);
         } else if (intent.hasExtra(BUNDLE_GOTO)) {

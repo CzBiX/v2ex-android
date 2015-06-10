@@ -20,7 +20,9 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.dao.ConfigDao;
+import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.eventbus.BusEvent;
+import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
@@ -74,8 +76,9 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mPage = getArguments().getParcelable(ARG_PAGE);
+        final Bundle arguments = getArguments();
+        if (arguments != null) {
+            mPage = arguments.getParcelable(ARG_PAGE);
         }
 
         if (mPage == null) {
@@ -103,6 +106,26 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
 
         mLayout.setRefreshing(true);
         return mLayout;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (!(mPage instanceof Node)) {
+            return;
+        }
+        
+        Node node = (Node) mPage;
+        if (!node.hasInfo()) {
+            node = NodeDao.get(node.getName());
+            if (node == null) {
+                return;
+            }
+            mPage = node;
+        }
+
+        getActivity().setTitle(mPage.getTitle());
     }
 
     @Override

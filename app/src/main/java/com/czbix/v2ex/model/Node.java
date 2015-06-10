@@ -67,6 +67,10 @@ public class Node extends Page implements Comparable<Node> {
         return mTopics;
     }
 
+    public boolean hasInfo() {
+        return mHasInfo;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
