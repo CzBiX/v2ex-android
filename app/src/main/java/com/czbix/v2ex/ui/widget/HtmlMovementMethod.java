@@ -7,7 +7,9 @@ import android.text.Selection;
 import android.text.Spannable;
 import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
+import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
+import android.text.style.ImageSpan;
 import android.text.style.URLSpan;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -188,10 +190,13 @@ public class HtmlMovementMethod extends ScrollingMovementMethod {
         return false;
     }
 
-    private void onSpanClick(ClickableSpan span) {
+    private void onSpanClick(CharacterStyle span) {
         if (span instanceof URLSpan) {
             final String url = ((URLSpan) span).getURL();
             mListener.onUrlClick(url);
+        } else if (span instanceof ImageSpan) {
+            final String url = ((ImageSpan) span).getSource();
+            mListener.onImageClick(url);
         }
     }
 
@@ -215,15 +220,18 @@ public class HtmlMovementMethod extends ScrollingMovementMethod {
             int line = layout.getLineForVertical(y);
             int off = layout.getOffsetForHorizontal(line, x);
 
-            ClickableSpan[] link = buffer.getSpans(off, off, ClickableSpan.class);
+            CharacterStyle[] spans = buffer.getSpans(off, off, ImageSpan.class);
+            if (spans.length == 0) {
+                spans = buffer.getSpans(off, off, ClickableSpan.class);
+            }
 
-            if (link.length != 0) {
+            if (spans.length != 0) {
                 if (action == MotionEvent.ACTION_UP) {
-                    onSpanClick(link[0]);
+                    onSpanClick(spans[0]);
                 } else if (action == MotionEvent.ACTION_DOWN) {
                     Selection.setSelection(buffer,
-                            buffer.getSpanStart(link[0]),
-                            buffer.getSpanEnd(link[0]));
+                            buffer.getSpanStart(spans[0]),
+                            buffer.getSpanEnd(spans[0]));
                 }
 
                 return true;
@@ -256,5 +264,6 @@ public class HtmlMovementMethod extends ScrollingMovementMethod {
 
     public interface OnHtmlActionListener {
         void onUrlClick(String url);
+        void onImageClick(String source);
     }
 }

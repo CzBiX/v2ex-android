@@ -226,6 +226,11 @@ public class CommentAdapter extends BaseAdapter {
         public void onUrlClick(String url) {
             mListener.onCommentUrlClick(url);
         }
+
+        @Override
+        public void onImageClick(String source) {
+            mListener.onCommentUrlClick(source);
+        }
     }
 
     public interface OnCommentActionListener {

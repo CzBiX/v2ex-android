@@ -440,6 +440,11 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Override
+    public void onImageClick(String source) {
+        onUrlClick(source);
+    }
+
+    @Override
     public void onNodeOpen(Node node) {
         final Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.putExtra(MainActivity.BUNDLE_NODE, node);
