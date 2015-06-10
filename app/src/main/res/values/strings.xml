@@ -55,4 +55,5 @@
     <string name="toast_app_version">Version: %s</string>
     <string name="title_activity_loading">Loading</string>
     <string name="toast_please_wait">Please wait…</string>
+    <string name="drawer_history">History</string>
 </resources>
