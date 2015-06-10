@@ -1,9 +1,12 @@
 package com.czbix.v2ex.ui.helper;
 
+import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 
 import com.czbix.v2ex.common.exception.FatalException;
@@ -53,6 +56,8 @@ public class TagHandler implements Html.TagHandler {
             startScript(output, xmlReader);
         } else if (tag.equalsIgnoreCase("iframe")) {
             startIframe(output, xmlReader);
+        } else if (tag.equalsIgnoreCase("button")) {
+            start(output, new Button());
         }
     }
 
@@ -61,6 +66,8 @@ public class TagHandler implements Html.TagHandler {
             endScript(output);
         } else if (tag.equalsIgnoreCase("iframe")) {
             endIframe(output);
+        } else if (tag.equalsIgnoreCase("button")) {
+            endButton(output);
         }
     }
 
@@ -69,6 +76,26 @@ public class TagHandler implements Html.TagHandler {
 
         int length = text.length();
         text.setSpan(new Script(url), length, length, Spanned.SPAN_MARK_MARK);
+    }
+
+    private void endButton(Editable text) {
+        Object obj = getLast(text, Button.class);
+        int where = text.getSpanStart(obj);
+
+        text.removeSpan(obj);
+
+        final int length = text.length();
+        if (length == where) {
+            return;
+        }
+
+        final CharSequence str = text.subSequence(where, length);
+        if (TextUtils.indexOf(str, "显示 Gist 代码") >= 0) {
+            text.delete(where, length);
+            return;
+        }
+
+        text.setSpan(new StyleSpan(Typeface.ITALIC), where, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     private void endScript(Editable text) {
@@ -159,6 +186,8 @@ public class TagHandler implements Html.TagHandler {
             text.setSpan(repl, where, len, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
     }
+
+    private static class Button {}
 
     private static class Iframe {
         public final String mUrl;
