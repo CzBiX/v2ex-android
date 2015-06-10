@@ -251,7 +251,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onLoadFinished(Loader<LoaderResult<TopicWithComments>> loader, LoaderResult<TopicWithComments> result) {
         mLayout.setRefreshing(false);
         if (result.hasException()) {
-            ExceptionUtils.handleExceptionNoCatch(this, result.mException);
+            if (ExceptionUtils.handleExceptionNoCatch(this, result.mException)) {
+                getActivity().finish();
+            }
             return;
         }
         final TopicWithComments data = result.mResult;

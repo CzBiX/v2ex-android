@@ -14,15 +14,15 @@ public class ExceptionUtils {
     /**
      * warp exception in {@link #handleException(Fragment, Exception)} with {@link FatalException}
      */
-    public static void handleExceptionNoCatch(Fragment fragment, Exception ex) {
+    public static boolean handleExceptionNoCatch(Fragment fragment, Exception ex) {
         try {
-            handleException(fragment, ex);
+            return handleException(fragment, ex);
         } catch (Exception e) {
             throw new FatalException(e);
         }
     }
 
-    public static void handleException(Fragment fragment, Exception e) throws Exception {
+    public static boolean handleException(Fragment fragment, Exception e) throws Exception {
         final FragmentActivity activity = fragment.getActivity();
         boolean needFinishActivity = false;
         int stringId;
@@ -38,8 +38,6 @@ public class ExceptionUtils {
         }
 
         Toast.makeText(activity, stringId, Toast.LENGTH_LONG).show();
-        if (needFinishActivity) {
-            activity.finish();
-        }
+        return needFinishActivity;
     }
 }

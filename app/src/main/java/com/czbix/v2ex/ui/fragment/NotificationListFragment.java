@@ -89,7 +89,9 @@ public class NotificationListFragment extends Fragment implements LoaderManager.
     public void onLoadFinished(Loader<LoaderResult<List<Notification>>> loader, LoaderResult<List<Notification>> result) {
         mLayout.setRefreshing(false);
         if (result.hasException()) {
-            ExceptionUtils.handleExceptionNoCatch(this, result.mException);
+            if (ExceptionUtils.handleExceptionNoCatch(this, result.mException)) {
+                getActivity().finish();
+            }
             return;
         }
 
