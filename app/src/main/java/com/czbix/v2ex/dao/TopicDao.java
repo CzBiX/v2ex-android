@@ -11,8 +11,7 @@ public class TopicDao extends DaoBase {
     private static final String TABLE_NAME = "topic";
 
     private static final String KEY_TOPIC_ID = "topic_id";
-    @Deprecated
-    private static final String KEY_LAST_READ = "last_read";
+    private static final String KEY_TITLE = "title";
     private static final String KEY_LAST_READ_TIME = "last_read_time";
     private static final String KEY_LAST_READ_REPLY = "last_read_reply";
 
@@ -24,37 +23,18 @@ public class TopicDao extends DaoBase {
 
         String sql = "CREATE TABLE " + TABLE_NAME + "(" +
                 KEY_TOPIC_ID + " INTEGER PRIMARY KEY," +
+                KEY_TITLE + " TEXT NOT NULL," +
                 KEY_LAST_READ_REPLY + " INTEGER NOT NULL," +
                 KEY_LAST_READ_TIME + " INTEGER NOT NULL" +
                 ")";
         db.execSQL(sql);
     }
 
-    @SuppressWarnings("deprecation")
     static void upgradeTableZero2One(SQLiteDatabase db) {
-        Preconditions.checkState(db.inTransaction());
-        final String newTableName = TABLE_NAME + "_new";
-
-        String sql = "CREATE TABLE " + newTableName + "(" +
-                KEY_TOPIC_ID + " INTEGER PRIMARY KEY," +
-                KEY_LAST_READ_REPLY + " INTEGER NOT NULL," +
-                KEY_LAST_READ_TIME + " INTEGER NOT NULL" +
-                ")";
+        String sql = "DROP TABLE " + TABLE_NAME;
         db.execSQL(sql);
 
-        // convert data
-        sql = String.format("INSERT INTO %s (%s, %s, %s) %s", newTableName, KEY_TOPIC_ID,
-                KEY_LAST_READ_REPLY, KEY_LAST_READ_TIME, SQLiteQueryBuilder.buildQueryString(false,
-                        TABLE_NAME, new String[]{KEY_TOPIC_ID, KEY_LAST_READ, "0"}, null, null, null,
-                        null, null));
-        db.execSQL(sql);
-
-        // delete old table
-        sql = "DROP TABLE " + TABLE_NAME;
-        db.execSQL(sql);
-
-        sql = String.format("ALTER TABLE %s RENAME TO %s", newTableName, TABLE_NAME);
-        db.execSQL(sql);
+        createTable(db);
     }
 
     public static int getLastReadReply(final int topicId) {
