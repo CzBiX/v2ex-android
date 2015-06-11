@@ -172,7 +172,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
                 return;
             }
 
-            if (mListener.onTopicOpen(mTopic)) {
+            if (mListener.onTopicOpen(v, mTopic)) {
                 updateForRead();
             }
         }
@@ -182,6 +182,6 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         /**
          * @return should refresh data
          */
-        boolean onTopicOpen(Topic topic);
+        boolean onTopicOpen(View view, Topic topic);
     }
 }

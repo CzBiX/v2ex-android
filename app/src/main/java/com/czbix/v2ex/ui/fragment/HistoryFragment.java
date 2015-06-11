@@ -56,7 +56,7 @@ public class HistoryFragment extends Fragment implements LoaderCallbacks<LoaderR
     }
 
     @Override
-    public boolean onTopicOpen(Topic topic) {
+    public boolean onTopicOpen(View view, Topic topic) {
         final Intent intent = new Intent(getActivity(), TopicActivity.class);
         intent.putExtra(TopicActivity.KEY_TOPIC, topic);
         startActivity(intent);
@@ -141,7 +141,7 @@ public class HistoryFragment extends Fragment implements LoaderCallbacks<LoaderR
 
             @Override
             public void onClick(View v) {
-                mListener.onTopicOpen(mHistory.mTopic);
+                mListener.onTopicOpen(v, mHistory.mTopic);
             }
         }
     }

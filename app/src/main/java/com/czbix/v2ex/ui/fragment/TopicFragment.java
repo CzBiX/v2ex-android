@@ -128,7 +128,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mTopicHolder.setNodeListener(this);
         mTopicHolder.fillData(mTopic);
 
-        mCommentAdapter = new CommentAdapter(getActivity(), mTopicView, this);
+        mCommentAdapter = new CommentAdapter(getActivity(), this);
+        mCommentsView.addHeaderView(mTopicView);
         mCommentsView.setAdapter(mCommentAdapter);
 
         return rootView;

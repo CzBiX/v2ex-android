@@ -26,13 +26,11 @@ import java.util.List;
 
 public class CommentAdapter extends BaseAdapter {
     private final LayoutInflater mInflater;
-    private final View mHeaderView;
     private final OnCommentActionListener mListener;
     private List<Comment> mCommentList;
 
-    public CommentAdapter(Context context, View headerView, OnCommentActionListener listener) {
+    public CommentAdapter(Context context, OnCommentActionListener listener) {
         mInflater = LayoutInflater.from(context);
-        mHeaderView = headerView;
         mListener = listener;
     }
 
@@ -43,50 +41,21 @@ public class CommentAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if (mCommentList == null) {
-            return 1;
-        }
-
-        return mCommentList.size() + 1;
+        return mCommentList == null ? 0 : mCommentList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        if (position == 0) {
-            return mHeaderView;
-        }
-
-        return position - 1;
+        return mCommentList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        if (position == 0) {
-            return 0;
-        }
-        position--;
-        if (mCommentList == null) {
-            return -1;
-        }
-
         return mCommentList.get(position).getId();
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (position == 0) {
-            return IGNORE_ITEM_VIEW_TYPE;
-        }
-        return super.getItemViewType(position);
-    }
-
-    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (position == 0) {
-            return mHeaderView;
-        }
-        position--;
-
         ViewHolder viewHolder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.view_comment, parent , false);
