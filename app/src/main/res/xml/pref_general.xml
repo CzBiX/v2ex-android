@@ -6,9 +6,9 @@
                     android:title="Debug"/>
         <Preference android:key="login"
                     android:title="@string/pref_sign_in"/>
-        <CheckBoxPreference android:key="load_image_on_mobile_network"
-                            android:title="@string/pref_title_load_image_on_mobile_network"
-                            android:summary="@string/pref_summary_load_image_on_mobile_network"/>
+        <SwitchPreference android:key="load_image_on_mobile_network"
+                          android:title="@string/pref_title_load_image_on_mobile_network"
+                          android:summary="@string/pref_summary_load_image_on_mobile_network"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="user"
