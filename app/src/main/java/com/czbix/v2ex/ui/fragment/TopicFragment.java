@@ -228,7 +228,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 onThank(mTopic);
                 return true;
             case R.id.action_ignore:
-                onIgnore(mTopic);
+                onIgnore(mTopic, true);
                 return true;
         }
 
@@ -347,7 +347,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     return;
                 }
 
-                AppCtx.getEventBus().post(new CommentEvent(true));
+                AppCtx.getEventBus().post(new CommentEvent(CommentEvent.TYPE_REPLY));
             }
         }, 3, TimeUnit.SECONDS);
 
@@ -368,18 +368,22 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Subscribe
     public void onCommentRequestFinish(CommentEvent e) {
         AppCtx.getEventBus().unregister(this);
-        if (e.mIsReply) {
+        if (e.mType == CommentEvent.TYPE_REPLY) {
             mReplyForm.setContent(null);
+        } else if (e.mType == CommentEvent.TYPE_IGNORE_TOPIC) {
+            Toast.makeText(getActivity(), R.string.toast_topic_ignored, Toast.LENGTH_LONG).show();
+            getActivity().finish();
         }
+
         onRefresh();
     }
 
     @Override
     public void onCommentIgnore(final Comment comment) {
-        onIgnore(comment);
+        onIgnore(comment, false);
     }
 
-    private void onIgnore(final IgnoreAble obj) {
+    private void onIgnore(final IgnoreAble obj, final boolean isTopic) {
         AppCtx.getEventBus().register(this);
         final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
             @Override
@@ -391,7 +395,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     return;
                 }
 
-                AppCtx.getEventBus().post(new CommentEvent());
+                AppCtx.getEventBus().post(new CommentEvent(isTopic ? CommentEvent.TYPE_IGNORE_TOPIC
+                        : CommentEvent.TYPE_IGNORE_COMMENT));
             }
         }, 3, TimeUnit.SECONDS);
 
@@ -437,7 +442,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     return;
                 }
 
-                AppCtx.getEventBus().post(new CommentEvent());
+                AppCtx.getEventBus().post(new CommentEvent(CommentEvent.TYPE_THANK));
             }
         }, 3, TimeUnit.SECONDS);
 
