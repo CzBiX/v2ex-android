@@ -11,6 +11,7 @@ import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.common.exception.UnauthorizedException;
 import com.czbix.v2ex.model.Avatar;
+import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.IgnoreAble;
 import com.czbix.v2ex.model.Node;
@@ -219,8 +220,11 @@ public class RequestHelper {
     }
 
     public static void ignore(IgnoreAble obj, String onceToken) throws ConnectionException, RemoteException {
-        final Request request = new Request.Builder().url(obj.getIgnoreUrl() + "?once=" + onceToken)
-                .post(null).build();
+        final Request.Builder builder = new Request.Builder().url(obj.getIgnoreUrl() + "?once=" + onceToken);
+        if (obj instanceof Comment) {
+            builder.post(null);
+        }
+        final Request request = builder.build();
 
         sendRequest(request);
     }
@@ -347,7 +351,7 @@ public class RequestHelper {
         }
 
         if (response.code() >= SERVER_ERROR_CODE) {
-            throw new RemoteException();
+            throw new RemoteException(response);
         }
 
         if (response.isRedirect() && response.header(HttpHeaders.LOCATION).startsWith("/signin")) {
