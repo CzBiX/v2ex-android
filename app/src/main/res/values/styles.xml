@@ -43,8 +43,8 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="AppTheme.CardView.Time" parent="AppTheme.CardView.TextView">
-        <item name="android:textSize">10sp</item>
+    <style name="AppTheme.CardView.Secondary" parent="AppTheme.CardView.TextView">
+        <item name="android:textSize">12sp</item>
         <item name="android:textColor">@android:color/darker_gray</item>
     </style>
 

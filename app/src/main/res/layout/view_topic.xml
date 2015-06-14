@@ -40,7 +40,7 @@
 
     <TextView
         android:id="@+id/time_tv"
-        style="@style/AppTheme.CardView.Time"
+        style="@style/AppTheme.CardView.Secondary"
         android:text="12m"
         android:layout_below="@+id/username_tv"
         android:layout_width="wrap_content"

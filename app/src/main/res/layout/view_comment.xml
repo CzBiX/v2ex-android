@@ -24,7 +24,7 @@
     <TextView
         android:id="@+id/time_tv"
         android:text="12h"
-        style="@style/AppTheme.CardView.Time"
+        style="@style/AppTheme.CardView.Secondary"
         android:layout_marginStart="5dp"
         android:layout_toEndOf="@id/username_tv"
         android:layout_alignBaseline="@id/username_tv"
@@ -60,8 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignBaseline="@id/username_tv"
-        style="@style/AppTheme.CardView.Time"
-        android:textSize="12sp"
+        style="@style/AppTheme.CardView.Secondary"
         android:text="23L"
         android:id="@+id/floor"
         tools:ignore="HardcodedText"/>

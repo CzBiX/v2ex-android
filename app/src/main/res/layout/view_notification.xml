@@ -24,7 +24,7 @@
     <TextView
         android:id="@+id/time_tv"
         android:text="12h"
-        style="@style/AppTheme.CardView.Time"
+        style="@style/AppTheme.CardView.Secondary"
         android:layout_alignParentEnd="true"
         android:layout_alignBaseline="@id/username_tv"
         android:layout_width="wrap_content"
