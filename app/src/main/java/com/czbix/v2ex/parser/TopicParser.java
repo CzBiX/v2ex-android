@@ -4,6 +4,7 @@ import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.Member;
+import com.czbix.v2ex.model.Postscript;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.google.common.base.Preconditions;
@@ -21,18 +22,21 @@ import java.util.regex.Pattern;
 public class TopicParser extends Parser {
     private static final Pattern PATTERN_CSRF_TOKEN = Pattern.compile("var csrfToken = \"(\\w{32})\"");
     private static final Pattern PATTERN_TOPIC_REPLY_TIME = Pattern.compile("·\\s*(.+?)(?:\\s+·|$)");
+    private static final Pattern PATTERN_POSTSCRIPT = Pattern.compile("·\\s+(.+)");
     private static final Pattern PATTERN_NUMBERS = Pattern.compile("\\d+");
 
     public static TopicWithComments parseDoc(Document doc, Topic topic) {
         final Topic.Builder topicBuilder = topic.toBuilder();
 
-        parseContent(topicBuilder, doc.select(".topic_content"));
+        parseTopicContent(topicBuilder, doc.select(".cell .topic_content"));
+        final List<Postscript> postscripts = parsePostscript(doc.select(".subtle"));
         parseTopicInfo(topicBuilder, doc);
         List<Comment> comments = parseComments(doc.select("#Main > div:nth-child(4) tr"));
 
         final String csrfToken = parseCsrfToken(doc);
         final String onceToken = parseOnceToken(doc);
-        return new TopicWithComments(topicBuilder.createTopic(), comments, csrfToken, onceToken);
+        return new TopicWithComments(topicBuilder.createTopic(), comments, postscripts, csrfToken,
+                onceToken);
     }
 
     private static String parseCsrfToken(Document doc) {
@@ -167,9 +171,27 @@ public class TopicParser extends Parser {
         builder.setUrl(ele.attr("src"));
     }
 
-    private static void parseContent(Topic.Builder builder, Elements elements) {
+    private static void parseTopicContent(Topic.Builder builder, Elements elements) {
         if (elements.size() == 0) return;
         Element ele = elements.get(0);
         builder.setContent(ele.html());
+    }
+
+    private static List<Postscript> parsePostscript(Elements elements) {
+        List<Postscript> list = Lists.newArrayListWithCapacity(elements.size());
+
+        for (Element element : elements) {
+            Element ele = element.select(".fade").get(0);
+            final Matcher matcher = PATTERN_POSTSCRIPT.matcher(ele.text());
+            Preconditions.checkArgument(matcher.find());
+
+            final String time = matcher.group(1);
+            ele = element.select(".topic_content").get(0);
+            final String content = ele.html();
+
+            list.add(new Postscript(content, time));
+        }
+
+        return list;
     }
 }

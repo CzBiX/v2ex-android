@@ -22,7 +22,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.czbix.v2ex.AppCtx;
@@ -35,6 +37,7 @@ import com.czbix.v2ex.eventbus.CommentEvent;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.IgnoreAble;
 import com.czbix.v2ex.model.Node;
+import com.czbix.v2ex.model.Postscript;
 import com.czbix.v2ex.model.ThankAble;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
@@ -52,9 +55,11 @@ import com.czbix.v2ex.util.ExceptionUtils;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.MiscUtils;
+import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
 
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -76,7 +81,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private ListView mCommentsView;
     private TopicAdapter.ViewHolder mTopicHolder;
     private CommentAdapter mCommentAdapter;
-    private View mTopicView;
+    private LinearLayout mTopicView;
     private ReplyFormHelper mReplyForm;
     private String mCsrfToken;
     private String mOnceToken;
@@ -120,10 +125,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mCommentsView = ((ListView) mLayout.findViewById(R.id.comments));
 
-        mTopicView = inflater.inflate(R.layout.view_topic, mCommentsView, false);
+        mTopicView = (LinearLayout) inflater.inflate(R.layout.view_comment_topic, mCommentsView, false);
         mTopicView.setBackgroundColor(Color.WHITE);
 
-        mTopicHolder = new TopicAdapter.ViewHolder(mTopicView);
+        mTopicHolder = new TopicAdapter.ViewHolder(mTopicView.findViewById(R.id.topic));
         mTopicHolder.setContentListener(this);
         mTopicHolder.setNodeListener(this);
         mTopicHolder.fillData(mTopic);
@@ -262,6 +267,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mTopic = data.mTopic;
         mTopicHolder.fillData(mTopic);
         mCommentAdapter.setDataSource(data.mComments);
+        fillPostscript(data.mPostscripts);
         getActivity().invalidateOptionsMenu();
 
         mCsrfToken = data.mCsrfToken;
@@ -275,6 +281,30 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
             DraftDao.delete(mDraft.mId);
             mDraft = null;
+        }
+    }
+
+    private void fillPostscript(List<Postscript> postscripts) {
+        if (postscripts == null) {
+            return;
+        }
+
+        final int childCount = mTopicView.getChildCount();
+        if (childCount > 1) {
+            mTopicView.removeViews(1, childCount - 1);
+        }
+
+        final LayoutInflater inflater = LayoutInflater.from(getActivity());
+
+        for (int i = 0, size = postscripts.size(); i < size; i++) {
+            Postscript postscript = postscripts.get(i);
+
+            final View view = inflater.inflate(R.layout.view_postscript, mTopicView, false);
+            ((TextView) view.findViewById(R.id.title)).setText(getString(R.string.title_postscript, i + 1));
+            ((TextView) view.findViewById(R.id.time)).setText(postscript.mTime);
+            ViewUtils.setHtmlIntoTextViewWithRes((TextView) view.findViewById(R.id.content),
+                    postscript.mContent, R.dimen.topic_picture_max_width);
+            mTopicView.addView(view);
         }
     }
 

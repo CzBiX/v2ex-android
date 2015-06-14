@@ -57,4 +57,5 @@
     <string name="toast_please_wait">Please wait…</string>
     <string name="drawer_history">@string/title_fragment_history</string>
     <string name="title_fragment_history">History</string>
+    <string name="title_postscript">Postscript %d</string>
 </resources>

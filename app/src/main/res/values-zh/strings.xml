@@ -63,4 +63,5 @@
     <string name="title_activity_loading">载入中</string>
     <string name="toast_app_version">版本：%s</string>
     <string name="toast_please_wait">请稍等…</string>
+    <string name="title_postscript">附言 %d</string>
 </resources>
