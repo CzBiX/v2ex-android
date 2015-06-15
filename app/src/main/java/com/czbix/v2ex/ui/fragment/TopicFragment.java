@@ -302,8 +302,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             final View view = inflater.inflate(R.layout.view_postscript, mTopicView, false);
             ((TextView) view.findViewById(R.id.title)).setText(getString(R.string.title_postscript, i + 1));
             ((TextView) view.findViewById(R.id.time)).setText(postscript.mTime);
-            ViewUtils.setHtmlIntoTextViewWithRes((TextView) view.findViewById(R.id.content),
+            final TextView contentView = (TextView) view.findViewById(R.id.content);
+            ViewUtils.setHtmlIntoTextViewWithRes(contentView,
                     postscript.mContent, R.dimen.topic_picture_max_width);
+            contentView.setMovementMethod(new HtmlMovementMethod(this));
             mTopicView.addView(view);
         }
     }
