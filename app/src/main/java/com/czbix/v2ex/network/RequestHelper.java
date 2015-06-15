@@ -221,12 +221,13 @@ public class RequestHelper {
 
     public static void ignore(IgnoreAble obj, String onceToken) throws ConnectionException, RemoteException {
         final Request.Builder builder = new Request.Builder().url(obj.getIgnoreUrl() + "?once=" + onceToken);
-        if (obj instanceof Comment) {
+        final boolean isComment = obj instanceof Comment;
+        if (isComment) {
             builder.post(null);
         }
         final Request request = builder.build();
 
-        sendRequest(request);
+        sendRequest(request, isComment);
     }
 
     public static void thank(ThankAble obj, String csrfToken) throws ConnectionException, RemoteException {

@@ -373,6 +373,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         } else if (e.mType == CommentEvent.TYPE_IGNORE_TOPIC) {
             Toast.makeText(getActivity(), R.string.toast_topic_ignored, Toast.LENGTH_LONG).show();
             getActivity().finish();
+            return;
         }
 
         onRefresh();
