@@ -49,6 +49,7 @@ import java.net.CookieManager;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class RequestHelper {
@@ -121,11 +122,13 @@ public class RequestHelper {
         return topics;
     }
 
-    public static TopicWithComments getTopicWithComments(Topic topic) throws ConnectionException, RemoteException {
+    public static TopicWithComments getTopicWithComments(Topic topic, int page) throws ConnectionException, RemoteException {
+        Preconditions.checkArgument(page > 0, "page must greater than zero");
+
         LogUtils.v(TAG, "request topic with comments, id: %d, title: %s", topic.getId(), topic.getTitle());
 
         final Request request = new Request.Builder()
-                .url(topic.getUrl())
+                .url(topic.getUrl() + "?p=" + page)
                 .build();
         final Response response = sendRequest(request);
 
@@ -333,6 +336,10 @@ public class RequestHelper {
     }
 
     private static Response sendRequest(Request request, boolean checkResponse) throws ConnectionException, RemoteException {
+        if (BuildConfig.DEBUG && new Random().nextInt(100) > 90) {
+            throw new ConnectionException("debug network test");
+        }
+
         final Response response;
         try {
             response = CLIENT.newCall(request).execute();

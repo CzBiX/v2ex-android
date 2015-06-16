@@ -1,5 +1,6 @@
 package com.czbix.v2ex.parser;
 
+import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Comment;
@@ -32,11 +33,28 @@ public class TopicParser extends Parser {
         final List<Postscript> postscripts = parsePostscript(doc.select(".subtle"));
         parseTopicInfo(topicBuilder, doc);
         List<Comment> comments = parseComments(doc.select("#Main > div:nth-child(4) tr"));
+        int page = comments.isEmpty() ? 1 : getMaxPage(doc);
 
-        final String csrfToken = parseCsrfToken(doc);
-        final String onceToken = parseOnceToken(doc);
-        return new TopicWithComments(topicBuilder.createTopic(), comments, postscripts, csrfToken,
+        final String csrfToken;
+        final String onceToken;
+        if (UserState.getInstance().isGuest()) {
+            csrfToken = null;
+            onceToken = null;
+        } else {
+            csrfToken = parseCsrfToken(doc);
+            onceToken = parseOnceToken(doc);
+        }
+        return new TopicWithComments(topicBuilder.createTopic(), comments, postscripts, page, csrfToken,
                 onceToken);
+    }
+
+    private static int getMaxPage(Document doc) {
+        final Elements elements = doc.select("#Main > div:nth-child(4) > .inner");
+        if (elements.size() == 1) {
+            return 1;
+        }
+
+        return elements.get(1).children().size();
     }
 
     private static String parseCsrfToken(Document doc) {

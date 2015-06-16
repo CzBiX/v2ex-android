@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.eventbus.CommentEvent;
+import com.czbix.v2ex.helper.MultiList;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.IgnoreAble;
 import com.czbix.v2ex.model.Node;
@@ -71,7 +73,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         LoaderManager.LoaderCallbacks<LoaderResult<TopicWithComments>>,
-        ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener, HtmlMovementMethod.OnHtmlActionListener, NodeListFragment.OnNodeActionListener {
+        ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener, HtmlMovementMethod.OnHtmlActionListener, NodeListFragment.OnNodeActionListener, AbsListView.OnScrollListener {
     private static final String TAG = TopicFragment.class.getSimpleName();
     private static final String ARG_TOPIC = "topic";
     private static final int[] MENU_REQUIRED_LOGGED_IN = {R.id.action_ignore, R.id.action_reply, R.id.action_thank};
@@ -87,6 +89,11 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private String mOnceToken;
     private Draft mDraft;
 
+    private MultiList<Comment> mComments;
+    private int mCurPage;
+    private int mMaxPage;
+    private boolean mIsLoading;
+    private boolean mLastIsFailed;
 
     /**
      * Use this factory method to create a new instance of
@@ -113,6 +120,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             mTopic = getArguments().getParcelable(ARG_TOPIC);
         }
 
+        mComments = new MultiList<>();
+        mMaxPage = 1;
+        mCurPage = 1;
+
         setHasOptionsMenu(true);
     }
 
@@ -134,8 +145,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mTopicHolder.fillData(mTopic);
 
         mCommentAdapter = new CommentAdapter(getActivity(), this);
+        mCommentAdapter.setDataSource(mComments);
         mCommentsView.addHeaderView(mTopicView);
         mCommentsView.setAdapter(mCommentAdapter);
+        mCommentsView.setOnScrollListener(this);
 
         return rootView;
     }
@@ -151,8 +164,13 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         Preconditions.checkNotNull(actionBar);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        mLayout.setRefreshing(true);
+        setIsLoading(true);
         getLoaderManager().initLoader(0, null, this);
+    }
+
+    private void setIsLoading(boolean isLoading) {
+        mIsLoading = isLoading;
+        mLayout.setRefreshing(isLoading);
     }
 
     @Override
@@ -175,7 +193,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onRefresh() {
-        final Loader<?> loader = getLoaderManager().getLoader(0);
+        final TopicLoader loader = getLoader();
         if (loader == null) {
             return;
         }
@@ -218,7 +236,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         mTopic.getUrl());
                 return true;
             case R.id.action_refresh:
-                mLayout.setRefreshing(true);
+                setIsLoading(true);
                 onRefresh();
                 return true;
             case R.id.action_reply:
@@ -255,18 +273,31 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onLoadFinished(Loader<LoaderResult<TopicWithComments>> loader, LoaderResult<TopicWithComments> result) {
-        mLayout.setRefreshing(false);
+        setIsLoading(false);
         if (result.hasException()) {
+            mLastIsFailed = true;
+            mCurPage = Math.max(mComments.listSize(), 1);
             if (ExceptionUtils.handleExceptionNoCatch(this, result.mException)) {
                 getActivity().finish();
             }
             return;
         }
+        mLastIsFailed = false;
         final TopicWithComments data = result.mResult;
 
         mTopic = data.mTopic;
         mTopicHolder.fillData(mTopic);
-        mCommentAdapter.setDataSource(data.mComments);
+        mMaxPage = data.mMaxPage;
+        final int oldSize = mComments.listSize();
+        if (mCurPage > oldSize) {
+            // new page
+            mComments.addList(data.mComments);
+        } else {
+            mComments.setList(oldSize - 1, data.mComments);
+        }
+
+        mCommentAdapter.notifyDataSetChanged();
+
         fillPostscript(data.mPostscripts);
         getActivity().invalidateOptionsMenu();
 
@@ -313,6 +344,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onLoaderReset(Loader<LoaderResult<TopicWithComments>> loader) {
         mCommentAdapter.setDataSource(null);
+        mComments.clear();
+        
         mCsrfToken = null;
         mOnceToken = null;
     }
@@ -490,5 +523,32 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         final Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.putExtra(MainActivity.BUNDLE_NODE, node);
         startActivity(intent);
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+    }
+
+    private TopicLoader getLoader() {
+        return (TopicLoader) getLoaderManager().<LoaderResult<TopicWithComments>>getLoader(0);
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (visibleItemCount <= 0 || mIsLoading || mLastIsFailed || (mCurPage >= mMaxPage)) {
+            return;
+        }
+
+        final int lastVisibleItem = firstVisibleItem + visibleItemCount;
+        if ((totalItemCount - lastVisibleItem) > 10) {
+            return;
+        }
+
+        final TopicLoader loader = getLoader();
+
+        setIsLoading(true);
+        loader.setPage(++mCurPage);
+        loader.startLoading();
     }
 }
