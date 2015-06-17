@@ -38,6 +38,7 @@ import com.czbix.v2ex.eventbus.TopicEvent;
 import com.czbix.v2ex.helper.MultiList;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.IgnoreAble;
+import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Postscript;
 import com.czbix.v2ex.model.ThankAble;
@@ -546,6 +547,11 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         final Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.putExtra(MainActivity.BUNDLE_NODE, node);
         startActivity(intent);
+    }
+
+    @Override
+    public void onMemberClick(Member member) {
+        onUrlClick(member.getUrl());
     }
 
     private void onFavTopic() {

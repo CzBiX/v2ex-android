@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.model.Comment;
+import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod.OnHtmlActionListener;
 import com.czbix.v2ex.util.ViewUtils;
@@ -92,7 +93,10 @@ public class CommentAdapter extends BaseAdapter {
 
             mListener = listener;
             view.setOnClickListener(this);
+            mAvatar.setOnClickListener(this);
+            mUsername.setOnClickListener(this);
             mContent.setOnClickListener(this);
+
             view.setOnCreateContextMenuListener(this);
             mContent.setMovementMethod(new HtmlMovementMethod(this));
         }
@@ -159,6 +163,11 @@ public class CommentAdapter extends BaseAdapter {
 
         @Override
         public void onClick(View v) {
+            if (v == mAvatar || v == mUsername) {
+                mListener.onMemberClick(mComment.getMember());
+                return;
+            }
+
             if (UserState.getInstance().isGuest()) {
                 // anonymous can't do anything
                 return;
@@ -203,6 +212,7 @@ public class CommentAdapter extends BaseAdapter {
     }
 
     public interface OnCommentActionListener {
+        void onMemberClick(Member member);
         void onCommentThank(Comment comment);
         void onCommentReply(Comment comment);
         void onCommentIgnore(Comment comment);
