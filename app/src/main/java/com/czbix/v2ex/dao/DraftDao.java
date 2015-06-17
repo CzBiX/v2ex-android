@@ -96,7 +96,7 @@ public class DraftDao extends DaoBase {
         }, true);
     }
 
-    public static long insert(final int topicId, final String content) {
+    public static long update(final int topicId, final String content) {
         return execute(new SqlOperation<Long>() {
             @Override
             public Long execute(SQLiteDatabase db) {
@@ -105,7 +105,8 @@ public class DraftDao extends DaoBase {
                 values.put(KEY_CONTENT, content);
                 values.put(KEY_TIME, System.currentTimeMillis());
 
-                return db.insertOrThrow(TABLE_NAME, null, values);
+                return db.insertWithOnConflict(TABLE_NAME, null, values,
+                        SQLiteDatabase.CONFLICT_REPLACE);
             }
         }, true);
     }

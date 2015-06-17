@@ -384,7 +384,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             return;
         }
 
-        DraftDao.insert(mTopic.getId(), content.toString());
+        DraftDao.update(mTopic.getId(), content.toString());
 
         Toast.makeText(getActivity(), R.string.toast_reply_saved_as_draft, Toast.LENGTH_LONG).show();
     }
