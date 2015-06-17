@@ -10,7 +10,7 @@ import com.google.common.base.Preconditions;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Topic extends Page implements ThankAble, IgnoreAble {
+public class Topic extends Page implements ThankAble, IgnoreAble, FavAble {
     private static final Pattern PATTERN = Pattern.compile("/t/(\\d+?)(?:\\W|$)");
 
     private final int mId;
@@ -21,9 +21,11 @@ public class Topic extends Page implements ThankAble, IgnoreAble {
     private final Node mNode;
     private final String mReplyTime;
     private final boolean mHasInfo;
-    private boolean mHasRead;
+    private final boolean mFavorited;
+    private transient boolean mHasRead;
 
-    Topic(String title, int id, String content, Member member, Node node, String replyTime, int replies) {
+    Topic(String title, int id, String content, Member member, Node node, String replyTime,
+          int replies, boolean favorited) {
         Preconditions.checkArgument(id != 0);
 
         mId = id;
@@ -34,6 +36,7 @@ public class Topic extends Page implements ThankAble, IgnoreAble {
         mNode = node;
         mReplies = replies;
         mReplyTime = replyTime;
+        mFavorited = favorited;
 
         mHasInfo = member != null;
     }
@@ -99,6 +102,20 @@ public class Topic extends Page implements ThankAble, IgnoreAble {
         return String.format("%s/thank/topic/%d", RequestHelper.BASE_URL, mId);
     }
 
+    @Override
+    public String getFavUrl() {
+        return String.format("%s/favorite/topic/%d", RequestHelper.BASE_URL, mId);
+    }
+
+    @Override
+    public String getUnFavUrl() {
+        return String.format("%s/unfavorite/topic/%d", RequestHelper.BASE_URL, mId);
+    }
+
+    public boolean isFavorited() {
+        return mFavorited;
+    }
+
     public boolean hasRead() {
         return mHasRead;
     }
@@ -117,6 +134,7 @@ public class Topic extends Page implements ThankAble, IgnoreAble {
         dest.writeParcelable(this.mMember, 0);
         dest.writeParcelable(this.mNode, 0);
         dest.writeString(this.mReplyTime);
+        dest.writeByte(mFavorited ? (byte) 1 : (byte) 0);
     }
 
     protected Topic(Parcel in) {
@@ -128,6 +146,7 @@ public class Topic extends Page implements ThankAble, IgnoreAble {
         this.mMember = in.readParcelable(Member.class.getClassLoader());
         this.mNode = in.readParcelable(Node.class.getClassLoader());
         this.mReplyTime = in.readString();
+        this.mFavorited = in.readByte() != 0;
     }
 
     public static final Creator<Topic> CREATOR = new Creator<Topic>() {
@@ -176,6 +195,7 @@ public class Topic extends Page implements ThankAble, IgnoreAble {
         private Node mNode;
         private int mReplies;
         private String mReplyTime;
+        private boolean mFavorited;
 
         public Builder setTitle(String title) {
             mTitle = title;
@@ -212,12 +232,17 @@ public class Topic extends Page implements ThankAble, IgnoreAble {
             return this;
         }
 
+        public Builder isFavorited(boolean favorited) {
+            mFavorited = favorited;
+            return this;
+        }
+
         public boolean hasInfo() {
             return mMember != null;
         }
 
         public Topic createTopic() {
-            return new Topic(mTitle, mId, mContent, mMember, mNode, mReplyTime, mReplies);
+            return new Topic(mTitle, mId, mContent, mMember, mNode, mReplyTime, mReplies, mFavorited);
         }
     }
 }

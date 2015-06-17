@@ -43,6 +43,7 @@ public class TopicParser extends Parser {
         } else {
             csrfToken = parseCsrfToken(doc);
             onceToken = parseOnceToken(doc);
+            topicBuilder.isFavorited(parseFavorited(doc));
         }
         return new TopicWithComments(topicBuilder.createTopic(), comments, postscripts, page, csrfToken,
                 onceToken);
@@ -74,6 +75,14 @@ public class TopicParser extends Parser {
         }
 
         return elements.get(0).val();
+    }
+
+    private static boolean parseFavorited(Document doc) {
+        final Elements elements = doc.select(".topic_buttons .tb:nth-child(2)");
+        final Element ele = elements.get(0);
+        Preconditions.checkState(ele.tagName().equals("a"), "should be a tag for favorite link");
+
+        return ele.attr("href").startsWith("/unfav");
     }
 
     private static void parseTopicInfo(Topic.Builder builder, Document doc) {

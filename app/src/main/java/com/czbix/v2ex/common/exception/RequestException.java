@@ -1,5 +1,6 @@
 package com.czbix.v2ex.common.exception;
 
+import com.google.common.base.Strings;
 import com.google.common.net.HttpHeaders;
 import com.squareup.okhttp.Response;
 
@@ -7,11 +8,19 @@ public class RequestException extends RuntimeException {
     private final Response mResponse;
 
     public RequestException(Response response) {
-        this(response, null);
+        this(null, response);
     }
 
     public RequestException(Response response, Throwable tr) {
-        super("request failed with code: " + response.code(), tr);
+        this(null, response, tr);
+    }
+
+    public RequestException(String message, Response response) {
+        this(message, response, null);
+    }
+
+    public RequestException(String message, Response response, Throwable tr) {
+        super(message, tr);
 
         mResponse = response;
     }
@@ -26,7 +35,11 @@ public class RequestException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        final StringBuilder sb = new StringBuilder(super.getMessage());
+        final String message = Strings.nullToEmpty(super.getMessage());
+        final StringBuilder sb = new StringBuilder(message);
+
+        sb.append(", code: ").append(mResponse.code());
+
         if (mResponse.isRedirect()) {
             sb.append(", location: ");
             sb.append(mResponse.header(HttpHeaders.LOCATION));

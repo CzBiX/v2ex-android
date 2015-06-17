@@ -59,4 +59,5 @@
     <string name="title_fragment_history">History</string>
     <string name="title_postscript">Postscript %d</string>
     <string name="toast_topic_ignored">Topic ignored!</string>
+    <string name="action_fav">Favorite</string>
 </resources>

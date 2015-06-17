@@ -34,7 +34,7 @@ import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.dao.DraftDao;
-import com.czbix.v2ex.eventbus.CommentEvent;
+import com.czbix.v2ex.eventbus.TopicEvent;
 import com.czbix.v2ex.helper.MultiList;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.IgnoreAble;
@@ -76,7 +76,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener, HtmlMovementMethod.OnHtmlActionListener, NodeListFragment.OnNodeActionListener, AbsListView.OnScrollListener {
     private static final String TAG = TopicFragment.class.getSimpleName();
     private static final String ARG_TOPIC = "topic";
-    private static final int[] MENU_REQUIRED_LOGGED_IN = {R.id.action_ignore, R.id.action_reply, R.id.action_thank};
+    private static final int[] MENU_REQUIRED_LOGGED_IN = {R.id.action_ignore, R.id.action_reply,
+            R.id.action_thank, R.id.action_fav};
 
     private Topic mTopic;
     private SwipeRefreshLayout mLayout;
@@ -90,10 +91,13 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private Draft mDraft;
 
     private MultiList<Comment> mComments;
+    private boolean mIsLoaded;
     private int mCurPage;
     private int mMaxPage;
     private boolean mIsLoading;
     private boolean mLastIsFailed;
+    private boolean mFavorited;
+    private MenuItem mFavIcon;
 
     /**
      * Use this factory method to create a new instance of
@@ -123,6 +127,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mComments = new MultiList<>();
         mMaxPage = 1;
         mCurPage = 1;
+        mIsLoaded = false;
 
         setHasOptionsMenu(true);
     }
@@ -202,7 +207,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (!mTopic.hasInfo()) {
+        if (!mIsLoaded) {
             return;
         }
 
@@ -212,11 +217,19 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             for (int i : MENU_REQUIRED_LOGGED_IN) {
                 menu.findItem(i).setVisible(false);
             }
+        } else {
+            mFavIcon = menu.findItem(R.id.action_fav);
+            updateFavIcon();
         }
 
         setupShareActionMenu(menu);
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void updateFavIcon() {
+        mFavIcon.setIcon(mFavorited ? R.drawable.ic_favorite_white_24dp
+                : R.drawable.ic_favorite_border_white_24dp);
     }
 
     private void setupShareActionMenu(Menu menu) {
@@ -238,6 +251,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             case R.id.action_refresh:
                 setIsLoading(true);
                 onRefresh();
+                return true;
+            case R.id.action_fav:
+                onFavTopic();
                 return true;
             case R.id.action_reply:
                 toggleReplyForm();
@@ -282,6 +298,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             }
             return;
         }
+        mIsLoaded = true;
         mLastIsFailed = false;
         final TopicWithComments data = result.mResult;
 
@@ -301,6 +318,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         fillPostscript(data.mPostscripts);
         getActivity().invalidateOptionsMenu();
 
+        mFavorited = mTopic.isFavorited();
         mCsrfToken = data.mCsrfToken;
         mOnceToken = data.mOnceToken;
 
@@ -384,7 +402,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     return;
                 }
 
-                AppCtx.getEventBus().post(new CommentEvent(CommentEvent.TYPE_REPLY));
+                AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_REPLY));
             }
         }, 3, TimeUnit.SECONDS);
 
@@ -403,13 +421,16 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Subscribe
-    public void onCommentRequestFinish(CommentEvent e) {
+    public void onTopicEvent(TopicEvent e) {
         AppCtx.getEventBus().unregister(this);
-        if (e.mType == CommentEvent.TYPE_REPLY) {
+        if (e.mType == TopicEvent.TYPE_REPLY) {
             mReplyForm.setContent(null);
-        } else if (e.mType == CommentEvent.TYPE_IGNORE_TOPIC) {
+        } else if (e.mType == TopicEvent.TYPE_IGNORE_TOPIC) {
             Toast.makeText(getActivity(), R.string.toast_topic_ignored, Toast.LENGTH_LONG).show();
             getActivity().finish();
+            return;
+        } else if (e.mType == TopicEvent.TYPE_FAV_TOPIC) {
+            updateFavIcon();
             return;
         }
 
@@ -433,8 +454,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     return;
                 }
 
-                AppCtx.getEventBus().post(new CommentEvent(isTopic ? CommentEvent.TYPE_IGNORE_TOPIC
-                        : CommentEvent.TYPE_IGNORE_COMMENT));
+                AppCtx.getEventBus().post(new TopicEvent(isTopic ? TopicEvent.TYPE_IGNORE_TOPIC
+                        : TopicEvent.TYPE_IGNORE_COMMENT));
             }
         }, 3, TimeUnit.SECONDS);
 
@@ -480,7 +501,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                     return;
                 }
 
-                AppCtx.getEventBus().post(new CommentEvent(CommentEvent.TYPE_THANK));
+                AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_THANK));
             }
         }, 3, TimeUnit.SECONDS);
 
@@ -525,6 +546,26 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         final Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.putExtra(MainActivity.BUNDLE_NODE, node);
         startActivity(intent);
+    }
+
+    private void onFavTopic() {
+        AppCtx.getEventBus().register(this);
+        mFavorited = !mFavorited;
+        updateFavIcon();
+
+        ExecutorUtils.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    RequestHelper.favorite(mTopic, mFavorited, mCsrfToken);
+                } catch (ConnectionException | RemoteException e) {
+                    LogUtils.w(TAG, "favorite topic failed", e);
+                    mFavorited = !mFavorited;
+                }
+
+                AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_FAV_TOPIC));
+            }
+        });
     }
 
     @Override

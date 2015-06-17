@@ -12,6 +12,7 @@ import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.common.exception.UnauthorizedException;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Comment;
+import com.czbix.v2ex.model.FavAble;
 import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.IgnoreAble;
 import com.czbix.v2ex.model.Node;
@@ -231,6 +232,18 @@ public class RequestHelper {
         final Request request = builder.build();
 
         sendRequest(request, isComment);
+    }
+
+    public static void favorite(FavAble obj, boolean isFavorite, String csrfToken) throws ConnectionException, RemoteException {
+        final String url = isFavorite ? obj.getFavUrl() : obj.getUnFavUrl();
+        final Request request = new Request.Builder().url(url + "?t=" + csrfToken)
+                .build();
+
+        final Response response = sendRequest(request, false);
+        if (!response.isRedirect()) {
+            throw new RequestException(String.format("favorite %s failed, is fav: %b", obj,
+                    isFavorite), response);
+        }
     }
 
     public static void thank(ThankAble obj, String csrfToken) throws ConnectionException, RemoteException {
