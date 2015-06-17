@@ -305,9 +305,11 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mOnceToken = data.mOnceToken;
 
         if (mDraft != null) {
-            Preconditions.checkState(mReplyForm == null);
-
-            toggleReplyForm();
+            if (mReplyForm == null) {
+                toggleReplyForm();
+            } else {
+                mReplyForm.setVisibility(true);
+            }
             mReplyForm.setContent(mDraft.mContent);
 
             DraftDao.delete(mDraft.mId);
