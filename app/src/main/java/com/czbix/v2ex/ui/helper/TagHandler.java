@@ -6,6 +6,7 @@ import android.text.Html;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.URLSpan;
 
@@ -58,6 +59,8 @@ public class TagHandler implements Html.TagHandler {
             startIframe(output, xmlReader);
         } else if (tag.equalsIgnoreCase("button")) {
             start(output, new Button());
+        } else if (tag.equalsIgnoreCase("code") || tag.equalsIgnoreCase("pre")) {
+            start(output, new Pre());
         }
     }
 
@@ -68,6 +71,8 @@ public class TagHandler implements Html.TagHandler {
             endIframe(output);
         } else if (tag.equalsIgnoreCase("button")) {
             endButton(output);
+        } else if (tag.equalsIgnoreCase("code") || tag.equalsIgnoreCase("pre")) {
+            end(output, Pre.class, new BackgroundColorSpan(0xFFEEEEEE));
         }
     }
 
@@ -204,6 +209,8 @@ public class TagHandler implements Html.TagHandler {
             mUrl = url;
         }
     }
+
+    private static class Pre {}
 
     private static String getAttribute(XMLReader xmlReader, String name) {
         try {
