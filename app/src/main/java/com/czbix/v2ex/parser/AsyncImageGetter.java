@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DimenRes;
 import android.support.v4.content.ContextCompat;
-import android.text.Html;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -19,6 +18,7 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.PrefStore;
 import com.czbix.v2ex.network.RequestHelper;
+import com.czbix.v2ex.ui.util.Html;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;

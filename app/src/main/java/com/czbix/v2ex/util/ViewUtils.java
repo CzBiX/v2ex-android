@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -15,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.czbix.v2ex.parser.AsyncImageGetter;
-import com.czbix.v2ex.ui.helper.TagHandler;
+import com.czbix.v2ex.ui.util.Html;
 
 public class ViewUtils {
     public static float convertDp2Pixel(Context context, float dp) {
@@ -58,7 +57,7 @@ public class ViewUtils {
     }
 
     private static void setHtmlIntoTextView(TextView view, String html, AsyncImageGetter imageGetter) {
-        final Spanned spanned = Html.fromHtml(html, imageGetter, TagHandler.getInstance());
+        final Spanned spanned = Html.fromHtml(html, imageGetter);
         final SpannableStringBuilder builder = (SpannableStringBuilder) spanned;
         final int length = builder.length();
         if (length > 32) {
