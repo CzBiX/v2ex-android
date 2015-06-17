@@ -24,6 +24,7 @@ import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
+import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
@@ -112,20 +113,26 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (!(mPage instanceof Node)) {
-            return;
-        }
-        
-        Node node = (Node) mPage;
-        if (!node.hasInfo()) {
-            node = NodeDao.get(node.getName());
-            if (node == null) {
-                return;
+        boolean shouldSetTitle;
+        if (mPage instanceof Node) {
+            Node node = (Node) mPage;
+            if (!node.hasInfo()) {
+                node = NodeDao.get(node.getName());
+                if (node == null) {
+                    return;
+                }
+                mPage = node;
             }
-            mPage = node;
+            shouldSetTitle = true;
+        } else if (mPage == Tab.TAB_FAV_TOPIC) {
+            shouldSetTitle = true;
+        } else {
+            shouldSetTitle = false;
         }
 
-        getActivity().setTitle(mPage.getTitle());
+        if (shouldSetTitle) {
+            getActivity().setTitle(mPage.getTitle());
+        }
     }
 
     @Override

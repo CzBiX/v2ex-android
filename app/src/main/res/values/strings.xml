@@ -55,8 +55,8 @@
     <string name="toast_app_version">Version: %s</string>
     <string name="title_activity_loading">Loading</string>
     <string name="toast_please_wait">Please wait…</string>
-    <string name="drawer_history">@string/title_fragment_history</string>
-    <string name="title_fragment_history">History</string>
+    <string name="drawer_favorite" translatable="false">@string/title_fragment_favorite</string>
+    <string name="title_fragment_favorite">Favorite</string>
     <string name="title_postscript">Postscript %d</string>
     <string name="toast_topic_ignored">Topic ignored!</string>
     <string name="action_fav">Favorite</string>

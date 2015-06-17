@@ -39,13 +39,13 @@ import com.czbix.v2ex.eventbus.BusEvent.NewUnreadEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
+import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.loader.GooglePhotoUrlLoader;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.res.GoogleImg;
 import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
 import com.czbix.v2ex.ui.fragment.CategoryTabFragment;
-import com.czbix.v2ex.ui.fragment.HistoryFragment;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.NotificationListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
@@ -263,9 +263,9 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
                 mDrawerLayout.closeDrawer(mNav);
                 switchFragment(NotificationListFragment.newInstance());
                 return true;
-            case R.id.drawer_history:
+            case R.id.drawer_favorite:
                 mDrawerLayout.closeDrawer(mNav);
-                switchFragment(HistoryFragment.newInstance());
+                switchFragment(TopicListFragment.newInstance(Tab.TAB_FAV_TOPIC));
                 return true;
             case R.id.drawer_settings:
                 startActivity(new Intent(this, SettingsActivity.class));

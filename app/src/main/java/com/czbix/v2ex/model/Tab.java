@@ -2,6 +2,8 @@ package com.czbix.v2ex.model;
 
 import android.os.Parcel;
 
+import com.czbix.v2ex.AppCtx;
+import com.czbix.v2ex.R;
 import com.czbix.v2ex.network.RequestHelper;
 
 public class Tab extends Page {
@@ -21,6 +23,8 @@ public class Tab extends Page {
             new Tab("关注", "/?tab=members"),
     };
     public static final Tab TAB_ALL = ALL_TABS[0];
+    public static final Tab TAB_FAV_TOPIC = new Tab(AppCtx.getInstance().getString(R.string.title_fragment_favorite),
+            "/my/topics");
 
     private final String mTitle;
     private final String mUrl;
