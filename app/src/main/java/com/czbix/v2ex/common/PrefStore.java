@@ -29,6 +29,6 @@ public class PrefStore {
     }
 
     public boolean shouldLoadImage() {
-        return isLoadImageOnMobileNetwork() || !DeviceStatus.getInstance().isMobileNetwork();
+        return isLoadImageOnMobileNetwork() || !DeviceStatus.getInstance().isNetworkMetered();
     }
 }

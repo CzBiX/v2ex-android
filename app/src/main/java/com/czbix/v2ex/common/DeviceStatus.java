@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import com.czbix.v2ex.AppCtx;
 
@@ -22,7 +21,7 @@ public class DeviceStatus {
         return instance;
     }
 
-    private boolean mIsMobileNetwork;
+    private boolean mIsNetworkMetered;
 
     DeviceStatus(Context context) {
         mConnectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
@@ -37,16 +36,10 @@ public class DeviceStatus {
     }
 
     private void updateNetworkStatus() {
-        mIsMobileNetwork = checkIsMobileNetwork();
+        mIsNetworkMetered = mConnectivityManager.isActiveNetworkMetered();
     }
 
-    private boolean checkIsMobileNetwork() {
-        NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnected()
-                && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
-    }
-
-    public boolean isMobileNetwork() {
-        return mIsMobileNetwork;
+    public boolean isNetworkMetered() {
+        return mIsNetworkMetered;
     }
 }
