@@ -327,6 +327,8 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
         enableLoginMenu(menu);
 
         return super.onCreateOptionsMenu(menu);
@@ -375,8 +377,8 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
+            case R.id.action_search:
+                startActivity(new Intent(this, SearchActivity.class));
                 return true;
         }
 

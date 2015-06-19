@@ -93,8 +93,12 @@
         </activity>
         <activity
             android:name=".ui.LoadingActivity"
-            android:noHistory="true"
-            android:label="@string/title_activity_loading" >
+            android:label="@string/title_activity_loading"
+            android:noHistory="true" >
+        </activity>
+        <activity
+            android:name=".ui.SearchActivity"
+            android:windowSoftInputMode="stateAlwaysVisible" >
         </activity>
     </application>
 

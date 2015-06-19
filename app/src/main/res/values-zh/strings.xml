@@ -65,4 +65,5 @@
     <string name="title_postscript">附言 %d</string>
     <string name="toast_topic_ignored">已忽略主题！</string>
     <string name="action_fav">收藏</string>
+    <string name="tv_will_open_browser_to_search">将使用浏览器进行搜索操作</string>
 </resources>
