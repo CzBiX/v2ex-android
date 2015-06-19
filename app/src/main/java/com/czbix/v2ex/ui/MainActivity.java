@@ -327,8 +327,6 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
         enableLoginMenu(menu);
 
         return super.onCreateOptionsMenu(menu);
@@ -367,22 +365,6 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         super.onStop();
 
         AppCtx.getEventBus().unregister(this);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        switch (id) {
-            case R.id.action_search:
-                startActivity(new Intent(this, SearchActivity.class));
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

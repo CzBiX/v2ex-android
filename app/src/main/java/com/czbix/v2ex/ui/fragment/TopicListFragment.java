@@ -1,6 +1,7 @@
 package com.czbix.v2ex.ui.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -26,6 +27,7 @@ import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.ui.SearchActivity;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
@@ -222,6 +224,9 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
             case R.id.action_refresh:
                 mLayout.setRefreshing(true);
                 onRefresh();
+                return true;
+            case R.id.action_web_search:
+                startActivity(new Intent(getActivity(), SearchActivity.class));
                 return true;
         }
 
