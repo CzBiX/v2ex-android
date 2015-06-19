@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,7 @@ public class CategoryTabFragment extends Fragment {
         viewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin));
 
         final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        ViewCompat.setElevation(tabLayout, getResources().getDimension(R.dimen.appbar_elevation));
         tabLayout.setupWithViewPager(viewPager);
 
         return view;
