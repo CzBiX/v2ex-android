@@ -15,7 +15,7 @@
     </com.czbix.v2ex.ui.widget.ExSwipeRefreshLayout>
 
     <ViewStub android:id="@+id/reply_form"
-              android:layout="@layout/view_reply"
+              android:layout="@layout/view_reply_form"
               android:inflatedId="@id/reply_form"
               android:layout_alignParentBottom="true"
               android:layout_width="match_parent"

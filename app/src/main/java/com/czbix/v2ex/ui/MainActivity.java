@@ -291,8 +291,9 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     private void switchFragment(Fragment fragment, boolean addToBackStack) {
         final FragmentManager fragmentManager = getSupportFragmentManager();
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragmentTransaction.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out,
+                R.anim.abc_fade_in, R.anim.abc_fade_out)
+                .replace(R.id.fragment, fragment);
         if (addToBackStack) {
             fragmentTransaction.addToBackStack(null);
         }

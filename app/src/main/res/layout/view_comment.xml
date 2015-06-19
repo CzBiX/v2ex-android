@@ -51,6 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/username_tv"
+        android:layout_marginTop="5dp"
         android:layout_alignStart="@id/username_tv"
         android:text="Content"
         tools:ignore="HardcodedText"/>
