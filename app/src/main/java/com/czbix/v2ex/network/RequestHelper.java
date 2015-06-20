@@ -89,6 +89,10 @@ public class RequestHelper {
         return new Cache(cacheDir, cacheSize);
     }
 
+    public static OkHttpClient getClient() {
+        return CLIENT;
+    }
+
     public static void clearCookies() {
         mCookies.removeAll();
     }
