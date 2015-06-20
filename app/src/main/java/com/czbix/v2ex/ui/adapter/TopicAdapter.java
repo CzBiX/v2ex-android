@@ -58,6 +58,8 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private static final int TOPIC_PICTURE_OTHER_WIDTH = ViewUtils.getDimensionPixelSize(R.dimen.topic_picture_other_width);
+
         public final TextView mTitle;
         public final ImageView mAvatar;
         public final TextView mUsername;
@@ -122,8 +124,8 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
             updateForRead();
 
-            ViewUtils.setHtmlIntoTextViewWithPixel(mTitle, topic.getTitle(),
-                    mTitle.getResources().getDimensionPixelSize(R.dimen.abc_text_size_body_1_material));
+            ViewUtils.setHtmlIntoTextView(mTitle, topic.getTitle(),
+                    ViewUtils.getDimensionPixelSize(R.dimen.abc_text_size_body_1_material));
             mUsername.setText(topic.getMember().getUsername());
             mNode.setText("› " + topic.getNode().getTitle());
             mTime.setText(topic.getReplyTime());
@@ -154,8 +156,8 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
                 return;
             }
             mContent.setVisibility(View.VISIBLE);
-            ViewUtils.setHtmlIntoTextViewWithRes(mContent, content,
-                    R.dimen.topic_picture_max_width);
+            ViewUtils.setHtmlIntoTextView(mContent, content, ViewUtils.getWidthPixels() -
+                    TOPIC_PICTURE_OTHER_WIDTH);
         }
 
         private void setAvatarImg(Topic topic) {

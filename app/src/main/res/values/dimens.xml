@@ -8,6 +8,6 @@
     <dimen name="comment_avatar_size">24dp</dimen>
     <dimen name="node_avatar_size">48dp</dimen>
 
-    <dimen name="topic_picture_max_width">-1dp</dimen>
-    <dimen name="comment_picture_max_width">-1dp</dimen>
+    <dimen name="topic_picture_other_width">10dp</dimen>
+    <dimen name="comment_picture_other_width">48dp</dimen>
 </resources>

@@ -80,6 +80,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private static final int[] MENU_REQUIRED_LOGGED_IN = {R.id.action_ignore, R.id.action_reply,
             R.id.action_thank, R.id.action_fav};
 
+    private static final int TOPIC_PICTURE_OTHER_WIDTH = ViewUtils.getDimensionPixelSize(R.dimen.topic_picture_other_width);
+
     private Topic mTopic;
     private SwipeRefreshLayout mLayout;
     private ListView mCommentsView;
@@ -355,8 +357,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             ((TextView) view.findViewById(R.id.title)).setText(getString(R.string.title_postscript, i + 1));
             ((TextView) view.findViewById(R.id.time)).setText(postscript.mTime);
             final TextView contentView = (TextView) view.findViewById(R.id.content);
-            ViewUtils.setHtmlIntoTextViewWithRes(contentView,
-                    postscript.mContent, R.dimen.topic_picture_max_width);
+            ViewUtils.setHtmlIntoTextView(contentView, postscript.mContent,
+                    ViewUtils.getWidthPixels() - TOPIC_PICTURE_OTHER_WIDTH);
             contentView.setMovementMethod(new HtmlMovementMethod(this));
             mTopicView.addView(view);
         }

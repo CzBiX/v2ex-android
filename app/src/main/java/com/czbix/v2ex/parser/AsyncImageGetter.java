@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.DimenRes;
 import android.support.v4.content.ContextCompat;
 import android.widget.TextView;
 
@@ -26,23 +25,11 @@ import com.google.common.base.Preconditions;
 public class AsyncImageGetter implements Html.ImageGetter {
     private static final String TAG = AsyncImageGetter.class.getSimpleName();
     private final TextView mTextView;
-    private final int mDimenRes;
     private final int mPixel;
 
-    AsyncImageGetter(TextView textView, @DimenRes int dimenRes, int pixel) {
+    public AsyncImageGetter(TextView textView, int pixel) {
         mTextView = textView;
-        mDimenRes = dimenRes;
         mPixel = pixel;
-    }
-
-    public static AsyncImageGetter fromRes(TextView textView, @DimenRes int dimenRes) {
-        Preconditions.checkArgument(dimenRes > 0);
-        return new AsyncImageGetter(textView, dimenRes, 0);
-    }
-
-    public static AsyncImageGetter fromPixel(TextView textView, int pixel) {
-        Preconditions.checkArgument(pixel > 0);
-        return new AsyncImageGetter(textView, 0, pixel);
     }
 
     @Override
@@ -55,7 +42,7 @@ public class AsyncImageGetter implements Html.ImageGetter {
         boolean shouldLoadImage = PrefStore.getInstance().shouldLoadImage();
         final NetworkDrawable drawable = new NetworkDrawable(shouldLoadImage);
         if (shouldLoadImage) {
-            final int width = mPixel > 0 ? mPixel : ViewUtils.getExactlyWidth(mTextView, mDimenRes);
+            final int width = ViewUtils.getExactlyWidth(mTextView, mPixel);
             final NetworkDrawableTarget target = new NetworkDrawableTarget(mTextView, drawable, width);
             Glide.with(mTextView.getContext()).load(source).asBitmap().fitCenter().into(target);
         }
@@ -150,8 +137,7 @@ public class AsyncImageGetter implements Html.ImageGetter {
             int width = bitmap.getWidth();
             int height = bitmap.getHeight();
             if (width < mMaxWidth) {
-                float fitWidth = Math.min(ViewUtils.convertDp2Pixel(mTextView.getContext(), width),
-                        mMaxWidth);
+                float fitWidth = Math.min(ViewUtils.dp2Pixel(width), mMaxWidth);
                 height *= fitWidth / width;
                 width = (int) fitWidth;
             }

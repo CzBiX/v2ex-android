@@ -74,6 +74,9 @@ public class CommentAdapter extends BaseAdapter {
     }
 
     private static class ViewHolder implements View.OnCreateContextMenuListener, View.OnClickListener, MenuItem.OnMenuItemClickListener, OnHtmlActionListener {
+        private static final int COMMENT_PICTURE_OTHER_WIDTH =
+                ViewUtils.getDimensionPixelSize(R.dimen.comment_picture_other_width);
+
         private final TextView mContent;
         private final ImageView mAvatar;
         private final TextView mUsername;
@@ -107,8 +110,8 @@ public class CommentAdapter extends BaseAdapter {
             }
             mComment = comment;
 
-            ViewUtils.setHtmlIntoTextViewWithRes(mContent, comment.getContent(),
-                    R.dimen.comment_picture_max_width);
+            ViewUtils.setHtmlIntoTextView(mContent, comment.getContent(), ViewUtils.getWidthPixels() -
+                    COMMENT_PICTURE_OTHER_WIDTH);
             appendThanks(comment);
 
             mUsername.setText(comment.getMember().getUsername());

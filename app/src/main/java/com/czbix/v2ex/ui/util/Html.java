@@ -983,7 +983,7 @@ class HtmlToSpannedConverter implements ContentHandler {
 
         String nm = charSeq.toString();
 
-        // XXX This code is copied from Integer.decode() so we don't
+        // This code is copied from Integer.decode() so we don't
         // have to instantiate an Integer!
 
         int value;
