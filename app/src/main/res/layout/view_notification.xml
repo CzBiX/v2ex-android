@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:padding="5dp"
+                android:padding="@dimen/content_spacing"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
     <ImageView
@@ -15,7 +15,7 @@
         android:id="@+id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="@dimen/content_spacing"
         android:layout_toEndOf="@id/avatar_img"
         android:text="Username"
         style="@style/AppTheme.CardView.Username"
@@ -35,7 +35,7 @@
         android:id="@+id/action"
         android:text="Thanks"
         android:textSize="12sp"
-        android:layout_marginStart="5dp"
+        android:layout_marginStart="@dimen/content_spacing"
         android:layout_alignBaseline="@id/username_tv"
         android:layout_toEndOf="@id/username_tv"
         android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
         style="@style/AppTheme.CardView.TextView"
         android:text="Title"
         android:textStyle="bold"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="6dp"
         android:layout_below="@id/avatar_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_tv"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="6dp"
         android:text="Content"
         tools:ignore="HardcodedText"/>
 </RelativeLayout>
