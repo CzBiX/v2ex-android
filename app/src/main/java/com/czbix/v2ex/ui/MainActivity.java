@@ -180,6 +180,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
             Toast.makeText(this, R.string.toast_daily_award_received, Toast.LENGTH_LONG).show();
         }
         setAwardVisibility(e.mHasAward);
+        mAwardButton.setEnabled(true);
     }
 
     private void setAwardVisibility(boolean visibility) {
@@ -199,6 +200,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         mAwardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mAwardButton.setEnabled(false);
                 ExecutorUtils.execute(new Runnable() {
                     @Override
                     public void run() {
