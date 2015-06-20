@@ -567,6 +567,8 @@ class HtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("pre")) {
             mInPreTag = false;
             end(mSpannableStringBuilder, Pre.class, new BackgroundColorSpan(0xFFEEEEEE));
+        } else if (tag.equalsIgnoreCase("li")) {
+            mSpannableStringBuilder.append('\n');
         }
     }
 
