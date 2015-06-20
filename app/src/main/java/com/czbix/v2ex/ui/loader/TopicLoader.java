@@ -25,6 +25,7 @@ public class TopicLoader extends AsyncTaskLoader<TopicWithComments> {
         }
 
         mPage = page;
+        mResult = null;
         onContentChanged();
     }
 

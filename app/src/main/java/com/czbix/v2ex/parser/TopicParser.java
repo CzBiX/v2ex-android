@@ -33,7 +33,7 @@ public class TopicParser extends Parser {
         final List<Postscript> postscripts = parsePostscript(doc.select(".subtle"));
         parseTopicInfo(topicBuilder, doc);
         List<Comment> comments = parseComments(doc.select("#Main > div:nth-child(4) tr"));
-        int page = comments.isEmpty() ? 1 : getMaxPage(doc);
+        int[] pageNum = comments.isEmpty() ? new int[]{1, 1} : getMaxPage(doc);
 
         final String csrfToken;
         final String onceToken;
@@ -45,17 +45,20 @@ public class TopicParser extends Parser {
             onceToken = parseOnceToken(doc);
             topicBuilder.isFavorited(parseFavorited(doc));
         }
-        return new TopicWithComments(topicBuilder.createTopic(), comments, postscripts, page, csrfToken,
-                onceToken);
+        return new TopicWithComments(topicBuilder.createTopic(), comments, postscripts, pageNum[0],
+                pageNum[1], csrfToken, onceToken);
     }
 
-    private static int getMaxPage(Document doc) {
+    private static int[] getMaxPage(Document doc) {
         final Elements elements = doc.select("#Main > div:nth-child(4) > .inner");
         if (elements.size() == 1) {
-            return 1;
+            return new int[]{1, 1};
         }
 
-        return elements.get(1).children().size();
+        final int maxPage = elements.get(1).children().size();
+        final int curPage = elements.select(".page_current").get(0).elementSiblingIndex() + 1;
+
+        return new int[]{curPage, maxPage};
     }
 
     private static String parseCsrfToken(Document doc) {

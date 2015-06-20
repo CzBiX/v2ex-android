@@ -10,16 +10,18 @@ public class TopicWithComments {
     public final List<Comment> mComments;
     @Nullable
     public final List<Postscript> mPostscripts;
+    public final int mCurPage;
     public final int mMaxPage;
     public final String mCsrfToken;
     public final String mOnceToken;
 
     public TopicWithComments(@NonNull Topic topic, @NonNull List<Comment> comments,
-                             @Nullable List<Postscript> postscripts, int maxPage,
+                             @Nullable List<Postscript> postscripts, int curPage, int maxPage,
                              String csrfToken, String onceToken) {
         mTopic = topic;
         mComments = comments;
         mPostscripts = postscripts;
+        mCurPage = curPage;
         mMaxPage = maxPage;
         mCsrfToken = csrfToken;
         mOnceToken = onceToken;

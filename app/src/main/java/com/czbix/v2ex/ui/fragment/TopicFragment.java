@@ -133,6 +133,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mIsLoaded = false;
 
         setHasOptionsMenu(true);
+        setRetainInstance(true);
     }
 
     @Override
@@ -292,9 +293,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onLoadFinished(Loader<LoaderResult<TopicWithComments>> loader, LoaderResult<TopicWithComments> result) {
-        setIsLoading(false);
         if (result.hasException()) {
             mLastIsFailed = true;
+            setIsLoading(false);
             mCurPage = Math.max(mComments.listSize(), 1);
             if (ExceptionUtils.handleExceptionNoCatch(this, result.mException)) {
                 getActivity().finish();
@@ -307,13 +308,14 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mTopic = data.mTopic;
         mTopicHolder.fillData(mTopic);
+        mCurPage = data.mCurPage;
         mMaxPage = data.mMaxPage;
         final int oldSize = mComments.listSize();
         if (mCurPage > oldSize) {
             // new page
             mComments.addList(data.mComments);
         } else {
-            mComments.setList(oldSize - 1, data.mComments);
+            mComments.setList(mCurPage - 1, data.mComments);
         }
 
         mCommentAdapter.notifyDataSetChanged();
@@ -336,6 +338,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             DraftDao.delete(mDraft.mId);
             mDraft = null;
         }
+
+        setIsLoading(false);
     }
 
     private void fillPostscript(List<Postscript> postscripts) {
@@ -599,7 +603,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         final TopicLoader loader = getLoader();
 
         setIsLoading(true);
-        loader.setPage(++mCurPage);
+        loader.setPage(mCurPage + 1);
         loader.startLoading();
     }
 }
