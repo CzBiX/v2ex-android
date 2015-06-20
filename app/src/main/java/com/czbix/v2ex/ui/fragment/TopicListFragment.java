@@ -27,6 +27,7 @@ import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.SearchActivity;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
@@ -115,6 +116,8 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        final MainActivity activity = ((MainActivity) getActivity());
+
         boolean shouldSetTitle;
         if (mPage instanceof Node) {
             Node node = (Node) mPage;
@@ -127,13 +130,14 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
             }
             shouldSetTitle = true;
         } else if (mPage == Tab.TAB_FAV_TOPIC) {
+            activity.setNavSelected(R.id.drawer_favorite);
             shouldSetTitle = true;
         } else {
             shouldSetTitle = false;
         }
 
         if (shouldSetTitle) {
-            getActivity().setTitle(mPage.getTitle());
+            activity.setTitle(mPage.getTitle());
         }
     }
 
