@@ -28,6 +28,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AbsListView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -97,6 +98,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private String mCsrfToken;
     private String mOnceToken;
     private Draft mDraft;
+    private ImageButton mJumpBack;
 
     private MultiList<Comment> mComments;
     private boolean mIsLoaded;
@@ -107,6 +109,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private boolean mFavorited;
     private MenuItem mFavIcon;
     private int mSmoothScrollTo;
+    private int mLastFocusFloor;
 
     /**
      * Use this factory method to create a new instance of
@@ -146,6 +149,17 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_topic, container, false);
+        mJumpBack = ((ImageButton) rootView.findViewById(R.id.btn_jump_back));
+        mJumpBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Preconditions.checkState(mLastFocusFloor != 0, "why jump button show without dest");
+                mCommentsView.smoothScrollToPosition(mLastFocusFloor);
+                mLastFocusFloor = 0;
+                showJumpBackButton(false);
+            }
+        });
+
         mLayout = ((SwipeRefreshLayout) rootView.findViewById(R.id.comments_layout));
         mLayout.setOnRefreshListener(this);
 
@@ -553,18 +567,21 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         for (int i = floor - 1; i >= 0; i--) {
             final Comment comment = mComments.get(i);
             if (comment.getMember().getUsername().equals(member)) {
-                jumpToFloor(comment.getFloor());
+                scrollToFloor(floor, comment.getFloor());
+                return;
             }
         }
     }
 
-    private void jumpToFloor(int floor) {
-        mCommentsView.smoothScrollToPosition(floor);
+    private void scrollToFloor(int curFloor, int destFloor) {
+        mCommentsView.smoothScrollToPosition(destFloor);
 
-        if (floor >= mCommentsView.getFirstVisiblePosition() && floor <= mCommentsView.getLastVisiblePosition()) {
-            highlightRow(floor - mCommentsView.getFirstVisiblePosition());
+        if (destFloor >= mCommentsView.getFirstVisiblePosition() &&
+                destFloor <= mCommentsView.getLastVisiblePosition()) {
+            highlightRow(destFloor - mCommentsView.getFirstVisiblePosition());
         } else {
-            mSmoothScrollTo = floor;
+            mLastFocusFloor = curFloor;
+            mSmoothScrollTo = destFloor;
             mCommentsView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -620,7 +637,6 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-
     }
 
     private TopicLoader getLoader() {
@@ -634,9 +650,22 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         }
 
         final int lastVisibleItem = firstVisibleItem + visibleItemCount;
-        if (mSmoothScrollTo != 0 && mSmoothScrollTo >= firstVisibleItem && mSmoothScrollTo <= lastVisibleItem) {
-            highlightRow(mSmoothScrollTo - firstVisibleItem);
-            mSmoothScrollTo = 0;
+        // if has smooth scroll position, highlight it
+        if (mSmoothScrollTo != 0) {
+            if (mSmoothScrollTo >= firstVisibleItem && mSmoothScrollTo <= lastVisibleItem) {
+                highlightRow(mSmoothScrollTo - firstVisibleItem);
+                mSmoothScrollTo = 0;
+            }
+        }
+
+        // it smooth scroll finish, and has dest floor, show jump back button
+        if (mSmoothScrollTo == 0 && mLastFocusFloor != 0) {
+            if (mLastFocusFloor >= firstVisibleItem && mLastFocusFloor <= lastVisibleItem) {
+                mLastFocusFloor = 0;
+                showJumpBackButton(false);
+            } else {
+                showJumpBackButton(true);
+            }
         }
 
         if (mIsLoading || mLastIsFailed || (mCurPage >= mMaxPage)) {
@@ -669,5 +698,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             }
         });
         animator.start();
+    }
+
+    private void showJumpBackButton(boolean visible) {
+        mJumpBack.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }
