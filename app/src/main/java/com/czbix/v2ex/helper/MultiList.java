@@ -41,6 +41,8 @@ public class MultiList<E> extends AbstractList<E> {
 
     @Override
     public E get(int location) {
+        int index = location;
+
         for (List<E> list : mList) {
             if (list.size() <= location) {
                 location -= list.size();
@@ -50,7 +52,7 @@ public class MultiList<E> extends AbstractList<E> {
             return list.get(location);
         }
 
-        throw new IndexOutOfBoundsException("Invalid index " + location + ", size is " + size());
+        throw new IndexOutOfBoundsException("Invalid index " + index + ", size is " + size());
     }
 
     @Override

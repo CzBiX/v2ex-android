@@ -98,7 +98,6 @@ public class CommentAdapter extends BaseAdapter {
             view.setOnClickListener(this);
             mAvatar.setOnClickListener(this);
             mUsername.setOnClickListener(this);
-            mContent.setOnClickListener(this);
 
             view.setOnCreateContextMenuListener(this);
             mContent.setMovementMethod(new HtmlMovementMethod(this));
@@ -205,12 +204,12 @@ public class CommentAdapter extends BaseAdapter {
 
         @Override
         public void onUrlClick(String url) {
-            mListener.onCommentUrlClick(url);
+            mListener.onCommentUrlClick(url, mComment.getFloor());
         }
 
         @Override
         public void onImageClick(String source) {
-            mListener.onCommentUrlClick(source);
+            mListener.onCommentUrlClick(source, mComment.getFloor());
         }
     }
 
@@ -220,6 +219,6 @@ public class CommentAdapter extends BaseAdapter {
         void onCommentReply(Comment comment);
         void onCommentIgnore(Comment comment);
         void onCommentCopy(Comment comment);
-        void onCommentUrlClick(String url);
+        void onCommentUrlClick(String url, int floor);
     }
 }

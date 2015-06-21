@@ -353,7 +353,7 @@ public class RequestHelper {
     }
 
     private static Response sendRequest(Request request, boolean checkResponse) throws ConnectionException, RemoteException {
-        if (BuildConfig.DEBUG && new Random().nextInt(100) > 90) {
+        if (BuildConfig.DEBUG && new Random().nextInt(100) > 95) {
             throw new ConnectionException("debug network test");
         }
 

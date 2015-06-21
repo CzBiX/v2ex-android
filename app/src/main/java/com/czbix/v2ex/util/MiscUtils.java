@@ -22,6 +22,7 @@ public class MiscUtils {
     private static final String HOST_WWW;
     private static final String PREFIX_TOPIC;
     private static final String PREFIX_NODE;
+    public static final String PREFIX_MEMBER;
 
     public static final boolean HAS_L;
 
@@ -32,6 +33,7 @@ public class MiscUtils {
 
         PREFIX_TOPIC = context.getString(R.string.topic_url_prefix);
         PREFIX_NODE = context.getString(R.string.node_url_prefix);
+        PREFIX_MEMBER = context.getString(R.string.member_url_prefix);
 
         final int sdkInt = VERSION.SDK_INT;
         HAS_L = sdkInt >= VERSION_CODES.LOLLIPOP;

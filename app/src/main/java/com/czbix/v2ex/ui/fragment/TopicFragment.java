@@ -1,6 +1,10 @@
 package com.czbix.v2ex.ui.fragment;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -101,6 +106,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private boolean mLastIsFailed;
     private boolean mFavorited;
     private MenuItem mFavIcon;
+    private int mSmoothScrollTo;
 
     /**
      * Use this factory method to create a new instance of
@@ -534,8 +540,40 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Override
-    public void onCommentUrlClick(String url) {
+    public void onCommentUrlClick(String url, int floor) {
+        if (url.startsWith(MiscUtils.PREFIX_MEMBER)) {
+            findComment(Member.getNameFromUrl(url), floor);
+            return;
+        }
+
         onUrlClick(url);
+    }
+
+    private void findComment(String member, int floor) {
+        for (int i = floor - 1; i >= 0; i--) {
+            final Comment comment = mComments.get(i);
+            if (comment.getMember().getUsername().equals(member)) {
+                jumpToFloor(comment.getFloor());
+            }
+        }
+    }
+
+    private void jumpToFloor(int floor) {
+        mCommentsView.smoothScrollToPosition(floor);
+
+        if (floor >= mCommentsView.getFirstVisiblePosition() && floor <= mCommentsView.getLastVisiblePosition()) {
+            highlightRow(floor - mCommentsView.getFirstVisiblePosition());
+        } else {
+            mSmoothScrollTo = floor;
+            mCommentsView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    mSmoothScrollTo = 0;
+                    mCommentsView.setOnTouchListener(null);
+                    return false;
+                }
+            });
+        }
     }
 
     @Override
@@ -590,12 +628,21 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (visibleItemCount <= 0 || mIsLoading || mLastIsFailed || (mCurPage >= mMaxPage)) {
+    public void onScroll(AbsListView listView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (visibleItemCount <= 0) {
             return;
         }
 
         final int lastVisibleItem = firstVisibleItem + visibleItemCount;
+        if (mSmoothScrollTo != 0 && mSmoothScrollTo >= firstVisibleItem && mSmoothScrollTo <= lastVisibleItem) {
+            highlightRow(mSmoothScrollTo - firstVisibleItem);
+            mSmoothScrollTo = 0;
+        }
+
+        if (mIsLoading || mLastIsFailed || (mCurPage >= mMaxPage)) {
+            return;
+        }
+
         if ((totalItemCount - lastVisibleItem) > 10) {
             return;
         }
@@ -605,5 +652,22 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         setIsLoading(true);
         loader.setPage(mCurPage + 1);
         loader.startLoading();
+    }
+
+    private void highlightRow(int index) {
+        final View view = mCommentsView.getChildAt(index);
+        Preconditions.checkNotNull(view, "view shouldn't be null");
+
+        final ObjectAnimator animator = ObjectAnimator.ofInt(view, "backgroundColor",
+                0x00CCCCCC, Color.WHITE, 0x00CCCCCC);
+        animator.setEvaluator(new ArgbEvaluator());
+        animator.setDuration(1000);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                view.setBackground(null);
+            }
+        });
+        animator.start();
     }
 }
