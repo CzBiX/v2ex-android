@@ -571,6 +571,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 return;
             }
         }
+
+        Toast.makeText(getActivity(), getString(R.string.toast_can_not_found_comments_of_the_author,
+                member), Toast.LENGTH_SHORT).show();
     }
 
     private void scrollToFloor(int curFloor, int destFloor) {
