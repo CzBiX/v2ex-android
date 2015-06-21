@@ -25,7 +25,6 @@ import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
-import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.SearchActivity;
@@ -129,7 +128,7 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
                 mPage = node;
             }
             shouldSetTitle = true;
-        } else if (mPage == Tab.TAB_FAV_TOPIC) {
+        } else if (mPage == Page.PAGE_FAV_TOPIC) {
             activity.setNavSelected(R.id.drawer_favorite);
             shouldSetTitle = true;
         } else {

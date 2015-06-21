@@ -61,5 +61,5 @@
     <string name="toast_topic_ignored">Topic ignored!</string>
     <string name="action_fav">Favorite</string>
     <string name="tv_will_open_browser_to_search">Will open browser to search</string>
-    <string name="toast_can_not_found_comments_of_the_author">Can't found comments of %s!</string>
+    <string name="toast_can_not_found_comments_of_the_author">Can\'t found comments of %s!</string>
 </resources>
