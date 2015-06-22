@@ -49,7 +49,7 @@ public class NotificationStatus {
         }
 
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext);
-        builder.setSmallIcon(R.drawable.ic_notifications_black_24dp)
+        builder.setSmallIcon(R.drawable.ic_notifications_white_24dp)
                 .setTicker(mContext.getString(R.string.ntf_title_new_notifications))
                 .setContentTitle(mContext.getString(R.string.ntf_title_new_notifications))
                 .setContentText(mContext.getString(R.string.ntf_desc_from_v2ex))
