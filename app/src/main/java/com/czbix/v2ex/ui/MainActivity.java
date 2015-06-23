@@ -1,13 +1,16 @@
 package com.czbix.v2ex.ui;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -51,6 +54,7 @@ import com.czbix.v2ex.ui.fragment.NotificationListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.UserUtils;
+import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.eventbus.Subscribe;
 
 
@@ -166,10 +170,11 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         String url = GoogleImg.ALL_LOCATION[GoogleImg.getLocationIndex()][GoogleImg.getTimeIndex()];
         Glide.with(this).using(GooglePhotoUrlLoader.getInstance()).load(url)
                 .crossFade().centerCrop().into(new ViewTarget<View, GlideDrawable>(mNavBg) {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
                 resource.setColorFilter(new LightingColorFilter(Color.rgb(180, 180, 180), 0));
-                mNavBg.setBackground(resource);
+                ViewUtils.setBackground(mNavBg, resource);
             }
         });
     }
@@ -384,7 +389,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         intent.putExtra(TopicActivity.KEY_TOPIC, topic);
 
         final Bundle options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "topic").toBundle();
-        startActivity(intent, options);
+        ActivityCompat.startActivity(this, intent, options);
 
         TopicDao.updateLastRead(topic);
         if (topic.getReplyCount() > 0) {

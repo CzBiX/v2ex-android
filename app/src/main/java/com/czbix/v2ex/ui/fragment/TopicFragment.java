@@ -697,7 +697,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                view.setBackground(null);
+                ViewUtils.setBackground(view, null);
             }
         });
         animator.start();

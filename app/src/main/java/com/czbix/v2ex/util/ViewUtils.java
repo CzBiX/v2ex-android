@@ -2,9 +2,11 @@ package com.czbix.v2ex.util;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
+import android.support.annotation.Nullable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -87,5 +89,15 @@ public class ViewUtils {
         final InputMethodManager manager = (InputMethodManager) view.getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public static void setBackground(View view, @Nullable Drawable drawable) {
+        if (MiscUtils.HAS_JB) {
+            view.setBackground(drawable);
+        } else {
+            //noinspection deprecation
+            view.setBackgroundDrawable(drawable);
+        }
     }
 }

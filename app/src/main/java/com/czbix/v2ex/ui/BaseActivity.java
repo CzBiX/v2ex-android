@@ -1,5 +1,6 @@
 package com.czbix.v2ex.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.eventbus.BusEvent;
 import com.google.common.eventbus.Subscribe;
 
+@SuppressLint("Registered")
 public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

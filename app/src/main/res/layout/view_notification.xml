@@ -16,7 +16,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/content_spacing"
+        android:layout_marginLeft="@dimen/content_spacing"
         android:layout_toEndOf="@id/avatar_img"
+        android:layout_toRightOf="@id/avatar_img"
         android:text="Username"
         style="@style/AppTheme.CardView.Username"
         tools:ignore="HardcodedText"/>
@@ -26,6 +28,7 @@
         android:text="12h"
         style="@style/AppTheme.CardView.Secondary"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignBaseline="@id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,8 +39,10 @@
         android:text="Thanks"
         android:textSize="12sp"
         android:layout_marginStart="@dimen/content_spacing"
+        android:layout_marginLeft="@dimen/content_spacing"
         android:layout_alignBaseline="@id/username_tv"
         android:layout_toEndOf="@id/username_tv"
+        android:layout_toRightOf="@id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="HardcodedText"/>

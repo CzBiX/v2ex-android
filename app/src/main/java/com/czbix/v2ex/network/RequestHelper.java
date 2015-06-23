@@ -116,8 +116,6 @@ public class RequestHelper {
             processUserState(doc, page instanceof Tab);
         } catch (IOException e) {
             throw new ConnectionException(e);
-        } catch (SAXException e) {
-            throw new RequestException(response, e);
         }
 
         if (BuildConfig.DEBUG) {
@@ -144,8 +142,6 @@ public class RequestHelper {
             doc = Parser.toDoc(response.body().string());
             result = TopicParser.parseDoc(doc, topic);
             processUserState(doc);
-        } catch (SAXException e) {
-            throw new RequestException(response, e);
         } catch (IOException e) {
             throw new ConnectionException(e);
         }
@@ -204,8 +200,6 @@ public class RequestHelper {
             return NotificationParser.parseDoc(doc);
         } catch (IOException e) {
             throw new ConnectionException(e);
-        } catch (SAXException e) {
-            throw new RequestException(response, e);
         }
     }
 
@@ -282,11 +276,7 @@ public class RequestHelper {
         } catch (IOException e) {
             throw new ConnectionException(e);
         }
-        try {
-            return MyselfParser.hasAward(html);
-        } catch (IOException | SAXException e) {
-            throw new RequestException(response, e);
-        }
+        return MyselfParser.hasAward(html);
     }
 
     public static Avatar login(String account, String password) throws ConnectionException, RemoteException {
@@ -327,8 +317,6 @@ public class RequestHelper {
             return MyselfParser.parseAvatarOnly(document);
         } catch (IOException e) {
             throw new ConnectionException(e);
-        } catch (SAXException e) {
-            throw new RequestException(response, e);
         }
     }
 

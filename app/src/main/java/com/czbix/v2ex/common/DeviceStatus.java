@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.support.v4.net.ConnectivityManagerCompat;
 
 import com.czbix.v2ex.AppCtx;
 
@@ -36,7 +37,7 @@ public class DeviceStatus {
     }
 
     private void updateNetworkStatus() {
-        mIsNetworkMetered = mConnectivityManager.isActiveNetworkMetered();
+        mIsNetworkMetered = ConnectivityManagerCompat.isActiveNetworkMetered(mConnectivityManager);
     }
 
     public boolean isNetworkMetered() {

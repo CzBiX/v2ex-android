@@ -17,11 +17,13 @@
     <ImageButton
         android:id="@+id/btn_jump_back"
         android:layout_alignEnd="@id/comments_layout"
+        android:layout_alignRight="@id/comments_layout"
         android:layout_alignBottom="@id/comments_layout"
         android:background="@drawable/btn_jump_back_background"
         android:src="@drawable/ic_keyboard_arrow_down_white_24dp"
         android:visibility="gone"
         android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:layout_width="@dimen/fab_size_mini"
         android:layout_height="@dimen/fab_size_mini"

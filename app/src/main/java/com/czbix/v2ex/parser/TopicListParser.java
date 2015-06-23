@@ -14,9 +14,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
-import org.xml.sax.SAXException;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,7 +22,7 @@ import java.util.regex.Pattern;
 public class TopicListParser extends Parser {
     private static final Pattern PATTERN_REPLY_TIME = Pattern.compile("•\\s*(.+?)(?:\\s+•|$)");
 
-    public static List<Topic> parseDoc(Document doc, Page page) throws IOException, SAXException {
+    public static List<Topic> parseDoc(Document doc, Page page) {
         if (page instanceof Node) {
             return parseDocForNode(doc, (Node) page);
         } else if (page instanceof Tab || page == Page.PAGE_FAV_TOPIC) {
@@ -34,7 +32,7 @@ public class TopicListParser extends Parser {
         }
     }
 
-    private static List<Topic> parseDocForTab(Document doc) throws IOException, SAXException {
+    private static List<Topic> parseDocForTab(Document doc) {
         final Elements elements = doc.select("#Main > div:nth-child(2) > .item  tr");
         final List<Topic> result = Lists.newArrayListWithCapacity(elements.size());
         for (Element item : elements) {
@@ -43,7 +41,7 @@ public class TopicListParser extends Parser {
         return result;
     }
 
-    private static List<Topic> parseDocForNode(Document doc, Node node) throws IOException, SAXException {
+    private static List<Topic> parseDocForNode(Document doc, Node node) {
         final Elements elements = doc.select("#TopicsNode > .cell  tr");
         final List<Topic> result = Lists.newArrayListWithCapacity(elements.size());
         for (Element item : elements) {

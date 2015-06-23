@@ -30,6 +30,7 @@
             android:layout_height="@dimen/node_avatar_size"
             android:contentDescription="@string/desc_avatar"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:id="@+id/avatar_img"/>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

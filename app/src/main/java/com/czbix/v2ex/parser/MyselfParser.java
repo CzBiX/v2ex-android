@@ -6,16 +6,14 @@ import com.google.common.base.Preconditions;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.xml.sax.SAXException;
 
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MyselfParser extends Parser {
     private static final Pattern PATTERN_UNREAD_NUM = Pattern.compile("\\d+");
 
-    public static Avatar parseAvatarOnly(Document doc) throws IOException, SAXException {
+    public static Avatar parseAvatarOnly(Document doc) {
         final Elements elements = doc.select("#Rightbar > div:nth-child(2)");
         Preconditions.checkState(elements.size() == 1);
 
@@ -49,7 +47,7 @@ public class MyselfParser extends Parser {
         return elements.size() == 1;
     }
 
-    public static boolean hasAward(String html) throws IOException, SAXException {
+    public static boolean hasAward(String html) {
         final Document doc = toDoc(html);
         final Elements elements = doc.select(".fa-ok-sign");
         return elements.size() == 0;

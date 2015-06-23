@@ -14,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_marginTop="6dp"
         android:textStyle="bold"
         style="@style/AppTheme.CardView.Secondary"
@@ -25,8 +26,10 @@
     <TextView
         android:id="@+id/time"
         android:layout_toEndOf="@id/title"
+        android:layout_toRightOf="@id/title"
         android:layout_alignBaseline="@id/title"
         android:layout_marginStart="@dimen/content_spacing"
+        android:layout_marginLeft="@dimen/content_spacing"
         style="@style/AppTheme.CardView.Secondary"
         android:text="1 day ago"
         android:layout_width="wrap_content"

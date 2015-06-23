@@ -7,10 +7,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.xml.sax.SAXException;
 
-import java.io.IOException;
-
 public abstract class Parser {
-    public static Document toDoc(String html) throws IOException, SAXException {
+    public static Document toDoc(String html) {
         final Document document = Jsoup.parse(html);
         if (!BuildConfig.DEBUG) {
             final Document.OutputSettings settings = document.outputSettings().prettyPrint(false);
@@ -19,7 +17,7 @@ public abstract class Parser {
         return document;
     }
 
-    public static String parseOnceCode(String html) throws IOException, SAXException {
+    public static String parseOnceCode(String html) throws SAXException {
         final Document doc = toDoc(html);
         final Elements ele = doc.select("[name=once]");
         if (ele.size() != 1) {

@@ -29,11 +29,6 @@ public class CategoryTabFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.tab_layout, container, false);
         ViewPager viewPager = ((ViewPager) view.findViewById(R.id.view_pager));

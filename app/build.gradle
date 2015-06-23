@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.czbix.v2ex"
-        minSdkVersion 17
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 16
         versionName "1.10"
