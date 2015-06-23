@@ -95,7 +95,6 @@ public class CommentAdapter extends BaseAdapter {
             mThanks = ((TextView) view.findViewById(R.id.thanks));
 
             mListener = listener;
-            view.setOnClickListener(this);
             mAvatar.setOnClickListener(this);
             mUsername.setOnClickListener(this);
 
@@ -150,6 +149,17 @@ public class CommentAdapter extends BaseAdapter {
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            if (UserState.getInstance().isGuest()) {
+                // anonymous can't do anything
+                return;
+            }
+
+            final String username = UserState.getInstance().getUsername();
+            if (mComment.getMember().getUsername().equals(username)) {
+                // can't do action on comment by myself
+                return;
+            }
+
             final MenuInflater inflater = new MenuInflater(mContent.getContext());
             inflater.inflate(R.menu.menu_comment, menu);
             for (int i = 0; i < menu.size(); i++) {
@@ -167,20 +177,7 @@ public class CommentAdapter extends BaseAdapter {
         public void onClick(View v) {
             if (v == mAvatar || v == mUsername) {
                 mListener.onMemberClick(mComment.getMember());
-                return;
             }
-
-            if (UserState.getInstance().isGuest()) {
-                // anonymous can't do anything
-                return;
-            }
-
-            final String username = UserState.getInstance().getUsername();
-            if (mComment.getMember().getUsername().equals(username)) {
-                // can't do action on comment by myself
-                return;
-            }
-            v.showContextMenu();
         }
 
         @Override
