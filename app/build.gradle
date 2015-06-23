@@ -8,8 +8,8 @@ android {
         applicationId "com.czbix.v2ex"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 17
-        versionName "1.11"
+        versionCode 18
+        versionName "1.11.1"
     }
     buildTypes {
         release {
