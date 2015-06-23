@@ -84,10 +84,10 @@ public class AsyncImageGetter implements Html.ImageGetter {
         }
 
         @SuppressWarnings("deprecation")
-        public NetworkDrawable(boolean shoudLoadImage) {
+        public NetworkDrawable(boolean shouldLoadImage) {
             super();
             setBounds(DRAWABLE_BOUNDS);
-            mIsDisabled = !shoudLoadImage;
+            mIsDisabled = !shouldLoadImage;
         }
 
         public void setDrawable(Drawable drawable) {
