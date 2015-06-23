@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ga_trackingId">UA-64364166-1</string>
+    <bool name="ga_autoActivityTracking">true</bool>
+    <bool name="ga_reportUncaughtExceptions">true</bool>
+
+    <screenName name="com.czbix.v2ex.ui.MainActivity">MainActivity</screenName>
+    <screenName name="com.czbix.v2ex.ui.TopicActivity">TopicActivity</screenName>
+    <screenName name="com.czbix.v2ex.ui.SearchActivity">SearchActivity</screenName>
+    <screenName name="com.czbix.v2ex.ui.SettingsActivity">SettingsActivity</screenName>
+    <screenName name="com.czbix.v2ex.ui.LoadingActivity">LoadingActivity</screenName>
+    <screenName name="com.czbix.v2ex.ui.LoginActivity">LoginActivity</screenName>
+</resources>

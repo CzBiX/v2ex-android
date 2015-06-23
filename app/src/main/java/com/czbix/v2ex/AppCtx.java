@@ -18,6 +18,7 @@ import com.czbix.v2ex.network.Etag;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
+import com.czbix.v2ex.util.TrackerUtils;
 import com.czbix.v2ex.util.UserUtils;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.DeadEvent;
@@ -50,6 +51,7 @@ public class AppCtx extends Application {
         mEventBus = new AsyncEventBus(new HandlerExecutor());
         mEventBus.register(this);
 
+        TrackerUtils.init(this);
         ExecutorUtils.execute(new AsyncInitTask());
     }
 
