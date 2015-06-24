@@ -64,6 +64,7 @@ import com.czbix.v2ex.util.ExceptionUtils;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.MiscUtils;
+import com.czbix.v2ex.util.TrackerUtils;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
@@ -296,6 +297,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private void toggleReplyForm() {
         if (mReplyForm != null) {
             mReplyForm.toggle();
+            TrackerUtils.onTopicSwitchReply(mReplyForm.getVisibility());
             return;
         }
 
@@ -303,6 +305,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         Preconditions.checkNotNull(rootView);
         final ViewStub viewStub = (ViewStub) rootView.findViewById(R.id.reply_form);
         mReplyForm = new ReplyFormHelper(viewStub, this);
+
+        TrackerUtils.onTopicSwitchReply(true);
     }
 
     @Override
@@ -418,6 +422,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onReply(final CharSequence content) {
+        TrackerUtils.onTopicReply();
+
         AppCtx.getEventBus().register(this);
         final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
             @Override

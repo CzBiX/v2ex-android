@@ -49,6 +49,10 @@ public class ReplyFormHelper implements TextWatcher, View.OnClickListener {
         setVisibility(isShown);
     }
 
+    public boolean getVisibility() {
+        return isShown;
+    }
+
     public void setVisibility(boolean visible) {
         isShown = visible;
         mRootView.setVisibility(visible ? View.VISIBLE : View.GONE);

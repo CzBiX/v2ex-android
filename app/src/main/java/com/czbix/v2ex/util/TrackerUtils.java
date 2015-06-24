@@ -32,11 +32,30 @@ public class TrackerUtils {
         mTracker.send(hit);
     }
 
+    public static void onTopicSwitchReply(boolean isShow) {
+        final Map<String, String> hit = new HitBuilders.EventBuilder(Category.TOPIC, Action.SWITCH_REPLY)
+                .setLabel(isShow ? Label.SHOW : Label.HIDE).build();
+        mTracker.send(hit);
+    }
+
+    public static void onTopicReply() {
+        final Map<String, String> hit = new HitBuilders.EventBuilder(Category.TOPIC, Action.REPLY).build();
+        mTracker.send(hit);
+    }
+
     private static class Category {
         public static final String APP = "App";
+        public static final String TOPIC = "Topic";
     }
 
     private static class Action {
         public static final String CREATE = "Create";
+        public static final String SWITCH_REPLY = "Switch Reply";
+        public static final String REPLY = "Reply";
+    }
+
+    private static class Label {
+        public static final String SHOW = "Show";
+        public static final String HIDE = "Hide";
     }
 }
