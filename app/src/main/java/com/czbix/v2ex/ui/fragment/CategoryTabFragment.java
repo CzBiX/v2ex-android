@@ -12,16 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.common.PrefStore;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.ui.MainActivity;
-import com.google.common.collect.Lists;
 
 import java.util.List;
 
 public class CategoryTabFragment extends Fragment {
     public static CategoryTabFragment newInstance() {
-        final CategoryTabFragment fragment = new CategoryTabFragment();
-        return fragment;
+        return new CategoryTabFragment();
     }
 
     public CategoryTabFragment() {
@@ -53,29 +52,26 @@ public class CategoryTabFragment extends Fragment {
     }
 
     private class CategoryFragmentAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragments;
+        private final List<Tab> mTabs;
 
         public CategoryFragmentAdapter(FragmentManager manager) {
             super(manager);
 
-            mFragments = Lists.newArrayListWithCapacity(Tab.ALL_TABS.length);
-            for (Tab tab : Tab.ALL_TABS) {
-                mFragments.add(TopicListFragment.newInstance(tab));
-            }
+            mTabs = PrefStore.getInstance().getTabsToShow();
         }
 
         public Fragment getItem(int position) {
-            return mFragments.get(position);
+            return TopicListFragment.newInstance(mTabs.get(position));
         }
 
         @Override
         public int getCount() {
-            return mFragments.size();
+            return mTabs.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return Tab.ALL_TABS[position].getTitle();
+            return mTabs.get(position).getTitle();
         }
     }
 }

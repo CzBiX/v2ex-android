@@ -20,6 +20,11 @@ public abstract class Page implements Parcelable {
         return 0;
     }
 
+    @Override
+    public String toString() {
+        return getTitle();
+    }
+
     public static class SimplePage extends Page {
         private final String mTitle;
         private final String mUrl;
