@@ -55,5 +55,6 @@ public class TabListPreference extends DialogPreference {
         if (positiveResult) {
             persistString(Tab.getStringToSave(mTabsToShow));
         }
+        mTabsToShow = null;
     }
 }
