@@ -1,5 +1,6 @@
 package com.czbix.v2ex.common;
 
+import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -9,7 +10,7 @@ import com.czbix.v2ex.model.Tab;
 
 import java.util.List;
 
-public class PrefStore {
+public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final PrefStore instance;
     private static final String PREF_LOAD_IMAGE_ON_MOBILE_NETWORK = "load_image_on_mobile_network";
     private static final String PREF_TABS_TO_SHOW = "tabs_to_show";
@@ -22,6 +23,12 @@ public class PrefStore {
 
     PrefStore(Context context) {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    public static void requestBackup() {
+        final BackupManager manager = new BackupManager(AppCtx.getInstance());
+        manager.dataChanged();
     }
 
     public static PrefStore getInstance() {
@@ -42,5 +49,10 @@ public class PrefStore {
     public List<Tab> getTabsToShow() {
         final String string = mPreferences.getString(PREF_TABS_TO_SHOW, null);
         return Tab.getTabsToShow(string);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        requestBackup();
     }
 }
