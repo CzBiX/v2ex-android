@@ -16,6 +16,9 @@
         <meta-data
             android:name="com.czbix.v2ex.network.GlideConfig"
             android:value="GlideModule" />
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="23e42a0e3274b272cd08b9ea553d6858e53d05a5" />
 
         <activity
             android:name=".ui.MainActivity"

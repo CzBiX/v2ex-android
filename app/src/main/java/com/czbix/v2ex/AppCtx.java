@@ -2,6 +2,7 @@ package com.czbix.v2ex;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.common.NotificationStatus;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
@@ -27,6 +28,8 @@ import com.google.common.eventbus.Subscribe;
 
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
+
 public class AppCtx extends Application {
     private static final String TAG = AppCtx.class.getSimpleName();
 
@@ -37,9 +40,18 @@ public class AppCtx extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        initCrashlytics();
 
         mInstance = this;
         init();
+    }
+
+    private void initCrashlytics() {
+        if (BuildConfig.DEBUG) {
+            return;
+        }
+
+        Fabric.with(this, new Crashlytics());
     }
 
     public boolean isInited() {
