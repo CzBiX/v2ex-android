@@ -59,6 +59,7 @@ dependencies {
     compile 'com.android.support:design:22.2.0'
     compile 'com.github.bumptech.glide:okhttp-integration:1.3.0'
     compile 'com.google.android.gms:play-services-analytics:7.5.0'
+    compile 'com.google.android.gms:play-services-gcm:7.5.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.4.0@aar') {
         transitive = true;
     }
