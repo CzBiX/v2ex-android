@@ -7,10 +7,13 @@ import android.preference.PreferenceManager;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.model.Tab;
+import com.czbix.v2ex.util.LogUtils;
 
 import java.util.List;
 
 public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private static final String TAG = PrefStore.class.getSimpleName();
+
     private static final PrefStore instance;
     private static final String PREF_LOAD_IMAGE_ON_MOBILE_NETWORK = "load_image_on_mobile_network";
     public static final String PREF_TABS_TO_SHOW = "tabs_to_show";
@@ -53,7 +56,12 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
     }
 
     public boolean shouldReceiveNotifications() {
-        return !UserState.getInstance().isGuest() && mPreferences.getBoolean(PREF_RECEIVE_NOTIFICATIONS, false);
+        if (UserState.getInstance().isGuest()) {
+            LogUtils.v(TAG, "guest can't receive notifications");
+            return false;
+        }
+
+        return mPreferences.getBoolean(PREF_RECEIVE_NOTIFICATIONS, false);
     }
 
     @Override

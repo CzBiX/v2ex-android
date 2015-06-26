@@ -53,7 +53,7 @@ public class MyselfParser extends Parser {
         return elements.size() == 0;
     }
 
-    private static int getNotificationsNum(Element ele) {
+    static int getNotificationsNum(Element ele) {
         final String text = ele.select(".inner a[href=/notifications]").get(0).text();
         final Matcher matcher = PATTERN_UNREAD_NUM.matcher(text);
         Preconditions.checkState(matcher.find());

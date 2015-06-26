@@ -11,7 +11,6 @@ import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.parser.MyselfParser;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.UserUtils;
-import com.google.common.base.Strings;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
@@ -19,7 +18,6 @@ public class UserState {
     private static final UserState instance;
 
     private String mUsername;
-    private int mLastReadCount;
     private boolean mHasUnread;
     private boolean mHasAward;
 
@@ -35,9 +33,6 @@ public class UserState {
         AppCtx.getEventBus().register(this);
 
         mUsername = ConfigDao.get(ConfigDao.KEY_USERNAME, null);
-        if (!Strings.isNullOrEmpty(mUsername)) {
-            mLastReadCount = ConfigDao.get(ConfigDao.KEY_NOTIFICATION_COUNT, 0);
-        }
     }
 
     public void handleInfo(MyselfParser.MySelfInfo info, boolean isTab) {

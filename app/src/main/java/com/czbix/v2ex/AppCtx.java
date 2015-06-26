@@ -80,6 +80,17 @@ public class AppCtx extends Application {
         return mInstance;
     }
 
+    public void waitUntilInited() {
+        while (!mIsInited) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                LogUtils.v(TAG, "wait inited failed", e);
+                return;
+            }
+        }
+    }
+
     private class AsyncInitTask implements Runnable {
         @Override
         public void run() {

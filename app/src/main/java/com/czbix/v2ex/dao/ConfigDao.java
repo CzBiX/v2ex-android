@@ -24,6 +24,8 @@ public class ConfigDao extends DaoBase {
     public static final String KEY_USERNAME = "username";
     public static final String KEY_AVATAR = "avatar";
     public static final String KEY_NODE_ETAG = "node_etag";
+    // TODO: remove this key when upgrade
+    @Deprecated
     public static final String KEY_NOTIFICATION_COUNT = "notification_count";
 
     static void createTable(SQLiteDatabase db) {

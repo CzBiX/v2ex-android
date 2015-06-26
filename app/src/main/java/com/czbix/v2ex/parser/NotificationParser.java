@@ -26,6 +26,13 @@ public class NotificationParser {
         return result;
     }
 
+    public static int parseUnreadCount(Document doc) {
+        final Elements elements = doc.select("#Rightbar > div:nth-child(2)");
+        Preconditions.checkState(elements.size() == 1);
+
+        return MyselfParser.getNotificationsNum(elements.get(0));
+    }
+
     private static Notification parseNotification(Element element) {
         Notification.Builder builder = new Notification.Builder();
         Member member = parseMember(element.child(0));
