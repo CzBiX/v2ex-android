@@ -3,6 +3,7 @@ package com.czbix.v2ex;
 import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.czbix.v2ex.common.NotificationStatus;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
@@ -47,11 +48,9 @@ public class AppCtx extends Application {
     }
 
     private void initCrashlytics() {
-        if (BuildConfig.DEBUG) {
-            return;
-        }
-
-        Fabric.with(this, new Crashlytics());
+        final Crashlytics.Builder builder = new Crashlytics.Builder()
+                .core(new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build());
+        Fabric.with(this, builder.build());
     }
 
     public boolean isInited() {
