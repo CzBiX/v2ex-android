@@ -23,7 +23,7 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.dao.NodeDao;
-import com.czbix.v2ex.eventbus.BusEvent;
+import com.czbix.v2ex.eventbus.BaseEvent;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
@@ -153,7 +153,7 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
     }
 
     @Subscribe
-    public void onNodesLoadFinish(BusEvent.GetNodesFinishEvent e) {
+    public void onNodesLoadFinish(BaseEvent.GetNodesFinishEvent e) {
         final LoaderManager loaderManager = getLoaderManager();
         if (loaderManager.getLoader(0) != null) {
             // already loaded

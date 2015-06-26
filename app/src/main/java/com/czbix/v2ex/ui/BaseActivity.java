@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.czbix.v2ex.AppCtx;
-import com.czbix.v2ex.eventbus.BusEvent;
+import com.czbix.v2ex.eventbus.BaseEvent;
 import com.google.common.eventbus.Subscribe;
 
 @SuppressLint("Registered")
@@ -28,7 +28,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private class Wrapper {
         @Subscribe
-        public void onContextInitFinishEvent(BusEvent.ContextInitFinishEvent e) {
+        public void onContextInitFinishEvent(BaseEvent.ContextInitFinishEvent e) {
             AppCtx.getEventBus().unregister(this);
 
             finishActivity(0);

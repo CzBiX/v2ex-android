@@ -1,8 +1,8 @@
 package com.czbix.v2ex.eventbus;
 
-public abstract class BusEvent {
-    public static class GetNodesFinishEvent extends BusEvent {}
-    public static class NewUnreadEvent extends BusEvent {
+public abstract class BaseEvent {
+    public static class GetNodesFinishEvent extends BaseEvent {}
+    public static class NewUnreadEvent extends BaseEvent {
         public final int mCount;
 
         public NewUnreadEvent(int count) {
@@ -14,7 +14,7 @@ public abstract class BusEvent {
         }
     }
 
-    public static class DailyAwardEvent extends BusEvent {
+    public static class DailyAwardEvent extends BaseEvent {
         public final boolean mHasAward;
 
         public DailyAwardEvent(boolean hasAward) {
@@ -22,5 +22,5 @@ public abstract class BusEvent {
         }
     }
 
-    public static class ContextInitFinishEvent extends BusEvent {}
+    public static class ContextInitFinishEvent extends BaseEvent {}
 }

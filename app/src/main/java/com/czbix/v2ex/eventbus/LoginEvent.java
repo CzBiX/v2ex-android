@@ -1,6 +1,6 @@
 package com.czbix.v2ex.eventbus;
 
-public class LoginEvent extends BusEvent {
+public class LoginEvent extends BaseEvent {
     public final String mUsername;
 
     public LoginEvent() {

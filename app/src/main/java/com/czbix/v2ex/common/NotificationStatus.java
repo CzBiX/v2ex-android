@@ -9,7 +9,7 @@ import android.support.v4.app.NotificationManagerCompat;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
-import com.czbix.v2ex.eventbus.BusEvent.NewUnreadEvent;
+import com.czbix.v2ex.eventbus.BaseEvent.NewUnreadEvent;
 import com.czbix.v2ex.ui.MainActivity;
 import com.google.common.eventbus.Subscribe;
 

@@ -6,7 +6,7 @@ import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.dao.ConfigDao;
-import com.czbix.v2ex.eventbus.BusEvent;
+import com.czbix.v2ex.eventbus.BaseEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.network.RequestHelper;
@@ -54,7 +54,7 @@ public class UserUtils {
         }
 
         if (hasAward) {
-            AppCtx.getEventBus().post(new BusEvent.DailyAwardEvent(true));
+            AppCtx.getEventBus().post(new BaseEvent.DailyAwardEvent(true));
         }
     }
 }

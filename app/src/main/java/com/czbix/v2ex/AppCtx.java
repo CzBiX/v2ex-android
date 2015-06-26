@@ -12,8 +12,8 @@ import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.dao.V2exDb;
-import com.czbix.v2ex.eventbus.BusEvent;
-import com.czbix.v2ex.eventbus.BusEvent.GetNodesFinishEvent;
+import com.czbix.v2ex.eventbus.BaseEvent;
+import com.czbix.v2ex.eventbus.BaseEvent.GetNodesFinishEvent;
 import com.czbix.v2ex.eventbus.executor.HandlerExecutor;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.network.Etag;
@@ -68,7 +68,7 @@ public class AppCtx extends Application {
 
     @Subscribe
     public void onDeadEvent(DeadEvent e) {
-        final BusEvent event = (BusEvent) e.getEvent();
+        final BaseEvent event = (BaseEvent) e.getEvent();
         LogUtils.i(TAG, "dead event: %s", event.toString());
     }
 
@@ -89,7 +89,7 @@ public class AppCtx extends Application {
             NotificationStatus.getInstance().init();
 
             mIsInited = true;
-            mEventBus.post(new BusEvent.ContextInitFinishEvent());
+            mEventBus.post(new BaseEvent.ContextInitFinishEvent());
 
             DraftDao.cleanExpired();
             loadAllNodes();
