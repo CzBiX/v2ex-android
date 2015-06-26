@@ -33,7 +33,7 @@ public class TopicParser extends Parser {
         final List<Postscript> postscripts = parsePostscript(doc.select(".subtle"));
         parseTopicInfo(topicBuilder, doc);
         List<Comment> comments = parseComments(doc.select("#Main > div:nth-child(4) tr"));
-        int[] pageNum = comments.isEmpty() ? new int[]{1, 1} : getMaxPage(doc);
+        int[] pageNum = getMaxPage(doc);
 
         final String csrfToken;
         final String onceToken;
@@ -51,7 +51,7 @@ public class TopicParser extends Parser {
 
     private static int[] getMaxPage(Document doc) {
         final Elements elements = doc.select("#Main > div:nth-child(4) > .inner");
-        if (elements.size() == 1) {
+        if (elements.size() <= 1) {
             return new int[]{1, 1};
         }
 
