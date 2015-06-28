@@ -1,5 +1,6 @@
 package com.czbix.v2ex.ui.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,13 +19,39 @@ import com.czbix.v2ex.ui.MainActivity;
 
 import java.util.List;
 
-public class CategoryTabFragment extends Fragment {
+public class CategoryTabFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+    private boolean isTabsChanged;
+
     public static CategoryTabFragment newInstance() {
         return new CategoryTabFragment();
     }
 
     public CategoryTabFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        PrefStore.getInstance().registerPreferenceChangeListener(this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (isTabsChanged) {
+            isTabsChanged = false;
+            getActivity().recreate();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        PrefStore.getInstance().unregisterPreferenceChangeListener(this);
     }
 
     @Override
@@ -49,6 +76,13 @@ public class CategoryTabFragment extends Fragment {
         final MainActivity activity = (MainActivity) getActivity();
         activity.setTitle(R.string.drawer_explore);
         activity.setNavSelected(R.id.drawer_explore);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(PrefStore.PREF_TABS_TO_SHOW)) {
+            isTabsChanged = true;
+        }
     }
 
     private class CategoryFragmentAdapter extends FragmentPagerAdapter {

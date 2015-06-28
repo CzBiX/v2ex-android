@@ -13,7 +13,7 @@ import java.util.List;
 public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final PrefStore instance;
     private static final String PREF_LOAD_IMAGE_ON_MOBILE_NETWORK = "load_image_on_mobile_network";
-    private static final String PREF_TABS_TO_SHOW = "tabs_to_show";
+    public static final String PREF_TABS_TO_SHOW = "tabs_to_show";
 
     private final SharedPreferences mPreferences;
 
@@ -54,5 +54,13 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         requestBackup();
+    }
+
+    public void unregisterPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        mPreferences.unregisterOnSharedPreferenceChangeListener(listener);
+    }
+
+    public void registerPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        mPreferences.registerOnSharedPreferenceChangeListener(listener);
     }
 }
