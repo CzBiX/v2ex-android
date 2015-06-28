@@ -4,6 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.FatalException;
@@ -33,11 +34,16 @@ public class ExceptionUtils {
             stringId = R.string.toast_connection_exception;
         } else if (e instanceof RemoteException) {
             stringId = R.string.toast_remote_exception;
+        } else if (e instanceof IllegalStateException) {
+            Crashlytics.logException(e);
+            stringId = R.string.toast_parse_failed;
         } else {
             throw e;
         }
 
-        Toast.makeText(activity, stringId, Toast.LENGTH_LONG).show();
+        if (fragment.getUserVisibleHint()) {
+            Toast.makeText(activity, stringId, Toast.LENGTH_LONG).show();
+        }
         return needFinishActivity;
     }
 }

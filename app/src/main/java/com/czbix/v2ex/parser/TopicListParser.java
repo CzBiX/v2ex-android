@@ -107,7 +107,9 @@ public class TopicListParser extends Parser {
         }
         topicBuilder.setNode(node);
 
-        parseReplyTime(topicBuilder, ele.textNodes().get(hasNode ? 0 : 1));
+        final int index = hasNode ? 0 : 1;
+        Preconditions.checkState(ele.textNodes().size() > index, "text nodes size should greater than %d to get reply time", index);
+        parseReplyTime(topicBuilder, ele.textNodes().get(index));
     }
 
     static Node parseNode(Element nodeEle) {

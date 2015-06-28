@@ -37,6 +37,7 @@
     <string name="toast_need_sign_in">Please sign in first!</string>
     <string name="toast_connection_exception">Connect to server failed…</string>
     <string name="toast_remote_exception">Server return error, please try later!</string>
+    <string name="toast_parse_failed">Parse failed!</string>
     <string name="pref_title_load_image_on_mobile_network">Load image on mobile network</string>
     <string name="pref_summary_load_image_on_mobile_network">Load image in topic/comment on mobile network</string>
     <string name="toast_has_sign_out">Account has sign out!</string>
