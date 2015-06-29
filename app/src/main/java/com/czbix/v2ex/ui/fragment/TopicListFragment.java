@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.FatalException;
@@ -184,7 +185,9 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
 
     @Override
     public Loader<LoaderResult<List<Topic>>> onCreateLoader(int id, Bundle args) {
-        LogUtils.d(TAG, "load list: %s", mPage.getTitle());
+        String log = String.format("load list: %s", mPage.getTitle());
+        Crashlytics.log(log);
+        LogUtils.d(TAG, log);
 
         mLoader = new TopicListLoader(getActivity(), mPage);
         return mLoader;

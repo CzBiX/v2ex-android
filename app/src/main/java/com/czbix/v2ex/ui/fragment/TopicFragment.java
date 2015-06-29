@@ -34,6 +34,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
@@ -311,7 +312,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public Loader<LoaderResult<TopicWithComments>> onCreateLoader(int id, Bundle args) {
-        LogUtils.d(TAG, "load topic, id: %d, title: %s", mTopic.getId(), mTopic.getTitle());
+        String log = String.format("load topic, id: %d, title: %s", mTopic.getId(), mTopic.getTitle());
+        Crashlytics.log(log);
+        LogUtils.d(TAG, log);
         return new TopicLoader(getActivity(), mTopic);
     }
 
