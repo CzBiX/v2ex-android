@@ -42,7 +42,6 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import org.jsoup.nodes.Document;
-import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
@@ -349,16 +348,28 @@ public class RequestHelper {
             return Parser.parseOnceCode(html);
         } catch (IOException e) {
             throw new ConnectionException(e);
-        } catch (SAXException e) {
-            throw new RequestException(response, e);
         }
     }
 
-    private static Response sendRequest(Request request) throws ConnectionException, RemoteException {
+    public static String getNotificationsToken() throws ConnectionException, RemoteException {
+        LogUtils.v(TAG, "get notifications token");
+
+        final Request request = new Request.Builder().url(URL_NOTIFICATIONS).build();
+        final Response response = sendRequest(request);
+
+        try {
+            final String html = response.body().string();
+            return NotificationParser.parseToken(html);
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        }
+    }
+
+    static Response sendRequest(Request request) throws ConnectionException, RemoteException {
         return sendRequest(request, true);
     }
 
-    private static Response sendRequest(Request request, boolean checkResponse) throws ConnectionException, RemoteException {
+    static Response sendRequest(Request request, boolean checkResponse) throws ConnectionException, RemoteException {
         if (BuildConfig.DEBUG && new Random().nextInt(100) > 95) {
             throw new ConnectionException("debug network test");
         }
@@ -381,12 +392,16 @@ public class RequestHelper {
             return;
         }
 
-        if (response.code() >= SERVER_ERROR_CODE) {
-            throw new RemoteException(response);
+        final int code = response.code();
+        if (code >= HttpStatus.SC_MULTIPLE_CHOICES && code < HttpStatus.SC_BAD_REQUEST) {
+            if (response.isRedirect() && response.header(HttpHeaders.LOCATION).startsWith("/signin")) {
+                throw new UnauthorizedException(response);
+            }
+            return;
         }
 
-        if (response.isRedirect() && response.header(HttpHeaders.LOCATION).startsWith("/signin")) {
-            throw new UnauthorizedException(response);
+        if (code >= SERVER_ERROR_CODE) {
+            throw new RemoteException(response);
         }
 
         throw new RequestException(response);

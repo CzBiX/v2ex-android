@@ -13,8 +13,12 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class NotificationParser {
+    private static final Pattern PATTERN_TOKEN = Pattern.compile("http://www.v2ex.com/n/(.+).xml");
+
     public static List<Notification> parseDoc(Document doc) {
         Elements elements = doc.select("#Main > div:nth-child(2) .cell tr");
         List<Notification> result = Lists.newArrayListWithCapacity(elements.size());
@@ -116,5 +120,19 @@ public class NotificationParser {
         memberBuilder.setAvatar(avatarBuilder.createAvatar());
 
         return memberBuilder.createMember();
+    }
+
+    public static String parseToken(String html) {
+        final Document doc = Parser.toDoc(html);
+        final Elements elements = doc.select(".sll");
+        Preconditions.checkState(elements.size() == 1, "token elements size should be one");
+
+        final Element ele = elements.get(0);
+        final String val = ele.val();
+
+        final Matcher matcher = PATTERN_TOKEN.matcher(val);
+        Preconditions.checkState(matcher.matches(), "val not match token pattern");
+
+        return matcher.group(1);
     }
 }

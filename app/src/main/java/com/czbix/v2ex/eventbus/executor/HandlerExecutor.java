@@ -10,7 +10,7 @@ public class HandlerExecutor implements Executor {
     private final Handler mHandler;
 
     public HandlerExecutor() {
-        mHandler = new Handler(Looper.myLooper());
+        mHandler = new Handler(Looper.getMainLooper());
     }
 
     @Override

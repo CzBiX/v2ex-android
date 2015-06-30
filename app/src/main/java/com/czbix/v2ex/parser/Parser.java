@@ -1,11 +1,11 @@
 package com.czbix.v2ex.parser;
 
 import com.czbix.v2ex.BuildConfig;
+import com.google.common.base.Preconditions;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import org.xml.sax.SAXException;
 
 public abstract class Parser {
     public static Document toDoc(String html) {
@@ -17,19 +17,11 @@ public abstract class Parser {
         return document;
     }
 
-    public static String parseOnceCode(String html) throws SAXException {
+    public static String parseOnceCode(String html) {
         final Document doc = toDoc(html);
-        final Elements ele = doc.select("[name=once]");
-        if (ele.size() != 1) {
-            throw new ParseException("can't parse once code");
-        }
+        final Elements elements = doc.select("[name=once]");
+        Preconditions.checkState(elements.size() == 1, "once code size isn't one");
 
-        return ele.get(0).val();
-    }
-
-    public static class ParseException extends SAXException {
-        public ParseException(String message) {
-            super(message);
-        }
+        return elements.get(0).val();
     }
 }

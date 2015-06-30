@@ -5,17 +5,21 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
+import android.preference.SwitchPreference;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
+import com.czbix.v2ex.eventbus.gcm.DeviceRegisterEvent;
 import com.czbix.v2ex.google.GoogleHelper;
 import com.czbix.v2ex.util.UserUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.eventbus.Subscribe;
 
 public class SettingsActivity extends BaseActivity {
     private final PrefsFragment mFragment = new PrefsFragment();
@@ -57,7 +61,7 @@ public class SettingsActivity extends BaseActivity {
         private static final String PREF_KEY_LOGOUT = "logout";
 
         private static final int REQ_LOGIN = 0;
-        private Preference mNotificationsPref;
+        private SwitchPreference mNotificationsPref;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +82,7 @@ public class SettingsActivity extends BaseActivity {
             }
 
             final Preference infoPref = findPreference(PREF_KEY_USER_INFO);
-            mNotificationsPref = findPreference(PREF_KEY_RECEIVE_NOTIFICATIONS);
+            mNotificationsPref = (SwitchPreference) findPreference(PREF_KEY_RECEIVE_NOTIFICATIONS);
             final Preference logoutPref = findPreference(PREF_KEY_LOGOUT);
 
             infoPref.setTitle(UserState.getInstance().getUsername());
@@ -147,10 +151,19 @@ public class SettingsActivity extends BaseActivity {
         private boolean toggleReceiveNotifications(boolean turnOn) {
             Preconditions.checkState(!UserState.getInstance().isGuest(), "guest can't toggle notifications");
 
-            // TODO: notify user will upload info
+            mNotificationsPref.setEnabled(false);
+            AppCtx.getEventBus().register(this);
             getActivity().startService(GoogleHelper.getRegistrationIntentToStartService(getActivity(), turnOn));
-            // TODO: check register result
-            return true;
+            return false;
+        }
+
+        @Subscribe
+        public void onDeviceRegisterEvent(DeviceRegisterEvent e) {
+            AppCtx.getEventBus().unregister(this);
+            if (e.isSuccess) {
+                mNotificationsPref.setChecked(e.isRegister);
+            }
+            mNotificationsPref.setEnabled(true);
         }
 
         @Override

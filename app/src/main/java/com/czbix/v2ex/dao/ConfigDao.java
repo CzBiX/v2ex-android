@@ -27,6 +27,7 @@ public class ConfigDao extends DaoBase {
     // TODO: remove this key when upgrade
     @Deprecated
     public static final String KEY_NOTIFICATION_COUNT = "notification_count";
+    public static final String KEY_IS_USER_REGISTERED = "is_user_registered";
 
     static void createTable(SQLiteDatabase db) {
         Preconditions.checkState(db.inTransaction(), "create table must be in transaction");
@@ -71,6 +72,15 @@ public class ConfigDao extends DaoBase {
         }, false);
     }
 
+    public static boolean get(final String key, final boolean defVal) {
+        final String val = get(key, null);
+        if (Strings.isNullOrEmpty(val)) {
+            return defVal;
+        }
+
+        return Boolean.parseBoolean(val);
+    }
+
     public static int get(final String key, final int defVal) {
         final String val = get(key, null);
         if (Strings.isNullOrEmpty(val)) {
@@ -78,6 +88,10 @@ public class ConfigDao extends DaoBase {
         }
 
         return Integer.parseInt(val);
+    }
+
+    public static void put(final String key, final boolean value) {
+        put(key, Boolean.toString(value));
     }
 
     public static void put(final String key, final String value) {
