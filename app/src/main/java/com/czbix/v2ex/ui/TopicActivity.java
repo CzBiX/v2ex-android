@@ -30,6 +30,10 @@ public class TopicActivity extends BaseActivity {
 
     private Topic getTopicFromIntent() {
         final Intent intent = getIntent();
+        if (intent == null) {
+            return null;
+        }
+
         if (intent.hasExtra(KEY_TOPIC)) {
             return intent.getParcelableExtra(KEY_TOPIC);
         }
