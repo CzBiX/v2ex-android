@@ -102,6 +102,10 @@ public class SettingsActivity extends BaseActivity {
         public void onStart() {
             super.onStart();
 
+            if (UserState.getInstance().isGuest()) {
+                return;
+            }
+
             final String errMsg = GoogleHelper.checkPlayServices(getActivity());
             if (Strings.isNullOrEmpty(errMsg)) {
                 mNotificationsPref.setEnabled(true);
