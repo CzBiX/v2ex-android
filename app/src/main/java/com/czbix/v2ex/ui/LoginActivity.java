@@ -19,7 +19,7 @@ import android.widget.Toast;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
-import com.czbix.v2ex.model.Avatar;
+import com.czbix.v2ex.model.LoginResult;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.UserUtils;
 
@@ -172,9 +172,9 @@ public class LoginActivity extends BaseActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                final Avatar avatar = RequestHelper.login(mAccount, mPassword);
-                if (avatar != null) {
-                    UserUtils.login(mAccount, avatar);
+                final LoginResult result = RequestHelper.login(mAccount, mPassword);
+                if (result != null) {
+                    UserUtils.login(result.mUsername, result.mAvatar);
                     return true;
                 }
             } catch (ConnectionException | RemoteException e) {

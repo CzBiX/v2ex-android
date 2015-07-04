@@ -10,11 +10,11 @@ import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.common.exception.UnauthorizedException;
-import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.FavAble;
 import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.IgnoreAble;
+import com.czbix.v2ex.model.LoginResult;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Notification;
 import com.czbix.v2ex.model.Page;
@@ -296,11 +296,11 @@ public class RequestHelper {
         return MyselfParser.hasAward(html);
     }
 
-    public static Avatar login(String account, String password) throws ConnectionException, RemoteException {
+    public static LoginResult login(String account, String password) throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "login user: " + account);
 
         final String onceCode = getOnceCode();
-        final String nextUrl = "/settings";
+        final String nextUrl = "/mission";
         final RequestBody requestBody = new FormEncodingBuilder().add("once", onceCode)
                 .add("u", account)
                 .add("p", password)
@@ -331,7 +331,7 @@ public class RequestHelper {
         try {
             final String html = response.body().string();
             final Document document = Parser.toDoc(html);
-            return MyselfParser.parseAvatarOnly(document);
+            return MyselfParser.parseLoginResult(document);
         } catch (IOException e) {
             throw new ConnectionException(e);
         }

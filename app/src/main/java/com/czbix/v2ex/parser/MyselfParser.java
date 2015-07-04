@@ -1,6 +1,7 @@
 package com.czbix.v2ex.parser;
 
 import com.czbix.v2ex.model.Avatar;
+import com.czbix.v2ex.model.LoginResult;
 import com.google.common.base.Preconditions;
 
 import org.jsoup.nodes.Document;
@@ -13,13 +14,16 @@ import java.util.regex.Pattern;
 public class MyselfParser extends Parser {
     private static final Pattern PATTERN_UNREAD_NUM = Pattern.compile("\\d+");
 
-    public static Avatar parseAvatarOnly(Document doc) {
+    public static LoginResult parseLoginResult(Document doc) {
         final Elements elements = doc.select("#Rightbar > div:nth-child(2)");
-        Preconditions.checkState(elements.size() == 1);
+        Preconditions.checkState(elements.size() == 1, "sidebar size not match");
 
         Element ele = elements.get(0);
         final String url = ele.select(".avatar").get(0).attr("src");
-        return new Avatar.Builder().setUrl(url).createAvatar();
+        final Avatar avatar = new Avatar.Builder().setUrl(url).createAvatar();
+
+        final String username = ele.select(".bigger a").get(0).text();
+        return new LoginResult(username, avatar);
     }
 
     /**
