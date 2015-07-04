@@ -22,8 +22,8 @@ android {
         applicationId "com.czbix.v2ex"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 21
-        versionName "1.13"
+        versionCode 22
+        versionName "1.13.1"
     }
     buildTypes {
         release {
