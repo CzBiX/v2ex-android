@@ -77,6 +77,7 @@ public class SettingsActivity extends BaseActivity {
         private void initUser() {
             final PreferenceCategory user = (PreferenceCategory) findPreference(PREF_KEY_CATEGORY_USER);
             if (UserState.getInstance().isGuest()) {
+                mNotificationsPref = null;
                 getPreferenceScreen().removePreference(user);
                 return;
             }
@@ -102,7 +103,8 @@ public class SettingsActivity extends BaseActivity {
         public void onStart() {
             super.onStart();
 
-            if (UserState.getInstance().isGuest()) {
+            if (mNotificationsPref == null) {
+                // user not login yet
                 return;
             }
 
