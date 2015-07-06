@@ -7,10 +7,7 @@ import com.google.android.gms.iid.InstanceIDListenerService;
 public class IidListenerService extends InstanceIDListenerService {
     @Override
     public void onTokenRefresh() {
-        if (!PrefStore.getInstance().shouldReceiveNotifications()) {
-            return;
-        }
-
-        startService(GoogleHelper.getRegistrationIntentToStartService(this, true));
+        startService(GoogleHelper.getRegistrationIntentToStartService(this,
+                PrefStore.getInstance().shouldReceiveNotifications()));
     }
 }

@@ -38,10 +38,11 @@ public class RegistrationIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Preconditions.checkState(!UserState.getInstance().isGuest(), "guest user can't do action with gcm");
+        final boolean isRegister = intent == null || !intent.hasExtra(KEY_UNREGISTER);
+
+        Preconditions.checkState(!UserState.getInstance().isGuest() || !isRegister, "guest user only can unregister");
 
         mPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-        final boolean isRegister = intent == null || !intent.hasExtra(KEY_UNREGISTER);
         final boolean isSuccess = isRegister ? register() : unregister();
 
         if (!isSuccess) {
