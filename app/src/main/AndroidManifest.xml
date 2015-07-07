@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.czbix.v2ex" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.czbix.v2ex" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -118,6 +118,10 @@
             android:name=".ui.SearchActivity"
             android:windowSoftInputMode="stateAlwaysVisible" >
         </activity>
+        <activity
+            android:parentActivityName=".ui.MainActivity"
+            android:name=".ui.TopicEditActivity" >
+        </activity>
 
         <!-- start Google Analytics -->
         <meta-data
@@ -183,4 +187,5 @@
             android:exported="false" >
         </service>
     </application>
+
 </manifest>

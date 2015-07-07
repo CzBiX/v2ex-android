@@ -65,4 +65,12 @@
     <string name="toast_can_not_found_comments_of_the_author">Can\'t found comments of %s!</string>
     <string name="toast_register_device_failed">Register device failed!</string>
     <string name="toast_unregister_device_failed">Unregister device failed!</string>
+
+    <string name="title_new_topic">New topic</string>
+    <string name="tv_selected_node">Selected Node: %s</string>
+    <string name="hint_topic_subject">Subject</string>
+    <string name="hint_topic_body">Leave it empty if subject is enough for express</string>
+    <string name="action_post">Post</string>
+    <string name="toast_post_failed">Post failed</string>
+    <string name="action_edit">Edit</string>
 </resources>

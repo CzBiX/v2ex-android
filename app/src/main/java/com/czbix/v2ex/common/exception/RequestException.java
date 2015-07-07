@@ -6,6 +6,7 @@ import com.squareup.okhttp.Response;
 
 public class RequestException extends RuntimeException {
     private final Response mResponse;
+    private String errorHtml;
 
     public RequestException(Response response) {
         this(null, response);
@@ -23,6 +24,17 @@ public class RequestException extends RuntimeException {
         super(message, tr);
 
         mResponse = response;
+    }
+
+    /**
+     * error info in html
+     */
+    public String getErrorHtml() {
+        return errorHtml;
+    }
+
+    public void setErrorHtml(String errorHtml) {
+        this.errorHtml = errorHtml;
     }
 
     public Response getResponse() {

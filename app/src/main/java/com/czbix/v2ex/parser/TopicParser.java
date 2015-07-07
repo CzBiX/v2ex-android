@@ -224,4 +224,12 @@ public class TopicParser extends Parser {
 
         return list;
     }
+
+    public static String parseProblemInfo(String html) {
+        final Document doc = Parser.toDoc(html);
+        final Elements elements = doc.select(".problem ul:first-child");
+        Preconditions.checkState(elements.size() == 1, "problem size isn't one");
+
+        return elements.get(0).html();
+    }
 }

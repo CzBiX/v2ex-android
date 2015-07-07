@@ -11,6 +11,7 @@ import com.google.common.base.Strings;
 
 public class TopicActivity extends BaseActivity {
     public static final String KEY_TOPIC = "topic";
+    public static final String KEY_TOPIC_ID = "topic_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,11 @@ public class TopicActivity extends BaseActivity {
         if (intent.hasExtra(KEY_TOPIC)) {
             return intent.getParcelableExtra(KEY_TOPIC);
         }
+        if (intent.hasExtra(KEY_TOPIC_ID)) {
+            final int id = intent.getIntExtra(KEY_TOPIC_ID, 0);
+            return new Topic.Builder().setId(id).createTopic();
+        }
+
         if(intent.getAction().equals(Intent.ACTION_VIEW)) {
             final String url = intent.getDataString();
             if (!Strings.isNullOrEmpty(url)) {

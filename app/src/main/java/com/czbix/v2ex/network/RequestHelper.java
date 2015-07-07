@@ -62,6 +62,7 @@ public class RequestHelper {
     private static final String URL_ONCE_CODE = URL_SIGN_IN;
     private static final String URL_NOTIFICATIONS = BASE_URL + "/notifications";
     private static final String URL_UNREAD_NOTIFICATIONS = BASE_URL + "/mission";
+    private static final String URL_NEW_TOPIC = BASE_URL + "/new/%s";
 
     private static final int SERVER_ERROR_CODE = 500;
 
@@ -280,6 +281,34 @@ public class RequestHelper {
         if (response.code() != 302) {
             throw new RequestException(response);
         }
+    }
+
+    public static int newTopic(String nodeName, String title, String content) throws ConnectionException, RemoteException {
+        LogUtils.v(TAG, "new topic in node: %s, title: %s", nodeName, title);
+
+        final String once = getOnceCode();
+        final RequestBody requestBody = new FormEncodingBuilder().add("once", once)
+                .add("title", title)
+                .add("content", content)
+                .build();
+
+        final Request request = new Request.Builder().url(String.format(URL_NEW_TOPIC, nodeName))
+                .post(requestBody).build();
+        final Response response = sendRequest(request);
+
+        // v2ex will redirect if reply success
+        if (response.code() == 302) {
+            final String location = response.header(HttpHeaders.LOCATION);
+            return Topic.getIdFromUrl(location);
+        }
+
+        final RequestException exception = new RequestException("post new topic failed", response);
+        try {
+            exception.setErrorHtml(TopicParser.parseProblemInfo(response.body().string()));
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        }
+        throw exception;
     }
 
     public static boolean hasDailyAward() throws ConnectionException, RemoteException {
