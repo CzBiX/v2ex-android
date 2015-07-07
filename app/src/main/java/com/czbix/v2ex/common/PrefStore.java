@@ -17,7 +17,7 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
     private static final PrefStore instance;
     private static final String PREF_LOAD_IMAGE_ON_MOBILE_NETWORK = "load_image_on_mobile_network";
     public static final String PREF_TABS_TO_SHOW = "tabs_to_show";
-    private static final String PREF_RECEIVE_NOTIFICATIONS = "receive_notifications";
+    public static final String PREF_RECEIVE_NOTIFICATIONS = "receive_notifications";
 
     private final SharedPreferences mPreferences;
 
