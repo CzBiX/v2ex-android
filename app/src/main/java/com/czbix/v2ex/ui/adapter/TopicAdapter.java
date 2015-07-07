@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.fragment.NodeListFragment.OnNodeActionListener;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
@@ -111,6 +112,18 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             });
         }
 
+        public void setMemberListener(final OnMemberActionListener listener) {
+            View.OnClickListener tmp = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onMemberClick(mTopic.getMember());
+                }
+            };
+
+            mAvatar.setOnClickListener(tmp);
+            mUsername.setOnClickListener(tmp);
+        }
+
         public void fillData(Topic topic) {
             if (topic.equals(mTopic)) {
                 return;
@@ -185,5 +198,9 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
          * @return should refresh data
          */
         boolean onTopicOpen(View view, Topic topic);
+    }
+
+    public interface OnMemberActionListener {
+        void onMemberClick(Member member);
     }
 }

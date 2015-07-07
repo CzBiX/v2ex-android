@@ -82,7 +82,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         LoaderManager.LoaderCallbacks<LoaderResult<TopicWithComments>>,
-        ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener, HtmlMovementMethod.OnHtmlActionListener, NodeListFragment.OnNodeActionListener, AbsListView.OnScrollListener {
+        ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener, HtmlMovementMethod.OnHtmlActionListener, NodeListFragment.OnNodeActionListener, AbsListView.OnScrollListener, TopicAdapter.OnMemberActionListener {
     private static final String TAG = TopicFragment.class.getSimpleName();
     private static final String ARG_TOPIC = "topic";
     private static final int[] MENU_REQUIRED_LOGGED_IN = {R.id.action_ignore, R.id.action_reply,
@@ -173,6 +173,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mTopicHolder = new TopicAdapter.ViewHolder(mTopicView.findViewById(R.id.topic));
         mTopicHolder.setContentListener(this);
         mTopicHolder.setNodeListener(this);
+        mTopicHolder.setMemberListener(this);
         mTopicHolder.fillData(mTopic);
 
         mCommentAdapter = new CommentAdapter(getActivity(), this);
