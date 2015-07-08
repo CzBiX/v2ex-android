@@ -29,6 +29,7 @@ import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.SearchActivity;
+import com.czbix.v2ex.ui.TopicEditActivity;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
@@ -233,6 +234,13 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
                 return true;
             case R.id.action_web_search:
                 startActivity(new Intent(getActivity(), SearchActivity.class));
+                return true;
+            case R.id.action_new_topic:
+                final Intent intent = new Intent(getActivity(), TopicEditActivity.class);
+                if (mPage instanceof Node) {
+                    intent.putExtra(TopicEditActivity.KEY_NODE, mPage);
+                }
+                startActivity(intent);
                 return true;
         }
 

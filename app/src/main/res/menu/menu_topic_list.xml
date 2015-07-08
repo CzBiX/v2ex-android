@@ -8,4 +8,7 @@
     <item android:id="@+id/action_web_search"
           android:title="@string/action_search"
           app:showAsAction="never"/>
+    <item android:id="@+id/action_new_topic"
+          android:title="@string/action_new_topic"
+        />
 </menu>

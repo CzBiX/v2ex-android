@@ -13,7 +13,7 @@
     <string name="title_fragment_nodes">Nodes</string>
     <string name="action_reply">Reply</string>
     <string name="desc_add_reply">Add a reply</string>
-    <string name="toast_reply_saved_as_draft">Reply saved as draft.</string>
+    <string name="toast_reply_saved_as_draft">Reply saved as draft</string>
     <string name="toast_sending">Sending…</string>
     <string name="action_cancel">Cancel</string>
     <string name="toast_cancel_failed">Cancel failed!</string>
@@ -73,4 +73,11 @@
     <string name="action_post">Post</string>
     <string name="toast_post_failed">Post failed</string>
     <string name="action_edit">Edit</string>
+    
+    <string name="title_load_topic_from_draft">Load draft</string>
+    <string name="dest_load_topic_from_draft">Are you want to load draft?</string>
+    <string name="toast_topic_saved_as_draft">Topic saved as draft</string>
+    <string name="action_new_topic">New topic</string>
+    <string name="action_load">Load</string>
+    <string name="action_discard">Discard</string>
 </resources>

@@ -34,7 +34,7 @@
     <string name="toast_sending">发送中…</string>
     <string name="toast_cancel_failed">取消失败！</string>
     <string name="action_cancel">取消</string>
-    <string name="toast_reply_saved_as_draft">评论已保存为草稿。</string>
+    <string name="toast_reply_saved_as_draft">评论已保存为草稿</string>
     <string name="drawer_notifications">通知</string>
     <string name="action_thank">感谢</string>
     <string name="action_ignore">忽略</string>
@@ -75,4 +75,17 @@
     <string name="toast_register_device_failed">注册设备失败！</string>
     <string name="toast_unregister_device_failed">注销设备失败！</string>
     <string name="toast_check_google_play_services_failed">Google Play services 不可用。\n 错误代码：%s</string>
+    <string name="action_discard">丢弃</string>
+    <string name="action_new_topic">新主题</string>
+    <string name="action_post">发表</string>
+    <string name="dest_load_topic_from_draft">你想载入草稿吗？</string>
+    <string name="hint_topic_body">如果标题已经能够表明意思，则此处可留空</string>
+    <string name="hint_topic_subject">标题</string>
+    <string name="toast_post_failed">发表失败</string>
+    <string name="toast_topic_saved_as_draft">主题已保存为草稿</string>
+    <string name="tv_selected_node">已选择节点：%s</string>
+    <string name="title_load_topic_from_draft">载入草稿</string>
+    <string name="title_new_topic">新主题</string>
+    <string name="action_edit">编辑</string>
+    <string name="action_load">载入</string>
 </resources>

@@ -9,6 +9,7 @@ import com.czbix.v2ex.model.db.Draft;
 import com.google.common.base.Preconditions;
 
 public class DraftDao extends DaoBase {
+    public static final int ID_TOPIC_DRAFT = 0;
     private static final String TABLE_NAME = "draft";
 
     private static final String KEY_ID = "id";
