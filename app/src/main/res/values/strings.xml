@@ -80,4 +80,5 @@
     <string name="action_new_topic">New topic</string>
     <string name="action_load">Load</string>
     <string name="action_discard">Discard</string>
+    <string name="title_select_node">Select node</string>
 </resources>

@@ -88,4 +88,5 @@
     <string name="title_new_topic">新主题</string>
     <string name="action_edit">编辑</string>
     <string name="action_load">载入</string>
+    <string name="title_select_node">选择节点</string>
 </resources>

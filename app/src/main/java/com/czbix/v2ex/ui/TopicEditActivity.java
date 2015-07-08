@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -16,11 +17,12 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
@@ -33,10 +35,12 @@ import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.db.Draft;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.ui.util.Html;
+import com.czbix.v2ex.ui.widget.SearchListView;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -60,6 +64,13 @@ public class TopicEditActivity extends AppCompatActivity {
         mTitle = (EditText) findViewById(R.id.title);
         mContent = (EditText) findViewById(R.id.content);
 
+        mSelectedNode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSelectNodeDialog();
+            }
+        });
+
         final ActionBar actionBar = getSupportActionBar();
         Preconditions.checkNotNull(actionBar);
         actionBar.setDefaultDisplayHomeAsUpEnabled(true);
@@ -68,12 +79,8 @@ public class TopicEditActivity extends AppCompatActivity {
     @Nullable
     private Node getNodeFromIntent() {
         final Intent intent = getIntent();
-        Node node = intent.getParcelableExtra(KEY_NODE);
-        if (node == null && BuildConfig.DEBUG) {
-            node = NodeDao.get("sandbox");
-        }
 
-        return node;
+        return intent.getParcelableExtra(KEY_NODE);
     }
 
     @Override
@@ -204,14 +211,59 @@ public class TopicEditActivity extends AppCompatActivity {
 
     private void loadNodeFromIntent() {
         mNode = getNodeFromIntent();
-        // TODO: get node from list dialog
-        updateNodeText();
+        if (mNode == null) {
+            showSelectNodeDialog();
+        } else {
+            updateNodeText();
+        }
+    }
+
+    private void showSelectNodeDialog() {
+        final SearchListView listView = new SearchListView(this);
+        new AsyncTask<Void, Void, List<Node>>() {
+            @Override
+            protected List<Node> doInBackground(Void... params) {
+                return NodeDao.getAll();
+            }
+
+            @Override
+            protected void onPostExecute(List<Node> nodes) {
+                listView.setAdapter(new ArrayAdapter<>(TopicEditActivity.this,
+                        android.R.layout.simple_list_item_1, nodes));
+            }
+        }.execute();
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog dialog = builder.setTitle(R.string.title_select_node)
+                .setView(listView)
+                .setCancelable(false)
+                .setNegativeButton(R.string.action_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mNode == null) {
+                            finish();
+                        }
+                        // reselect node mode
+                    }
+                }).create();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                dialog.dismiss();
+
+                mNode = (Node) parent.getItemAtPosition(position);
+                updateNodeText();
+            }
+        });
+        dialog.show();
     }
 
     private void showDraftDialog(final Draft draft) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.title_load_topic_from_draft)
                 .setMessage(R.string.dest_load_topic_from_draft)
+                .setCancelable(false)
                 .setPositiveButton(R.string.action_load, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
