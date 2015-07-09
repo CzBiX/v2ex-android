@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -17,7 +16,7 @@ import com.czbix.v2ex.R;
 public class SearchListView extends LinearLayout implements SearchView.OnQueryTextListener {
     private SearchView mSearchView;
     private ListView mListView;
-    private ArrayAdapter<?> mAdapter;
+    private ExArrayAdapter<?> mAdapter;
     private View mLoading;
 
     public SearchListView(Context context) {
@@ -50,7 +49,7 @@ public class SearchListView extends LinearLayout implements SearchView.OnQueryTe
         mListView.setVisibility(GONE);
     }
 
-    public void setAdapter(ArrayAdapter<?> adapter) {
+    public void setAdapter(ExArrayAdapter<?> adapter) {
         if (mAdapter == null) {
             mLoading.setVisibility(GONE);
             mListView.setVisibility(VISIBLE);

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.network.RequestHelper;
+import com.czbix.v2ex.ui.widget.ExArrayAdapter;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -15,7 +16,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Node extends Page implements Comparable<Node> {
+public class Node extends Page implements Comparable<Node>,ExArrayAdapter.Filterable {
     private static final Pattern PATTERN = Pattern.compile("/go/(.+?)(?:\\W|$)");
     private static final Collator COLLATOR = Collator.getInstance(Locale.CHINA);
 
@@ -103,6 +104,20 @@ public class Node extends Page implements Comparable<Node> {
     @Override
     public String getUrl() {
         return buildUrlByName(getName());
+    }
+
+    @Override
+    public boolean filter(String query) {
+        if (Strings.isNullOrEmpty(query)) {
+            return true;
+        }
+        if (mName.contains(query) || mTitle.contains(query)) {
+            return true;
+        }
+        if (mTitleAlternative != null && mTitleAlternative.contains(query)) {
+            return true;
+        }
+        return false;
     }
 
     @Override

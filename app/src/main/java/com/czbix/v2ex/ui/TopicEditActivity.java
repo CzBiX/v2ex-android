@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +34,7 @@ import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.db.Draft;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.ui.util.Html;
+import com.czbix.v2ex.ui.widget.ExArrayAdapter;
 import com.czbix.v2ex.ui.widget.SearchListView;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.google.common.base.Preconditions;
@@ -228,7 +228,7 @@ public class TopicEditActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(List<Node> nodes) {
-                listView.setAdapter(new ArrayAdapter<>(TopicEditActivity.this,
+                listView.setAdapter(new ExArrayAdapter<>(TopicEditActivity.this,
                         android.R.layout.simple_list_item_1, nodes));
             }
         }.execute();
