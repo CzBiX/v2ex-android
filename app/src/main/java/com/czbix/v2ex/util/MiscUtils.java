@@ -58,9 +58,11 @@ public class MiscUtils {
 
         final String host = uri.getHost();
         final String path = uri.getPath();
-        if ((host.equals(HOST_MASTER) || host.equals(HOST_WWW))
-                && (path.startsWith(PREFIX_TOPIC) || path.startsWith(PREFIX_NODE))) {
-            intent.setPackage(BuildConfig.APPLICATION_ID);
+        if (host != null && path != null) {
+            if ((host.equals(HOST_MASTER) || host.equals(HOST_WWW))
+                    && (path.startsWith(PREFIX_TOPIC) || path.startsWith(PREFIX_NODE))) {
+                intent.setPackage(BuildConfig.APPLICATION_ID);
+            }
         }
 
         return intent;
