@@ -20,6 +20,6 @@ public class Draft {
     }
 
     public static boolean isExpired(long draftTime) {
-        return TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - draftTime) > 1;
+        return TimeUnit.MILLISECONDS.toDays(System.currentTimeMillis() - draftTime) > 1;
     }
 }

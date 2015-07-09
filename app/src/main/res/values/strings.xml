@@ -67,7 +67,7 @@
     <string name="toast_unregister_device_failed">Unregister device failed!</string>
 
     <string name="title_new_topic">New topic</string>
-    <string name="tv_selected_node">Selected Node: %s</string>
+    <string name="tv_selected_node"><![CDATA[Selected Node: <u>%s</u>]]></string>
     <string name="hint_topic_subject">Subject</string>
     <string name="hint_topic_body">Leave it empty if subject is enough for express</string>
     <string name="action_post">Post</string>

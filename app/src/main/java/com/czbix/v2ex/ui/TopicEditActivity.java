@@ -37,6 +37,7 @@ import com.czbix.v2ex.ui.util.Html;
 import com.czbix.v2ex.ui.widget.ExArrayAdapter;
 import com.czbix.v2ex.ui.widget.SearchListView;
 import com.czbix.v2ex.util.ExecutorUtils;
+import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
@@ -117,6 +118,8 @@ public class TopicEditActivity extends AppCompatActivity {
             mTitle.setError(getString(R.string.error_field_required));
             return;
         }
+
+        ViewUtils.hideInputMethod(mContent);
 
         final String title = mTitle.getText().toString();
         final String content = mContent.getText().toString();
@@ -306,7 +309,7 @@ public class TopicEditActivity extends AppCompatActivity {
     }
 
     private void updateNodeText() {
-        mSelectedNode.setText(getString(R.string.tv_selected_node, mNode.getTitle()));
+        mSelectedNode.setText(Html.fromHtml(getString(R.string.tv_selected_node, mNode.getTitle())));
     }
 
     private static class TopicDraft {

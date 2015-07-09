@@ -120,6 +120,7 @@
         </activity>
         <activity
             android:parentActivityName=".ui.MainActivity"
+            android:windowSoftInputMode="adjustResize"
             android:name=".ui.TopicEditActivity" >
         </activity>
 
