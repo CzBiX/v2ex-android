@@ -281,7 +281,7 @@ public class TopicEditActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.action_discard, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DraftDao.delete(DraftDao.ID_TOPIC_DRAFT);
+                        DraftDao.delete(draft.mId);
 
                         loadNodeFromIntent();
                     }
