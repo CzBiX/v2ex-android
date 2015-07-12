@@ -29,9 +29,9 @@ import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.dao.NodeDao;
-import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.db.Draft;
+import com.czbix.v2ex.model.db.TopicDraft;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.ui.util.Html;
 import com.czbix.v2ex.ui.widget.ExArrayAdapter;
@@ -312,23 +312,4 @@ public class TopicEditActivity extends AppCompatActivity {
         mSelectedNode.setText(Html.fromHtml(getString(R.string.tv_selected_node, mNode.getTitle())));
     }
 
-    private static class TopicDraft {
-        public final String mNodeName;
-        public final String mTitle;
-        public final String mContent;
-
-        private TopicDraft(String nodeName, String title, String content) {
-            mNodeName = nodeName;
-            mTitle = title;
-            mContent = content;
-        }
-
-        public String toJson() {
-            return GsonFactory.getInstance().toJson(this);
-        }
-
-        public static TopicDraft fromJson(String str) {
-            return GsonFactory.getInstance().fromJson(str, TopicDraft.class);
-        }
-    }
 }
