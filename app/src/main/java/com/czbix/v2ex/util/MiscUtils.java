@@ -50,6 +50,12 @@ public class MiscUtils {
 
     public static Intent getUrlIntent(String url) {
         Uri uri = Uri.parse(url);
+        final boolean isEmailAddress = url.startsWith("mailto:");
+
+        if (isEmailAddress) {
+            return new Intent(Intent.ACTION_SENDTO, uri);
+        }
+
         if (uri.isRelative()) {
             uri = Uri.parse(RequestHelper.BASE_URL + url);
         }
