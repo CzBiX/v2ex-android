@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Objects;
 
-public class Comment implements Parcelable, ThankAble, IgnoreAble {
+public class Comment implements Parcelable, Thankable, Ignorable {
     private final int mId;
     private final String mContent;
     private final Member mMember;

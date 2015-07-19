@@ -10,7 +10,7 @@ import com.google.common.base.Preconditions;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Topic extends Page implements ThankAble, IgnoreAble, FavAble {
+public class Topic extends Page implements Thankable, Ignorable, Favable {
     private static final Pattern PATTERN = Pattern.compile("/t/(\\d+?)(?:\\W|$)");
 
     private final int mId;

@@ -1,5 +1,5 @@
 package com.czbix.v2ex.model;
 
-public interface IgnoreAble {
+public interface Ignorable {
     String getIgnoreUrl();
 }

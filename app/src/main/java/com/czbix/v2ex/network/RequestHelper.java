@@ -11,15 +11,15 @@ import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.common.exception.UnauthorizedException;
 import com.czbix.v2ex.model.Comment;
-import com.czbix.v2ex.model.FavAble;
+import com.czbix.v2ex.model.Favable;
 import com.czbix.v2ex.model.GsonFactory;
-import com.czbix.v2ex.model.IgnoreAble;
+import com.czbix.v2ex.model.Ignorable;
 import com.czbix.v2ex.model.LoginResult;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Notification;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Tab;
-import com.czbix.v2ex.model.ThankAble;
+import com.czbix.v2ex.model.Thankable;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.network.interceptor.UserAgentInterceptor;
@@ -239,7 +239,7 @@ public class RequestHelper {
         return response.code() == 302;
     }
 
-    public static void ignore(IgnoreAble obj, String onceToken) throws ConnectionException, RemoteException {
+    public static void ignore(Ignorable obj, String onceToken) throws ConnectionException, RemoteException {
         final Request.Builder builder = new Request.Builder().url(obj.getIgnoreUrl() + "?once=" + onceToken);
         final boolean isComment = obj instanceof Comment;
         if (isComment) {
@@ -250,7 +250,7 @@ public class RequestHelper {
         sendRequest(request, isComment);
     }
 
-    public static void favorite(FavAble obj, boolean isFavorite, String csrfToken) throws ConnectionException, RemoteException {
+    public static void favorite(Favable obj, boolean isFavorite, String csrfToken) throws ConnectionException, RemoteException {
         final String url = isFavorite ? obj.getFavUrl() : obj.getUnFavUrl();
         final Request request = new Request.Builder().url(url + "?t=" + csrfToken)
                 .build();
@@ -262,7 +262,7 @@ public class RequestHelper {
         }
     }
 
-    public static void thank(ThankAble obj, String csrfToken) throws ConnectionException, RemoteException {
+    public static void thank(Thankable obj, String csrfToken) throws ConnectionException, RemoteException {
         final Request request = new Request.Builder().url(obj.getThankUrl() + "?t=" + csrfToken)
                 .post(null).build();
 

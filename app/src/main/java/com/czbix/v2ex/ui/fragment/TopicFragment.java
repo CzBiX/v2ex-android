@@ -44,11 +44,11 @@ import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.eventbus.TopicEvent;
 import com.czbix.v2ex.helper.MultiList;
 import com.czbix.v2ex.model.Comment;
-import com.czbix.v2ex.model.IgnoreAble;
+import com.czbix.v2ex.model.Ignorable;
 import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Postscript;
-import com.czbix.v2ex.model.ThankAble;
+import com.czbix.v2ex.model.Thankable;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.model.db.Draft;
@@ -479,7 +479,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         onIgnore(comment, false);
     }
 
-    private void onIgnore(final IgnoreAble obj, final boolean isTopic) {
+    private void onIgnore(final Ignorable obj, final boolean isTopic) {
         AppCtx.getEventBus().register(this);
         final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
             @Override
@@ -526,7 +526,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         onThank(comment);
     }
 
-    private void onThank(final ThankAble obj) {
+    private void onThank(final Thankable obj) {
         AppCtx.getEventBus().register(this);
         final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
             @Override
