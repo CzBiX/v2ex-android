@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.widget.TextView;
 
@@ -34,7 +35,9 @@ public class AsyncImageGetter implements Html.ImageGetter {
 
     @Override
     public Drawable getDrawable(String source) {
-        if (source.startsWith("/")) {
+        if (source.startsWith("//")) {
+            source = "https:" + source;
+        } else if (source.startsWith("/")) {
             source = RequestHelper.BASE_URL + source;
         }
         LogUtils.v(TAG, "load image for text view: %s", source);
@@ -90,13 +93,13 @@ public class AsyncImageGetter implements Html.ImageGetter {
             mIsDisabled = !shouldLoadImage;
         }
 
-        public void setDrawable(Drawable drawable) {
-            if (drawable == null) {
-                mIsFailed = true;
-                return;
-            }
+        public void setDrawable(@NonNull Drawable drawable) {
             mDrawable = drawable;
             setBounds(mDrawable.getBounds());
+        }
+
+        public void setFailed() {
+            mIsFailed = true;
         }
 
         @Override
@@ -145,6 +148,11 @@ public class AsyncImageGetter implements Html.ImageGetter {
             bitmapDrawable.setBounds(0, 0, width, height);
             mDrawable.setDrawable(bitmapDrawable);
             mTextView.setText(mTextView.getText());
+        }
+
+        @Override
+        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+            mDrawable.setFailed();
         }
     }
 }
