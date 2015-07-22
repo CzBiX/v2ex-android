@@ -5,6 +5,7 @@ import android.app.Application;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.czbix.v2ex.common.NotificationStatus;
+import com.czbix.v2ex.common.PrefStore;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
@@ -15,6 +16,7 @@ import com.czbix.v2ex.dao.V2exDb;
 import com.czbix.v2ex.eventbus.BaseEvent;
 import com.czbix.v2ex.eventbus.BaseEvent.GetNodesFinishEvent;
 import com.czbix.v2ex.eventbus.executor.HandlerExecutor;
+import com.czbix.v2ex.google.GoogleHelper;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.network.Etag;
 import com.czbix.v2ex.network.RequestHelper;
@@ -105,6 +107,7 @@ public class AppCtx extends Application {
             DraftDao.cleanExpired();
             loadAllNodes();
             UserUtils.checkDailyAward();
+            updateGCMToken();
         }
 
         private void loadAllNodes() {
@@ -128,6 +131,11 @@ public class AppCtx extends Application {
             }
             LogUtils.d(TAG, "load nodes finish!");
             mEventBus.post(new GetNodesFinishEvent());
+        }
+
+        private void updateGCMToken() {
+            startService(GoogleHelper.getRegistrationIntentToStartService(AppCtx.this,
+                    PrefStore.getInstance().shouldReceiveNotifications()));
         }
     }
 }

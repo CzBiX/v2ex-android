@@ -3,6 +3,7 @@ package com.czbix.v2ex.google.gcm;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.widget.Toast;
 
 import com.czbix.v2ex.AppCtx;
@@ -11,7 +12,6 @@ import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.dao.ConfigDao;
-import com.czbix.v2ex.eventbus.executor.HandlerExecutor;
 import com.czbix.v2ex.eventbus.gcm.DeviceRegisterEvent;
 import com.czbix.v2ex.google.GoogleHelper;
 import com.czbix.v2ex.network.CzRequestHelper;
@@ -19,7 +19,6 @@ import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 public class RegistrationIntentService extends IntentService {
@@ -38,15 +37,19 @@ public class RegistrationIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        final boolean isRegister = intent == null || !intent.hasExtra(KEY_UNREGISTER);
-
-        Preconditions.checkState(!UserState.getInstance().isGuest() || !isRegister, "guest user only can unregister");
+        final boolean isRegister;
+        if (UserState.getInstance().isGuest()) {
+            // unregister if user logout
+            isRegister = false;
+        } else {
+            isRegister = intent == null || !intent.hasExtra(KEY_UNREGISTER);
+        }
 
         mPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         final boolean isSuccess = isRegister ? register() : unregister();
 
         if (!isSuccess) {
-            new HandlerExecutor().execute(new Runnable() {
+            new Handler(getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(AppCtx.getInstance(), isRegister

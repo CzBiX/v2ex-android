@@ -17,11 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.common.PrefStore;
+import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
+import com.czbix.v2ex.google.GoogleHelper;
 import com.czbix.v2ex.model.LoginResult;
 import com.czbix.v2ex.network.RequestHelper;
-import com.czbix.v2ex.util.UserUtils;
 
 /**
  * A login screen that offers login via account/password.
@@ -174,7 +176,10 @@ public class LoginActivity extends BaseActivity {
             try {
                 final LoginResult result = RequestHelper.login(mAccount, mPassword);
                 if (result != null) {
-                    UserUtils.login(result.mUsername, result.mAvatar);
+                    UserState.getInstance().login(result.mUsername, result.mAvatar);
+                    if (PrefStore.getInstance().shouldReceiveNotifications()) {
+                        startService(GoogleHelper.getRegistrationIntentToStartService(LoginActivity.this, true));
+                    }
                     return true;
                 }
             } catch (ConnectionException | RemoteException e) {

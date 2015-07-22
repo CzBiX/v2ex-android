@@ -8,6 +8,8 @@ import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.eventbus.BaseEvent.DailyAwardEvent;
 import com.czbix.v2ex.eventbus.BaseEvent.NewUnreadEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
+import com.czbix.v2ex.model.Avatar;
+import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.parser.MyselfParser;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.UserUtils;
@@ -37,7 +39,7 @@ public class UserState {
 
     public void handleInfo(MyselfParser.MySelfInfo info, boolean isTab) {
         if (info == null) {
-            UserUtils.logout();
+            logout();
             return;
         }
 
@@ -51,20 +53,29 @@ public class UserState {
         }
     }
 
-    @Subscribe
-    public void onLoginEvent(LoginEvent e) {
-        mUsername = e.mUsername;
+    public void login(String username, Avatar avatar) {
+        ConfigDao.put(ConfigDao.KEY_AVATAR, avatar.getBaseUrl());
+        ConfigDao.put(ConfigDao.KEY_USERNAME, username);
 
-        if (isGuest()) {
-            Toast.makeText(AppCtx.getInstance(), R.string.toast_has_sign_out, Toast.LENGTH_LONG).show();
-            return;
-        }
+        mUsername = username;
+
+        AppCtx.getEventBus().post(new LoginEvent(username));
         ExecutorUtils.execute(new Runnable() {
             @Override
             public void run() {
                 UserUtils.checkDailyAward();
             }
         });
+    }
+
+    public void logout() {
+        RequestHelper.clearCookies();
+
+        ConfigDao.remove(ConfigDao.KEY_USERNAME);
+        ConfigDao.remove(ConfigDao.KEY_AVATAR);
+
+        Toast.makeText(AppCtx.getInstance(), R.string.toast_has_sign_out, Toast.LENGTH_LONG).show();
+        AppCtx.getEventBus().post(new LoginEvent());
     }
 
     @Subscribe

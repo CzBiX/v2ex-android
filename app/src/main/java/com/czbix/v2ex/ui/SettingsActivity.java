@@ -16,7 +16,6 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.eventbus.gcm.DeviceRegisterEvent;
 import com.czbix.v2ex.google.GoogleHelper;
-import com.czbix.v2ex.util.UserUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.eventbus.Subscribe;
@@ -179,7 +178,7 @@ public class SettingsActivity extends BaseActivity {
                     startActivityForResult(new Intent(getActivity(), LoginActivity.class), 0);
                     return true;
                 case PREF_KEY_LOGOUT:
-                    UserUtils.logout();
+                    UserState.getInstance().logout();
                     getActivity().recreate();
                     return true;
                 case PREF_KEY_DEBUG:
