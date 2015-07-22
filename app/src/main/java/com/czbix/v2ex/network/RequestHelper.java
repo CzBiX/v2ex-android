@@ -2,6 +2,7 @@ package com.czbix.v2ex.network;
 
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.common.UserState;
@@ -416,7 +417,7 @@ public class RequestHelper {
         return response;
     }
 
-    private static void checkResponse(Response response) throws RemoteException, RequestException {
+    private static void checkResponse(Response response) throws RemoteException, RequestException, ConnectionException {
         if (response.isSuccessful()) {
             return;
         }
@@ -431,6 +432,18 @@ public class RequestHelper {
 
         if (code >= SERVER_ERROR_CODE) {
             throw new RemoteException(response);
+        }
+
+
+        Crashlytics.log("request url: " + response.request().urlString());
+        if (code == 403 || code == 404) {
+            try {
+                final String body = response.body().string();
+                Crashlytics.log(String.format("response code %d, %s", code,
+                        body.substring(0, Math.min(4096, body.length()))));
+            } catch (IOException e) {
+                throw new ConnectionException(e);
+            }
         }
 
         throw new RequestException(response);
