@@ -114,8 +114,8 @@ public class RequestHelper {
         final List<Topic> topics;
         try {
             doc = Parser.toDoc(response.body().string());
-            topics = TopicListParser.parseDoc(doc, page);
             processUserState(doc, page instanceof Tab);
+            topics = TopicListParser.parseDoc(doc, page);
         } catch (IOException e) {
             throw new ConnectionException(e);
         }
@@ -142,8 +142,8 @@ public class RequestHelper {
 
         try {
             doc = Parser.toDoc(response.body().string());
-            result = TopicParser.parseDoc(doc, topic);
             processUserState(doc);
+            result = TopicParser.parseDoc(doc, topic);
         } catch (IOException e) {
             throw new ConnectionException(e);
         }
