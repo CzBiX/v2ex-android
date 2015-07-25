@@ -41,6 +41,9 @@ public class Tab extends Page {
             builder.put(key, tab);
         }
 
+
+        builder.put(RecentTab.TAB_RECENT.getKey(), RecentTab.TAB_RECENT);
+
         ALL_TABS = builder.build();
     }
 
@@ -125,5 +128,18 @@ public class Tab extends Page {
                 return input.getKey();
             }
         }));
+    }
+
+    private static class RecentTab extends Tab {
+        public static final RecentTab TAB_RECENT = new RecentTab();
+
+        private RecentTab() {
+            super("最近", "recent");
+        }
+
+        @Override
+        public String getUrl() {
+            return RequestHelper.BASE_URL + "/recent";
+        }
     }
 }
