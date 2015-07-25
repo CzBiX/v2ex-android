@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -608,7 +609,13 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onUrlClick(String url) {
-        startActivity(MiscUtils.getUrlIntent(url));
+        try {
+            startActivity(MiscUtils.getUrlIntent(url));
+        } catch (ActivityNotFoundException e) {
+            LogUtils.i(TAG, "can't start activity for: %s", e, url);
+            Toast.makeText(getActivity(), R.string.toast_activity_not_found,
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
