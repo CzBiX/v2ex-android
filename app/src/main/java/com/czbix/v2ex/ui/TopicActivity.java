@@ -43,7 +43,7 @@ public class TopicActivity extends BaseActivity {
             return new Topic.Builder().setId(id).createTopic();
         }
 
-        if(intent.getAction().equals(Intent.ACTION_VIEW)) {
+        if(intent.getAction() != null && intent.getAction().equals(Intent.ACTION_VIEW)) {
             final String url = intent.getDataString();
             if (!Strings.isNullOrEmpty(url)) {
                 final int id = Topic.getIdFromUrl(url);
