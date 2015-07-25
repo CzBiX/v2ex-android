@@ -6,7 +6,6 @@
                 android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/avatar_img"
-        style="@style/AppTheme.CardView.Avatar"
         android:layout_height="@dimen/comment_avatar_size"
         android:layout_width="@dimen/comment_avatar_size"
         android:contentDescription="@string/desc_avatar"/>
@@ -20,13 +19,13 @@
         android:layout_toEndOf="@id/avatar_img"
         android:layout_toRightOf="@id/avatar_img"
         android:text="Username"
-        style="@style/AppTheme.CardView.Username"
+        style="@style/AppTheme.Topic.Username"
         tools:ignore="HardcodedText"/>
 
     <TextView
         android:id="@+id/time_tv"
         android:text="12h"
-        style="@style/AppTheme.CardView.Secondary"
+        style="@style/AppTheme.Topic.Secondary"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignBaseline="@id/username_tv"
@@ -49,7 +48,7 @@
 
     <TextView
         android:id="@+id/title_tv"
-        style="@style/AppTheme.CardView.TextView"
+        style="@style/AppTheme.Topic.Title"
         android:text="Title"
         android:textStyle="bold"
         android:layout_marginTop="6dp"
@@ -60,7 +59,7 @@
 
     <TextView
         android:id="@+id/content"
-        style="@style/AppTheme.CardView.Content"
+        style="@style/AppTheme.Topic.Content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_tv"

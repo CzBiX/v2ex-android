@@ -1,6 +1,5 @@
 package com.czbix.v2ex.ui.adapter;
 
-import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -89,14 +88,6 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mTime = ((TextView) view.findViewById(R.id.time_tv));
             mReplyCount = ((TextView) view.findViewById(R.id.reply_count_tv));
             mContent = ((TextView) view.findViewById(R.id.content));
-
-            if (listener == null) {
-                // single topic
-                mTitle.setTypeface(Typeface.DEFAULT_BOLD);
-            } else {
-                // topic list
-                mTitle.setTypeface(Typeface.DEFAULT);
-            }
         }
 
         public void setContentListener(OnHtmlActionListener listener) {

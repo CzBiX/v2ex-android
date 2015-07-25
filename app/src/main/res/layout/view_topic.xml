@@ -12,7 +12,7 @@
 
     <ImageView
         android:id="@+id/avatar_img"
-        style="@style/AppTheme.CardView.Avatar"
+        tools:src="@drawable/avatar_default"
         android:layout_height="@dimen/topic_avatar_size"
         android:layout_width="@dimen/topic_avatar_size"
         android:contentDescription="@string/desc_avatar"/>
@@ -21,7 +21,7 @@
         android:id="@+id/username_tv"
         android:layout_toEndOf="@id/avatar_img"
         android:layout_toRightOf="@id/avatar_img"
-        style="@style/AppTheme.CardView.Username"
+        style="@style/AppTheme.Topic.Username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Username"
@@ -31,53 +31,51 @@
 
     <TextView
         android:id="@+id/node_tv"
-        style="@style/AppTheme.CardView.Node"
-        android:text="Node"
-        android:textStyle="bold"
+        style="@style/AppTheme.Topic.Node"
+        tools:text="Node"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_marginStart="@dimen/content_spacing"
         android:layout_marginLeft="@dimen/content_spacing"
         android:layout_toEndOf="@id/username_tv"
-        android:layout_toRightOf="@id/username_tv"
-        tools:ignore="HardcodedText"/>
+        android:layout_toRightOf="@id/username_tv"/>
 
     <TextView
         android:id="@+id/time_tv"
-        style="@style/AppTheme.CardView.Secondary"
-        android:text="12m"
+        style="@style/AppTheme.Topic.Secondary"
+        tools:text="12m"
         android:layout_below="@+id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/username_tv"
-        android:layout_alignLeft="@+id/username_tv"
-        tools:ignore="HardcodedText"/>
+        android:layout_alignLeft="@+id/username_tv"/>
 
     <TextView
         android:id="@+id/reply_count_tv"
-        style="@style/AppTheme.CardView.Count"
-        android:text="12"
+        style="@style/AppTheme.Topic.Count"
+        tools:text="12"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignBaseline="@+id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:ignore="HardcodedText"/>
+        tools:ignore="RelativeOverlap"/>
 
     <TextView
         android:id="@+id/title_tv"
-        style="@style/AppTheme.CardView.TextView"
-        android:text="Title"
+        style="@style/AppTheme.Topic.Title"
+        tools:text="Title"
         android:layout_below="@id/avatar_img"
         android:layout_marginTop="6dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="HardcodedText"/>
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/content"
         android:visibility="gone"
-        style="@style/AppTheme.CardView.Content"
+        tools:visibility="visible"
+        tools:text="Content content"
+        style="@style/AppTheme.Topic.Content"
         android:layout_below="@id/title_tv"
         android:layout_marginTop="6dp"
         android:layout_width="match_parent"
