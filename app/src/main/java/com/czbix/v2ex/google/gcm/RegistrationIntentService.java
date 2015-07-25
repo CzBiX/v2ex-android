@@ -3,7 +3,6 @@ package com.czbix.v2ex.google.gcm;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Handler;
 import android.widget.Toast;
 
 import com.czbix.v2ex.AppCtx;
@@ -16,6 +15,7 @@ import com.czbix.v2ex.eventbus.gcm.DeviceRegisterEvent;
 import com.czbix.v2ex.google.GoogleHelper;
 import com.czbix.v2ex.network.CzRequestHelper;
 import com.czbix.v2ex.network.RequestHelper;
+import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -49,7 +49,7 @@ public class RegistrationIntentService extends IntentService {
         final boolean isSuccess = isRegister ? register() : unregister();
 
         if (!isSuccess) {
-            new Handler(getMainLooper()).post(new Runnable() {
+            ExecutorUtils.runInUiThread(new Runnable() {
                 @Override
                 public void run() {
                     Toast.makeText(AppCtx.getInstance(), isRegister
