@@ -74,7 +74,14 @@ public class UserState {
         ConfigDao.remove(ConfigDao.KEY_USERNAME);
         ConfigDao.remove(ConfigDao.KEY_AVATAR);
 
-        Toast.makeText(AppCtx.getInstance(), R.string.toast_has_sign_out, Toast.LENGTH_LONG).show();
+        ExecutorUtils.runInUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(AppCtx.getInstance(),
+                                                    R.string.toast_has_sign_out,
+                                                    Toast.LENGTH_LONG).show();
+                                        }
+                                    });
         AppCtx.getEventBus().post(new LoginEvent());
     }
 

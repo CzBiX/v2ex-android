@@ -1,20 +1,14 @@
 package com.czbix.v2ex.eventbus.executor;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.NonNull;
+
+import com.czbix.v2ex.util.ExecutorUtils;
 
 import java.util.concurrent.Executor;
 
 public class HandlerExecutor implements Executor {
-    private final Handler mHandler;
-
-    public HandlerExecutor() {
-        mHandler = new Handler(Looper.getMainLooper());
-    }
-
     @Override
     public void execute(@NonNull Runnable command) {
-        mHandler.post(command);
+        ExecutorUtils.runInUiThread(command);
     }
 }

@@ -1,5 +1,8 @@
 package com.czbix.v2ex.util;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,6 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class ExecutorUtils {
     private static final ExecutorService CACHED_POOL = Executors.newCachedThreadPool();
     private static final ScheduledExecutorService SCHEDULED_POOL = Executors.newScheduledThreadPool(0);
+    private static final Handler UI_HANDLER = new Handler(Looper.getMainLooper());
 
     /**
      * @see ExecutorService#submit(Callable)
@@ -66,5 +70,9 @@ public class ExecutorUtils {
      */
     public static void execute(Runnable command) {
         CACHED_POOL.execute(command);
+    }
+
+    public static void runInUiThread(Runnable runnable) {
+        UI_HANDLER.post(runnable);
     }
 }
