@@ -41,6 +41,7 @@ import com.czbix.v2ex.eventbus.BaseEvent.DailyAwardEvent;
 import com.czbix.v2ex.eventbus.BaseEvent.NewUnreadEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
+import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
@@ -53,6 +54,7 @@ import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.NotificationListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
 import com.czbix.v2ex.util.ExecutorUtils;
+import com.czbix.v2ex.util.MiscUtils;
 import com.czbix.v2ex.util.UserUtils;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.eventbus.Subscribe;
@@ -228,10 +230,11 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         mNavBg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (UserState.getInstance().isGuest()) {
+                final UserState user = UserState.getInstance();
+                if (user.isGuest()) {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 } else {
-                    // TODO: jump to user info page
+                    startActivity(MiscUtils.getUrlIntent(Member.buildUrlFromName(user.getUsername())));
                 }
             }
         });

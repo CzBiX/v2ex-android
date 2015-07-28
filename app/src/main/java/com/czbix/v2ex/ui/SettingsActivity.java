@@ -16,6 +16,8 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.eventbus.gcm.DeviceRegisterEvent;
 import com.czbix.v2ex.google.GoogleHelper;
+import com.czbix.v2ex.model.Member;
+import com.czbix.v2ex.util.MiscUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.eventbus.Subscribe;
@@ -86,8 +88,14 @@ public class SettingsActivity extends BaseActivity {
             final Preference logoutPref = findPreference(PREF_KEY_LOGOUT);
 
             infoPref.setTitle(UserState.getInstance().getUsername());
-            // TODO: jump to user info page
-            infoPref.setEnabled(false);
+            infoPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    startActivity(MiscUtils.getUrlIntent(Member.buildUrlFromName(
+                            UserState.getInstance().getUsername())));
+                    return false;
+                }
+            });
 
             mNotificationsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
