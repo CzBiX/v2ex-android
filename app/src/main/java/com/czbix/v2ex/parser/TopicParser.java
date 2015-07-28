@@ -82,6 +82,7 @@ public class TopicParser extends Parser {
 
     private static boolean parseFavorited(Document doc) {
         final Elements elements = doc.select(".topic_buttons .tb:nth-child(2)");
+        Preconditions.checkState(elements.size() >= 1, "should has a tag for favorite link");
         final Element ele = elements.get(0);
         Preconditions.checkState(ele.tagName().equals("a"), "should be a tag for favorite link");
 
