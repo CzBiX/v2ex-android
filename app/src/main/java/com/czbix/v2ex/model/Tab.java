@@ -141,5 +141,19 @@ public class Tab extends Page {
         public String getUrl() {
             return RequestHelper.BASE_URL + "/recent";
         }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+        }
+
+        public static final Creator<RecentTab> CREATOR = new Creator<RecentTab>() {
+            public RecentTab createFromParcel(Parcel source) {
+                return TAB_RECENT;
+            }
+
+            public RecentTab[] newArray(int size) {
+                return new RecentTab[size];
+            }
+        };
     }
 }
