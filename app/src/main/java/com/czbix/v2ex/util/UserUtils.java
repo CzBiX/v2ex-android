@@ -15,7 +15,7 @@ public class UserUtils {
     private static final String TAG = UserUtils.class.getSimpleName();
 
     public static Avatar getAvatar() {
-        Preconditions.checkState(!UserState.getInstance().isGuest());
+        Preconditions.checkState(UserState.getInstance().isLoggedIn());
 
         final String url = ConfigDao.get(ConfigDao.KEY_AVATAR, null);
         Preconditions.checkNotNull(url);
@@ -24,7 +24,7 @@ public class UserUtils {
     }
 
     public static void checkDailyAward() {
-        if (UserState.getInstance().isGuest()) {
+        if (!UserState.getInstance().isLoggedIn()) {
             return;
         }
 

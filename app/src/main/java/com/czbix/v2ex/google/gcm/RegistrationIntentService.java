@@ -38,7 +38,7 @@ public class RegistrationIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         final boolean isRegister;
-        if (UserState.getInstance().isGuest()) {
+        if (!UserState.getInstance().isLoggedIn()) {
             // unregister if user logout
             isRegister = false;
         } else {

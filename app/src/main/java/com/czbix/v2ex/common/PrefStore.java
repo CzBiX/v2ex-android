@@ -56,7 +56,7 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
     }
 
     public boolean shouldReceiveNotifications() {
-        if (UserState.getInstance().isGuest()) {
+        if (!UserState.getInstance().isLoggedIn()) {
             LogUtils.v(TAG, "guest can't receive notifications");
             return false;
         }

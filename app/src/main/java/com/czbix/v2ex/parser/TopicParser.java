@@ -37,13 +37,13 @@ public class TopicParser extends Parser {
 
         final String csrfToken;
         final String onceToken;
-        if (UserState.getInstance().isGuest()) {
-            csrfToken = null;
-            onceToken = null;
-        } else {
+        if (UserState.getInstance().isLoggedIn()) {
             csrfToken = parseCsrfToken(doc);
             onceToken = parseOnceToken(doc);
             topicBuilder.isFavorited(parseFavorited(doc));
+        } else {
+            csrfToken = null;
+            onceToken = null;
         }
         return new TopicWithComments(topicBuilder.createTopic(), comments, postscripts, pageNum[0],
                 pageNum[1], csrfToken, onceToken);

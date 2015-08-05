@@ -88,13 +88,13 @@ public class TopicEditActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_topic_edit, menu);
         final MenuItem item = menu.findItem(R.id.action_post);
-        if (UserState.getInstance().isGuest()) {
-            item.setVisible(false);
-        } else {
+        if (UserState.getInstance().isLoggedIn()) {
             final Drawable icon = DrawableCompat.wrap(ContextCompat.getDrawable(this,
                     R.drawable.ic_send_black_24dp));
             DrawableCompat.setTint(icon, Color.WHITE);
             item.setIcon(icon);
+        } else {
+            item.setVisible(false);
         }
 
         return true;

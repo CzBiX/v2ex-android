@@ -155,7 +155,7 @@ public class RequestHelper {
     }
 
     private static void processUserState(Document doc, boolean isTab) {
-        if (UserState.getInstance().isGuest()) {
+        if (!UserState.getInstance().isLoggedIn()) {
             return;
         }
 
@@ -189,7 +189,7 @@ public class RequestHelper {
     }
 
     public static int getUnreadNum() throws ConnectionException, RemoteException {
-        Preconditions.checkState(!UserState.getInstance().isGuest(), "guest can't check notifications");
+        Preconditions.checkState(UserState.getInstance().isLoggedIn(), "guest can't check notifications");
         LogUtils.v(TAG, "get unread num");
 
         final Request request = new Request.Builder().url(URL_UNREAD_NOTIFICATIONS).build();
@@ -206,7 +206,7 @@ public class RequestHelper {
     }
 
     public static List<Notification> getNotifications() throws ConnectionException, RemoteException {
-        Preconditions.checkState(!UserState.getInstance().isGuest(), "guest can't check notifications");
+        Preconditions.checkState(UserState.getInstance().isLoggedIn(), "guest can't check notifications");
         LogUtils.v(TAG, "get notifications");
 
         final Request request = new Request.Builder().url(URL_NOTIFICATIONS).build();

@@ -147,7 +147,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         boolean isEnable;
         int iconId;
         int titleId;
-        if (UserState.getInstance().isGuest()) {
+        if (!UserState.getInstance().isLoggedIn()) {
             isEnable = false;
             iconId = R.drawable.ic_notifications_none_black_24dp;
             titleId = R.string.drawer_notifications;
@@ -229,10 +229,10 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
             @Override
             public void onClick(View v) {
                 final UserState user = UserState.getInstance();
-                if (user.isGuest()) {
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                } else {
+                if (user.isLoggedIn()) {
                     startActivity(MiscUtils.getUrlIntent(Member.buildUrlFromName(user.getUsername())));
+                } else {
+                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 }
             }
         });
@@ -311,7 +311,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     }
 
     private void updateUsername() {
-        if (UserState.getInstance().isGuest()) {
+        if (!UserState.getInstance().isLoggedIn()) {
             mAvatar.setVisibility(View.INVISIBLE);
             mUsername.setText(R.string.action_sign_in);
             return;
@@ -341,7 +341,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     }
 
     private void enableLoginMenu(Menu menu) {
-        if (!UserState.getInstance().isGuest()) {
+        if (UserState.getInstance().isLoggedIn()) {
             return;
         }
 

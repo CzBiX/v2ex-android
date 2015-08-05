@@ -244,13 +244,13 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         inflater.inflate(R.menu.menu_topic, menu);
 
-        if (UserState.getInstance().isGuest()) {
+        if (UserState.getInstance().isLoggedIn()) {
+            mFavIcon = menu.findItem(R.id.action_fav);
+            updateFavIcon();
+        } else {
             for (int i : MENU_REQUIRED_LOGGED_IN) {
                 menu.findItem(i).setVisible(false);
             }
-        } else {
-            mFavIcon = menu.findItem(R.id.action_fav);
-            updateFavIcon();
         }
 
         setupShareActionMenu(menu);

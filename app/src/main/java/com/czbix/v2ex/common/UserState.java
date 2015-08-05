@@ -11,6 +11,7 @@ import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.parser.MyselfParser;
+import com.czbix.v2ex.util.CrashlyticsUtils;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.UserUtils;
 import com.google.common.eventbus.EventBus;
@@ -35,6 +36,7 @@ public class UserState {
         AppCtx.getEventBus().register(this);
 
         mUsername = ConfigDao.get(ConfigDao.KEY_USERNAME, null);
+        CrashlyticsUtils.setUserState(isLoggedIn());
     }
 
     public void handleInfo(MyselfParser.MySelfInfo info, boolean isTab) {
@@ -58,6 +60,7 @@ public class UserState {
         ConfigDao.put(ConfigDao.KEY_USERNAME, username);
 
         mUsername = username;
+        CrashlyticsUtils.setUserState(true);
 
         AppCtx.getEventBus().post(new LoginEvent(username));
         ExecutorUtils.execute(new Runnable() {
@@ -74,6 +77,8 @@ public class UserState {
         ConfigDao.remove(ConfigDao.KEY_USERNAME);
         ConfigDao.remove(ConfigDao.KEY_AVATAR);
 
+        CrashlyticsUtils.setUserState(false);
+
         ExecutorUtils.runInUiThread(new Runnable() {
             @Override
             public void run() {
@@ -89,8 +94,8 @@ public class UserState {
         mHasAward = e.mHasAward;
     }
 
-    public boolean isGuest() {
-        return mUsername == null;
+    public boolean isLoggedIn() {
+        return mUsername != null;
     }
 
     public String getUsername() {

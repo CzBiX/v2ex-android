@@ -149,7 +149,7 @@ public class CommentAdapter extends BaseAdapter {
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            if (UserState.getInstance().isGuest()) {
+            if (!UserState.getInstance().isLoggedIn()) {
                 // anonymous can't do anything
                 return;
             }

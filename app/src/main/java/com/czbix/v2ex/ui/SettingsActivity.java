@@ -77,7 +77,7 @@ public class SettingsActivity extends BaseActivity {
 
         private void initUser() {
             final PreferenceCategory user = (PreferenceCategory) findPreference(PREF_KEY_CATEGORY_USER);
-            if (UserState.getInstance().isGuest()) {
+            if (!UserState.getInstance().isLoggedIn()) {
                 mNotificationsPref = null;
                 getPreferenceScreen().removePreference(user);
                 return;
@@ -141,10 +141,10 @@ public class SettingsActivity extends BaseActivity {
                 general.removePreference(debugPref);
             }
 
-            if (UserState.getInstance().isGuest()) {
-                loginPref.setOnPreferenceClickListener(this);
-            } else {
+            if (UserState.getInstance().isLoggedIn()) {
                 general.removePreference(loginPref);
+            } else {
+                loginPref.setOnPreferenceClickListener(this);
             }
         }
 
@@ -162,7 +162,7 @@ public class SettingsActivity extends BaseActivity {
         }
 
         private boolean toggleReceiveNotifications(boolean turnOn) {
-            Preconditions.checkState(!UserState.getInstance().isGuest(), "guest can't toggle notifications");
+            Preconditions.checkState(UserState.getInstance().isLoggedIn(), "guest can't toggle notifications");
 
             mNotificationsPref.setEnabled(false);
             AppCtx.getEventBus().register(this);
