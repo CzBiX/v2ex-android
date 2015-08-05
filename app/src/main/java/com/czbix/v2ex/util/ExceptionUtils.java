@@ -9,7 +9,9 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RemoteException;
+import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.common.exception.UnauthorizedException;
+import com.czbix.v2ex.network.HttpStatus;
 
 public class ExceptionUtils {
     /**
@@ -35,6 +37,16 @@ public class ExceptionUtils {
         } else if (e instanceof RemoteException) {
             Crashlytics.logException(e);
             stringId = R.string.toast_remote_exception;
+        } else if (e instanceof RequestException) {
+            final RequestException ex = (RequestException) e;
+            Crashlytics.logException(ex);
+            switch (ex.getCode()) {
+                case HttpStatus.SC_FORBIDDEN:
+                    stringId = R.string.toast_access_denied;
+                    break;
+                default:
+                    throw e;
+            }
         } else if (e instanceof IllegalStateException) {
             Crashlytics.logException(e);
             stringId = R.string.toast_parse_failed;

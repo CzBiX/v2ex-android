@@ -43,7 +43,7 @@
     <string name="tv_daily_award">每日奖励</string>
     <string name="toast_connection_exception">网络连接失败…</string>
     <string name="toast_need_sign_in">请先登录！</string>
-    <string name="toast_remote_exception">服务器错误，请重试！</string>
+    <string name="toast_remote_exception">服务器错误，请稍候再试！</string>
     <string name="pref_title_load_image_on_mobile_network">使用移动网络时载入图片</string>
     <string name="pref_summary_load_image_on_mobile_network">在使用移动网络时，载入主题或回复中的图片</string>
     <string name="toast_has_sign_out">账户已登出！</string>
@@ -91,4 +91,5 @@
     <string name="title_select_node">选择节点</string>
     <string name="toast_activity_not_found">打开应用失败！</string>
     <string name="toast_topic_not_found">主题未找到！</string>
+    <string name="toast_access_denied">拒绝访问，请稍候再试！</string>
 </resources>
