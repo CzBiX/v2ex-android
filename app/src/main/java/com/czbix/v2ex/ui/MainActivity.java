@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -391,8 +389,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         final Intent intent = new Intent(this, TopicActivity.class);
         intent.putExtra(TopicActivity.KEY_TOPIC, topic);
 
-        final Bundle options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, view, "topic").toBundle();
-        ActivityCompat.startActivity(this, intent, options);
+        startActivity(intent);
 
         TopicDao.updateLastRead(topic);
         if (topic.getReplyCount() > 0) {
