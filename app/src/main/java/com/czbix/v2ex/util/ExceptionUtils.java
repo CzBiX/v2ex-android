@@ -33,6 +33,7 @@ public class ExceptionUtils {
         } else if (e instanceof ConnectionException) {
             stringId = R.string.toast_connection_exception;
         } else if (e instanceof RemoteException) {
+            Crashlytics.logException(e);
             stringId = R.string.toast_remote_exception;
         } else if (e instanceof IllegalStateException) {
             Crashlytics.logException(e);

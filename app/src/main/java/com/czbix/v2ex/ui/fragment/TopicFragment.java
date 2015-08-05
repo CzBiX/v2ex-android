@@ -9,6 +9,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -41,6 +42,7 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
+import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.eventbus.TopicEvent;
 import com.czbix.v2ex.helper.MultiList;
@@ -53,6 +55,7 @@ import com.czbix.v2ex.model.Thankable;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.model.db.Draft;
+import com.czbix.v2ex.network.HttpStatus;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.TopicActivity;
@@ -323,14 +326,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onLoadFinished(Loader<LoaderResult<TopicWithComments>> loader, LoaderResult<TopicWithComments> result) {
         if (result.hasException()) {
-            mLastIsFailed = true;
-            setIsLoading(false);
-            mCurPage = Math.max(mComments.listSize(), 1);
-            if (ExceptionUtils.handleExceptionNoCatch(this, result.mException)) {
-                getActivity().finish();
-            }
+            handleLoadException(result);
             return;
         }
+
         mIsLoaded = true;
         mLastIsFailed = false;
         final TopicWithComments data = result.mResult;
@@ -369,6 +368,35 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         }
 
         setIsLoading(false);
+    }
+
+    private void handleLoadException(LoaderResult<TopicWithComments> result) {
+        mLastIsFailed = true;
+        setIsLoading(false);
+        mCurPage = Math.max(mComments.listSize(), 1);
+        boolean finishActivity;
+        try {
+            finishActivity = ExceptionUtils.handleExceptionNoCatch(this, result.mException);
+        } catch (RequestException e) {
+            @StringRes
+            int strId;
+            switch (e.getCode()) {
+                case HttpStatus.SC_NOT_FOUND:
+                    strId = R.string.toast_topic_not_found;
+                    break;
+                default:
+                    throw e;
+            }
+
+            if (getUserVisibleHint()) {
+                Toast.makeText(getActivity(), strId, Toast.LENGTH_SHORT).show();
+            }
+            finishActivity = true;
+        }
+
+        if (finishActivity) {
+            getActivity().finish();
+        }
     }
 
     private void fillPostscript(List<Postscript> postscripts) {
