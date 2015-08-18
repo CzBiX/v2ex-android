@@ -6,15 +6,20 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.integration.okhttp.OkHttpUrlLoader;
 import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.module.GlideModule;
 
 import java.io.InputStream;
 
 public class GlideConfig implements GlideModule {
+
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
-        builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
+        int DEFAULT_DISK_CACHE_SIZE = 64 * 1024 * 1024;
+
+        builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888)
+                .setDiskCache(new InternalCacheDiskCacheFactory(context, DEFAULT_DISK_CACHE_SIZE));
     }
 
     @Override
