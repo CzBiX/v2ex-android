@@ -8,4 +8,8 @@
     tools:showIn="@layout/activity_main">
 
     <include layout="@layout/toolbar_action"/>
+    <!-- http://stackoverflow.com/questions/30541409/
+    work around of toolbar not draw correctly -->
+    <View android:layout_width="match_parent"
+          android:layout_height="1dp"/>
 </android.support.design.widget.AppBarLayout>
