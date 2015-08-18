@@ -39,6 +39,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.common.PrefStore;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
@@ -247,6 +248,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         if (UserState.getInstance().isLoggedIn()) {
             mFavIcon = menu.findItem(R.id.action_fav);
             updateFavIcon();
+
+            if (PrefStore.getInstance().isAlwaysShowReplyForm()) {
+                menu.findItem(R.id.action_reply).setVisible(false);
+            }
         } else {
             for (int i : MENU_REQUIRED_LOGGED_IN) {
                 menu.findItem(i).setVisible(false);
@@ -355,6 +360,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mCsrfToken = data.mCsrfToken;
         mOnceToken = data.mOnceToken;
 
+        if (mReplyForm == null && PrefStore.getInstance().isAlwaysShowReplyForm()) {
+            toggleReplyForm();
+        }
         if (mDraft != null) {
             if (mReplyForm == null) {
                 toggleReplyForm();

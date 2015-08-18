@@ -9,6 +9,8 @@
         <SwitchPreference android:key="load_image_on_mobile_network"
                           android:title="@string/pref_title_load_image_on_mobile_network"
                           android:summary="@string/pref_summary_load_image_on_mobile_network"/>
+        <SwitchPreference android:key="always_show_reply_form"
+                          android:title="@string/pref_title_always_show_reply_form" />
         <com.czbix.v2ex.ui.preference.TabListPreference
             android:title="@string/pref_title_tab_list"
             android:key="tabs_to_show"

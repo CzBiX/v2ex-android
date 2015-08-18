@@ -9,4 +9,5 @@
     <string name="pref_receive_notifications">Receive notifications</string>
     <string name="pref_summary_receive_notifications">Use GCM service to receive notifications</string>
     <string name="toast_check_google_play_services_failed">Google Play services not available,\n error code: %s</string>
+    <string name="pref_title_always_show_reply_form">Always show reply form</string>
 </resources>
