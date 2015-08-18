@@ -12,4 +12,7 @@
     <dimen name="comment_picture_other_width">54dp</dimen>
     
     <dimen name="content_spacing">8dp</dimen>
+
+    <dimen name="btn_jump_back_size">40dp</dimen>
+    <dimen name="appbar_elevation">4dp</dimen>
 </resources>
