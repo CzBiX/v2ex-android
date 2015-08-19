@@ -78,6 +78,8 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     private View mNavBg;
     private MenuItem mNotificationsItem;
     private View mAwardButton;
+    @IdRes
+    private int mLastMenuId;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,6 +195,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     }
 
     private void initNavDrawer() {
+        mLastMenuId = R.id.drawer_explore;
         mNav.setNavigationItemSelectedListener(this);
         if (!mPreferences.getBoolean(PREF_DRAWER_SHOWED, false)) {
             mDrawerLayout.openDrawer(mNav);
@@ -256,22 +259,29 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        if (item.isChecked()) return false;
+        final int itemId = item.getItemId();
+        if (itemId == mLastMenuId) {
+            return false;
+        }
 
-        switch (item.getItemId()) {
+        switch (itemId) {
             case R.id.drawer_explore:
+                mLastMenuId = R.id.drawer_explore;
                 mDrawerLayout.closeDrawer(mNav);
                 switchFragment(CategoryTabFragment.newInstance());
                 return true;
             case R.id.drawer_nodes:
+                mLastMenuId = R.id.drawer_nodes;
                 mDrawerLayout.closeDrawer(mNav);
                 switchFragment(NodeListFragment.newInstance());
                 return true;
             case R.id.drawer_notifications:
+                mLastMenuId = R.id.drawer_notifications;
                 mDrawerLayout.closeDrawer(mNav);
                 switchFragment(NotificationListFragment.newInstance());
                 return true;
             case R.id.drawer_favorite:
+                mLastMenuId = R.id.drawer_favorite;
                 mDrawerLayout.closeDrawer(mNav);
                 switchFragment(TopicListFragment.newInstance(Page.PAGE_FAV_TOPIC));
                 return true;
@@ -288,8 +298,8 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     }
 
     public void setNavSelected(@IdRes int menuId) {
-        final Menu menu = mNav.getMenu();
-        menu.findItem(menuId).setChecked(true);
+        mLastMenuId = menuId;
+        mNav.setCheckedItem(menuId);
     }
 
     private void switchFragment(Fragment fragment) {
