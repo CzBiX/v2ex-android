@@ -10,6 +10,7 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
+import com.czbix.v2ex.common.exception.UnauthorizedException;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.eventbus.gcm.DeviceRegisterEvent;
 import com.czbix.v2ex.google.GoogleHelper;
@@ -83,10 +84,7 @@ public class RegistrationIntentService extends IntentService {
             }
 
             try {
-                sendRegistrationToServer(token);
-                mPreferences.edit().putString(PREF_LAST_GCM_TOKEN, token).apply();
-                LogUtils.v(TAG, "updated token on server");
-                return true;
+                return sendRegistrationToServer(token);
             } catch (ConnectionException | RemoteException e) {
                 // TODO: handle network exception
                 LogUtils.w(TAG, "register device on server failed", e);
@@ -106,11 +104,7 @@ public class RegistrationIntentService extends IntentService {
 
             try {
                 // never delete token/id on Google, see https://developers.google.com/cloud-messaging/registration#unregistration-and-unsubscription
-                deleteRegistrationOnServer(oldToken);
-                mPreferences.edit()
-                        .remove(PREF_LAST_NTF_TOKEN)
-                        .remove(PREF_LAST_GCM_TOKEN).apply();
-                return true;
+                return deleteRegistrationOnServer(oldToken);
             } catch (Exception e) {
                 LogUtils.w(TAG, "delete registration on server failed", e);
             }
@@ -119,24 +113,42 @@ public class RegistrationIntentService extends IntentService {
         }
     }
 
-    private void sendRegistrationToServer(String gcmToken) throws ConnectionException, RemoteException {
+    private boolean sendRegistrationToServer(String gcmToken) throws ConnectionException, RemoteException {
+        final String notificationsToken;
+        try {
+            notificationsToken = RequestHelper.getNotificationsToken();
+        } catch (UnauthorizedException e) {
+            LogUtils.w(TAG, "user signed out, can't send gcm token");
+            return false;
+        }
+
         final String username = UserState.getInstance().getUsername();
         if (!ConfigDao.get(ConfigDao.KEY_IS_USER_REGISTERED, false)) {
             CzRequestHelper.registerUser(username);
             ConfigDao.put(ConfigDao.KEY_IS_USER_REGISTERED, true);
         }
 
-        final String notificationsToken = RequestHelper.getNotificationsToken();
         if (!notificationsToken.equals(mPreferences.getString(PREF_LAST_NTF_TOKEN, null))) {
             CzRequestHelper.updateNotificationsToken(username, notificationsToken);
             mPreferences.edit().putString(PREF_LAST_NTF_TOKEN, notificationsToken).apply();
         }
 
         CzRequestHelper.registerDevice(username, gcmToken);
+        mPreferences.edit().putString(PREF_LAST_GCM_TOKEN, gcmToken).apply();
+
+        return true;
     }
 
-    private void deleteRegistrationOnServer(String token) throws ConnectionException, RemoteException {
+    private boolean deleteRegistrationOnServer(String token) throws ConnectionException, RemoteException {
         final String username = UserState.getInstance().getUsername();
+        if (Strings.isNullOrEmpty(username)) {
+            LogUtils.w(TAG, "username is null, can't delete gcm token");
+            return false;
+        }
+
         CzRequestHelper.unregisterDevice(username, token);
+        mPreferences.edit().remove(PREF_LAST_NTF_TOKEN).remove(PREF_LAST_GCM_TOKEN).apply();
+
+        return true;
     }
 }
