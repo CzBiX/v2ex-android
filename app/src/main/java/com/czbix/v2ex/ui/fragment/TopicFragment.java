@@ -360,7 +360,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mCsrfToken = data.mCsrfToken;
         mOnceToken = data.mOnceToken;
 
-        if (mReplyForm == null && PrefStore.getInstance().isAlwaysShowReplyForm()) {
+        if (mReplyForm == null &&
+                UserState.getInstance().isLoggedIn() &&
+                PrefStore.getInstance().isAlwaysShowReplyForm()) {
             toggleReplyForm();
         }
         if (mDraft != null) {
