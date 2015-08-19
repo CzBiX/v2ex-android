@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.dao.NodeDao;
@@ -221,6 +222,9 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_topic_list, menu);
+        if (!UserState.getInstance().isLoggedIn()) {
+            menu.findItem(R.id.action_new_topic).setVisible(false);
+        }
 
         super.onCreateOptionsMenu(menu, inflater);
     }
