@@ -187,6 +187,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mCommentsView.setAdapter(mCommentAdapter);
         mCommentsView.setOnScrollListener(this);
 
+        if (!mTopic.hasInfo()) {
+            mCommentsView.setVisibility(View.INVISIBLE);
+        }
+
         return rootView;
     }
 
@@ -335,6 +339,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             return;
         }
 
+        if (!mIsLoaded && !mTopic.hasInfo()) {
+            mCommentsView.setVisibility(View.VISIBLE);
+        }
         mIsLoaded = true;
         mLastIsFailed = false;
         final TopicWithComments data = result.mResult;
