@@ -84,4 +84,5 @@
     <string name="action_discard">Discard</string>
     <string name="title_select_node">Select node</string>
     <string name="toast_activity_not_found">Open app failed!</string>
+    <string name="drawer_feedback">Feedback</string>
 </resources>

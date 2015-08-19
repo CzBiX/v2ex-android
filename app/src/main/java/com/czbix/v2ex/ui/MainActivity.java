@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
@@ -287,6 +288,13 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
                 return true;
             case R.id.drawer_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            case R.id.drawer_feedback:
+                final Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"gliuwr+gp@gmail.com"});
+                intent.putExtra(Intent.EXTRA_SUBJECT, String.format("V2EX(%s) feedback",
+                        BuildConfig.VERSION_NAME));
+                startActivity(intent);
                 return true;
             case R.id.drawer_about:
                 Toast.makeText(this, getString(R.string.toast_app_version, BuildConfig.VERSION_NAME),
