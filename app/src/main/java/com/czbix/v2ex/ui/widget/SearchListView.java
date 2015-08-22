@@ -1,12 +1,12 @@
 package com.czbix.v2ex.ui.widget;
 
 import android.content.Context;
+import android.support.v7.widget.SearchView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SearchView;
 
 import com.czbix.v2ex.R;
 
