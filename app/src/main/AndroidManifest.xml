@@ -15,6 +15,7 @@
     <application
         android:name=".AppCtx"
         android:allowBackup="true"
+        android:fullBackupContent="false"
         android:backupAgent=".BackupAgent"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
