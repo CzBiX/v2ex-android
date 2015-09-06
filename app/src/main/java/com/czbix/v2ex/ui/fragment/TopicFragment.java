@@ -42,6 +42,7 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.PrefStore;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.dao.DraftDao;
@@ -394,21 +395,27 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         boolean finishActivity;
         try {
             finishActivity = ExceptionUtils.handleExceptionNoCatch(this, result.mException);
-        } catch (RequestException e) {
-            @StringRes
-            int strId;
-            switch (e.getCode()) {
-                case HttpStatus.SC_NOT_FOUND:
-                    strId = R.string.toast_topic_not_found;
-                    break;
-                default:
-                    throw e;
-            }
+        } catch (FatalException e) {
+            if (e.getCause() instanceof RequestException) {
+                final RequestException ex = (RequestException) e.getCause();
 
-            if (getUserVisibleHint()) {
-                Toast.makeText(getActivity(), strId, Toast.LENGTH_SHORT).show();
+                @StringRes
+                int strId;
+                switch (ex.getCode()) {
+                    case HttpStatus.SC_NOT_FOUND:
+                        strId = R.string.toast_topic_not_found;
+                        break;
+                    default:
+                        throw e;
+                }
+
+                if (getUserVisibleHint()) {
+                    Toast.makeText(getActivity(), strId, Toast.LENGTH_SHORT).show();
+                }
+                finishActivity = true;
+            } else {
+                throw e;
             }
-            finishActivity = true;
         }
 
         if (finishActivity) {
