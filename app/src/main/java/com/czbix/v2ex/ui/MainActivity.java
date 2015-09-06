@@ -1,6 +1,7 @@
 package com.czbix.v2ex.ui;
 
 import android.annotation.TargetApi;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -294,7 +295,11 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
                 intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"gliuwr+gp@gmail.com"});
                 intent.putExtra(Intent.EXTRA_SUBJECT, String.format("V2EX(%s) feedback",
                         BuildConfig.VERSION_NAME));
-                startActivity(intent);
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    Toast.makeText(this, R.string.toast_email_app_not_found, Toast.LENGTH_SHORT);
+                }
                 return true;
             case R.id.drawer_about:
                 Toast.makeText(this, getString(R.string.toast_app_version, BuildConfig.VERSION_NAME),
