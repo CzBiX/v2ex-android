@@ -7,6 +7,7 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.common.exception.ExIllegalStateException;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
@@ -136,6 +137,9 @@ public class RequestHelper {
                 .url(topic.getUrl() + "?p=" + page)
                 .build();
         final Response response = sendRequest(request);
+        if (response.isRedirect()) {
+            throw new ExIllegalStateException("topic page shouldn't redirect");
+        }
 
         final Document doc;
         final TopicWithComments result;
@@ -237,7 +241,7 @@ public class RequestHelper {
         final Response response = sendRequest(request, false);
 
         // v2ex will redirect if reply success
-        return response.code() == 302;
+        return response.code() == HttpStatus.SC_MOVED_TEMPORARILY;
     }
 
     public static void ignore(Ignorable obj, String onceToken) throws ConnectionException, RemoteException {
@@ -279,7 +283,7 @@ public class RequestHelper {
 
         final Response response = sendRequest(request, false);
 
-        if (response.code() != 302) {
+        if (response.code() != HttpStatus.SC_MOVED_TEMPORARILY) {
             throw new RequestException(response);
         }
     }
@@ -298,7 +302,7 @@ public class RequestHelper {
         final Response response = sendRequest(request);
 
         // v2ex will redirect if reply success
-        if (response.code() == 302) {
+        if (response.code() == HttpStatus.SC_MOVED_TEMPORARILY) {
             final String location = response.header(HttpHeaders.LOCATION);
             return Topic.getIdFromUrl(location);
         }
@@ -342,7 +346,7 @@ public class RequestHelper {
         Response response = sendRequest(request, false);
 
         // v2ex will redirect if login success
-        if (response.code() != 302) {
+        if (response.code() != HttpStatus.SC_MOVED_TEMPORARILY) {
             return null;
         }
 

@@ -7,6 +7,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.common.exception.ExIllegalStateException;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
@@ -48,7 +49,15 @@ public class ExceptionUtils {
                     throw e;
             }
         } else if (e instanceof IllegalStateException) {
-            Crashlytics.logException(e);
+            boolean logException = true;
+            if (e instanceof ExIllegalStateException) {
+                final ExIllegalStateException ex = (ExIllegalStateException) e;
+                logException = ex.shouldLogged;
+            }
+            if (logException) {
+                Crashlytics.logException(e);
+            }
+
             stringId = R.string.toast_parse_failed;
         } else {
             throw e;
