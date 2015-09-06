@@ -25,7 +25,7 @@ public class TopicListParser extends Parser {
     public static List<Topic> parseDoc(Document doc, Page page) {
         if (page instanceof Node) {
             return parseDocForNode(doc, (Node) page);
-        } else if (page instanceof Tab || page == Page.PAGE_FAV_TOPIC) {
+        } else if (page instanceof Tab || Page.PAGE_FAV_TOPIC.equals(page)) {
             return parseDocForTab(doc);
         } else {
             throw new IllegalArgumentException("unknown page type: " + page);

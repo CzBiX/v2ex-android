@@ -25,6 +25,19 @@ public abstract class Page implements Parcelable {
         return getTitle();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Page)) return false;
+        Page page = (Page) o;
+        return getUrl().equals(page.getUrl());
+    }
+
+    @Override
+    public int hashCode() {
+        return getUrl().hashCode();
+    }
+
     public static class SimplePage extends Page {
         private final String mTitle;
         private final String mUrl;
