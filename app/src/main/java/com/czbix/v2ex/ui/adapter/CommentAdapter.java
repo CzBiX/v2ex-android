@@ -68,7 +68,7 @@ public class CommentAdapter extends BaseAdapter {
         }
 
         final Comment comment = mCommentList.get(position);
-        viewHolder.fillData(comment);
+        viewHolder.fillData(comment, position);
 
         return convertView;
     }
@@ -85,6 +85,7 @@ public class CommentAdapter extends BaseAdapter {
         private final TextView mThanks;
         private final OnCommentActionListener mListener;
         private Comment mComment;
+        private int mPos;
 
         public ViewHolder(View view, OnCommentActionListener listener) {
             mAvatar = ((ImageView) view.findViewById(R.id.avatar_img));
@@ -102,11 +103,12 @@ public class CommentAdapter extends BaseAdapter {
             mContent.setMovementMethod(new HtmlMovementMethod(this));
         }
 
-        public void fillData(Comment comment) {
+        public void fillData(Comment comment, int position) {
             if (comment.equals(mComment)) {
                 return;
             }
             mComment = comment;
+            mPos = position;
 
             ViewUtils.setHtmlIntoTextView(mContent, comment.getContent(), ViewUtils.getWidthPixels() -
                     COMMENT_PICTURE_OTHER_WIDTH);
@@ -201,12 +203,12 @@ public class CommentAdapter extends BaseAdapter {
 
         @Override
         public void onUrlClick(String url) {
-            mListener.onCommentUrlClick(url, mComment.getFloor());
+            mListener.onCommentUrlClick(url, mPos);
         }
 
         @Override
         public void onImageClick(String source) {
-            mListener.onCommentUrlClick(source, mComment.getFloor());
+            mListener.onCommentUrlClick(source, mPos);
         }
     }
 
@@ -216,6 +218,6 @@ public class CommentAdapter extends BaseAdapter {
         void onCommentReply(Comment comment);
         void onCommentIgnore(Comment comment);
         void onCommentCopy(Comment comment);
-        void onCommentUrlClick(String url, int floor);
+        void onCommentUrlClick(String url, int pos);
     }
 }

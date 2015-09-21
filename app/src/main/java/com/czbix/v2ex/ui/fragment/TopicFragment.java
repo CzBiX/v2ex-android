@@ -116,8 +116,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private boolean mLastIsFailed;
     private boolean mFavorited;
     private MenuItem mFavIcon;
-    private int mSmoothScrollTo;
-    private int mLastFocusFloor;
+    private int mSmoothScrollToPos;
+    private int mLastFocusPos;
 
     /**
      * Use this factory method to create a new instance of
@@ -161,9 +161,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mJumpBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Preconditions.checkState(mLastFocusFloor != 0, "why jump button show without dest");
-                mCommentsView.smoothScrollToPosition(mLastFocusFloor);
-                mLastFocusFloor = 0;
+                Preconditions.checkState(mLastFocusPos != 0, "why jump button show without dest");
+                mCommentsView.smoothScrollToPosition(mLastFocusPos);
+                mLastFocusPos = 0;
                 showJumpBackButton(false);
             }
         });
@@ -617,20 +617,20 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Override
-    public void onCommentUrlClick(String url, int floor) {
+    public void onCommentUrlClick(String url, int pos) {
         if (url.startsWith(MiscUtils.PREFIX_MEMBER)) {
-            findComment(Member.getNameFromUrl(url), floor);
+            findComment(Member.getNameFromUrl(url), pos);
             return;
         }
 
         onUrlClick(url);
     }
 
-    private void findComment(String member, int floor) {
-        for (int i = floor - 1; i >= 0; i--) {
+    private void findComment(String member, int pos) {
+        for (int i = pos - 1; i >= 0; i--) {
             final Comment comment = mComments.get(i);
             if (comment.getMember().getUsername().equals(member)) {
-                scrollToFloor(floor, comment.getFloor());
+                scrollToPos(pos, i);
                 return;
             }
         }
@@ -639,19 +639,23 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 member), Toast.LENGTH_SHORT).show();
     }
 
-    private void scrollToFloor(int curFloor, int destFloor) {
-        mCommentsView.smoothScrollToPosition(destFloor);
+    private void scrollToPos(int curPos, int destPos) {
+        final int headerCount = mCommentsView.getHeaderViewsCount();
+        curPos += headerCount;
+        destPos += headerCount;
 
-        if (destFloor >= mCommentsView.getFirstVisiblePosition() &&
-                destFloor <= mCommentsView.getLastVisiblePosition()) {
-            highlightRow(destFloor - mCommentsView.getFirstVisiblePosition());
+        mCommentsView.smoothScrollToPosition(destPos);
+
+        if (destPos >= mCommentsView.getFirstVisiblePosition() &&
+                destPos <= mCommentsView.getLastVisiblePosition()) {
+            highlightRow(destPos - mCommentsView.getFirstVisiblePosition());
         } else {
-            mLastFocusFloor = curFloor;
-            mSmoothScrollTo = destFloor;
+            mLastFocusPos = curPos;
+            mSmoothScrollToPos = destPos;
             mCommentsView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    mSmoothScrollTo = 0;
+                    mSmoothScrollToPos = 0;
                     mCommentsView.setOnTouchListener(null);
                     return false;
                 }
@@ -723,17 +727,17 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         final int lastVisibleItem = firstVisibleItem + visibleItemCount;
         // if has smooth scroll position, highlight it
-        if (mSmoothScrollTo != 0) {
-            if (mSmoothScrollTo >= firstVisibleItem && mSmoothScrollTo <= lastVisibleItem) {
-                highlightRow(mSmoothScrollTo - firstVisibleItem);
-                mSmoothScrollTo = 0;
+        if (mSmoothScrollToPos != 0) {
+            if (mSmoothScrollToPos >= firstVisibleItem && mSmoothScrollToPos <= lastVisibleItem) {
+                highlightRow(mSmoothScrollToPos - firstVisibleItem);
+                mSmoothScrollToPos = 0;
             }
         }
 
         // it smooth scroll finish, and has dest floor, show jump back button
-        if (mSmoothScrollTo == 0 && mLastFocusFloor != 0) {
-            if (mLastFocusFloor >= firstVisibleItem && mLastFocusFloor <= lastVisibleItem) {
-                mLastFocusFloor = 0;
+        if (mSmoothScrollToPos == 0 && mLastFocusPos != 0) {
+            if (mLastFocusPos >= firstVisibleItem && mLastFocusPos <= lastVisibleItem) {
+                mLastFocusPos = 0;
                 showJumpBackButton(false);
             } else {
                 showJumpBackButton(true);
