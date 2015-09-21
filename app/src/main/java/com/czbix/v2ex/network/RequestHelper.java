@@ -252,7 +252,7 @@ public class RequestHelper {
         final Request.Builder builder = new Request.Builder().url(obj.getIgnoreUrl() + "?once=" + onceToken);
         final boolean isComment = obj instanceof Comment;
         if (isComment) {
-            builder.post(null);
+            builder.post(RequestBody.create(null, new byte[0]));
         }
         final Request request = builder.build();
 
@@ -273,7 +273,7 @@ public class RequestHelper {
 
     public static void thank(Thankable obj, String csrfToken) throws ConnectionException, RemoteException {
         final Request request = new Request.Builder().url(obj.getThankUrl() + "?t=" + csrfToken)
-                .post(null).build();
+                .post(RequestBody.create(null, new byte[0])).build();
 
         sendRequest(request);
     }
