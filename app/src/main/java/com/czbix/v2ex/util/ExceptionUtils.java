@@ -36,7 +36,11 @@ public class ExceptionUtils {
         } else if (e instanceof ConnectionException) {
             stringId = R.string.toast_connection_exception;
         } else if (e instanceof RemoteException) {
-            Crashlytics.logException(e);
+            final RemoteException ex = (RemoteException) e;
+            if (ex.getCode() != 504 && ex.getCode() != 502) {
+                Crashlytics.logException(e);
+            }
+
             stringId = R.string.toast_remote_exception;
         } else if (e instanceof RequestException) {
             final RequestException ex = (RequestException) e;
