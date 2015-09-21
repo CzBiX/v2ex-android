@@ -42,6 +42,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.squareup.okhttp.ResponseBody;
 
 import org.jsoup.nodes.Document;
 
@@ -442,9 +443,12 @@ public class RequestHelper {
         Crashlytics.log("request url: " + response.request().urlString());
         if (code == 403 || code == 404) {
             try {
-                final String body = response.body().string();
-                Crashlytics.log(String.format("response code %d, %s", code,
-                        body.substring(0, Math.min(4096, body.length()))));
+                final ResponseBody body = response.body();
+                if (body.contentLength() != 0) {
+                    final String bodyStr = body.string();
+                    Crashlytics.log(String.format("response code %d, %s", code,
+                            bodyStr.substring(0, Math.min(4096, bodyStr.length()))));
+                }
             } catch (IOException e) {
                 throw new ConnectionException(e);
             }
