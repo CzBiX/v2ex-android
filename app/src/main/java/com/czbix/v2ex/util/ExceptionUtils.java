@@ -56,6 +56,8 @@ public class ExceptionUtils {
             }
             if (logException) {
                 Crashlytics.logException(e);
+            } else {
+                Crashlytics.log(e.getMessage());
             }
 
             stringId = R.string.toast_parse_failed;

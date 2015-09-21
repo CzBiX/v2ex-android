@@ -111,6 +111,9 @@ public class RequestHelper {
                 .build();
 
         final Response response = sendRequest(request);
+        if (response.isRedirect()) {
+            throw new ExIllegalStateException("topics page should not redirect");
+        }
 
         final Document doc;
         final List<Topic> topics;
