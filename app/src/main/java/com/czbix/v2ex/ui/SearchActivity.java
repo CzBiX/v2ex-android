@@ -1,7 +1,5 @@
 package com.czbix.v2ex.ui;
 
-import android.app.SearchManager;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.czbix.v2ex.R;
-import com.czbix.v2ex.util.LogUtils;
 import com.google.common.base.Preconditions;
 
 public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
@@ -67,18 +64,9 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     private void openSearch(String query) {
         final String queryToSearch = "site:https://www.v2ex.com " + query;
 
-        Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-        intent.putExtra(SearchManager.QUERY, queryToSearch);
-        try {
-            startActivity(intent);
-            return;
-        } catch (ActivityNotFoundException e) {
-            LogUtils.v(TAG, "can't found activity to handle web search", e);
-        }
-
         final Uri uri = new Uri.Builder().scheme("https").authority("www.google.com")
                 .path("/search").appendQueryParameter("q", queryToSearch).build();
-        intent = new Intent(Intent.ACTION_VIEW, uri);
+        final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
 }

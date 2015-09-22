@@ -744,6 +744,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             }
         }
 
+        loadNextPageIfNeed(totalItemCount, lastVisibleItem);
+    }
+
+    private void loadNextPageIfNeed(int totalItemCount, int lastVisibleItem) {
         if (mIsLoading || mLastIsFailed || (mCurPage >= mMaxPage)) {
             return;
         }
