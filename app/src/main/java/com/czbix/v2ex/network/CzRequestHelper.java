@@ -30,7 +30,7 @@ public class CzRequestHelper {
         LogUtils.v(TAG, "register user, username: %s", username);
 
         final Request request = new Request.Builder().url(String.format(API_USER, username))
-                .put(null).build();
+                .put(RequestBody.create(null, new byte[0])).build();
         final Response response = RequestHelper.sendRequest(request);
 
         final int code = response.code();
