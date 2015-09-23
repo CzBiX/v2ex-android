@@ -54,6 +54,7 @@ import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.NotificationListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
 import com.czbix.v2ex.util.ExecutorUtils;
+import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.MiscUtils;
 import com.czbix.v2ex.util.UserUtils;
 import com.czbix.v2ex.util.ViewUtils;
@@ -214,13 +215,15 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
                 ExecutorUtils.execute(new Runnable() {
                     @Override
                     public void run() {
+                        boolean success = false;
                         try {
                             RequestHelper.dailyMission();
+                            success = true;
                         } catch (ConnectionException | RemoteException e) {
-                            e.printStackTrace();
+                            LogUtils.w(TAG, "daily mission failed", e);
                         }
 
-                        AppCtx.getEventBus().post(new DailyAwardEvent(false));
+                        AppCtx.getEventBus().post(new DailyAwardEvent(!success));
                     }
                 });
             }

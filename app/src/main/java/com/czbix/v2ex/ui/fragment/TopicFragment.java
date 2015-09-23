@@ -488,8 +488,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 try {
                     RequestHelper.reply(mTopic, content.toString(), mOnceToken);
                 } catch (ConnectionException | RemoteException e) {
-                    e.printStackTrace();
-                    return;
+                    throw new FatalException(e);
                 }
 
                 AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_REPLY));
@@ -540,8 +539,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 try {
                     RequestHelper.ignore(obj, mOnceToken);
                 } catch (ConnectionException | RemoteException e) {
-                    e.printStackTrace();
-                    return;
+                    throw new FatalException(e);
                 }
 
                 AppCtx.getEventBus().post(new TopicEvent(isTopic ? TopicEvent.TYPE_IGNORE_TOPIC
@@ -587,8 +585,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 try {
                     RequestHelper.thank(obj, mCsrfToken);
                 } catch (ConnectionException | RemoteException e) {
-                    e.printStackTrace();
-                    return;
+                    throw new FatalException(e);
                 }
 
                 AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_THANK));

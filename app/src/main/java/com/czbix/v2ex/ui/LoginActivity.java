@@ -20,6 +20,7 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.PrefStore;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.google.GoogleHelper;
 import com.czbix.v2ex.model.LoginResult;
@@ -183,7 +184,7 @@ public class LoginActivity extends BaseActivity {
                     return true;
                 }
             } catch (ConnectionException | RemoteException e) {
-                e.printStackTrace();
+                throw new FatalException(e);
             }
 
             return false;

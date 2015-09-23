@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
+import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.dao.DraftDao;
@@ -135,9 +136,7 @@ public class TopicEditActivity extends AppCompatActivity {
                 try {
                     id = RequestHelper.newTopic(mNode.getName(), title, content);
                 } catch (ConnectionException | RemoteException e) {
-                    // TODO
-                    e.printStackTrace();
-                    return;
+                    throw new FatalException(e);
                 } catch (RequestException e) {
                     final String html = e.getErrorHtml();
                     if (Strings.isNullOrEmpty(html)) {
