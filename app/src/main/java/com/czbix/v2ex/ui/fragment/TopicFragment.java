@@ -666,7 +666,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onUrlClick(String url) {
         try {
-            startActivity(MiscUtils.getUrlIntent(url));
+            MiscUtils.openUrl(getActivity(), url);
         } catch (ActivityNotFoundException e) {
             LogUtils.i(TAG, "can't start activity for: %s", e, url);
             Toast.makeText(getActivity(), R.string.toast_activity_not_found,

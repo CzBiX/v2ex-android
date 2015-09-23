@@ -235,7 +235,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
             public void onClick(View v) {
                 final UserState user = UserState.getInstance();
                 if (user.isLoggedIn()) {
-                    startActivity(MiscUtils.getUrlIntent(Member.buildUrlFromName(user.getUsername())));
+                    MiscUtils.openUrl(MainActivity.this, Member.buildUrlFromName(user.getUsername()));
                 } else {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 }

@@ -91,8 +91,8 @@ public class SettingsActivity extends BaseActivity {
             infoPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    startActivity(MiscUtils.getUrlIntent(Member.buildUrlFromName(
-                            UserState.getInstance().getUsername())));
+                    MiscUtils.openUrl(getActivity(), Member.buildUrlFromName(
+                            UserState.getInstance().getUsername()));
                     return false;
                 }
             });

@@ -1,10 +1,13 @@
 package com.czbix.v2ex.util;
 
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
@@ -13,6 +16,8 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.network.RequestHelper;
+
+import java.util.List;
 
 import static android.os.Build.VERSION;
 import static android.os.Build.VERSION_CODES;
@@ -48,29 +53,44 @@ public class MiscUtils {
         Toast.makeText(context, R.string.toast_copied, Toast.LENGTH_SHORT).show();
     }
 
-    public static Intent getUrlIntent(String url) {
-        Uri uri = Uri.parse(url);
-        final boolean isEmailAddress = url.startsWith("mailto:");
+    public static boolean isEmailLink(String url) {
+        return url.startsWith("mailto:");
+    }
 
-        if (isEmailAddress) {
-            return new Intent(Intent.ACTION_SENDTO, uri);
-        }
+    public static Intent getEmailIntent(String url) {
+        Uri uri = Uri.parse(url);
+        return new Intent(Intent.ACTION_SENDTO, uri);
+    }
+
+    public static Uri formatUri(String url) {
+        Uri uri = Uri.parse(url);
 
         if (uri.isRelative()) {
             uri = Uri.parse(RequestHelper.BASE_URL + url);
         }
 
-        final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        return uri;
+    }
 
-        final String host = uri.getHost();
-        final String path = uri.getPath();
-        if (host != null && path != null) {
-            if ((host.equals(HOST_MASTER) || host.equals(HOST_WWW))
-                    && (path.startsWith(PREFIX_TOPIC) || path.startsWith(PREFIX_NODE))) {
+    public static void openUrl(Activity activity, String url) {
+        if (isEmailLink(url)) {
+            final Intent emailIntent = getEmailIntent(url);
+            activity.startActivity(emailIntent);
+            return;
+        }
+
+        final Uri uri = formatUri(url);
+        final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        final PackageManager packageManager = activity.getPackageManager();
+        final List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, 0);
+
+        for (ResolveInfo resolveInfo : resolveInfos) {
+            if (resolveInfo.activityInfo.packageName.equals(BuildConfig.APPLICATION_ID)) {
                 intent.setPackage(BuildConfig.APPLICATION_ID);
+                break;
             }
         }
 
-        return intent;
+        activity.startActivity(intent);
     }
 }
