@@ -10,11 +10,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.support.customtabs.CustomTabsIntent;
 import android.widget.Toast;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.helper.CustomTabsHelper;
 import com.czbix.v2ex.network.RequestHelper;
 
 import java.util.List;
@@ -84,13 +86,21 @@ public class MiscUtils {
         final PackageManager packageManager = activity.getPackageManager();
         final List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, 0);
 
+        boolean findMyself = false;
         for (ResolveInfo resolveInfo : resolveInfos) {
             if (resolveInfo.activityInfo.packageName.equals(BuildConfig.APPLICATION_ID)) {
-                intent.setPackage(BuildConfig.APPLICATION_ID);
+                findMyself = true;
                 break;
             }
         }
 
-        activity.startActivity(intent);
+        if (findMyself) {
+            intent.setPackage(BuildConfig.APPLICATION_ID);
+            activity.startActivity(intent);
+            return;
+        }
+
+        final CustomTabsIntent.Builder builder = CustomTabsHelper.getBuilder(activity, null);
+        builder.build().launchUrl(activity, uri);
     }
 }
