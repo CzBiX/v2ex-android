@@ -2,8 +2,10 @@ package com.czbix.v2ex.util;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.annotation.AttrRes;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.Nullable;
@@ -11,6 +13,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
@@ -99,5 +102,14 @@ public class ViewUtils {
             //noinspection deprecation
             view.setBackgroundDrawable(drawable);
         }
+    }
+
+    public static int getAttrColor(Resources.Theme theme, @AttrRes int attrId) {
+        final TypedValue typedValue = new TypedValue();
+        if (!theme.resolveAttribute(attrId, typedValue, true)) {
+            throw new IllegalArgumentException("can't found attr for: " + Integer.toHexString(attrId));
+        }
+
+        return typedValue.data;
     }
 }
