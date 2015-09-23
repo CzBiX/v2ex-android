@@ -157,6 +157,43 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_topic, container, false);
+        initJumpBackButton(rootView);
+
+        mLayout = ((SwipeRefreshLayout) rootView.findViewById(R.id.comments_layout));
+        mLayout.setOnRefreshListener(this);
+
+        mCommentsView = ((ListView) mLayout.findViewById(R.id.comments));
+
+        initTopicView(inflater);
+        initCommentsView();
+
+        if (!mTopic.hasInfo()) {
+            mCommentsView.setVisibility(View.INVISIBLE);
+        }
+
+        return rootView;
+    }
+
+    private void initCommentsView() {
+        mCommentAdapter = new CommentAdapter(getActivity(), this);
+        mCommentAdapter.setDataSource(mComments);
+        mCommentsView.addHeaderView(mTopicView);
+        mCommentsView.setAdapter(mCommentAdapter);
+        mCommentsView.setOnScrollListener(this);
+    }
+
+    private void initTopicView(LayoutInflater inflater) {
+        mTopicView = (LinearLayout) inflater.inflate(R.layout.view_comment_topic, mCommentsView, false);
+        mTopicView.setBackgroundColor(Color.WHITE);
+
+        mTopicHolder = new TopicAdapter.ViewHolder(mTopicView.findViewById(R.id.topic));
+        mTopicHolder.setContentListener(this);
+        mTopicHolder.setNodeListener(this);
+        mTopicHolder.setMemberListener(this);
+        mTopicHolder.fillData(mTopic);
+    }
+
+    private void initJumpBackButton(View rootView) {
         mJumpBack = ((ImageButton) rootView.findViewById(R.id.btn_jump_back));
         mJumpBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,32 +204,6 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 showJumpBackButton(false);
             }
         });
-
-        mLayout = ((SwipeRefreshLayout) rootView.findViewById(R.id.comments_layout));
-        mLayout.setOnRefreshListener(this);
-
-        mCommentsView = ((ListView) mLayout.findViewById(R.id.comments));
-
-        mTopicView = (LinearLayout) inflater.inflate(R.layout.view_comment_topic, mCommentsView, false);
-        mTopicView.setBackgroundColor(Color.WHITE);
-
-        mTopicHolder = new TopicAdapter.ViewHolder(mTopicView.findViewById(R.id.topic));
-        mTopicHolder.setContentListener(this);
-        mTopicHolder.setNodeListener(this);
-        mTopicHolder.setMemberListener(this);
-        mTopicHolder.fillData(mTopic);
-
-        mCommentAdapter = new CommentAdapter(getActivity(), this);
-        mCommentAdapter.setDataSource(mComments);
-        mCommentsView.addHeaderView(mTopicView);
-        mCommentsView.setAdapter(mCommentAdapter);
-        mCommentsView.setOnScrollListener(this);
-
-        if (!mTopic.hasInfo()) {
-            mCommentsView.setVisibility(View.INVISIBLE);
-        }
-
-        return rootView;
     }
 
     @Override

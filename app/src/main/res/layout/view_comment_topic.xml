@@ -4,4 +4,5 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
     <include layout="@layout/view_topic" android:id="@+id/topic" />
+    <!-- reserved to include postscript -->
 </LinearLayout>
