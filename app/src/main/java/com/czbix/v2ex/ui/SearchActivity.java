@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.helper.CustomTabsHelper;
 import com.czbix.v2ex.util.ExecutorUtils;
-import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
 
 import java.util.concurrent.ScheduledFuture;
@@ -77,12 +76,8 @@ public class SearchActivity extends AppCompatActivity implements TextWatcher, Te
     private void openSearch(String query) {
         final Uri uri = getSearchUri(query);
 
-        final CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder(mCustomTabsHelper.getSession());
-        final int colorPrimary = ViewUtils.getAttrColor(getTheme(),
-                android.support.v7.appcompat.R.attr.colorPrimary);
-        builder.setToolbarColor(colorPrimary)
-                .setShowTitle(true);
-
+        final CustomTabsIntent.Builder builder = CustomTabsHelper.getBuilder(this,
+                mCustomTabsHelper.getSession());
         final CustomTabsIntent intent = builder.build();
         intent.launchUrl(this, uri);
     }
