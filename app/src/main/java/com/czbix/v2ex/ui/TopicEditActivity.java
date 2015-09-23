@@ -37,6 +37,7 @@ import com.czbix.v2ex.ui.util.Html;
 import com.czbix.v2ex.ui.widget.ExArrayAdapter;
 import com.czbix.v2ex.ui.widget.SearchListView;
 import com.czbix.v2ex.util.ExecutorUtils;
+import com.czbix.v2ex.util.MiscUtils;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
@@ -107,6 +108,9 @@ public class TopicEditActivity extends AppCompatActivity {
         switch (id) {
             case R.id.action_post:
                 postTopic();
+                return true;
+            case R.id.action_upload:
+                MiscUtils.openUrl(this, "https://m.imgur.com/upload/redirect");
                 return true;
         }
 

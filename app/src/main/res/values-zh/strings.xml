@@ -95,4 +95,5 @@
     <string name="pref_title_always_show_reply_form">总是显示回复框</string>
     <string name="drawer_feedback">反馈</string>
     <string name="toast_email_app_not_found">找不到邮件应用！</string>
+    <string name="action_upload_image">上传图片</string>
 </resources>

@@ -5,5 +5,8 @@
     <item android:id="@+id/action_post"
           android:title="@string/action_post"
           android:orderInCategory="100"
-          app:showAsAction="always"/>
+          app:showAsAction="ifRoom"/>
+    <item android:id="@+id/action_upload"
+          android:title="@string/action_upload_image"
+          app:showAsAction="never"/>
 </menu>

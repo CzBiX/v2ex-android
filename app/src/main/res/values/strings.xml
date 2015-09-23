@@ -86,4 +86,5 @@
     <string name="toast_activity_not_found">Open app failed!</string>
     <string name="drawer_feedback">Feedback</string>
     <string name="toast_email_app_not_found">Can\'t found email app!</string>
+    <string name="action_upload_image">Upload image</string>
 </resources>
