@@ -6,7 +6,7 @@
         <!--<item name="colorAccent">@color/accent_material_dark</item>-->
     </style>
 
-    <style name="AppTheme.Main" parent="AppTheme">
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -24,7 +24,7 @@
     </style>
 
     <style name="AppTheme.Toolbar" parent="Widget.AppCompat.Toolbar">
-        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 

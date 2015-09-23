@@ -5,21 +5,26 @@ import android.os.Bundle;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.view.Menu;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.helper.CustomTabsHelper;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
 
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class SearchActivity extends AppCompatActivity implements TextWatcher, TextView.OnEditorActionListener {
     private static final String TAG = SearchActivity.class.getSimpleName();
     private static final int DELAY_BEFORE_PREFETCH = 400;
 
@@ -30,13 +35,19 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+        mCustomTabsHelper = new CustomTabsHelper();
 
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
         Preconditions.checkNotNull(actionBar, "action bar shouldn't be null");
 
+        actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
 
-        mCustomTabsHelper = new CustomTabsHelper();
+        final EditText editText = (EditText) findViewById(R.id.search);
+        editText.addTextChangedListener(this);
+        editText.setOnEditorActionListener(this);
     }
 
     @Override
@@ -54,18 +65,6 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_nodes, menu);
-
-        final SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setIconifiedByDefault(false);
-        searchView.setOnQueryTextListener(this);
-        searchView.requestFocus();
-
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
@@ -73,39 +72,6 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        if (mPrefetchTask != null) {
-            mPrefetchTask.cancel(true);
-        }
-        openSearch(query);
-        finish();
-
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(final String newText) {
-        if (Strings.isNullOrEmpty(newText)) {
-            return false;
-        }
-
-        if (mPrefetchTask != null) {
-            mPrefetchTask.cancel(true);
-        }
-
-        if (!newText.endsWith(" ")) {
-            mPrefetchTask = ExecutorUtils.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    mCustomTabsHelper.mayLaunchUrl(getSearchUri(newText), null, null);
-                }
-            }, DELAY_BEFORE_PREFETCH, TimeUnit.MILLISECONDS);
-        }
-
-        return false;
     }
 
     private void openSearch(String query) {
@@ -126,5 +92,57 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
 
         return new Uri.Builder().scheme("https").authority("www.google.com")
                 .path("/search").appendQueryParameter("q", queryToSearch).build();
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+        if (TextUtils.isEmpty(editable)) {
+            return;
+        }
+
+        final String newText = editable.toString();
+
+        if (mPrefetchTask != null) {
+            mPrefetchTask.cancel(true);
+        }
+
+        if (!newText.endsWith(" ")) {
+            mPrefetchTask = ExecutorUtils.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    mCustomTabsHelper.mayLaunchUrl(getSearchUri(newText), null, null);
+                }
+            }, DELAY_BEFORE_PREFETCH, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        if (actionId != EditorInfo.IME_ACTION_SEARCH) {
+            return false;
+        }
+
+        final String query = v.getText().toString();
+        if (TextUtils.isEmpty(query)) {
+            return false;
+        }
+
+        if (mPrefetchTask != null) {
+            mPrefetchTask.cancel(true);
+        }
+        openSearch(query);
+        finish();
+
+        return true;
     }
 }
