@@ -22,8 +22,8 @@ android {
         applicationId "com.czbix.v2ex"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 33
-        versionName "1.15.5"
+        versionCode 34
+        versionName "1.16.0"
     }
     packagingOptions {
         exclude '.readme'
