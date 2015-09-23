@@ -1,5 +1,6 @@
 package com.czbix.v2ex.ui.helper;
 
+import android.app.Activity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -9,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.util.MiscUtils;
 import com.czbix.v2ex.util.ViewUtils;
 
 public class ReplyFormHelper implements TextWatcher, View.OnClickListener {
@@ -16,17 +18,23 @@ public class ReplyFormHelper implements TextWatcher, View.OnClickListener {
     private final ImageButton mSubmit;
     private final View mRootView;
     private final OnReplyListener mListener;
+    private final ImageButton mUpload;
+    private final Activity mActivity;
     private boolean isShown;
 
-    public ReplyFormHelper(ViewStub viewStub, OnReplyListener listener) {
+    public ReplyFormHelper(Activity activity, ViewStub viewStub, OnReplyListener listener) {
+        mActivity = activity;
         mRootView = viewStub.inflate();
         mListener = listener;
 
         mContent = ((EditText) mRootView.findViewById(R.id.content));
+        mUpload = (ImageButton) mRootView.findViewById(R.id.upload);
         mSubmit = ((ImageButton) mRootView.findViewById(R.id.submit));
+
         ViewUtils.setImageTintList(mSubmit, R.color.btn_reply_submit);
 
         mContent.addTextChangedListener(this);
+        mUpload.setOnClickListener(this);
         mSubmit.setOnClickListener(this);
 
         afterTextChanged(mContent.getText());
@@ -41,7 +49,9 @@ public class ReplyFormHelper implements TextWatcher, View.OnClickListener {
 
     @Override
     public void afterTextChanged(Editable s) {
-        mSubmit.setEnabled(!TextUtils.isEmpty(s));
+        final boolean isEmpty = TextUtils.isEmpty(s);
+        mSubmit.setEnabled(!isEmpty);
+        mUpload.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
     public void toggle() {
@@ -64,7 +74,11 @@ public class ReplyFormHelper implements TextWatcher, View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        mListener.onReply(mContent.getText());
+        if (v.getId() == R.id.upload) {
+            MiscUtils.openUrl(mActivity, "https://m.imgur.com/upload/redirect");
+        } else if (v.getId() == R.id.submit) {
+            mListener.onReply(mContent.getText());
+        }
     }
 
     public interface OnReplyListener {

@@ -320,7 +320,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         final View rootView = getView();
         Preconditions.checkNotNull(rootView);
         final ViewStub viewStub = (ViewStub) rootView.findViewById(R.id.reply_form);
-        mReplyForm = new ReplyFormHelper(viewStub, this);
+        mReplyForm = new ReplyFormHelper(getActivity(), viewStub, this);
 
         TrackerUtils.onTopicSwitchReply(true);
     }
