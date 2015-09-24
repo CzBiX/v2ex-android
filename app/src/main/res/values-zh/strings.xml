@@ -65,7 +65,6 @@
     <string name="title_postscript">附言 %d</string>
     <string name="toast_topic_ignored">已忽略主题！</string>
     <string name="action_fav">收藏</string>
-    <string name="tv_will_open_browser_to_search">将使用浏览器进行搜索操作</string>
     <string name="toast_can_not_found_comments_of_the_author">找不到 %s 的评论！</string>
     <string name="pref_long_press_to_sort">长按项目进行排序</string>
     <string name="pref_title_tab_list">自定义分类显示</string>

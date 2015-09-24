@@ -6,7 +6,6 @@
 
     <screenName name="com.czbix.v2ex.ui.MainActivity">MainActivity</screenName>
     <screenName name="com.czbix.v2ex.ui.TopicActivity">TopicActivity</screenName>
-    <screenName name="com.czbix.v2ex.ui.SearchActivity">SearchActivity</screenName>
     <screenName name="com.czbix.v2ex.ui.SettingsActivity">SettingsActivity</screenName>
     <screenName name="com.czbix.v2ex.ui.LoadingActivity">LoadingActivity</screenName>
     <screenName name="com.czbix.v2ex.ui.LoginActivity">LoginActivity</screenName>

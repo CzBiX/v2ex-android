@@ -47,12 +47,14 @@ import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.loader.GooglePhotoUrlLoader;
 import com.czbix.v2ex.network.RequestHelper;
+import com.czbix.v2ex.presenter.TopicSearchPresenter;
 import com.czbix.v2ex.res.GoogleImg;
 import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
 import com.czbix.v2ex.ui.fragment.CategoryTabFragment;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.NotificationListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
+import com.czbix.v2ex.ui.widget.SearchBoxLayout;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.MiscUtils;
@@ -81,8 +83,12 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     private View mNavBg;
     private MenuItem mNotificationsItem;
     private View mAwardButton;
+    private SearchBoxLayout mSearchBox;
+    private TopicSearchPresenter mSearchPresenter;
     @IdRes
     private int mLastMenuId;
+    private MenuItem mSearchMenuItem;
+    private boolean mIsCategoryTabFragment;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,13 +101,41 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         mAppBar = ((AppBarLayout) findViewById(R.id.appbar));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mNav = ((NavigationView) findViewById(R.id.nav));
+        mSearchBox = (SearchBoxLayout) findViewById(R.id.search_box);
         mNavBg = mNav.findViewById(R.id.nav_layout);
 
         initToolbar();
         initNavDrawer();
+        initSearchBox();
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         switchFragment(getFragmentToShow(getIntent()), false);
+    }
+
+    private void initSearchBox() {
+        mSearchPresenter = new TopicSearchPresenter(this);
+        mSearchBox.setOnActionListener(new SearchBoxLayout.Listener() {
+            @Override
+            public void onQueryTextChange(String newText) {
+                mSearchPresenter.changeQuery(newText);
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                final boolean result = mSearchPresenter.submitQuery(query);
+                return result;
+            }
+
+            @Override
+            public void start() {
+                mSearchPresenter.start();
+            }
+
+            @Override
+            public void end() {
+                mSearchPresenter.end();
+            }
+        });
     }
 
     private Fragment getFragmentToShow(Intent intent) {
@@ -333,7 +367,9 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         }
         fragmentTransaction.commit();
 
-        setAppBarShadow(shouldHasAppBarShadow(fragment));
+        mIsCategoryTabFragment = isCategoryTabFragment(fragment);
+        setAppBarShadow(!mIsCategoryTabFragment);
+        invalidateOptionsMenu();
     }
 
     private void updateUsername() {
@@ -361,9 +397,23 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        mSearchMenuItem = menu.findItem(R.id.action_web_search);
+        mSearchMenuItem.setVisible(mIsCategoryTabFragment);
+
         enableLoginMenu(menu);
 
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item == mSearchMenuItem) {
+            mSearchBox.show();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void enableLoginMenu(Menu menu) {
@@ -397,6 +447,10 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     @Override
     protected void onStop() {
         super.onStop();
+
+        if (mSearchBox.getVisibility() == View.VISIBLE) {
+            mSearchBox.hide(false);
+        }
 
         AppCtx.getEventBus().unregister(this);
     }
@@ -440,10 +494,10 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     @Override
     public void onBackStackChanged() {
         final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
-        setAppBarShadow(shouldHasAppBarShadow(fragment));
+        setAppBarShadow(!isCategoryTabFragment(fragment));
     }
 
-    private static boolean shouldHasAppBarShadow(Fragment fragment) {
-        return !(fragment instanceof CategoryTabFragment);
+    private static boolean isCategoryTabFragment(Fragment fragment) {
+        return fragment instanceof CategoryTabFragment;
     }
 }

@@ -116,11 +116,6 @@
             android:noHistory="true" >
         </activity>
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ui.SearchActivity"
-            android:windowSoftInputMode="stateAlwaysVisible" >
-        </activity>
-        <activity
             android:parentActivityName=".ui.MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:name=".ui.TopicEditActivity" >
