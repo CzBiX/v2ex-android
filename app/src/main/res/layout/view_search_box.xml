@@ -8,7 +8,7 @@
     <RelativeLayout
         android:id="@+id/box"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize"
+        android:layout_height="48dp"
         android:layout_margin="@dimen/content_spacing"
         android:elevation="@dimen/appbar_elevation"
         android:background="@drawable/radius_box" >

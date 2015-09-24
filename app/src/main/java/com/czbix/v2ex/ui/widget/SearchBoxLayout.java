@@ -89,6 +89,7 @@ public class SearchBoxLayout extends FrameLayout implements View.OnClickListener
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mQuery.requestFocus();
+                    ViewUtils.showInputMethod(mQuery);
                 }
             });
 

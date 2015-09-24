@@ -85,6 +85,12 @@ public class ViewUtils {
         view.setImageTintList(view.getResources().getColorStateList(colorId));
     }
 
+    public static void showInputMethod(View view) {
+        final InputMethodManager manager = (InputMethodManager) view.getContext()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        manager.showSoftInput(view, 0);
+    }
+
     /**
      * @param view any view in the window
      */

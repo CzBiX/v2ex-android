@@ -463,6 +463,10 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
             mDrawerLayout.closeDrawer(mNav);
             return;
         }
+        if (mSearchBox.getVisibility() == View.VISIBLE) {
+            mSearchBox.hide();
+            return;
+        }
         super.onBackPressed();
     }
 
