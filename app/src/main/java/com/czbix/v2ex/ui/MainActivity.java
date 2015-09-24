@@ -58,6 +58,7 @@ import com.czbix.v2ex.ui.widget.SearchBoxLayout;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.MiscUtils;
+import com.czbix.v2ex.util.TrackerUtils;
 import com.czbix.v2ex.util.UserUtils;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.eventbus.Subscribe;
@@ -409,6 +410,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item == mSearchMenuItem) {
+            TrackerUtils.onSearch();
             mSearchBox.show();
             return true;
         }

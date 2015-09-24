@@ -8,6 +8,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
+import com.google.common.base.Preconditions;
 
 import java.util.Map;
 
@@ -16,6 +17,8 @@ public class TrackerUtils {
     private static Tracker mTracker;
 
     public static void init(Context context) {
+        Preconditions.checkState(mAnalytics == null, "can't init twice");
+
         mAnalytics = GoogleAnalytics.getInstance(context);
         if (BuildConfig.DEBUG) {
             mAnalytics.getLogger().setLogLevel(Logger.LogLevel.VERBOSE);
@@ -43,6 +46,11 @@ public class TrackerUtils {
         mTracker.send(hit);
     }
 
+    public static void onSearch() {
+        final Map<String, String> hit = new HitBuilders.EventBuilder(Category.APP, Action.SEARCH).build();
+        mTracker.send(hit);
+    }
+
     private static class Category {
         public static final String APP = "App";
         public static final String TOPIC = "Topic";
@@ -52,6 +60,7 @@ public class TrackerUtils {
         public static final String CREATE = "Create";
         public static final String SWITCH_REPLY = "Switch Reply";
         public static final String REPLY = "Reply";
+        public static final String SEARCH = "Search";
     }
 
     private static class Label {

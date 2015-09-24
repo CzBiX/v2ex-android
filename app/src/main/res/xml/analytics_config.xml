@@ -9,4 +9,5 @@
     <screenName name="com.czbix.v2ex.ui.SettingsActivity">SettingsActivity</screenName>
     <screenName name="com.czbix.v2ex.ui.LoadingActivity">LoadingActivity</screenName>
     <screenName name="com.czbix.v2ex.ui.LoginActivity">LoginActivity</screenName>
+    <screenName name="com.czbix.v2ex.ui.TopicEditActivity">TopicEditActivity</screenName>
 </resources>
