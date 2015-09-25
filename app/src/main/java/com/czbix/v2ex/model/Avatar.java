@@ -46,12 +46,16 @@ public class Avatar implements Parcelable {
 
     public String getUrlByDp(float dp) {
         final float size = dp * DENSITY;
-        if (size >= SIZE_LARGE) {
-            return getLarge();
-        } else if (size >= SIZE_NORMAL) {
+        return getUrlByPx(size);
+    }
+
+    public String getUrlByPx(float size) {
+        if (size <= SIZE_MINI) {
+            return getMini();
+        } else if (size <= SIZE_NORMAL) {
             return getNormal();
         } else {
-            return getMini();
+            return getLarge();
         }
     }
 
