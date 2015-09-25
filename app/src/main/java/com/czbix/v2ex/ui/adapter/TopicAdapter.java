@@ -5,14 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.fragment.NodeListFragment.OnNodeActionListener;
+import com.czbix.v2ex.ui.widget.AvatarView;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod.OnHtmlActionListener;
 import com.czbix.v2ex.util.ViewUtils;
@@ -61,7 +60,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         private static final int TOPIC_PICTURE_OTHER_WIDTH = ViewUtils.getDimensionPixelSize(R.dimen.topic_picture_other_width);
 
         public final TextView mTitle;
-        public final ImageView mAvatar;
+        public final AvatarView mAvatar;
         public final TextView mUsername;
         public final TextView mNode;
         public final TextView mReplyCount;
@@ -81,7 +80,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
             view.setOnClickListener(this);
 
-            mAvatar = ((ImageView) view.findViewById(R.id.avatar_img));
+            mAvatar = ((AvatarView) view.findViewById(R.id.avatar_img));
             mTitle = ((TextView) view.findViewById(R.id.title_tv));
             mUsername = ((TextView) view.findViewById(R.id.username_tv));
             mNode = ((TextView) view.findViewById(R.id.node_tv));
@@ -141,8 +140,8 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
                 mReplyCount.setVisibility(View.INVISIBLE);
             }
 
+            mAvatar.setAvatar(topic.getMember().getAvatar());
             setContent(topic);
-            setAvatarImg(topic);
         }
 
         public void updateForRead() {
@@ -162,14 +161,6 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             mContent.setVisibility(View.VISIBLE);
             ViewUtils.setHtmlIntoTextView(mContent, content, ViewUtils.getWidthPixels() -
                     TOPIC_PICTURE_OTHER_WIDTH);
-        }
-
-        private void setAvatarImg(Topic topic) {
-            final float dimen = mAvatar.getResources().getDimension(R.dimen.topic_avatar_size_real);
-            final String url = topic.getMember().getAvatar().getUrlByDp(dimen);
-            Glide.with(mAvatar.getContext()).load(url)
-                    .placeholder(R.drawable.avatar_default).crossFade()
-                    .into(mAvatar);
         }
 
         @Override

@@ -4,7 +4,7 @@
                 android:padding="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-    <ImageView
+    <com.czbix.v2ex.ui.widget.AvatarView
         android:id="@+id/avatar_img"
         tools:src="@drawable/avatar_default"
         android:layout_marginLeft="8dp"

@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +17,7 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.Member;
+import com.czbix.v2ex.ui.widget.AvatarView;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod.OnHtmlActionListener;
 import com.czbix.v2ex.util.ViewUtils;
@@ -78,7 +78,7 @@ public class CommentAdapter extends BaseAdapter {
                 ViewUtils.getDimensionPixelSize(R.dimen.comment_picture_other_width);
 
         private final TextView mContent;
-        private final ImageView mAvatar;
+        private final AvatarView mAvatar;
         private final TextView mUsername;
         private final TextView mReplyTime;
         private final TextView mFloor;
@@ -88,12 +88,12 @@ public class CommentAdapter extends BaseAdapter {
         private int mPos;
 
         public ViewHolder(View view, OnCommentActionListener listener) {
-            mAvatar = ((ImageView) view.findViewById(R.id.avatar_img));
+            mAvatar = (AvatarView) view.findViewById(R.id.avatar_img);
             mContent = (TextView) view.findViewById(R.id.content);
             mUsername = (TextView) view.findViewById(R.id.username_tv);
-            mReplyTime = ((TextView) view.findViewById(R.id.time_tv));
-            mFloor = ((TextView) view.findViewById(R.id.floor));
-            mThanks = ((TextView) view.findViewById(R.id.thanks));
+            mReplyTime = (TextView) view.findViewById(R.id.time_tv);
+            mFloor = (TextView) view.findViewById(R.id.floor);
+            mThanks = (TextView) view.findViewById(R.id.thanks);
 
             mListener = listener;
             mAvatar.setOnClickListener(this);
@@ -118,7 +118,7 @@ public class CommentAdapter extends BaseAdapter {
             mReplyTime.setText(comment.getReplyTime());
             mFloor.setText(Integer.toString(comment.getFloor()));
 
-            setAvatarImg(comment);
+            mAvatar.setAvatar(comment.getMember().getAvatar());
         }
 
         private void appendThanks(Comment comment) {
@@ -139,14 +139,6 @@ public class CommentAdapter extends BaseAdapter {
                 mThanks.setText(text);
             }
             mThanks.setVisibility(View.VISIBLE);
-        }
-
-        public void setAvatarImg(Comment comment) {
-            final float dimen = mAvatar.getResources().getDimension(R.dimen.comment_avatar_size_real);
-            final String url = comment.getMember().getAvatar().getUrlByDp(dimen);
-            Glide.with(mAvatar.getContext()).load(url)
-                    .placeholder(R.drawable.avatar_default).crossFade()
-                    .into(mAvatar);
         }
 
         @Override

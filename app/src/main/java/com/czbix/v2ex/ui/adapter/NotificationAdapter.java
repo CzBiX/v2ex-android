@@ -5,12 +5,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Notification;
+import com.czbix.v2ex.ui.widget.AvatarView;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Strings;
 
@@ -52,7 +51,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 ViewUtils.getDimensionPixelSize(R.dimen.topic_picture_other_width);
 
         private final OnNotificationActionListener mListener;
-        private final ImageView mAvatar;
+        private final AvatarView mAvatar;
         private final TextView mTitle;
         private final TextView mUsername;
         private final TextView mTime;
@@ -66,7 +65,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
             view.setOnClickListener(this);
 
-            mAvatar = (ImageView) view.findViewById(R.id.avatar_img);
+            mAvatar = (AvatarView) view.findViewById(R.id.avatar_img);
             mTitle = (TextView) view.findViewById(R.id.title_tv);
             mUsername = (TextView) view.findViewById(R.id.username_tv);
             mTime = (TextView) view.findViewById(R.id.time_tv);
@@ -85,7 +84,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             mUsername.setText(notification.mMember.getUsername());
             mAction.setText(getTypeText(notification.mType));
             mTime.setText(notification.mTime);
-            setAvatarImg(notification);
+
+            mAvatar.setAvatar(mNotification.mMember.getAvatar());
             setContent(notification);
         }
 
@@ -98,14 +98,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             mContent.setVisibility(View.VISIBLE);
             ViewUtils.setHtmlIntoTextView(mContent, content, ViewUtils.getWidthPixels() -
                     TOPIC_PICTURE_OTHER_WIDTH);
-        }
-
-        private void setAvatarImg(Notification notification) {
-            final float dimen = mAvatar.getResources().getDimension(R.dimen.comment_avatar_size);
-            final String url = notification.mMember.getAvatar().getUrlByDp(dimen);
-            Glide.with(mAvatar.getContext()).load(url)
-                    .placeholder(R.drawable.avatar_default).crossFade()
-                    .into(mAvatar);
         }
 
         private String getTypeText(@Notification.NotificationType int type) {
