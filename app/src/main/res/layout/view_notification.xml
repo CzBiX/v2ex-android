@@ -1,69 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:padding="@dimen/content_spacing"
+                android:padding="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-    <ImageView
+    <com.czbix.v2ex.ui.widget.AvatarView
         android:id="@+id/avatar_img"
+        android:padding="4dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
         android:layout_height="@dimen/comment_avatar_size"
         android:layout_width="@dimen/comment_avatar_size"
+        tools:src="@drawable/avatar_default"
         android:contentDescription="@string/desc_avatar"/>
 
     <TextView
         android:id="@+id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/content_spacing"
-        android:layout_marginLeft="@dimen/content_spacing"
+        android:padding="4dp"
         android:layout_toEndOf="@id/avatar_img"
         android:layout_toRightOf="@id/avatar_img"
-        android:text="Username"
-        style="@style/AppTheme.Topic.Username"
-        tools:ignore="HardcodedText"/>
-
-    <TextView
-        android:id="@+id/time_tv"
-        android:text="12h"
-        style="@style/AppTheme.Topic.Secondary"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignBaseline="@id/username_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:ignore="HardcodedText"/>
+        tools:text="Username"
+        style="@style/AppTheme.Topic.Username"/>
 
     <TextView
         android:id="@+id/action"
-        android:text="Thanks"
+        tools:text="Thanks"
         android:textSize="12sp"
-        android:layout_marginStart="@dimen/content_spacing"
-        android:layout_marginLeft="@dimen/content_spacing"
         android:layout_alignBaseline="@id/username_tv"
+        android:padding="4dp"
         android:layout_toEndOf="@id/username_tv"
         android:layout_toRightOf="@id/username_tv"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/time_tv"
+        tools:text="12h"
+        style="@style/AppTheme.Topic.Secondary"
+        android:layout_margin="4dp"
+        android:layout_below="@id/username_tv"
+        android:layout_alignStart="@id/username_tv"
+        android:layout_alignLeft="@id/username_tv"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:ignore="HardcodedText"/>
+        tools:ignore="RelativeOverlap"/>
 
     <TextView
         android:id="@+id/title_tv"
         style="@style/AppTheme.Topic.Title"
-        android:text="Title"
-        android:textStyle="bold"
-        android:layout_marginTop="6dp"
+        tools:text="Title"
         android:layout_below="@id/avatar_img"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="HardcodedText"/>
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Content content"
         style="@style/AppTheme.Topic.Content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_below="@id/title_tv"
-        android:layout_marginTop="6dp"
-        android:text="Content"
-        tools:ignore="HardcodedText"/>
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 </RelativeLayout>
