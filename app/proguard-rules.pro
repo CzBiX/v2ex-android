@@ -29,6 +29,10 @@
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable
 
+# for Crashlytics
+-keepattributes *Annotation*
+-keep class com.crashlytics.android.**
+
 # Gson uses generic type information stored in a class file when working with fields. Proguard
 # removes such information by default, so configure it to keep all of it.
 -keepattributes Signature
