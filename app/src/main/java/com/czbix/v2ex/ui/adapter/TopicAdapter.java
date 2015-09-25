@@ -165,7 +165,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         }
 
         private void setAvatarImg(Topic topic) {
-            final float dimen = mAvatar.getResources().getDimension(R.dimen.topic_avatar_size);
+            final float dimen = mAvatar.getResources().getDimension(R.dimen.topic_avatar_size_real);
             final String url = topic.getMember().getAvatar().getUrlByDp(dimen);
             Glide.with(mAvatar.getContext()).load(url)
                     .placeholder(R.drawable.avatar_default).crossFade()

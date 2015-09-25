@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:padding="@dimen/content_spacing"
+                android:padding="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/avatar_img"
         tools:src="@drawable/avatar_default"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:padding="11dp"
         android:layout_height="@dimen/comment_avatar_size"
         android:layout_width="@dimen/comment_avatar_size"
         android:contentDescription="@string/desc_avatar"/>
@@ -15,22 +18,20 @@
         android:id="@+id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/content_spacing"
-        android:layout_marginLeft="@dimen/content_spacing"
         android:layout_toEndOf="@id/avatar_img"
         android:layout_toRightOf="@id/avatar_img"
         tools:text="Username"
+        android:layout_margin="4dp"
         style="@style/AppTheme.Topic.Username"/>
 
     <TextView
         android:id="@+id/time_tv"
         tools:text="12h"
         style="@style/AppTheme.Topic.Secondary"
-        android:layout_marginStart="@dimen/content_spacing"
-        android:layout_marginLeft="@dimen/content_spacing"
         android:layout_toEndOf="@id/username_tv"
         android:layout_toRightOf="@id/username_tv"
         android:layout_alignBaseline="@id/username_tv"
+        android:layout_margin="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -42,8 +43,7 @@
         android:textColor="#888"
         android:textSize="12sp"
         android:textStyle="bold"
-        android:layout_marginStart="@dimen/content_spacing"
-        android:layout_marginLeft="@dimen/content_spacing"
+        android:layout_margin="4dp"
         android:layout_alignBaseline="@id/username_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,7 +55,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/username_tv"
-        android:layout_marginTop="6dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"
         android:layout_alignStart="@id/username_tv"
         android:layout_alignLeft="@id/username_tv"
         tools:text="Content"/>
@@ -66,7 +67,10 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignBaseline="@id/username_tv"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"
         style="@style/AppTheme.Topic.Secondary"
         tools:text="23L"
-        android:id="@+id/floor"/>
+        android:id="@+id/floor"
+        tools:ignore="RelativeOverlap"/>
 </RelativeLayout>

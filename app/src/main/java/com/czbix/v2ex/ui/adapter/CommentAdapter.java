@@ -142,7 +142,7 @@ public class CommentAdapter extends BaseAdapter {
         }
 
         public void setAvatarImg(Comment comment) {
-            final float dimen = mAvatar.getResources().getDimension(R.dimen.comment_avatar_size);
+            final float dimen = mAvatar.getResources().getDimension(R.dimen.comment_avatar_size_real);
             final String url = comment.getMember().getAvatar().getUrlByDp(dimen);
             Glide.with(mAvatar.getContext()).load(url)
                     .placeholder(R.drawable.avatar_default).crossFade()

@@ -6,11 +6,13 @@
     
     <dimen name="nav_avatar_size">64dp</dimen>
     <dimen name="topic_avatar_size">48dp</dimen>
-    <dimen name="comment_avatar_size">24dp</dimen>
+    <dimen name="topic_avatar_size_real">40dp</dimen>
+    <dimen name="comment_avatar_size">48dp</dimen>
+    <dimen name="comment_avatar_size_real">26dp</dimen>
     <dimen name="node_avatar_size">48dp</dimen>
 
     <dimen name="topic_picture_other_width">32dp</dimen>
-    <dimen name="comment_picture_other_width">54dp</dimen>
+    <dimen name="comment_picture_other_width">68dp</dimen>
     
     <dimen name="content_spacing">8dp</dimen>
 
