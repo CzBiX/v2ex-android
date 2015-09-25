@@ -17,6 +17,8 @@
         <item name="tabIndicatorColor">@android:color/white</item>
         <item name="tabSelectedTextColor">@android:color/white</item>
         <item name="tabTextAppearance">@style/AppTheme.TabLayout.TextAppearance</item>
+        <item name="tabPaddingStart">16dp</item>
+        <item name="tabPaddingEnd">16dp</item>
     </style>
 
     <style name="AppTheme.TabLayout.TextAppearance" parent="TextAppearance.Design.Tab">
