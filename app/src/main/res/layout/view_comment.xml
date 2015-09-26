@@ -10,6 +10,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:padding="11dp"
+        android:layout_marginTop="1dp"
         android:layout_height="@dimen/comment_avatar_size"
         android:layout_width="@dimen/comment_avatar_size"
         android:contentDescription="@string/desc_avatar"/>
@@ -21,7 +22,9 @@
         android:layout_toEndOf="@id/avatar_img"
         android:layout_toRightOf="@id/avatar_img"
         tools:text="Username"
-        android:layout_margin="4dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="12dp"
         style="@style/AppTheme.Topic.Username"/>
 
     <TextView
@@ -55,8 +58,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/username_tv"
+        android:layout_marginTop="8dp"
         android:layout_marginRight="12dp"
         android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
         android:layout_alignStart="@id/username_tv"
         android:layout_alignLeft="@id/username_tv"
         tools:text="Content"/>
