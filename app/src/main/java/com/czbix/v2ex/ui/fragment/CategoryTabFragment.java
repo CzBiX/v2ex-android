@@ -16,6 +16,7 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.PrefStore;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.ui.MainActivity;
+import com.google.common.base.Preconditions;
 
 import java.util.List;
 
@@ -65,6 +66,12 @@ public class CategoryTabFragment extends Fragment implements SharedPreferences.O
         final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
         ViewCompat.setElevation(tabLayout, getResources().getDimension(R.dimen.appbar_elevation));
         tabLayout.setupWithViewPager(viewPager);
+
+        // XXX: TabLayout support tabContentStart, but no tabContentEnd, so set the padding manually
+        final View tabStrip = tabLayout.getChildAt(0);
+        Preconditions.checkNotNull(tabStrip, "tabStrip shouldn't be null");
+        final int padding = getResources().getDimensionPixelSize(R.dimen.tab_layout_padding);
+        ViewCompat.setPaddingRelative(tabStrip, padding, 0, padding, 0);
 
         return view;
     }
