@@ -1,27 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
-                android:padding="@dimen/content_spacing"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
     <View
+        android:id="@+id/border"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="?android:listDivider"
         />
 
     <TextView
+        android:layout_below="@id/border"
+        android:layout_marginTop="4dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="6dp"
         android:textStyle="bold"
         style="@style/AppTheme.Topic.Secondary"
         android:textColor="@android:color/black"
-        android:text="Postscript"
-        android:id="@+id/title"
-        tools:ignore="HardcodedText"/>
+        tools:text="Postscript"
+        android:id="@+id/title"/>
 
     <TextView
         android:id="@+id/time"
@@ -31,18 +32,16 @@
         android:layout_marginStart="@dimen/content_spacing"
         android:layout_marginLeft="@dimen/content_spacing"
         style="@style/AppTheme.Topic.Secondary"
-        android:text="1 day ago"
+        tools:text="1 day ago"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:ignore="HardcodedText"/>
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/content"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="8dp"
         android:layout_below="@+id/title"
-        android:text="Content"
+        tools:text="Content"
         style="@style/AppTheme.Topic.Content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:ignore="HardcodedText"/>
+        android:layout_height="wrap_content"/>
 </RelativeLayout>
