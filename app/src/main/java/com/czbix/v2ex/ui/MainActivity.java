@@ -4,8 +4,10 @@ import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
+import android.graphics.Outline;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +17,8 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,10 +26,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.DrawableTypeRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
@@ -279,6 +285,21 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
                 }
             }
         });
+
+        if (MiscUtils.HAS_L) {
+            setAvatarOutline();
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setAvatarOutline() {
+        mAvatar.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                outline.setOval(0, 0, view.getWidth() - 1, view.getHeight() - 1);
+            }
+        });
+        mAvatar.setClipToOutline(true);
     }
 
     @Override
@@ -382,8 +403,21 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
         mAvatar.setVisibility(View.VISIBLE);
         final Avatar avatar = UserUtils.getAvatar();
-        Glide.with(this).load(avatar.getUrlByDp(getResources().getDimension(R.dimen.nav_avatar_size)))
-                .crossFade().into(mAvatar);
+        final DrawableTypeRequest<String> request = Glide.with(this).load(avatar.getUrlByDp(getResources().getDimension(R.dimen.nav_avatar_size)));
+        if (MiscUtils.HAS_L) {
+            request.crossFade().into(mAvatar);
+        } else {
+            // crop bitmap manually
+            request.asBitmap().into(new ViewTarget<ImageView, Bitmap>(mAvatar) {
+                @Override
+                public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    final RoundedBitmapDrawable drawable =
+                            RoundedBitmapDrawableFactory.create(getResources(), resource);
+                    drawable.setCircular(true);
+                    mAvatar.setImageDrawable(drawable);
+                }
+            });
+        }
         mUsername.setText(UserState.getInstance().getUsername());
     }
 
