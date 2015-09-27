@@ -67,11 +67,9 @@ public class ViewUtils {
         final Spanned spanned = Html.fromHtml(html, imageGetter);
         final SpannableStringBuilder builder = (SpannableStringBuilder) spanned;
         final int length = builder.length();
-        if (length > 32) {
-            final CharSequence subSequence = builder.subSequence(length - 2, length);
-            if (TextUtils.equals(subSequence, "\n\n")) {
-                builder.delete(length - 2, length);
-            }
+        final CharSequence subSequence = builder.subSequence(length - 2, length);
+        if (TextUtils.equals(subSequence, "\n\n")) {
+            builder.delete(length - 2, length);
         }
         view.setText(builder);
     }
