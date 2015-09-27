@@ -52,9 +52,11 @@ public class LoginActivity extends BaseActivity {
 
         mPwdView = (EditText) findViewById(R.id.password);
         mPwdView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            private int mActionIdSignIn = getResources().getInteger(R.integer.id_action_sign);
+
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                if (id == mActionIdSignIn || id == EditorInfo.IME_ACTION_DONE) {
                     attemptLogin();
                     return true;
                 }
