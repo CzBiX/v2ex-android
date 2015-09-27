@@ -2,10 +2,10 @@ package com.czbix.v2ex.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,6 +23,7 @@ import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.google.GoogleHelper;
+import com.czbix.v2ex.helper.CustomTabsHelper;
 import com.czbix.v2ex.model.LoginResult;
 import com.czbix.v2ex.network.RequestHelper;
 
@@ -71,7 +72,9 @@ public class LoginActivity extends BaseActivity {
         findViewById(R.id.sign_up).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.v2ex.com/signup?r=aliuwr")));
+                final Uri uri = Uri.parse("https://www.v2ex.com/signup?r=aliuwr");
+                final CustomTabsIntent.Builder builder = CustomTabsHelper.getBuilder(LoginActivity.this, null);
+                builder.build().launchUrl(LoginActivity.this, uri);
              }
         });
 
