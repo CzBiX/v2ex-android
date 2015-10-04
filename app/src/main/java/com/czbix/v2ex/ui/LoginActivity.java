@@ -26,6 +26,7 @@ import com.czbix.v2ex.google.GoogleHelper;
 import com.czbix.v2ex.helper.CustomTabsHelper;
 import com.czbix.v2ex.model.LoginResult;
 import com.czbix.v2ex.network.RequestHelper;
+import com.czbix.v2ex.util.LogUtils;
 
 /**
  * A login screen that offers login via account/password.
@@ -77,7 +78,7 @@ public class LoginActivity extends BaseActivity {
                 final Uri uri = Uri.parse("https://www.v2ex.com/signup?r=aliuwr");
                 final CustomTabsIntent.Builder builder = CustomTabsHelper.getBuilder(LoginActivity.this, null);
                 builder.build().launchUrl(LoginActivity.this, uri);
-             }
+            }
         });
 
         mLoginFormView = findViewById(R.id.login_form);
@@ -169,8 +170,11 @@ public class LoginActivity extends BaseActivity {
      * the user.
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+        private final String TAG = UserLoginTask.class.getSimpleName();
+
         private final String mAccount;
         private final String mPassword;
+        private Exception mException;
 
         UserLoginTask(String account, String password) {
             mAccount = account;
@@ -189,7 +193,7 @@ public class LoginActivity extends BaseActivity {
                     return true;
                 }
             } catch (ConnectionException | RemoteException e) {
-                throw new FatalException(e);
+                mException = e;
             }
 
             return false;
@@ -202,10 +206,27 @@ public class LoginActivity extends BaseActivity {
 
             if (success) {
                 onLoginSuccess(mAccount);
-            } else {
+                return;
+            }
+
+            if (mException == null) {
                 LoginActivity.this.mPwdView.setError(getString(R.string.error_incorrect_password));
                 LoginActivity.this.mPwdView.requestFocus();
+                return;
             }
+
+            LogUtils.w(TAG, "login failed", mException);
+
+            int resId;
+            if (mException instanceof ConnectionException) {
+                resId = R.string.toast_connection_exception;
+            } else if (mException instanceof RemoteException) {
+                resId = R.string.toast_remote_exception;
+            } else {
+                throw new FatalException(mException);
+            }
+
+            Toast.makeText(LoginActivity.this, resId, Toast.LENGTH_LONG).show();
         }
 
         @Override
