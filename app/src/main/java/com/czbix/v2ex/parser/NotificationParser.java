@@ -98,9 +98,7 @@ public class NotificationParser {
 
     private static String parseTime(Element ele) {
         Element timeEle = ele.select(".snow").get(0);
-        String timeStr = timeEle.text();
-        // remove " ago" in string: 5 天前 ago
-        return timeStr.substring(0, timeStr.length() - 4);
+        return timeEle.text();
     }
 
     private static Member parseMember(Element ele) {
