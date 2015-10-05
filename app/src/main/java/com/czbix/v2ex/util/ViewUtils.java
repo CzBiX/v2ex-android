@@ -59,17 +59,22 @@ public class ViewUtils {
         return width;
     }
 
-    public static void setHtmlIntoTextView(TextView view, String html, int maxWidthPixels) {
-        setHtmlIntoTextView(view, html, new AsyncImageGetter(view, maxWidthPixels));
+    public static void setHtmlIntoTextView(TextView view, String html, int maxWidthPixels, boolean isTopic) {
+        setHtmlIntoTextView(view, html, new AsyncImageGetter(view, maxWidthPixels), isTopic);
     }
 
-    private static void setHtmlIntoTextView(TextView view, String html, AsyncImageGetter imageGetter) {
+    private static void setHtmlIntoTextView(TextView view, String html, AsyncImageGetter imageGetter, boolean isTopic) {
         final Spanned spanned = Html.fromHtml(html, imageGetter);
         final SpannableStringBuilder builder = (SpannableStringBuilder) spanned;
-        final int length = builder.length();
-        final CharSequence subSequence = builder.subSequence(length - 2, length);
-        if (TextUtils.equals(subSequence, "\n\n")) {
-            builder.delete(length - 2, length);
+
+        if (isTopic) {
+            final int length = builder.length();
+            if (length > 2) {
+                final CharSequence subSequence = builder.subSequence(length - 2, length);
+                if (TextUtils.equals(subSequence, "\n\n")) {
+                    builder.delete(length - 2, length);
+                }
+            }
         }
         view.setText(builder);
     }

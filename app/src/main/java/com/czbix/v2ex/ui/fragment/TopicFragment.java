@@ -454,7 +454,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             ((TextView) view.findViewById(R.id.time)).setText(postscript.mTime);
             final TextView contentView = (TextView) view.findViewById(R.id.content);
             ViewUtils.setHtmlIntoTextView(contentView, postscript.mContent,
-                    ViewUtils.getWidthPixels() - TOPIC_PICTURE_OTHER_WIDTH);
+                    ViewUtils.getWidthPixels() - TOPIC_PICTURE_OTHER_WIDTH, true);
             contentView.setMovementMethod(new HtmlMovementMethod(this));
             mTopicView.addView(view);
         }

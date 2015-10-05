@@ -128,7 +128,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             updateForRead();
 
             ViewUtils.setHtmlIntoTextView(mTitle, topic.getTitle(),
-                    ViewUtils.getDimensionPixelSize(R.dimen.abc_text_size_body_1_material));
+                    ViewUtils.getDimensionPixelSize(R.dimen.abc_text_size_body_1_material), false);
             mUsername.setText(topic.getMember().getUsername());
             mNode.setText("› " + topic.getNode().getTitle());
             mTime.setText(topic.getReplyTime());
@@ -160,7 +160,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
             }
             mContent.setVisibility(View.VISIBLE);
             ViewUtils.setHtmlIntoTextView(mContent, content, ViewUtils.getWidthPixels() -
-                    TOPIC_PICTURE_OTHER_WIDTH);
+                    TOPIC_PICTURE_OTHER_WIDTH, true);
         }
 
         @Override

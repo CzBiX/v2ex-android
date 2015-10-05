@@ -97,7 +97,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             }
             mContent.setVisibility(View.VISIBLE);
             ViewUtils.setHtmlIntoTextView(mContent, content, ViewUtils.getWidthPixels() -
-                    TOPIC_PICTURE_OTHER_WIDTH);
+                    TOPIC_PICTURE_OTHER_WIDTH, false);
         }
 
         private String getTypeText(@Notification.NotificationType int type) {

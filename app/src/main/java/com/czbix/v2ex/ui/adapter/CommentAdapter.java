@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.model.Comment;
@@ -111,7 +110,7 @@ public class CommentAdapter extends BaseAdapter {
             mPos = position;
 
             ViewUtils.setHtmlIntoTextView(mContent, comment.getContent(), ViewUtils.getWidthPixels() -
-                    COMMENT_PICTURE_OTHER_WIDTH);
+                    COMMENT_PICTURE_OTHER_WIDTH, false);
             appendThanks(comment);
 
             mUsername.setText(comment.getMember().getUsername());
