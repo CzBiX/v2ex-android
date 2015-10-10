@@ -7,6 +7,7 @@ import com.squareup.okhttp.Response;
 public class RequestException extends RuntimeException {
     private final Response mResponse;
     private String errorHtml;
+    private boolean mShouldLogged;
 
     public RequestException(Response response) {
         this(null, response);
@@ -43,6 +44,14 @@ public class RequestException extends RuntimeException {
 
     public int getCode() {
         return mResponse.code();
+    }
+
+    public boolean isShouldLogged() {
+        return mShouldLogged;
+    }
+
+    public void setShouldLogged(boolean shouldLogged) {
+        mShouldLogged = shouldLogged;
     }
 
     @Override

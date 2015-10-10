@@ -447,7 +447,12 @@ public class RequestHelper {
         if (code == 403 || code == 404) {
             try {
                 final ResponseBody body = response.body();
-                if (body.contentLength() != 0) {
+                if (body.contentLength() == 0) {
+                    // it's blocked by site for new user
+                    final RequestException ex = new RequestException(response);
+                    ex.setShouldLogged(false);
+                    throw ex;
+                } else {
                     final String bodyStr = body.string();
                     Crashlytics.log(String.format("response code %d, %s", code,
                             bodyStr.substring(0, Math.min(4096, bodyStr.length()))));
