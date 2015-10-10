@@ -24,6 +24,8 @@ android {
         targetSdkVersion 23
         versionCode 39
         versionName "1.17.1"
+
+        resValue "bool", "isDebuggable", "true"
     }
     packagingOptions {
         exclude '.readme'
@@ -33,6 +35,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            resValue "bool", "isDebuggable", "false"
         }
         debug {
             applicationIdSuffix '.debug'

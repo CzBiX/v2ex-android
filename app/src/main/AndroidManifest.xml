@@ -71,6 +71,7 @@
         </activity>
         <activity
             android:name=".ui.DebugActivity"
+            android:enabled="@bool/isDebuggable"
             android:label="Debug" >
         </activity>
         <activity
