@@ -27,7 +27,7 @@ public class CustomTabsHelper {
      * @param activity the activity that is connected to the service
      */
     public void unbindCustomTabsService(Activity activity) {
-        if (mConnection == null) return;
+        if (mClient == null || mConnection == null) return;
         activity.unbindService(mConnection);
         mClient = null;
         mCustomTabsSession = null;
