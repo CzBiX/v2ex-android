@@ -102,14 +102,17 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         setContentView(R.layout.activity_main);
 
         mPreferences = getPreferences(MODE_PRIVATE);
-        mAvatar = ((ImageView) findViewById(R.id.avatar_img));
-        mUsername = (TextView) findViewById(R.id.username_tv);
-        mAwardButton = findViewById(R.id.award);
         mAppBar = ((AppBarLayout) findViewById(R.id.appbar));
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         mNav = ((NavigationView) findViewById(R.id.nav));
         mSearchBox = (SearchBoxLayout) findViewById(R.id.search_box);
-        mNavBg = mNav.findViewById(R.id.nav_layout);
+
+        final View headerView = mNav.getHeaderView(0);
+        mNavBg = headerView.findViewById(R.id.nav_layout);
+        mAvatar = ((ImageView) headerView.findViewById(R.id.avatar_img));
+        mUsername = (TextView) headerView.findViewById(R.id.username_tv);
+        mAwardButton = headerView.findViewById(R.id.award);
 
         initToolbar();
         initNavDrawer();

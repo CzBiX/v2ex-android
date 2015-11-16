@@ -86,7 +86,7 @@ public class CustomTabsHelper {
 
         final CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder(session);
 
-        return builder.setShowTitle(true).setToolbarColor(color);
+        return builder.setShowTitle(true).setToolbarColor(color).enableUrlBarHiding();
     }
 
     /**
