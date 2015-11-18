@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="160dp"
-              android:background="?attr/colorPrimary"
-              android:padding="16dp"
-              android:id="@+id/nav_layout"
-              android:gravity="bottom"
-              tools:ignore="Overdraw">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/content_spacing"
+    android:background="?attr/colorPrimary"
+    android:id="@+id/nav_layout"
+    android:gravity="bottom"
+    tools:ignore="Overdraw">
     <ImageView
         android:id="@+id/avatar_img"
-        android:layout_marginBottom="10dp"
+        tools:src="@drawable/avatar_default"
+        android:layout_marginBottom="@dimen/content_spacing"
         android:layout_width="@dimen/nav_avatar_size"
         android:layout_height="@dimen/nav_avatar_size"
         android:contentDescription="@string/desc_avatar"/>
@@ -20,11 +23,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/avatar_img"
         android:id="@+id/username_tv"
-        android:text="Username"
+        tools:text="Username"
         android:textColor="#fff"
-        android:textStyle="bold"
-        tools:ignore="HardcodedText"/>
-    
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/award"
         android:drawableStart="@drawable/ic_card_giftcard_white_24dp"
