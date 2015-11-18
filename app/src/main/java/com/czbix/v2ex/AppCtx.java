@@ -14,7 +14,6 @@ import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.dao.V2exDb;
 import com.czbix.v2ex.eventbus.BaseEvent;
-import com.czbix.v2ex.eventbus.BaseEvent.GetNodesFinishEvent;
 import com.czbix.v2ex.eventbus.executor.HandlerExecutor;
 import com.czbix.v2ex.google.GoogleHelper;
 import com.czbix.v2ex.model.Node;
@@ -130,7 +129,6 @@ public class AppCtx extends Application {
                 LogUtils.d(TAG, "nodes not modified");
             }
             LogUtils.d(TAG, "load nodes finish!");
-            mEventBus.post(new GetNodesFinishEvent());
         }
 
         private void updateGCMToken() {

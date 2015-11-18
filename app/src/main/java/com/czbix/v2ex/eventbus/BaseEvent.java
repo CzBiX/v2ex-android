@@ -1,7 +1,6 @@
 package com.czbix.v2ex.eventbus;
 
 public abstract class BaseEvent {
-    public static class GetNodesFinishEvent extends BaseEvent {}
     public static class NewUnreadEvent extends BaseEvent {
         public final int mCount;
 

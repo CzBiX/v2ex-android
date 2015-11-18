@@ -7,11 +7,18 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.support.annotation.Nullable;
 import android.util.LruCache;
 
+import com.czbix.v2ex.AppCtx;
+import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Avatar;
+import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.Node;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.io.Closeables;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 public class NodeDao extends DaoBase {
@@ -46,8 +53,32 @@ public class NodeDao extends DaoBase {
 
         db.execSQL(sql);
 
+        initNodeList(db);
+
         sql = String.format("CREATE UNIQUE INDEX %1$s_%2$s ON %1$s(%2$s)", TABLE_NAME, KEY_NAME);
         db.execSQL(sql);
+    }
+
+    private static void initNodeList(SQLiteDatabase db) {
+        InputStream is = null;
+        InputStreamReader isr = null;
+        try {
+            is = AppCtx.getInstance().getResources().openRawResource(R.raw.all_nodes);
+            isr = new InputStreamReader(is);
+
+            List<Node> list = GsonFactory.getInstance().fromJson(isr, new TypeToken<List<Node>>() {
+            }.getType());
+
+            for (Node node : list) {
+                innerPut(db, node);
+            }
+        } finally {
+            if (isr != null) {
+                Closeables.closeQuietly(isr);
+            } else if (is != null) {
+                Closeables.closeQuietly(is);
+            }
+        }
     }
 
     @Nullable
@@ -104,13 +135,13 @@ public class NodeDao extends DaoBase {
         execute(new SqlOperation<Void>() {
             @Override
             public Void execute(SQLiteDatabase db) {
-                put(db, node);
+                innerPut(db, node);
                 return null;
             }
         }, true);
     }
 
-    private static void put(SQLiteDatabase db, Node node) {
+    private static void innerPut(SQLiteDatabase db, Node node) {
         final ContentValues values = new ContentValues(5);
         values.put(KEY_ID, node.getId());
         values.put(KEY_NAME, node.getName());
@@ -122,8 +153,6 @@ public class NodeDao extends DaoBase {
         }
 
         db.insertWithOnConflict(TABLE_NAME, null, values, SQLiteDatabase.CONFLICT_REPLACE);
-
-        CACHE.put(node.getName(), node);
     }
 
     public static void updateAvatar(final String name, final String url) {
@@ -150,7 +179,7 @@ public class NodeDao extends DaoBase {
                 try {
 
                     for (Node node : nodes) {
-                        put(db, node);
+                        innerPut(db, node);
                     }
 
                     db.setTransactionSuccessful();
@@ -175,7 +204,6 @@ public class NodeDao extends DaoBase {
 
                     while (cursor.moveToNext()) {
                         final Node node = buildNode(cursor);
-                        CACHE.put(node.getName(), node);
 
                         result.add(node);
                     }
