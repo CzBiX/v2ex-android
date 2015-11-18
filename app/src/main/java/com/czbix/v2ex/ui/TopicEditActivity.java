@@ -150,6 +150,8 @@ public class TopicEditActivity extends AppCompatActivity {
                 mLayout.post(new Runnable() {
                     @Override
                     public void run() {
+                        DraftDao.delete(DraftDao.ID_TOPIC_DRAFT);
+
                         final Intent intent = new Intent(TopicEditActivity.this, TopicActivity.class);
                         intent.putExtra(TopicActivity.KEY_TOPIC_ID, id);
                         startActivity(intent);

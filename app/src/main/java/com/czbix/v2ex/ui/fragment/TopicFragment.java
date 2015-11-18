@@ -524,6 +524,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onTopicEvent(TopicEvent e) {
         AppCtx.getEventBus().unregister(this);
         if (e.mType == TopicEvent.TYPE_REPLY) {
+            if (mDraft != null) {
+                DraftDao.delete(mDraft.mId);
+                mDraft = null;
+            }
             mReplyForm.setContent(null);
         } else if (e.mType == TopicEvent.TYPE_IGNORE_TOPIC) {
             Toast.makeText(getActivity(), R.string.toast_topic_ignored, Toast.LENGTH_LONG).show();
