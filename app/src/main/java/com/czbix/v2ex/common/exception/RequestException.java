@@ -24,6 +24,7 @@ public class RequestException extends RuntimeException {
     public RequestException(String message, Response response, Throwable tr) {
         super(message, tr);
 
+        mShouldLogged = true;
         mResponse = response;
     }
 

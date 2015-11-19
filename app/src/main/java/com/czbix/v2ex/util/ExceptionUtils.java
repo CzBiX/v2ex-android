@@ -44,7 +44,9 @@ public class ExceptionUtils {
             stringId = R.string.toast_remote_exception;
         } else if (e instanceof RequestException) {
             final RequestException ex = (RequestException) e;
-            Crashlytics.logException(ex);
+            if (ex.isShouldLogged()) {
+                Crashlytics.logException(ex);
+            }
             switch (ex.getCode()) {
                 case HttpStatus.SC_FORBIDDEN:
                     stringId = R.string.toast_access_denied;
