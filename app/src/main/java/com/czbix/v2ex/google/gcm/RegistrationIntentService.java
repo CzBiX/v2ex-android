@@ -49,16 +49,6 @@ public class RegistrationIntentService extends IntentService {
         mPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
         final boolean isSuccess = isRegister ? register() : unregister();
 
-        if (!isSuccess) {
-            ExecutorUtils.runInUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(AppCtx.getInstance(), isRegister
-                            ? R.string.toast_register_device_failed
-                            : R.string.toast_unregister_device_failed, Toast.LENGTH_LONG).show();
-                }
-            });
-        }
         AppCtx.getEventBus().post(new DeviceRegisterEvent(isRegister, isSuccess));
     }
 
