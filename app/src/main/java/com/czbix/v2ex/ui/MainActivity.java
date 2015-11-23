@@ -120,6 +120,8 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         switchFragment(getFragmentToShow(getIntent()), false);
+
+        setTheme(R.style.AppTheme_NoActionBar);
     }
 
     private void initSearchBox() {
