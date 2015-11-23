@@ -15,6 +15,12 @@ public class GoogleHelper {
     private static final String TAG = GoogleHelper.class.getSimpleName();
     public static final String GCM_SENDER_ID = AppCtx.getInstance().getString(R.string.google_gcm_sender_id);
 
+    public static boolean isPlayServicesAvailable(Context context) {
+        final int errCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);
+
+        return errCode == ConnectionResult.SUCCESS;
+    }
+
     /**
      * @return null if success, otherwise it's the error message to show
      */
