@@ -53,7 +53,7 @@ public class NotificationStatus {
                 .setTicker(mContext.getString(R.string.ntf_title_new_notifications))
                 .setContentTitle(mContext.getString(R.string.ntf_title_new_notifications))
                 .setContentText(mContext.getString(R.string.ntf_desc_from_v2ex))
-                .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setNumber(e.mCount)
                 .setAutoCancel(true)
