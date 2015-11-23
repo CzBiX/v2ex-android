@@ -23,6 +23,7 @@ public class DeviceStatus {
     }
 
     private boolean mIsNetworkMetered;
+    private boolean mIsNetworkConnected;
 
     DeviceStatus(Context context) {
         mConnectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
@@ -38,9 +39,14 @@ public class DeviceStatus {
 
     private void updateNetworkStatus() {
         mIsNetworkMetered = ConnectivityManagerCompat.isActiveNetworkMetered(mConnectivityManager);
+        mIsNetworkConnected = mConnectivityManager.getActiveNetworkInfo().isConnected();
     }
 
     public boolean isNetworkMetered() {
         return mIsNetworkMetered;
+    }
+
+    public boolean isNetworkConnected() {
+        return mIsNetworkConnected;
     }
 }

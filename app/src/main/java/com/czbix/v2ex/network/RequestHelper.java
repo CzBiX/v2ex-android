@@ -5,6 +5,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.BuildConfig;
+import com.czbix.v2ex.common.DeviceStatus;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.ExIllegalStateException;
@@ -408,6 +409,10 @@ public class RequestHelper {
     }
 
     static Response sendRequest(Request request, boolean checkResponse) throws ConnectionException, RemoteException {
+        if (!DeviceStatus.getInstance().isNetworkConnected()) {
+            throw new ConnectionException("network not connected");
+        }
+
         if (BuildConfig.DEBUG && new Random().nextInt(100) > 95) {
             throw new ConnectionException("debug network test");
         }
