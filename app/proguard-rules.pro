@@ -57,6 +57,8 @@
     public *;
 }
 
+# retrolambda
+-dontwarn java.lang.invoke.*
 
 # unresolve class in library
 -dontwarn com.google.**
