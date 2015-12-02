@@ -98,6 +98,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     private boolean mIsCategoryTabFragment;
 
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme_NoActionBar);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -120,8 +121,6 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         switchFragment(getFragmentToShow(getIntent()), false);
-
-        setTheme(R.style.AppTheme_NoActionBar);
     }
 
     private void initSearchBox() {
@@ -386,8 +385,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     private void switchFragment(Fragment fragment, boolean addToBackStack) {
         final FragmentManager fragmentManager = getSupportFragmentManager();
         final FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.abc_fade_in, R.anim.abc_fade_out,
-                R.anim.abc_fade_in, R.anim.abc_fade_out)
+        fragmentTransaction.setCustomAnimations(0, 0, R.anim.abc_fade_in, R.anim.abc_fade_out)
                 .replace(R.id.fragment, fragment);
         if (addToBackStack) {
             fragmentTransaction.addToBackStack(null);
