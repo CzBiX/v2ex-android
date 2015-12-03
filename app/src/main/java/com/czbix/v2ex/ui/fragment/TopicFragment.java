@@ -376,7 +376,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         fillPostscript(data.mPostscripts);
         getActivity().invalidateOptionsMenu();
 
-        mFavorited = mTopic.isFavorited();
+        mFavorited = mTopic.isFavored();
         mCsrfToken = data.mCsrfToken;
         mOnceToken = data.mOnceToken;
 
@@ -703,9 +703,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             @Override
             public void run() {
                 try {
-                    RequestHelper.favorite(mTopic, mFavorited, mCsrfToken);
+                    RequestHelper.favor(mTopic, mFavorited, mCsrfToken);
                 } catch (ConnectionException | RemoteException e) {
-                    LogUtils.w(TAG, "favorite topic failed", e);
+                    LogUtils.w(TAG, "favor topic failed", e);
                     mFavorited = !mFavorited;
                 }
 

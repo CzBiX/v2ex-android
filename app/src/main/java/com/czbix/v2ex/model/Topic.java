@@ -21,11 +21,11 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
     private final Node mNode;
     private final String mReplyTime;
     private final boolean mHasInfo;
-    private final boolean mFavorited;
+    private final boolean mFavored;
     private transient boolean mHasRead;
 
     Topic(String title, int id, String content, Member member, Node node, String replyTime,
-          int replies, boolean favorited) {
+          int replies, boolean favored) {
         Preconditions.checkArgument(id != 0);
 
         mId = id;
@@ -36,7 +36,7 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
         mNode = node;
         mReplies = replies;
         mReplyTime = replyTime;
-        mFavorited = favorited;
+        mFavored = favored;
 
         mHasInfo = member != null;
     }
@@ -112,8 +112,8 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
         return String.format("%s/unfavorite/topic/%d", RequestHelper.BASE_URL, mId);
     }
 
-    public boolean isFavorited() {
-        return mFavorited;
+    public boolean isFavored() {
+        return mFavored;
     }
 
     public boolean hasRead() {
@@ -134,7 +134,7 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
         dest.writeParcelable(this.mMember, 0);
         dest.writeParcelable(this.mNode, 0);
         dest.writeString(this.mReplyTime);
-        dest.writeByte(mFavorited ? (byte) 1 : (byte) 0);
+        dest.writeByte(mFavored ? (byte) 1 : (byte) 0);
     }
 
     protected Topic(Parcel in) {
@@ -146,7 +146,7 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
         this.mMember = in.readParcelable(Member.class.getClassLoader());
         this.mNode = in.readParcelable(Node.class.getClassLoader());
         this.mReplyTime = in.readString();
-        this.mFavorited = in.readByte() != 0;
+        this.mFavored = in.readByte() != 0;
     }
 
     public static final Creator<Topic> CREATOR = new Creator<Topic>() {
@@ -195,7 +195,7 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
         private Node mNode;
         private int mReplies;
         private String mReplyTime;
-        private boolean mFavorited;
+        private boolean mFavored;
 
         public Builder setTitle(String title) {
             mTitle = title;
@@ -232,8 +232,8 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
             return this;
         }
 
-        public Builder isFavorited(boolean favorited) {
-            mFavorited = favorited;
+        public Builder isFavored(boolean favored) {
+            mFavored = favored;
             return this;
         }
 
@@ -242,7 +242,7 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
         }
 
         public Topic createTopic() {
-            return new Topic(mTitle, mId, mContent, mMember, mNode, mReplyTime, mReplies, mFavorited);
+            return new Topic(mTitle, mId, mContent, mMember, mNode, mReplyTime, mReplies, mFavored);
         }
     }
 }

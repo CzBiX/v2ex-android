@@ -260,15 +260,15 @@ public class RequestHelper {
         sendRequest(request, isComment);
     }
 
-    public static void favorite(Favable obj, boolean isFavorite, String csrfToken) throws ConnectionException, RemoteException {
-        final String url = isFavorite ? obj.getFavUrl() : obj.getUnFavUrl();
+    public static void favor(Favable obj, boolean isFavor, String csrfToken) throws ConnectionException, RemoteException {
+        final String url = isFavor ? obj.getFavUrl() : obj.getUnFavUrl();
         final Request request = new Request.Builder().url(url + "?t=" + csrfToken)
                 .build();
 
         final Response response = sendRequest(request, false);
         if (!response.isRedirect()) {
-            throw new RequestException(String.format("favorite %s failed, is fav: %b", obj,
-                    isFavorite), response);
+            throw new RequestException(String.format("favor %s failed, is fav: %b", obj,
+                    isFavor), response);
         }
     }
 

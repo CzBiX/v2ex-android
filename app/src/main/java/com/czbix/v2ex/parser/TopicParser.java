@@ -40,7 +40,7 @@ public class TopicParser extends Parser {
         if (UserState.getInstance().isLoggedIn()) {
             csrfToken = parseCsrfToken(doc);
             onceToken = parseOnceToken(doc);
-            topicBuilder.isFavorited(parseFavorited(doc));
+            topicBuilder.isFavored(parseFavorited(doc));
         } else {
             csrfToken = null;
             onceToken = null;
