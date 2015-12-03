@@ -2,6 +2,7 @@ package com.czbix.v2ex.util;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -9,6 +10,11 @@ import android.support.annotation.AttrRes;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DimenRes;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -20,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.czbix.v2ex.AppCtx;
+import com.czbix.v2ex.R;
 import com.czbix.v2ex.parser.AsyncImageGetter;
 import com.czbix.v2ex.ui.util.Html;
 
@@ -80,12 +87,21 @@ public class ViewUtils {
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static void setImageTintList(ImageView view, @ColorRes int colorId) {
-        if (!MiscUtils.HAS_L) {
-            return;
+    public static void setImageTintList(ImageView view, @ColorRes int resId) {
+        ColorStateList colorStateList = ContextCompat.getColorStateList(view.getContext(), resId);
+        if (MiscUtils.HAS_L) {
+            view.setImageTintList(colorStateList);
+        } else {
+            Drawable drawable = DrawableCompat.wrap(view.getDrawable());
+            DrawableCompat.setTintList(drawable, colorStateList);
+            view.setImageDrawable(drawable);
         }
+    }
 
-        view.setImageTintList(view.getResources().getColorStateList(colorId));
+    public static Drawable setDrawableTint(Drawable drawable, int tint) {
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, tint);
+        return drawable;
     }
 
     public static void showInputMethod(View view) {
@@ -120,5 +136,16 @@ public class ViewUtils {
         }
 
         return typedValue.data;
+    }
+
+    @Nullable
+    public static Toolbar initToolbar(AppCompatActivity activity) {
+        Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
+        if (toolbar == null) {
+            return null;
+        }
+
+        activity.setSupportActionBar(toolbar);
+        return toolbar;
     }
 }
