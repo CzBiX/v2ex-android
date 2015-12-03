@@ -23,10 +23,10 @@ public class ExecutorUtils {
 
         // JELLY_BEAN(16) has bug that can't set core pool size to 0, otherwise it will not create
         // thread to run task.
-        mScheduledPool = Executors.newScheduledThreadPool(4);
-        ScheduledThreadPoolExecutor executor = (ScheduledThreadPoolExecutor) mScheduledPool;
+        ScheduledThreadPoolExecutor executor = (ScheduledThreadPoolExecutor) Executors.newScheduledThreadPool(4);
         executor.setKeepAliveTime(3, TimeUnit.SECONDS);
         executor.allowCoreThreadTimeOut(true);
+        mScheduledPool = executor;
     }
 
     /**
