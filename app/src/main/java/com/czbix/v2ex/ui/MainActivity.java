@@ -253,46 +253,43 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         mNotificationsItem = menu.findItem(R.id.drawer_notifications);
         updateNotifications();
 
-        mAwardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAwardButton.setEnabled(false);
-                ExecutorUtils.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        boolean success = false;
-                        try {
-                            RequestHelper.dailyMission();
-                            success = true;
-                        } catch (ConnectionException | RemoteException e) {
-                            LogUtils.w(TAG, "daily mission failed", e);
-                        }
+        mAwardButton.setOnClickListener(v -> {
+            mAwardButton.setEnabled(false);
+            ExecutorUtils.execute(() -> {
+                boolean success = false;
+                try {
+                    RequestHelper.dailyMission();
+                    success = true;
+                } catch (ConnectionException | RemoteException e) {
+                    LogUtils.w(TAG, "daily mission failed", e);
+                }
 
-                        AppCtx.getEventBus().post(new DailyAwardEvent(!success));
-                    }
-                });
-            }
+                AppCtx.getEventBus().post(new DailyAwardEvent(!success));
+            });
         });
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
                 R.string.desc_open_drawer, R.string.desc_close_drawer);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
-        mNavBg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final UserState user = UserState.getInstance();
-                if (user.isLoggedIn()) {
-                    MiscUtils.openUrl(MainActivity.this, Member.buildUrlFromName(user.getUsername()));
-                } else {
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                }
+        mNavBg.setOnClickListener(v -> {
+            final UserState user = UserState.getInstance();
+            if (user.isLoggedIn()) {
+                MiscUtils.openUrl(MainActivity.this, Member.buildUrlFromName(user.getUsername()));
+            } else {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
             }
         });
 
         if (MiscUtils.HAS_L) {
             setAvatarOutline();
+            setStatusBarTransparent();
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setStatusBarTransparent() {
+        getWindow().setStatusBarColor(Color.TRANSPARENT);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
