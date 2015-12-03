@@ -73,6 +73,7 @@ import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.MiscUtils;
 import com.czbix.v2ex.util.TrackerUtils;
 import com.czbix.v2ex.util.ViewUtils;
+import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
 
@@ -492,30 +493,20 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onReply(final CharSequence content) {
         TrackerUtils.onTopicReply();
 
-        AppCtx.getEventBus().register(this);
-        final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    RequestHelper.reply(mTopic, content.toString(), mOnceToken);
-                } catch (ConnectionException | RemoteException e) {
-                    throw new FatalException(e);
-                }
-
-                AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_REPLY));
+        doActionRequest(() -> {
+            try {
+                RequestHelper.reply(mTopic, content.toString(), mOnceToken);
+            } catch (ConnectionException | RemoteException e) {
+                throw new FatalException(e);
             }
-        }, 3, TimeUnit.SECONDS);
 
-        mLayout.setRefreshing(true);
-        Snackbar.make(mLayout, R.string.toast_sending, Snackbar.LENGTH_LONG)
-                .setAction(R.string.action_cancel, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (cancelRequest(future)) {
-                            mReplyForm.setContent(content);
-                        }
-                    }
-                }).show();
+            AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_REPLY));
+        }, future -> {
+            if (cancelRequest(future)) {
+                mReplyForm.setContent(content);
+            }
+            return null;
+        });
 
         mReplyForm.setVisibility(false);
     }
@@ -541,39 +532,42 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         onRefresh();
     }
 
+    private void doActionRequest(final Runnable sendAction, final Function<Future<?>, Void> cancelCallback) {
+        AppCtx.getEventBus().register(this);
+        mLayout.setRefreshing(true);
+
+        final Snackbar snackbar = Snackbar.make(mLayout, R.string.toast_sending, Snackbar.LENGTH_LONG);
+        if (PrefStore.getInstance().isUndoEnabled()) {
+            final ScheduledFuture<?> future = ExecutorUtils.schedule(sendAction, 3, TimeUnit.SECONDS);
+            snackbar.setAction(R.string.action_cancel, v -> cancelCallback.apply(future));
+        } else {
+            ExecutorUtils.execute(() -> {
+                sendAction.run();
+                ExecutorUtils.runInUiThread(snackbar::dismiss);
+            });
+        }
+        snackbar.show();
+    }
+
     @Override
     public void onCommentIgnore(final Comment comment) {
         onIgnore(comment, false);
     }
 
     private void onIgnore(final Ignorable obj, final boolean isTopic) {
-        AppCtx.getEventBus().register(this);
-        final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    RequestHelper.ignore(obj, mOnceToken);
-                } catch (ConnectionException | RemoteException e) {
-                    throw new FatalException(e);
-                }
-
-                AppCtx.getEventBus().post(new TopicEvent(isTopic ? TopicEvent.TYPE_IGNORE_TOPIC
-                        : TopicEvent.TYPE_IGNORE_COMMENT));
+        doActionRequest(() -> {
+            try {
+                RequestHelper.ignore(obj, mOnceToken);
+            } catch (ConnectionException | RemoteException e) {
+                throw new FatalException(e);
             }
-        }, 3, TimeUnit.SECONDS);
 
-        showSendingMsg(future);
-    }
-
-    private void showSendingMsg(final ScheduledFuture<?> future) {
-        mLayout.setRefreshing(true);
-        Snackbar.make(mLayout, R.string.toast_sending, Snackbar.LENGTH_LONG)
-                .setAction(R.string.action_cancel, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        cancelRequest(future);
-                    }
-                }).show();
+            AppCtx.getEventBus().post(new TopicEvent(isTopic ? TopicEvent.TYPE_IGNORE_TOPIC
+                    : TopicEvent.TYPE_IGNORE_COMMENT));
+        }, future -> {
+            cancelRequest(future);
+            return null;
+        });
     }
 
     private boolean cancelRequest(Future<?> future) {
@@ -593,21 +587,18 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void onThank(final Thankable obj) {
-        AppCtx.getEventBus().register(this);
-        final ScheduledFuture<?> future = ExecutorUtils.schedule(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    RequestHelper.thank(obj, mCsrfToken);
-                } catch (ConnectionException | RemoteException e) {
-                    throw new FatalException(e);
-                }
-
-                AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_THANK));
+        doActionRequest(() -> {
+            try {
+                RequestHelper.thank(obj, mCsrfToken);
+            } catch (ConnectionException | RemoteException e) {
+                throw new FatalException(e);
             }
-        }, 3, TimeUnit.SECONDS);
 
-        showSendingMsg(future);
+            AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_THANK));
+        }, future -> {
+            cancelRequest(future);
+            return null;
+        });
     }
 
     @Override

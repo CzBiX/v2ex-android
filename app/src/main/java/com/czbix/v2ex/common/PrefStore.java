@@ -18,7 +18,8 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
     private static final String PREF_LOAD_IMAGE_ON_MOBILE_NETWORK = "load_image_on_mobile_network";
     public static final String PREF_TABS_TO_SHOW = "tabs_to_show";
     public static final String PREF_RECEIVE_NOTIFICATIONS = "receive_notifications";
-    public static final String PREF_ALWAYS_SHOW_REPLY_FORM ="always_show_reply_form";
+    private static final String PREF_ALWAYS_SHOW_REPLY_FORM = "always_show_reply_form";
+    private static final String PREF_ENABLE_UNDO = "enable_undo";
 
     private final SharedPreferences mPreferences;
 
@@ -67,6 +68,10 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
 
     public boolean isAlwaysShowReplyForm() {
         return mPreferences.getBoolean(PREF_ALWAYS_SHOW_REPLY_FORM, false);
+    }
+
+    public boolean isUndoEnabled() {
+        return mPreferences.getBoolean(PREF_ENABLE_UNDO, false);
     }
 
     @Override
