@@ -55,12 +55,12 @@ import com.czbix.v2ex.model.loader.GooglePhotoUrlLoader;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.presenter.TopicSearchPresenter;
 import com.czbix.v2ex.res.GoogleImg;
-import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
 import com.czbix.v2ex.ui.fragment.CategoryTabFragment;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.NotificationListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
 import com.czbix.v2ex.ui.widget.SearchBoxLayout;
+import com.czbix.v2ex.ui.widget.TopicView.OnTopicActionListener;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.MiscUtils;
@@ -115,7 +115,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         mUsername = (TextView) headerView.findViewById(R.id.username_tv);
         mAwardButton = headerView.findViewById(R.id.award);
 
-        initToolbar();
+        mToolbar = ViewUtils.initToolbar(this);
         initNavDrawer();
         initSearchBox();
 
@@ -422,15 +422,6 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
             });
         }
         mUsername.setText(UserState.getInstance().getUsername());
-    }
-
-    private void initToolbar() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (mToolbar == null) {
-            return;
-        }
-
-        setSupportActionBar(mToolbar);
     }
 
     @Override

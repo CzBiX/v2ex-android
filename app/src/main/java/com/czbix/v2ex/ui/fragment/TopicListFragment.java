@@ -1,6 +1,5 @@
 package com.czbix.v2ex.ui.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,33 +22,22 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.FatalException;
-import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.dao.NodeDao;
-import com.czbix.v2ex.eventbus.BaseEvent;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.TopicEditActivity;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
-import com.czbix.v2ex.ui.adapter.TopicAdapter.OnTopicActionListener;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.ui.loader.TopicListLoader;
 import com.czbix.v2ex.ui.widget.DividerItemDecoration;
+import com.czbix.v2ex.ui.widget.TopicView.OnTopicActionListener;
 import com.czbix.v2ex.util.ExceptionUtils;
 import com.czbix.v2ex.util.LogUtils;
-import com.google.common.eventbus.Subscribe;
 
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnTopicActionListener} interface
- * to handle interaction events.
- * Use the {@link TopicListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class TopicListFragment extends Fragment implements LoaderCallbacks<LoaderResult<List<Topic>>>, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = TopicListFragment.class.getSimpleName();
     private static final String ARG_PAGE = "page";

@@ -18,6 +18,8 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.ShareActionProvider;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -25,14 +27,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +66,9 @@ import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.helper.ReplyFormHelper;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.ui.loader.TopicLoader;
+import com.czbix.v2ex.ui.widget.AvatarView;
+import com.czbix.v2ex.ui.widget.CommentView;
+import com.czbix.v2ex.ui.widget.DividerItemDecoration;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
 import com.czbix.v2ex.util.ExceptionUtils;
 import com.czbix.v2ex.util.ExecutorUtils;
@@ -89,7 +92,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener,
         LoaderManager.LoaderCallbacks<LoaderResult<TopicWithComments>>,
-        ReplyFormHelper.OnReplyListener, CommentAdapter.OnCommentActionListener, HtmlMovementMethod.OnHtmlActionListener, NodeListFragment.OnNodeActionListener, AbsListView.OnScrollListener, TopicAdapter.OnMemberActionListener {
+        ReplyFormHelper.OnReplyListener, CommentView.OnCommentActionListener,
+        HtmlMovementMethod.OnHtmlActionListener, NodeListFragment.OnNodeActionListener,
+        AbsListView.OnScrollListener, AvatarView.OnAvatarActionListener {
     private static final String TAG = TopicFragment.class.getSimpleName();
     private static final String ARG_TOPIC = "topic";
     private static final int[] MENU_REQUIRED_LOGGED_IN = {R.id.action_ignore, R.id.action_reply,
@@ -99,10 +104,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private Topic mTopic;
     private SwipeRefreshLayout mLayout;
-    private ListView mCommentsView;
-    private TopicAdapter.ViewHolder mTopicHolder;
+    private RecyclerView mCommentsView;
     private CommentAdapter mCommentAdapter;
-    private LinearLayout mTopicView;
     private ReplyFormHelper mReplyForm;
     private String mCsrfToken;
     private String mOnceToken;
@@ -115,7 +118,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private int mMaxPage;
     private boolean mIsLoading;
     private boolean mLastIsFailed;
-    private boolean mFavorited;
+    private boolean mFavored;
     private MenuItem mFavIcon;
     private int mSmoothScrollToPos;
     private int mLastFocusPos;
@@ -163,10 +166,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mLayout = ((SwipeRefreshLayout) rootView.findViewById(R.id.comments_layout));
         mLayout.setOnRefreshListener(this);
 
-        mCommentsView = ((ListView) mLayout.findViewById(R.id.comments));
-
-        initTopicView(inflater);
-        initCommentsView();
+        mCommentsView = (RecyclerView) mLayout.findViewById(R.id.comments);
 
         if (!mTopic.hasInfo()) {
             mCommentsView.setVisibility(View.INVISIBLE);
@@ -175,35 +175,28 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         return rootView;
     }
 
-    private void initCommentsView() {
-        mCommentAdapter = new CommentAdapter(getActivity(), this);
+    private void initCommentsView(TopicActivity activity) {
+        mCommentsView.setLayoutManager(new LinearLayoutManager(activity));
+        mCommentsView.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.VERTICAL_LIST));
+
+        mCommentAdapter = new CommentAdapter(this);
+        mCommentAdapter.setTopic(mTopic);
         mCommentAdapter.setDataSource(mComments);
-        mCommentsView.addHeaderView(mTopicView);
         mCommentsView.setAdapter(mCommentAdapter);
-        mCommentsView.setOnScrollListener(this);
+        // TODO: on scroll listener
     }
 
-    private void initTopicView(LayoutInflater inflater) {
-        mTopicView = (LinearLayout) inflater.inflate(R.layout.view_comment_topic, mCommentsView, false);
-        mTopicView.setBackgroundColor(Color.WHITE);
-
-        mTopicHolder = new TopicAdapter.ViewHolder(mTopicView.findViewById(R.id.topic));
-        mTopicHolder.setContentListener(this);
-        mTopicHolder.setNodeListener(this);
-        mTopicHolder.setMemberListener(this);
-        mTopicHolder.fillData(mTopic);
+    private void initTopicView() {
+        // TODO:
     }
 
     private void initJumpBackButton(View rootView) {
         mJumpBack = ((ImageButton) rootView.findViewById(R.id.btn_jump_back));
-        mJumpBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Preconditions.checkState(mLastFocusPos != 0, "why jump button show without dest");
-                mCommentsView.smoothScrollToPosition(mLastFocusPos);
-                mLastFocusPos = 0;
-                showJumpBackButton(false);
-            }
+        mJumpBack.setOnClickListener(v -> {
+            Preconditions.checkState(mLastFocusPos != 0, "why jump button show without dest");
+            mCommentsView.smoothScrollToPosition(mLastFocusPos);
+            mLastFocusPos = 0;
+            showJumpBackButton(false);
         });
     }
 
@@ -217,6 +210,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         final ActionBar actionBar = activity.getSupportActionBar();
         Preconditions.checkNotNull(actionBar);
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        initCommentsView(activity);
 
         setIsLoading(true);
         getLoaderManager().initLoader(0, null, this);
@@ -281,7 +276,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void updateFavIcon() {
-        mFavIcon.setIcon(mFavorited ? R.drawable.ic_favorite_white_24dp
+        mFavIcon.setIcon(mFavored ? R.drawable.ic_favorite_white_24dp
                 : R.drawable.ic_favorite_border_white_24dp);
     }
 
@@ -360,7 +355,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         final TopicWithComments data = result.mResult;
 
         mTopic = data.mTopic;
-        mTopicHolder.fillData(mTopic);
+        mCommentAdapter.setTopic(mTopic);
+
         mCurPage = data.mCurPage;
         mMaxPage = data.mMaxPage;
         final int oldSize = mComments.listSize();
@@ -376,7 +372,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         fillPostscript(data.mPostscripts);
         getActivity().invalidateOptionsMenu();
 
-        mFavorited = mTopic.isFavored();
+        mFavored = mTopic.isFavored();
         mCsrfToken = data.mCsrfToken;
         mOnceToken = data.mOnceToken;
 
@@ -436,29 +432,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void fillPostscript(List<Postscript> postscripts) {
-        if (postscripts == null) {
-            return;
-        }
-
-        final int childCount = mTopicView.getChildCount();
-        if (childCount > 1) {
-            mTopicView.removeViews(1, childCount - 1);
-        }
-
-        final LayoutInflater inflater = LayoutInflater.from(getActivity());
-
-        for (int i = 0, size = postscripts.size(); i < size; i++) {
-            Postscript postscript = postscripts.get(i);
-
-            final View view = inflater.inflate(R.layout.view_postscript, mTopicView, false);
-            ((TextView) view.findViewById(R.id.title)).setText(getString(R.string.title_postscript, i + 1));
-            ((TextView) view.findViewById(R.id.time)).setText(postscript.mTime);
-            final TextView contentView = (TextView) view.findViewById(R.id.content);
-            ViewUtils.setHtmlIntoTextView(contentView, postscript.mContent,
-                    ViewUtils.getWidthPixels() - TOPIC_PICTURE_OTHER_WIDTH, true);
-            contentView.setMovementMethod(new HtmlMovementMethod(this));
-            mTopicView.addView(view);
-        }
+        // TODO:
     }
 
     @Override
@@ -643,27 +617,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void scrollToPos(int curPos, int destPos) {
-        final int headerCount = mCommentsView.getHeaderViewsCount();
-        curPos += headerCount;
-        destPos += headerCount;
-
-        mCommentsView.smoothScrollToPosition(destPos);
-
-        if (destPos >= mCommentsView.getFirstVisiblePosition() &&
-                destPos <= mCommentsView.getLastVisiblePosition()) {
-            highlightRow(destPos - mCommentsView.getFirstVisiblePosition());
-        } else {
-            mLastFocusPos = curPos;
-            mSmoothScrollToPos = destPos;
-            mCommentsView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    mSmoothScrollToPos = 0;
-                    mCommentsView.setOnTouchListener(null);
-                    return false;
-                }
-            });
-        }
+        // TODO:
     }
 
     @Override
@@ -696,21 +650,18 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private void onFavTopic() {
         AppCtx.getEventBus().register(this);
-        mFavorited = !mFavorited;
+        mFavored = !mFavored;
         updateFavIcon();
 
-        ExecutorUtils.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    RequestHelper.favor(mTopic, mFavorited, mCsrfToken);
-                } catch (ConnectionException | RemoteException e) {
-                    LogUtils.w(TAG, "favor topic failed", e);
-                    mFavorited = !mFavorited;
-                }
-
-                AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_FAV_TOPIC));
+        ExecutorUtils.execute(() -> {
+            try {
+                RequestHelper.favor(mTopic, mFavored, mCsrfToken);
+            } catch (ConnectionException | RemoteException e) {
+                LogUtils.w(TAG, "favorite topic failed", e);
+                mFavored = !mFavored;
             }
+
+            AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_FAV_TOPIC));
         });
     }
 

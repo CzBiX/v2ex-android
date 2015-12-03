@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Avatar;
+import com.czbix.v2ex.model.Member;
 
 public class AvatarView extends ImageView {
     private int mRealSize;
@@ -52,5 +53,9 @@ public class AvatarView extends ImageView {
         final String url = avatar.getUrlByPx(size);
         Glide.with(getContext()).load(url).placeholder(R.drawable.avatar_default)
                 .override(size, size).crossFade().fitCenter().into(this);
+    }
+
+    public interface OnAvatarActionListener {
+        void onMemberClick(Member member);
     }
 }

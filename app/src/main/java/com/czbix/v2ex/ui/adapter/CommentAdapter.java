@@ -1,37 +1,38 @@
 package com.czbix.v2ex.ui.adapter;
 
 import android.content.Context;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
 
-import com.czbix.v2ex.R;
-import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.model.Comment;
-import com.czbix.v2ex.model.Member;
-import com.czbix.v2ex.ui.widget.AvatarView;
-import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
-import com.czbix.v2ex.ui.widget.HtmlMovementMethod.OnHtmlActionListener;
-import com.czbix.v2ex.util.ViewUtils;
-import com.google.common.base.Preconditions;
+import com.czbix.v2ex.model.Topic;
+import com.czbix.v2ex.ui.widget.CommentView;
+import com.czbix.v2ex.ui.widget.CommentView.OnCommentActionListener;
+import com.czbix.v2ex.ui.widget.TopicView;
 
 import java.util.List;
 
-public class CommentAdapter extends BaseAdapter {
-    private final LayoutInflater mInflater;
+public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.BaseViewHolder> {
+    private static final int TYPE_TOPIC = 0;
+    private static final int TYPE_COMMENT = 1;
+
     private final OnCommentActionListener mListener;
+    private Topic mTopic;
     private List<Comment> mCommentList;
 
-    public CommentAdapter(Context context, OnCommentActionListener listener) {
-        mInflater = LayoutInflater.from(context);
+    public CommentAdapter(OnCommentActionListener listener) {
         mListener = listener;
+        setHasStableIds(true);
+    }
+
+    public void setTopic(Topic topic) {
+        if (mTopic != null && mTopic.hasInfo()) {
+            notifyItemChanged(0);
+        } else {
+            notifyItemInserted(0);
+        }
+        mTopic = topic;
     }
 
     public void setDataSource(List<Comment> comments) {
@@ -40,175 +41,83 @@ public class CommentAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
-        return mCommentList == null ? 0 : mCommentList.size();
+    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        BaseViewHolder viewHolder = null;
+        Context context = parent.getContext();
+        switch (viewType) {
+            case TYPE_TOPIC:
+                viewHolder = new TopicViewHolder(new TopicView(context));
+                break;
+            case TYPE_COMMENT:
+                viewHolder = new CommentViewHolder(new CommentView(context), mListener);
+        }
+
+        return viewHolder;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Object getItem(int position) {
-        return mCommentList.get(position);
+    public void onBindViewHolder(BaseViewHolder holder, int position) {
+        if (position-- == 0) {
+            holder.fillData(mTopic);
+        } else {
+            Comment comment = mCommentList.get(position);
+            holder.fillData(comment);
+        }
     }
 
     @Override
     public long getItemId(int position) {
+        if (position-- == 0) {
+            return mTopic.getId();
+        }
         return mCommentList.get(position).getId();
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder;
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.view_comment, parent , false);
-            viewHolder = new ViewHolder(convertView, mListener);
-            convertView.setTag(viewHolder);
-        } else {
-            viewHolder = ((ViewHolder) convertView.getTag());
-            Preconditions.checkNotNull(viewHolder);
-        }
-
-        final Comment comment = mCommentList.get(position);
-        viewHolder.fillData(comment, position);
-
-        return convertView;
+    public int getItemCount() {
+        int commentNum = mCommentList == null ? 0 : mCommentList.size();
+        int topicNum = mTopic.hasInfo() ? 1 : 0;
+        return topicNum + commentNum;
     }
 
-    private static class ViewHolder implements View.OnCreateContextMenuListener, View.OnClickListener, MenuItem.OnMenuItemClickListener, OnHtmlActionListener {
-        private static final int COMMENT_PICTURE_OTHER_WIDTH =
-                ViewUtils.getDimensionPixelSize(R.dimen.comment_picture_other_width);
+    @Override
+    public int getItemViewType(int position) {
+        return position == 0 ? TYPE_TOPIC : TYPE_COMMENT;
+    }
 
-        private final TextView mContent;
-        private final AvatarView mAvatar;
-        private final TextView mUsername;
-        private final TextView mReplyTime;
-        private final TextView mFloor;
-        private final TextView mThanks;
-        private final OnCommentActionListener mListener;
-        private Comment mComment;
-        private int mPos;
+    static abstract class BaseViewHolder<D, V extends View> extends RecyclerView.ViewHolder {
+        protected final V mView;
 
-        public ViewHolder(View view, OnCommentActionListener listener) {
-            mAvatar = (AvatarView) view.findViewById(R.id.avatar_img);
-            mContent = (TextView) view.findViewById(R.id.content);
-            mUsername = (TextView) view.findViewById(R.id.username_tv);
-            mReplyTime = (TextView) view.findViewById(R.id.time_tv);
-            mFloor = (TextView) view.findViewById(R.id.floor);
-            mThanks = (TextView) view.findViewById(R.id.thanks);
-
-            mListener = listener;
-            mAvatar.setOnClickListener(this);
-            mUsername.setOnClickListener(this);
-
-            view.setOnCreateContextMenuListener(this);
-            mContent.setMovementMethod(new HtmlMovementMethod(this));
+        public BaseViewHolder(V view) {
+            super(view);
+            mView = view;
         }
 
-        public void fillData(Comment comment, int position) {
-            if (comment.equals(mComment)) {
-                return;
-            }
-            mComment = comment;
-            mPos = position;
+        public abstract void fillData(D data);
+    }
 
-            ViewUtils.setHtmlIntoTextView(mContent, comment.getContent(), ViewUtils.getWidthPixels() -
-                    COMMENT_PICTURE_OTHER_WIDTH, false);
-            appendThanks(comment);
+    static class CommentViewHolder extends BaseViewHolder<Comment, CommentView> {
 
-            mUsername.setText(comment.getMember().getUsername());
-            mReplyTime.setText(comment.getReplyTime());
-            mFloor.setText(Integer.toString(comment.getFloor()));
-
-            mAvatar.setAvatar(comment.getMember().getAvatar());
-        }
-
-        private void appendThanks(Comment comment) {
-            if (comment.getThanks() <= 0) {
-                mThanks.setVisibility(View.INVISIBLE);
-                return;
-            }
-
-            final String text = "+" + Integer.toString(comment.getThanks());
-            if (comment.isThanked()) {
-                final ForegroundColorSpan span = new ForegroundColorSpan(
-                        mThanks.getContext().getResources().getColor(R.color.highlight_green));
-                final SpannableString string = new SpannableString(text);
-                string.setSpan(span, 0, text.length(), 0);
-
-                mThanks.setText(string);
-            } else {
-                mThanks.setText(text);
-            }
-            mThanks.setVisibility(View.VISIBLE);
+        public CommentViewHolder(CommentView view, OnCommentActionListener listener) {
+            super(view);
+            view.setListener(listener);
         }
 
         @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            if (!UserState.getInstance().isLoggedIn()) {
-                // anonymous can't do anything
-                return;
-            }
-
-            final String username = UserState.getInstance().getUsername();
-            if (mComment.getMember().getUsername().equals(username)) {
-                // can't do action on comment by myself
-                return;
-            }
-
-            final MenuInflater inflater = new MenuInflater(mContent.getContext());
-            inflater.inflate(R.menu.menu_comment, menu);
-            for (int i = 0; i < menu.size(); i++) {
-                final MenuItem item = menu.getItem(i);
-                item.setOnMenuItemClickListener(this);
-                if (item.getItemId() == R.id.action_thank) {
-                    item.setEnabled(!mComment.isThanked());
-                }
-            }
-
-            menu.setHeaderTitle(R.string.menu_title_comment);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (v == mAvatar || v == mUsername) {
-                mListener.onMemberClick(mComment.getMember());
-            }
-        }
-
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.action_thank:
-                    mListener.onCommentThank(mComment);
-                    return true;
-                case R.id.action_reply:
-                    mListener.onCommentReply(mComment);
-                    return true;
-                case R.id.action_ignore:
-                    mListener.onCommentIgnore(mComment);
-                    return true;
-                case R.id.action_copy:
-                    mListener.onCommentCopy(mComment);
-                    return true;
-            }
-            return false;
-        }
-
-        @Override
-        public void onUrlClick(String url) {
-            mListener.onCommentUrlClick(url, mPos);
-        }
-
-        @Override
-        public void onImageClick(String source) {
-            mListener.onCommentUrlClick(source, mPos);
+        public void fillData(Comment comment) {
+            mView.fillData(comment, getAdapterPosition());
         }
     }
 
-    public interface OnCommentActionListener {
-        void onMemberClick(Member member);
-        void onCommentThank(Comment comment);
-        void onCommentReply(Comment comment);
-        void onCommentIgnore(Comment comment);
-        void onCommentCopy(Comment comment);
-        void onCommentUrlClick(String url, int pos);
+    static class TopicViewHolder extends BaseViewHolder<Topic, TopicView> {
+        public TopicViewHolder(TopicView view) {
+            super(view);
+        }
+
+        @Override
+        public void fillData(Topic data) {
+            mView.fillData(data);
+        }
     }
 }

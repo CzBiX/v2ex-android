@@ -40,7 +40,7 @@ public class TopicParser extends Parser {
         if (UserState.getInstance().isLoggedIn()) {
             csrfToken = parseCsrfToken(doc);
             onceToken = parseOnceToken(doc);
-            topicBuilder.isFavored(parseFavorited(doc));
+            topicBuilder.isFavored(parseFavored(doc));
         } else {
             csrfToken = null;
             onceToken = null;
@@ -80,7 +80,7 @@ public class TopicParser extends Parser {
         return elements.get(0).val();
     }
 
-    private static boolean parseFavorited(Document doc) {
+    private static boolean parseFavored(Document doc) {
         final Elements elements = doc.select(".topic_buttons .tb:nth-child(2)");
         Preconditions.checkState(elements.size() >= 1, "should has a tag for favorite link");
         final Element ele = elements.get(0);

@@ -14,16 +14,17 @@ import com.czbix.v2ex.ui.fragment.NodeListFragment.OnNodeActionListener;
 import com.czbix.v2ex.ui.widget.AvatarView;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod.OnHtmlActionListener;
+import com.czbix.v2ex.ui.widget.TopicView;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Strings;
 
 import java.util.List;
 
 public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> {
-    private final OnTopicActionListener mListener;
+    private final TopicView.OnTopicActionListener mListener;
     private List<Topic> mData;
 
-    public TopicAdapter(@NonNull OnTopicActionListener listener) {
+    public TopicAdapter(@NonNull TopicView.OnTopicActionListener listener) {
         mListener = listener;
         setHasStableIds(true);
     }
@@ -36,8 +37,7 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        final View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.view_topic, parent, false);
-        return new ViewHolder(mListener, view);
+        return new ViewHolder(new TopicView(parent.getContext()), mListener);
     }
 
     @Override
@@ -56,133 +56,17 @@ public class TopicAdapter extends RecyclerView.Adapter<TopicAdapter.ViewHolder> 
         return mData == null ? 0 : mData.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private static final int TOPIC_PICTURE_OTHER_WIDTH = ViewUtils.getDimensionPixelSize(R.dimen.topic_picture_other_width);
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        private final TopicView mView;
 
-        public final TextView mTitle;
-        public final AvatarView mAvatar;
-        public final TextView mUsername;
-        public final TextView mNode;
-        public final TextView mReplyCount;
-        public final TextView mTime;
-        public final TextView mContent;
-
-        private final OnTopicActionListener mListener;
-        private Topic mTopic;
-
-        public ViewHolder(View view) {
-            this(null, view);
-        }
-
-        public ViewHolder(OnTopicActionListener listener, View view) {
+        public ViewHolder(TopicView view, TopicView.OnTopicActionListener listener) {
             super(view);
-            mListener = listener;
-
-            view.setOnClickListener(this);
-
-            mAvatar = ((AvatarView) view.findViewById(R.id.avatar_img));
-            mTitle = ((TextView) view.findViewById(R.id.title_tv));
-            mUsername = ((TextView) view.findViewById(R.id.username_tv));
-            mNode = ((TextView) view.findViewById(R.id.node_tv));
-            mTime = ((TextView) view.findViewById(R.id.time_tv));
-            mReplyCount = ((TextView) view.findViewById(R.id.reply_count_tv));
-            mContent = ((TextView) view.findViewById(R.id.content));
-        }
-
-        public void setContentListener(OnHtmlActionListener listener) {
-            mContent.setMovementMethod(new HtmlMovementMethod(listener));
-        }
-
-        public void setNodeListener(final OnNodeActionListener listener) {
-            mNode.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onNodeOpen(mTopic.getNode());
-                }
-            });
-        }
-
-        public void setMemberListener(final OnMemberActionListener listener) {
-            View.OnClickListener tmp = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onMemberClick(mTopic.getMember());
-                }
-            };
-
-            mAvatar.setOnClickListener(tmp);
-            mUsername.setOnClickListener(tmp);
+            view.setListener(listener);
+            mView = view;
         }
 
         public void fillData(Topic topic) {
-            if (topic.equals(mTopic)) {
-                return;
-            }
-            if (!topic.hasInfo()) {
-                itemView.setVisibility(View.INVISIBLE);
-                return;
-            }
-            itemView.setVisibility(View.VISIBLE);
-            mTopic = topic;
-
-            updateForRead();
-
-            ViewUtils.setHtmlIntoTextView(mTitle, topic.getTitle(),
-                    ViewUtils.getDimensionPixelSize(R.dimen.abc_text_size_body_1_material), false);
-            mUsername.setText(topic.getMember().getUsername());
-            mNode.setText("› " + topic.getNode().getTitle());
-            mTime.setText(topic.getReplyTime());
-            final int replyCount = topic.getReplyCount();
-            if (replyCount > 0) {
-                mReplyCount.setVisibility(View.VISIBLE);
-                mReplyCount.setText(Integer.toString(replyCount));
-            } else {
-                mReplyCount.setVisibility(View.INVISIBLE);
-            }
-
-            mAvatar.setAvatar(topic.getMember().getAvatar());
-            setContent(topic);
+            mView.fillData(topic);
         }
-
-        public void updateForRead() {
-            if (mTopic.hasRead()) {
-                mReplyCount.setAlpha(0.3f);
-            } else {
-                mReplyCount.setAlpha(1);
-            }
-        }
-
-        private void setContent(Topic topic) {
-            final String content = topic.getContent();
-            if (Strings.isNullOrEmpty(content)) {
-                mContent.setVisibility(View.GONE);
-                return;
-            }
-            mContent.setVisibility(View.VISIBLE);
-            ViewUtils.setHtmlIntoTextView(mContent, content, ViewUtils.getWidthPixels() -
-                    TOPIC_PICTURE_OTHER_WIDTH, true);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (mListener == null) {
-                return;
-            }
-
-            if (mListener.onTopicOpen(v, mTopic)) {
-                updateForRead();
-            }
-        }
-    }
-
-    public interface OnTopicActionListener {
-        /**
-         * @return should refresh data
-         */
-        boolean onTopicOpen(View view, Topic topic);
-    }
-
-    public interface OnMemberActionListener {
-        void onMemberClick(Member member);
     }
 }
