@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:background="@android:color/white"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <include layout="@layout/view_topic" android:id="@+id/topic" />
+              android:orientation="vertical"
+              android:paddingTop="8dp"
+              android:paddingBottom="8dp"
+              android:background="@android:color/white"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <com.czbix.v2ex.ui.widget.TopicView
+        android:id="@+id/topic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <!-- reserved to include postscript -->
 </LinearLayout>

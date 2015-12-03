@@ -2,21 +2,10 @@ package com.czbix.v2ex.ui.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.czbix.v2ex.R;
-import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Topic;
-import com.czbix.v2ex.ui.fragment.NodeListFragment.OnNodeActionListener;
-import com.czbix.v2ex.ui.widget.AvatarView;
-import com.czbix.v2ex.ui.widget.HtmlMovementMethod;
-import com.czbix.v2ex.ui.widget.HtmlMovementMethod.OnHtmlActionListener;
 import com.czbix.v2ex.ui.widget.TopicView;
-import com.czbix.v2ex.util.ViewUtils;
-import com.google.common.base.Strings;
 
 import java.util.List;
 

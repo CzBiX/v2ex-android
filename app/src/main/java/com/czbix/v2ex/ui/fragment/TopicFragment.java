@@ -32,8 +32,6 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.AbsListView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -52,7 +50,6 @@ import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.Ignorable;
 import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Node;
-import com.czbix.v2ex.model.Postscript;
 import com.czbix.v2ex.model.Thankable;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
@@ -62,7 +59,6 @@ import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.TopicActivity;
 import com.czbix.v2ex.ui.adapter.CommentAdapter;
-import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.helper.ReplyFormHelper;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.ui.loader.TopicLoader;
@@ -80,7 +76,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
 
-import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -99,8 +94,6 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private static final String ARG_TOPIC = "topic";
     private static final int[] MENU_REQUIRED_LOGGED_IN = {R.id.action_ignore, R.id.action_reply,
             R.id.action_thank, R.id.action_fav};
-
-    private static final int TOPIC_PICTURE_OTHER_WIDTH = ViewUtils.getDimensionPixelSize(R.dimen.topic_picture_other_width);
 
     private Topic mTopic;
     private SwipeRefreshLayout mLayout;
@@ -179,15 +172,11 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mCommentsView.setLayoutManager(new LinearLayoutManager(activity));
         mCommentsView.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.VERTICAL_LIST));
 
-        mCommentAdapter = new CommentAdapter(this);
-        mCommentAdapter.setTopic(mTopic);
+        mCommentAdapter = new CommentAdapter(this, this, this, this);
+        mCommentAdapter.setTopic(mTopic, null);
         mCommentAdapter.setDataSource(mComments);
         mCommentsView.setAdapter(mCommentAdapter);
         // TODO: on scroll listener
-    }
-
-    private void initTopicView() {
-        // TODO:
     }
 
     private void initJumpBackButton(View rootView) {
@@ -354,8 +343,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mLastIsFailed = false;
         final TopicWithComments data = result.mResult;
 
+        mCommentAdapter.setTopic(data.mTopic, data.mPostscripts);
         mTopic = data.mTopic;
-        mCommentAdapter.setTopic(mTopic);
 
         mCurPage = data.mCurPage;
         mMaxPage = data.mMaxPage;
@@ -369,7 +358,6 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mCommentAdapter.notifyDataSetChanged();
 
-        fillPostscript(data.mPostscripts);
         getActivity().invalidateOptionsMenu();
 
         mFavored = mTopic.isFavored();
@@ -429,10 +417,6 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         if (finishActivity) {
             getActivity().finish();
         }
-    }
-
-    private void fillPostscript(List<Postscript> postscripts) {
-        // TODO:
     }
 
     @Override

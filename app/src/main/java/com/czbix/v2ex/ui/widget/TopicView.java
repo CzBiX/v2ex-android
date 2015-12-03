@@ -76,9 +76,6 @@ public class TopicView extends FrameLayout implements View.OnClickListener {
     }
 
     public void fillData(Topic topic) {
-        if (topic.equals(mTopic)) {
-            return;
-        }
         if (!topic.hasInfo()) {
             setVisibility(View.INVISIBLE);
             return;
@@ -91,7 +88,7 @@ public class TopicView extends FrameLayout implements View.OnClickListener {
         ViewUtils.setHtmlIntoTextView(mTitle, topic.getTitle(),
                 ViewUtils.getDimensionPixelSize(R.dimen.abc_text_size_body_1_material), false);
         mUsername.setText(topic.getMember().getUsername());
-        mNode.setText("› " + topic.getNode().getTitle());
+        mNode.setText(String.format("› %s", topic.getNode().getTitle()));
         mTime.setText(topic.getReplyTime());
         final int replyCount = topic.getReplyCount();
         if (replyCount > 0) {
