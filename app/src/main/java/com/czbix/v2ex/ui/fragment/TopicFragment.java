@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
@@ -30,7 +31,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.widget.AbsListView;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -80,6 +82,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import static android.support.v7.widget.RecyclerView.NO_POSITION;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link TopicFragment#newInstance} factory method to
@@ -89,7 +93,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         LoaderManager.LoaderCallbacks<LoaderResult<TopicWithComments>>,
         ReplyFormHelper.OnReplyListener, CommentView.OnCommentActionListener,
         HtmlMovementMethod.OnHtmlActionListener, NodeListFragment.OnNodeActionListener,
-        AbsListView.OnScrollListener, AvatarView.OnAvatarActionListener {
+        AvatarView.OnAvatarActionListener {
     private static final String TAG = TopicFragment.class.getSimpleName();
     private static final String ARG_TOPIC = "topic";
     private static final int[] MENU_REQUIRED_LOGGED_IN = {R.id.action_ignore, R.id.action_reply,
@@ -113,8 +117,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private boolean mLastIsFailed;
     private boolean mFavored;
     private MenuItem mFavIcon;
-    private int mSmoothScrollToPos;
     private int mLastFocusPos;
+    private LinearLayoutManager mCommentsLayoutManager;
 
     /**
      * Use this factory method to create a new instance of
@@ -145,6 +149,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mMaxPage = 1;
         mCurPage = 1;
         mIsLoaded = false;
+        mLastFocusPos = NO_POSITION;
 
         setHasOptionsMenu(true);
         setRetainInstance(true);
@@ -169,23 +174,33 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void initCommentsView(TopicActivity activity) {
-        mCommentsView.setLayoutManager(new LinearLayoutManager(activity));
+        mCommentsLayoutManager = new LinearLayoutManager(activity);
+        mCommentsView.setLayoutManager(mCommentsLayoutManager);
         mCommentsView.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.VERTICAL_LIST));
 
         mCommentAdapter = new CommentAdapter(this, this, this, this);
         mCommentAdapter.setTopic(mTopic, null);
         mCommentAdapter.setDataSource(mComments);
         mCommentsView.setAdapter(mCommentAdapter);
-        // TODO: on scroll listener
+        mCommentsView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
+            @Override
+            public void onChildViewAttachedToWindow(View view) {
+                loadNextPageIfNeed(mCommentAdapter.getItemCount(), mCommentsView.getChildAdapterPosition(view));
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(View view) {
+
+            }
+        });
     }
 
     private void initJumpBackButton(View rootView) {
         mJumpBack = ((ImageButton) rootView.findViewById(R.id.btn_jump_back));
         mJumpBack.setOnClickListener(v -> {
-            Preconditions.checkState(mLastFocusPos != 0, "why jump button show without dest");
-            mCommentsView.smoothScrollToPosition(mLastFocusPos);
-            mLastFocusPos = 0;
-            showJumpBackButton(false);
+            Preconditions.checkState(mLastFocusPos != NO_POSITION, "why jump button show without dest");
+
+            scrollToPos(NO_POSITION, mLastFocusPos);
         });
     }
 
@@ -436,7 +451,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             return;
         }
 
-        // remember comment draft
+        // save comment draft
         final Editable content = mReplyForm.getContent();
         if (TextUtils.isEmpty(content)) {
             return;
@@ -591,9 +606,14 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         for (int i = pos - 1; i >= 0; i--) {
             final Comment comment = mComments.get(i);
             if (comment.getMember().getUsername().equals(member)) {
-                scrollToPos(pos, i);
+                scrollToPos(pos, i + 1);
                 return;
             }
+        }
+
+        if (mTopic.getMember().getUsername().equals(member)) {
+            scrollToPos(pos, 0);
+            return;
         }
 
         Toast.makeText(getActivity(), getString(R.string.toast_can_not_found_comments_of_the_author,
@@ -601,7 +621,14 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void scrollToPos(int curPos, int destPos) {
-        // TODO:
+        mLastFocusPos = curPos;
+        updateJumpBackButton();
+
+        mCommentsView.scrollToPosition(destPos);
+        mCommentsView.postDelayed(() -> {
+            View view = mCommentsLayoutManager.findViewByPosition(destPos);
+            highlightRow(view);
+        }, 100);
     }
 
     @Override
@@ -649,40 +676,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         });
     }
 
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-    }
-
     private TopicLoader getLoader() {
         return (TopicLoader) getLoaderManager().<LoaderResult<TopicWithComments>>getLoader(0);
-    }
-
-    @Override
-    public void onScroll(AbsListView listView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (visibleItemCount <= 0) {
-            return;
-        }
-
-        final int lastVisibleItem = firstVisibleItem + visibleItemCount;
-        // if has smooth scroll position, highlight it
-        if (mSmoothScrollToPos != 0) {
-            if (mSmoothScrollToPos >= firstVisibleItem && mSmoothScrollToPos <= lastVisibleItem) {
-                highlightRow(mSmoothScrollToPos - firstVisibleItem);
-                mSmoothScrollToPos = 0;
-            }
-        }
-
-        // it smooth scroll finish, and has dest floor, show jump back button
-        if (mSmoothScrollToPos == 0 && mLastFocusPos != 0) {
-            if (mLastFocusPos >= firstVisibleItem && mLastFocusPos <= lastVisibleItem) {
-                mLastFocusPos = 0;
-                showJumpBackButton(false);
-            } else {
-                showJumpBackButton(true);
-            }
-        }
-
-        loadNextPageIfNeed(totalItemCount, lastVisibleItem);
     }
 
     private void loadNextPageIfNeed(int totalItemCount, int lastVisibleItem) {
@@ -701,24 +696,16 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         loader.startLoading();
     }
 
-    private void highlightRow(int index) {
-        final View view = mCommentsView.getChildAt(index);
+    private void highlightRow(View view) {
         Preconditions.checkNotNull(view, "view shouldn't be null");
 
-        final ObjectAnimator animator = ObjectAnimator.ofInt(view, "backgroundColor",
-                0x00CCCCCC, Color.WHITE, 0x00CCCCCC);
-        animator.setEvaluator(new ArgbEvaluator());
-        animator.setDuration(1000);
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                ViewUtils.setBackground(view, null);
-            }
-        });
+        float width = view.getWidth() / 20;
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX", 0, -width, width, 0);
+        animator.setInterpolator(null);
         animator.start();
     }
 
-    private void showJumpBackButton(boolean visible) {
-        mJumpBack.setVisibility(visible ? View.VISIBLE : View.GONE);
+    private void updateJumpBackButton() {
+        mJumpBack.setVisibility(mLastFocusPos == NO_POSITION ? View.GONE : View.VISIBLE);
     }
 }
