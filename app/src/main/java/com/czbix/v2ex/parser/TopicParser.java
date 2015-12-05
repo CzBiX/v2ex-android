@@ -37,15 +37,15 @@ public class TopicParser extends Parser {
 
         parseTopicInfo(topicBuilder, mainElement);
 
-        List<Comment> comments = parseComments(doc.select("#Main > div:nth-child(4) tr"));
-        int[] pageNum = getMaxPage(doc);
+        List<Comment> comments = parseComments(mainElement);
+        int[] pageNum = getMaxPage(mainElement);
 
         final String csrfToken;
         final String onceToken;
         if (UserState.getInstance().isLoggedIn()) {
             csrfToken = parseCsrfToken(doc);
             onceToken = parseOnceToken(doc);
-            topicBuilder.isFavored(parseFavored(doc));
+            topicBuilder.isFavored(parseFavored(mainElement));
         } else {
             csrfToken = null;
             onceToken = null;
@@ -54,42 +54,44 @@ public class TopicParser extends Parser {
                 pageNum[1], csrfToken, onceToken);
     }
 
-    private static int[] getMaxPage(Document doc) {
-        final Elements elements = doc.select("#Main > div:nth-child(4) > .inner");
-        if (elements.size() <= 1) {
+    private static int[] getMaxPage(Element main) {
+        final Optional<Element> optional = new JsoupObjects(main).child("div:nth-child(4)")
+                .child(".inner:last-child:not([id])").getOptional();
+        if (optional.isPresent()) {
+            final Element element = optional.get();
+            final int maxPage = element.children().size();
+            final int curPage = Integer.parseInt(JsoupObjects.child(element, ".page_current").text());
+
+            return new int[]{curPage, maxPage};
+        } else {
             return new int[]{1, 1};
         }
-
-        final int maxPage = elements.get(1).children().size();
-        final int curPage = elements.select(".page_current").get(0).elementSiblingIndex() + 1;
-
-        return new int[]{curPage, maxPage};
     }
 
     private static String parseCsrfToken(Document doc) {
-        final String html = doc.head().html();
-        final Matcher matcher = PATTERN_CSRF_TOKEN.matcher(html);
-        if (!matcher.find()) {
-            return null;
+        final JsoupObjects scripts = new JsoupObjects(doc).bfs("head").child("script");
+        for (Element script : scripts) {
+            final Matcher matcher = PATTERN_CSRF_TOKEN.matcher(script.html());
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
         }
 
-        return matcher.group(1);
+        return null;
     }
 
-    private static String parseOnceToken(Document doc) {
-        final Elements elements = doc.select("form > input[name=once]");
-        if (elements.size() != 1) {
-            return null;
+    private static String parseOnceToken(Element main) {
+        final Optional<Element> optional = new JsoupObjects(main).child(".box:nth-child(6)")
+                .child(".cell:nth-child(2)").child("form").child("[name=once]").getOptional();
+        if (optional.isPresent()) {
+            return optional.get().val();
         }
 
-        return elements.get(0).val();
+        return null;
     }
 
-    private static boolean parseFavored(Document doc) {
-        final Elements elements = doc.select(".topic_buttons .tb:nth-child(2)");
-        Preconditions.checkState(elements.size() >= 1, "should has a tag for favorite link");
-        final Element ele = elements.get(0);
-        Preconditions.checkState(ele.tagName().equals("a"), "should be a tag for favorite link");
+    private static boolean parseFavored(Element main) {
+        final Element ele = new JsoupObjects(main).child(".box").child(".topic_buttons").child(".tb").getOne();
 
         return ele.attr("href").startsWith("/unfav");
     }
@@ -145,51 +147,43 @@ public class TopicParser extends Parser {
         }
     }
 
-    private static List<Comment> parseComments(Elements elements) {
-        List<Comment> list = Lists.newArrayListWithCapacity(elements.size());
+    private static List<Comment> parseComments(Element main) {
+        final JsoupObjects elements = new JsoupObjects(main).child(":nth-child(4)").child("div").child("table").child("tbody").child("tr");
+        return Lists.newArrayList(Iterables.transform(elements, (ele) -> {
+            final Avatar.Builder avatarBuilder = new Avatar.Builder();
+            parseAvatar(avatarBuilder, ele);
 
-        for (Element ele : elements) {
-            list.add(parseComment(ele));
-        }
+            final Element td = JsoupObjects.child(ele, "td:nth-child(3)");
 
-        return list;
+            final Member.Builder memberBuilder = new Member.Builder();
+            memberBuilder.setAvatar(avatarBuilder.createAvatar());
+            parseMember(memberBuilder, td);
+
+            final Comment.Builder commentBuilder = new Comment.Builder();
+            commentBuilder.setMember(memberBuilder.createMember());
+
+            parseCommentInfo(commentBuilder, td);
+            parseCommentContent(commentBuilder, td);
+
+            return commentBuilder.createComment();
+        }));
     }
 
-    private static Comment parseComment(Element ele) {
-
-        final Avatar.Builder avatarBuilder = new Avatar.Builder();
-        parseAvatar(avatarBuilder, ele);
-
-        final Member.Builder memberBuilder = new Member.Builder();
-        memberBuilder.setAvatar(avatarBuilder.createAvatar());
-        parseMember(memberBuilder, ele);
-
-        final Comment.Builder commentBuilder = new Comment.Builder();
-        commentBuilder.setMember(memberBuilder.createMember());
-        parseInfo(commentBuilder, ele);
-        parseContent(commentBuilder, ele);
-
-        return commentBuilder.createComment();
+    private static void parseCommentContent(Comment.Builder builder, Element ele) {
+        builder.setContent(JsoupObjects.child(ele, ".reply_content").html());
     }
 
-    private static void parseContent(Comment.Builder builder, Element ele) {
-        ele = ele.select(".reply_content").get(0);
-        builder.setContent(ele.html());
-    }
-
-    private static void parseInfo(Comment.Builder builder, Element ele) {
-        final Element tableEle = ele.parent().parent().parent();
+    private static void parseCommentInfo(Comment.Builder builder, Element ele) {
+        final Element tableEle = JsoupObjects.parents(ele, "div");
         // example data: r_123456
         final int id = Integer.parseInt(tableEle.id().substring(2));
         builder.setId(id);
 
-        final boolean thanked = ele.select(".thank_area").hasClass("thanked");
-        builder.setThanked(thanked);
+        final Element fr = JsoupObjects.child(ele, ".fr");
+        builder.setThanked(Iterables.any(new JsoupObjects(fr).child(".thank_area"), e -> e.hasClass("thanked")));
+        builder.setFloor(Integer.parseInt(JsoupObjects.child(fr, ".no").text()));
 
-        final String text = ele.select(".no").text();
-        builder.setFloor(Integer.parseInt(text));
-
-        final Elements elements = ele.select(".small");
+        final List<Element> elements = new JsoupObjects(ele).child(".small").getList();
 
         final Element timeEle = elements.get(0);
         builder.setReplyTime(timeEle.text());
@@ -204,15 +198,11 @@ public class TopicParser extends Parser {
     }
 
     private static void parseMember(Member.Builder builder, Element ele) {
-        ele = ele.select(".dark").get(0);
-
-        builder.setUsername(ele.text());
+        builder.setUsername(new JsoupObjects(ele).bfs(".dark").getOne().text());
     }
 
     private static void parseAvatar(Avatar.Builder builder, Element ele) {
-        ele = ele.select(".avatar").get(0);
-
-        builder.setUrl(ele.attr("src"));
+        builder.setUrl(new JsoupObjects(ele).dfs(".avatar").getOne().attr("src"));
     }
 
     private static void parseTopicContent(Topic.Builder builder, Element topicBox) {

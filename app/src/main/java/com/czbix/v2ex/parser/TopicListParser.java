@@ -1,6 +1,7 @@
 package com.czbix.v2ex.parser;
 
 import com.czbix.v2ex.common.exception.FatalException;
+import com.czbix.v2ex.helper.JsoupObjects;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Node;
@@ -8,6 +9,7 @@ import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Topic;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import org.jsoup.nodes.Document;
@@ -23,32 +25,29 @@ public class TopicListParser extends Parser {
     private static final Pattern PATTERN_REPLY_TIME = Pattern.compile("•\\s*(.+?)(?:\\s+•|$)");
 
     public static List<Topic> parseDoc(Document doc, Page page) {
+        final Element contentBox = new JsoupObjects(doc).bfs("body").child("#Wrapper")
+                .child(".content").child("#Main").child(".box").getOne();
+
         if (page instanceof Node) {
-            return parseDocForNode(doc, (Node) page);
+            return parseDocForNode(contentBox, (Node) page);
         } else if (page instanceof Tab || Page.PAGE_FAV_TOPIC.equals(page)) {
-            return parseDocForTab(doc);
+            return parseDocForTab(contentBox);
         } else {
             throw new IllegalArgumentException("unknown page type: " + page);
         }
     }
 
-    private static List<Topic> parseDocForTab(Document doc) {
-        final Elements elements = doc.select("#Main > div:nth-child(2) > .item  tr");
-        final List<Topic> result = Lists.newArrayListWithCapacity(elements.size());
-        for (Element item : elements) {
-            result.add(parseItemForTab(item));
-        }
-        return result;
+    private static List<Topic> parseDocForTab(Element contentBox) {
+        final JsoupObjects elements = new JsoupObjects(contentBox).child(".item")
+                .child("table").child("tbody").child("tr");
+        return Lists.newArrayList(Iterables.transform(elements, TopicListParser::parseItemForTab));
     }
 
-    private static List<Topic> parseDocForNode(Document doc, Node node) {
-        final Elements elements = doc.select("#TopicsNode > .cell  tr");
-        final List<Topic> result = Lists.newArrayListWithCapacity(elements.size());
-        for (Element item : elements) {
-            result.add(parseItemForNode(item, node));
-        }
-
-        return result;
+    private static List<Topic> parseDocForNode(Element contentBox, Node node) {
+        final JsoupObjects elements = new JsoupObjects(contentBox).child("#TopicsNode")
+                .child(".cell").child("table").child("tbody").child("tr");
+        return Lists.newArrayList(Iterables.transform(elements,
+                e -> parseItemForNode(e, node)));
     }
 
     private static Topic parseItemForTab(Element item) {
@@ -95,13 +94,12 @@ public class TopicListParser extends Parser {
     }
 
     private static void parseInfo(Topic.Builder topicBuilder, Element ele, Node node) {
-        ele = ele.select(".small").get(0);
+        ele = JsoupObjects.child(ele, ".fade");
 
         boolean hasNode;
         if (node == null) {
             hasNode = false;
-            final Elements nodeEle = ele.select("> a");
-            node = parseNode(nodeEle.get(0));
+            node = parseNode(JsoupObjects.child(ele, ".node"));
         } else {
             hasNode = true;
         }
@@ -131,8 +129,7 @@ public class TopicListParser extends Parser {
     }
 
     private static void parseTitle(Topic.Builder topicBuilder, Element ele) {
-        ele = ele.select(".item_title > a").get(0);
-        Preconditions.checkState(ele.tagName().equals("a"));
+        ele = new JsoupObjects(ele).child(".item_title").child("a").getOne();
         String url = ele.attr("href");
 
         topicBuilder.setId(Topic.getIdFromUrl(url));

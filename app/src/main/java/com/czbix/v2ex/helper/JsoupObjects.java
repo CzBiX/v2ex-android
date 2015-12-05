@@ -118,6 +118,16 @@ public class JsoupObjects implements Iterable<Element> {
         return this;
     }
 
+    public static Element parents(Element ele, String query) {
+        return new JsoupObjects(ele).parents(query).getOne();
+    }
+
+    public JsoupObjects parents(String query) {
+        final Evaluator evaluator = parseQuery(query);
+        addQuery(PARENT_TRAVERSER::breadthFirstTraversal, evaluator);
+        return this;
+    }
+
     public JsoupObjects adjacent(String query) {
         final Evaluator evaluator = parseQuery(query);
         addQuery(ele -> Lists.newArrayList(ele.nextElementSibling()), evaluator);
@@ -149,6 +159,13 @@ public class JsoupObjects implements Iterable<Element> {
         @Override
         public Iterable<Element> children(@NonNull Element root) {
             return root.children();
+        }
+    };
+
+    private static final TreeTraverser<Element> PARENT_TRAVERSER = new TreeTraverser<Element>() {
+        @Override
+        public Iterable<Element> children(@NonNull Element root) {
+            return Lists.newArrayList(root.parent());
         }
     };
 }
