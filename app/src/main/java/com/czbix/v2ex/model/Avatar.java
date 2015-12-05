@@ -2,9 +2,15 @@ package com.czbix.v2ex.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.czbix.v2ex.AppCtx;
+import com.czbix.v2ex.common.exception.FatalException;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class Avatar implements Parcelable {
@@ -68,7 +74,21 @@ public class Avatar implements Parcelable {
     }
 
     public static class Builder {
+        private static final LoadingCache<String, Avatar> CACHE;
         private String mBaseUrl;
+
+        static {
+            CACHE = CacheBuilder.newBuilder()
+                    .softValues()
+                    .initialCapacity(32)
+                    .maximumSize(128)
+                    .build(new CacheLoader<String, Avatar>() {
+                        @Override
+                        public Avatar load(@NonNull String key) throws Exception {
+                            return new Avatar(key);
+                        }
+                    });
+        }
 
         public Builder setUrl(String url) {
             mBaseUrl = getBaseUrl(url);
@@ -81,7 +101,11 @@ public class Avatar implements Parcelable {
         }
 
         public Avatar createAvatar() {
-            return new Avatar(mBaseUrl);
+            try {
+                return CACHE.get(mBaseUrl);
+            } catch (ExecutionException e) {
+                throw new FatalException(e);
+            }
         }
     }
 

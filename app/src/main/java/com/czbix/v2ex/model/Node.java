@@ -10,9 +10,12 @@ import com.czbix.v2ex.ui.widget.ExArrayAdapter;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
 import java.text.Collator;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -126,6 +129,16 @@ public class Node extends Page implements Comparable<Node>,ExArrayAdapter.Filter
     }
 
     public static class Builder {
+        private static final Cache<String, Node> CACHE;
+
+        static {
+            CACHE = CacheBuilder.newBuilder()
+                    .softValues()
+                    .initialCapacity(32)
+                    .maximumSize(128)
+                    .build();
+        }
+
         private int mId;
         private String mTitle;
         private Avatar mAvatar;
@@ -164,7 +177,11 @@ public class Node extends Page implements Comparable<Node>,ExArrayAdapter.Filter
         }
 
         public Node createNode() {
-            return new Node(mTitle, mId, mAvatar, mName, mTitleAlternative, mTopics);
+            try {
+                return CACHE.get(mName, () -> new Node(mTitle, mId, mAvatar, mName, mTitleAlternative, mTopics));
+            } catch (ExecutionException e) {
+                throw new FatalException(e);
+            }
         }
     }
 

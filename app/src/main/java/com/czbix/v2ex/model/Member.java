@@ -5,7 +5,10 @@ import android.os.Parcel;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,6 +62,16 @@ public class Member extends Page {
     }
 
     public static class Builder {
+        private static final Cache<String, Member> CACHE;
+
+        static {
+            CACHE = CacheBuilder.newBuilder()
+                    .initialCapacity(32)
+                    .maximumSize(128)
+                    .softValues()
+                    .build();
+        }
+
         private String mUsername;
         private Avatar mAvatar;
         private String mTagLine;
@@ -79,7 +92,11 @@ public class Member extends Page {
         }
 
         public Member createMember() {
-            return new Member(mUsername, mAvatar, mTagLine);
+            try {
+                return CACHE.get(mUsername, () -> new Member(mUsername, mAvatar, mTagLine));
+            } catch (ExecutionException e) {
+                throw new FatalException(e);
+            }
         }
     }
 
