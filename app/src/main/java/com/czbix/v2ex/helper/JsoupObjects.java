@@ -1,6 +1,7 @@
 package com.czbix.v2ex.helper;
 
 import android.support.annotation.NonNull;
+import android.util.LruCache;
 
 import com.czbix.v2ex.common.exception.FatalException;
 import com.google.common.base.Function;
@@ -24,6 +25,7 @@ import java.util.NoSuchElementException;
  */
 public class JsoupObjects implements Iterable<Element> {
     private static final Method PARSE_METHOD;
+    private static final LruCache<String, Evaluator> EVALUATOR_LRU_CACHE;
 
     static {
         try {
@@ -35,6 +37,7 @@ public class JsoupObjects implements Iterable<Element> {
         } catch (Exception e) {
             throw new FatalException("get QueryParser#parse failed", e);
         }
+        EVALUATOR_LRU_CACHE = new LruCache<>(64);
     }
 
     private FluentIterable<Element> mResult;
@@ -123,11 +126,18 @@ public class JsoupObjects implements Iterable<Element> {
 
     @NonNull
     private static Evaluator parseQuery(String query) {
-        try {
-            return (Evaluator) PARSE_METHOD.invoke(null, query);
-        } catch (Exception e) {
-            throw new FatalException("invoke QueryParser#parse failed", e);
+        Evaluator evaluator = EVALUATOR_LRU_CACHE.get(query);
+        if (evaluator == null) {
+            try {
+                evaluator = (Evaluator) PARSE_METHOD.invoke(null, query);
+                EVALUATOR_LRU_CACHE.put(query, evaluator);
+                return evaluator;
+            } catch (Exception e) {
+                throw new FatalException("invoke QueryParser#parse failed", e);
+            }
         }
+
+        return evaluator;
     }
 
     @Override
