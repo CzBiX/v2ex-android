@@ -14,6 +14,8 @@ import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.common.exception.UnauthorizedException;
 import com.czbix.v2ex.network.HttpStatus;
 
+import java.util.NoSuchElementException;
+
 public class ExceptionUtils {
     /**
      * warp exception in {@link #handleException(Fragment, Exception)} with {@link FatalException}
@@ -66,6 +68,9 @@ public class ExceptionUtils {
                 Crashlytics.log(e.getMessage());
             }
 
+            stringId = R.string.toast_parse_failed;
+        } else if (e instanceof NoSuchElementException) {
+            Crashlytics.logException(e);
             stringId = R.string.toast_parse_failed;
         } else {
             throw e;

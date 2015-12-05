@@ -33,7 +33,6 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.BaseView
     private final OnAvatarActionListener mAvatarListener;
     private Topic mTopic;
     private List<Comment> mCommentList;
-    private List<Postscript> mPostscripts;
 
     public CommentAdapter(OnCommentActionListener commentListener,
                           OnHtmlActionListener contentListener,
@@ -46,14 +45,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.BaseView
         setHasStableIds(true);
     }
 
-    public void setTopic(Topic topic, List<Postscript> postscripts) {
+    public void setTopic(Topic topic) {
         if (mTopic != null && mTopic.hasInfo()) {
             notifyItemChanged(0);
         } else {
             notifyItemInserted(0);
         }
         mTopic = topic;
-        mPostscripts = postscripts;
     }
 
     public void setDataSource(List<Comment> comments) {
@@ -80,7 +78,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.BaseView
     @Override
     public void onBindViewHolder(BaseViewHolder holder, int position) {
         if (position-- == 0) {
-            ((TopicViewHolder) holder).fillData(mTopic, mPostscripts);
+            ((TopicViewHolder) holder).fillData(mTopic);
         } else {
             Comment comment = mCommentList.get(position);
             ((CommentViewHolder) holder).fillData(comment);
@@ -155,9 +153,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.BaseView
             return new TopicViewHolder(layout, view, contentListener);
         }
 
-        public void fillData(Topic data, List<Postscript> postscripts) {
+        public void fillData(Topic data) {
             mTopicView.fillData(data);
-            fillPostscript(postscripts);
+            fillPostscript(data.getPostscripts());
         }
 
         private void fillPostscript(List<Postscript> postscripts) {

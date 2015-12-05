@@ -57,6 +57,11 @@
     public *;
 }
 
+# reflect call in JsoupObjects
+-keep class org.jsoup.select.QueryParser {
+    public static ** parse(java.lang.String);
+}
+
 # retrolambda
 -dontwarn java.lang.invoke.*
 

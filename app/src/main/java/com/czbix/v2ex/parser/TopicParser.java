@@ -2,13 +2,17 @@ package com.czbix.v2ex.parser;
 
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.FatalException;
+import com.czbix.v2ex.helper.JsoupObjects;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.Member;
+import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Postscript;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import org.jsoup.nodes.Document;
@@ -28,10 +32,11 @@ public class TopicParser extends Parser {
 
     public static TopicWithComments parseDoc(Document doc, Topic topic) {
         final Topic.Builder topicBuilder = topic.toBuilder();
+        final Element mainElement = new JsoupObjects(doc).bfs("body").child("#Wrapper")
+                .child(".content").child("#Main").getOne();
 
-        parseTopicContent(topicBuilder, doc.select(".cell .topic_content"));
-        final List<Postscript> postscripts = parsePostscript(doc.select(".subtle"));
-        parseTopicInfo(topicBuilder, doc);
+        parseTopicInfo(topicBuilder, mainElement);
+
         List<Comment> comments = parseComments(doc.select("#Main > div:nth-child(4) tr"));
         int[] pageNum = getMaxPage(doc);
 
@@ -45,7 +50,7 @@ public class TopicParser extends Parser {
             csrfToken = null;
             onceToken = null;
         }
-        return new TopicWithComments(topicBuilder.createTopic(), comments, postscripts, pageNum[0],
+        return new TopicWithComments(topicBuilder.createTopic(), comments, pageNum[0],
                 pageNum[1], csrfToken, onceToken);
     }
 
@@ -89,16 +94,24 @@ public class TopicParser extends Parser {
         return ele.attr("href").startsWith("/unfav");
     }
 
-    private static void parseTopicInfo(Topic.Builder builder, Document doc) {
-        parseTopicReplyCount(builder, doc);
+    private static void parseTopicInfo(Topic.Builder builder, Element main) {
+        final Element topicBox = JsoupObjects.child(main, ".box");
+        final Element header = JsoupObjects.child(topicBox, ".header");
 
-        final Element headerEle = doc.select("#Main .header").get(0);
-        parseTopicReplyTime(builder, headerEle.select(".gray").get(0).textNodes().get(0));
-        builder.setNode(TopicListParser.parseNode(headerEle.select(".chevron").get(0).nextElementSibling()));
-        parseTopicTitle(builder, headerEle);
+        {
+            final Node node = TopicListParser.parseNode(new JsoupObjects(header).child(".chevron").adjacent("a").getOne());
+            builder.setNode(node);
+        }
+        parseTopicReplyTime(builder, JsoupObjects.child(header, ".gray").textNodes().get(0));
+        parseTopicTitle(builder, header);
+
+        parseTopicContent(builder, topicBox);
+        parsePostscript(builder, topicBox);
+        parseTopicReplyCount(builder, main);
+
 
         if (!builder.hasInfo()) {
-            TopicListParser.parseMember(builder, headerEle.child(0));
+            TopicListParser.parseMember(builder, JsoupObjects.child(header, ".fr"));
         }
     }
 
@@ -112,24 +125,24 @@ public class TopicParser extends Parser {
         topicBuilder.setReplyTime(time);
     }
 
-    private static void parseTopicTitle(Topic.Builder builder, Element headerEle) {
-        final String title = headerEle.select("h1").html();
+    private static void parseTopicTitle(Topic.Builder builder, Element header) {
+        final String title = JsoupObjects.child(header, "h1").html();
 
         builder.setTitle(title);
     }
 
-    private static void parseTopicReplyCount(Topic.Builder topicBuilder, Document doc) {
-        final Elements elements = doc.select("#Main > div:nth-child(4) > .cell:nth-child(1) > span");
-        if (elements.size() == 0) {
+    private static void parseTopicReplyCount(Topic.Builder topicBuilder, Element main) {
+        final Optional<Element> optional = new JsoupObjects(main).child(":nth-child(4)").child(".cell").child(".gray").getOptional();
+        if (optional.isPresent()) {
+            final String text = optional.get().ownText();
+            final Matcher matcher = PATTERN_NUMBERS.matcher(text);
+            Preconditions.checkState(matcher.find());
+
+            topicBuilder.setReplyCount(Integer.parseInt(matcher.group()));
+        } else {
             // empty reply
             topicBuilder.setReplyCount(0);
-            return;
         }
-        final String text = elements.get(0).ownText();
-        final Matcher matcher = PATTERN_NUMBERS.matcher(text);
-        Preconditions.checkState(matcher.find());
-
-        topicBuilder.setReplyCount(Integer.parseInt(matcher.group()));
     }
 
     private static List<Comment> parseComments(Elements elements) {
@@ -202,28 +215,28 @@ public class TopicParser extends Parser {
         builder.setUrl(ele.attr("src"));
     }
 
-    private static void parseTopicContent(Topic.Builder builder, Elements elements) {
-        if (elements.size() == 0) return;
-        Element ele = elements.get(0);
-        builder.setContent(ele.html());
+    private static void parseTopicContent(Topic.Builder builder, Element topicBox) {
+        final Optional<Element> optional = new JsoupObjects(topicBox).child(".cell").child(".topic_content").getOptional();
+        if (optional.isPresent()) {
+            final Element element = optional.get();
+            builder.setContent(element.html());
+        }
     }
 
-    private static List<Postscript> parsePostscript(Elements elements) {
-        List<Postscript> list = Lists.newArrayListWithCapacity(elements.size());
-
-        for (Element element : elements) {
-            Element ele = element.select(".fade").get(0);
-            final Matcher matcher = PATTERN_POSTSCRIPT.matcher(ele.text());
+    private static void parsePostscript(Topic.Builder builder, Element topicBox) {
+        final Iterable<Element> elements = new JsoupObjects(topicBox).child(".subtle");
+        final Iterable<Postscript> subtles = Iterables.transform(elements, ele -> {
+            final Element fade = JsoupObjects.child(ele, ".fade");
+            final Matcher matcher = PATTERN_POSTSCRIPT.matcher(fade.text());
             Preconditions.checkArgument(matcher.find());
-
             final String time = matcher.group(1);
-            ele = element.select(".topic_content").get(0);
-            final String content = ele.html();
 
-            list.add(new Postscript(content, time));
-        }
+            final String content = JsoupObjects.child(ele, ".topic_content").html();
 
-        return list;
+            return new Postscript(content, time);
+        });
+
+        builder.setPostscripts(Lists.newArrayList(subtles));
     }
 
     public static String parseProblemInfo(String html) {

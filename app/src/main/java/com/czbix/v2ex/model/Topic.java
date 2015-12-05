@@ -1,12 +1,14 @@
 package com.czbix.v2ex.model;
 
 import android.os.Parcel;
+import android.support.annotation.Nullable;
 
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,9 +25,11 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
     private final boolean mHasInfo;
     private final boolean mFavored;
     private transient boolean mHasRead;
+    @Nullable
+    private final List<Postscript> mPostscripts;
 
     Topic(String title, int id, String content, Member member, Node node, String replyTime,
-          int replies, boolean favored) {
+          int replies, boolean favored, @Nullable List<Postscript> postscripts) {
         Preconditions.checkArgument(id != 0);
 
         mId = id;
@@ -37,6 +41,7 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
         mReplies = replies;
         mReplyTime = replyTime;
         mFavored = favored;
+        mPostscripts = postscripts;
 
         mHasInfo = member != null;
     }
@@ -116,6 +121,11 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
         return mFavored;
     }
 
+    @Nullable
+    public List<Postscript> getPostscripts() {
+        return mPostscripts;
+    }
+
     public boolean hasRead() {
         return mHasRead;
     }
@@ -147,6 +157,7 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
         this.mNode = in.readParcelable(Node.class.getClassLoader());
         this.mReplyTime = in.readString();
         this.mFavored = in.readByte() != 0;
+        this.mPostscripts = null;
     }
 
     public static final Creator<Topic> CREATOR = new Creator<Topic>() {
@@ -196,6 +207,7 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
         private int mReplies;
         private String mReplyTime;
         private boolean mFavored;
+        private List<Postscript> mPostscripts;
 
         public Builder setTitle(String title) {
             mTitle = title;
@@ -237,12 +249,17 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
             return this;
         }
 
+        public Builder setPostscripts(List<Postscript> postscripts) {
+            mPostscripts = postscripts;
+            return this;
+        }
+
         public boolean hasInfo() {
             return mMember != null;
         }
 
         public Topic createTopic() {
-            return new Topic(mTitle, mId, mContent, mMember, mNode, mReplyTime, mReplies, mFavored);
+            return new Topic(mTitle, mId, mContent, mMember, mNode, mReplyTime, mReplies, mFavored, mPostscripts);
         }
     }
 }

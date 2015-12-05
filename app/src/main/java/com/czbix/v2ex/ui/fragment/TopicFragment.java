@@ -1,14 +1,9 @@
 package com.czbix.v2ex.ui.fragment;
 
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -31,8 +26,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.ScaleAnimation;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -73,7 +66,6 @@ import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.MiscUtils;
 import com.czbix.v2ex.util.TrackerUtils;
-import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
@@ -179,7 +171,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mCommentsView.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.VERTICAL_LIST));
 
         mCommentAdapter = new CommentAdapter(this, this, this, this);
-        mCommentAdapter.setTopic(mTopic, null);
+        mCommentAdapter.setTopic(mTopic);
         mCommentAdapter.setDataSource(mComments);
         mCommentsView.setAdapter(mCommentAdapter);
         mCommentsView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
@@ -358,7 +350,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mLastIsFailed = false;
         final TopicWithComments data = result.mResult;
 
-        mCommentAdapter.setTopic(data.mTopic, data.mPostscripts);
+        mCommentAdapter.setTopic(data.mTopic);
         mTopic = data.mTopic;
 
         mCurPage = data.mCurPage;
