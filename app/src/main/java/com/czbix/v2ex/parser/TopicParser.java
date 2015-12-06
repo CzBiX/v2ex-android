@@ -55,7 +55,7 @@ public class TopicParser extends Parser {
     }
 
     private static int[] getMaxPage(Element main) {
-        final Optional<Element> optional = new JsoupObjects(main).child("div:nth-child(4)")
+        final Optional<Element> optional = new JsoupObjects(main).child(".box:nth-child(4):not(.transparent)")
                 .child(".inner:last-child:not([id])").getOptional();
         if (optional.isPresent()) {
             final Element element = optional.get();
