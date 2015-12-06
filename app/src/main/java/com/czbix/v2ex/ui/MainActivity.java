@@ -42,7 +42,6 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
-import com.czbix.v2ex.dao.TopicDao;
 import com.czbix.v2ex.eventbus.BaseEvent.DailyAwardEvent;
 import com.czbix.v2ex.eventbus.BaseEvent.NewUnreadEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
@@ -496,19 +495,13 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     }
 
     @Override
-    public boolean onTopicOpen(View view, Topic topic) {
+    public void onTopicOpen(View view, Topic topic) {
         final Intent intent = new Intent(this, TopicActivity.class);
         intent.putExtra(TopicActivity.KEY_TOPIC, topic);
 
         startActivity(intent);
 
-        TopicDao.updateLastRead(topic);
-        if (topic.getReplyCount() > 0) {
-            topic.setHasRead();
-            return true;
-        }
-
-        return false;
+        topic.setHasRead();
     }
 
     @Override

@@ -11,6 +11,7 @@ public class TopicWithComments {
     public final int mMaxPage;
     public final String mCsrfToken;
     public final String mOnceToken;
+    public int mLastReadPos;
 
     public TopicWithComments(@NonNull Topic topic, @NonNull List<Comment> comments,
                              int curPage, int maxPage,

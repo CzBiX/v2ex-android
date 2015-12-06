@@ -127,15 +127,11 @@ public class TopicView extends FrameLayout implements View.OnClickListener {
             return;
         }
 
-        if (mListener.onTopicOpen(v, mTopic)) {
-            updateForRead();
-        }
+        mListener.onTopicOpen(v, mTopic);
+        updateForRead();
     }
 
     public interface OnTopicActionListener {
-        /**
-         * @return should refresh data
-         */
-        boolean onTopicOpen(View view, Topic topic);
+        void onTopicOpen(View view, Topic topic);
     }
 }

@@ -39,6 +39,7 @@ import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.dao.DraftDao;
+import com.czbix.v2ex.dao.TopicDao;
 import com.czbix.v2ex.eventbus.TopicEvent;
 import com.czbix.v2ex.helper.MultiList;
 import com.czbix.v2ex.model.Comment;
@@ -343,12 +344,19 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             return;
         }
 
-        if (!mIsLoaded && !mTopic.hasInfo()) {
-            mCommentsView.setVisibility(View.VISIBLE);
+        final TopicWithComments data = result.mResult;
+        if (!mIsLoaded) {
+            if (!mTopic.hasInfo()) {
+                mCommentsView.setVisibility(View.VISIBLE);
+            }
+            if (data.mLastReadPos > 0) {
+                // add one for topic in header
+                mLastFocusPos = data.mLastReadPos + 1;
+                updateJumpBackButton();
+            }
         }
         mIsLoaded = true;
         mLastIsFailed = false;
-        final TopicWithComments data = result.mResult;
 
         mCommentAdapter.setTopic(data.mTopic);
         mTopic = data.mTopic;
@@ -438,6 +446,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onStop() {
         super.onStop();
+
+        TopicDao.updateLastRead(mTopic);
 
         if (mReplyForm == null) {
             return;
