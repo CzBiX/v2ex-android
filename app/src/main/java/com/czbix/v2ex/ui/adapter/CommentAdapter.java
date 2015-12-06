@@ -23,7 +23,9 @@ import com.czbix.v2ex.util.ViewUtils;
 
 import java.util.List;
 
-public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.BaseViewHolder> {
+import static android.support.v7.widget.RecyclerView.ViewHolder;
+
+public class CommentAdapter extends RecyclerView.Adapter<ViewHolder> {
     private static final int TYPE_TOPIC = 0;
     private static final int TYPE_COMMENT = 1;
 
@@ -60,8 +62,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.BaseView
     }
 
     @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        BaseViewHolder viewHolder = null;
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        ViewHolder viewHolder = null;
         Context context = parent.getContext();
         switch (viewType) {
             case TYPE_TOPIC:
@@ -76,7 +78,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.BaseView
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onBindViewHolder(BaseViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         if (position-- == 0) {
             ((TopicViewHolder) holder).fillData(mTopic);
         } else {
@@ -105,13 +107,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.BaseView
         return position == 0 ? TYPE_TOPIC : TYPE_COMMENT;
     }
 
-    static abstract class BaseViewHolder extends RecyclerView.ViewHolder {
-        public BaseViewHolder(View view) {
-            super(view);
-        }
-    }
-
-    static class CommentViewHolder extends BaseViewHolder {
+    static class CommentViewHolder extends ViewHolder {
 
         public CommentViewHolder(CommentView view, OnCommentActionListener listener) {
             super(view);
@@ -123,7 +119,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.BaseView
         }
     }
 
-    static class TopicViewHolder extends BaseViewHolder {
+    static class TopicViewHolder extends ViewHolder {
         private static final int TOPIC_PICTURE_OTHER_WIDTH = ViewUtils.getDimensionPixelSize(R.dimen.topic_picture_other_width);
 
         private final LinearLayout mTopicLayout;
