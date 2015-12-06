@@ -34,7 +34,6 @@ import com.czbix.v2ex.parser.TopicParser;
 import com.czbix.v2ex.util.IoUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.common.base.Preconditions;
-import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.reflect.TypeToken;
@@ -153,9 +152,7 @@ public class RequestHelper {
         try {
             doc = Parser.toDoc(response.body().string());
             processUserState(doc);
-            final Stopwatch stopwatch = Stopwatch.createStarted();
             result = TopicParser.parseDoc(doc, topic);
-            System.out.println(stopwatch.elapsed(TimeUnit.MILLISECONDS));
         } catch (IOException e) {
             throw new ConnectionException(e);
         }
