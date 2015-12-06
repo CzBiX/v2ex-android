@@ -51,6 +51,16 @@ public class TrackerUtils {
         mTracker.send(hit);
     }
 
+    public static void onParseTopic(long time, String label) {
+        final HitBuilders.TimingBuilder builder = new HitBuilders.TimingBuilder(Category.TOPIC, Action.PARSE_TOPIC, time);
+        if (label != null) {
+            builder.setLabel(label);
+        }
+        final Map<String, String> hit = builder.build();
+        mTracker.send(hit);
+
+    }
+
     private static class Category {
         public static final String APP = "App";
         public static final String TOPIC = "Topic";
@@ -61,6 +71,7 @@ public class TrackerUtils {
         public static final String SWITCH_REPLY = "Switch Reply";
         public static final String REPLY = "Reply";
         public static final String SEARCH = "Search";
+        public static final String PARSE_TOPIC = "Parse Topic";
     }
 
     private static class Label {
