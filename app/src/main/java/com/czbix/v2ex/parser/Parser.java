@@ -1,10 +1,12 @@
 package com.czbix.v2ex.parser;
 
 import com.czbix.v2ex.BuildConfig;
+import com.czbix.v2ex.helper.JsoupObjects;
 import com.google.common.base.Preconditions;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public abstract class Parser {
@@ -19,9 +21,9 @@ public abstract class Parser {
 
     public static String parseOnceCode(String html) {
         final Document doc = toDoc(html);
-        final Elements elements = doc.select("[name=once]");
-        Preconditions.checkState(elements.size() == 1, "once code size isn't one");
+        Element ele = new JsoupObjects(doc).body().child("#Wrapper").child(".content")
+                .child("#Main").child(".box").child(".cell").dfs("form").dfs("[name=once]").getOne();
 
-        return elements.get(0).val();
+        return ele.val();
     }
 }

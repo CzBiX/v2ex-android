@@ -108,6 +108,10 @@ public class JsoupObjects implements Iterable<Element> {
         return this;
     }
 
+    public JsoupObjects body() {
+        return bfs("body");
+    }
+
     /**
      * find elements by breadth-first-search
      * @see #dfs(String)

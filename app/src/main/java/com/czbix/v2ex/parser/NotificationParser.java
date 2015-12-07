@@ -1,11 +1,14 @@
 package com.czbix.v2ex.parser;
 
+import com.czbix.v2ex.helper.JsoupObjects;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Notification;
 import com.czbix.v2ex.model.Notification.NotificationType;
 import com.czbix.v2ex.model.Topic;
+import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import org.jsoup.nodes.Document;
@@ -20,21 +23,18 @@ public class NotificationParser {
     private static final Pattern PATTERN_TOKEN = Pattern.compile("http://www.v2ex.com/n/(.+).xml");
 
     public static List<Notification> parseDoc(Document doc) {
-        Elements elements = doc.select("#Main > div:nth-child(2) .cell tr");
-        List<Notification> result = Lists.newArrayListWithCapacity(elements.size());
+        Element box = new JsoupObjects(doc).body().child("#Wrapper").child(".content")
+                .child("#Main").child(".box").getOne();
+        JsoupObjects list = new JsoupObjects(box).child(".cell").child("table").child("tbody").child("tr");
 
-        for (Element element : elements) {
-            result.add(parseNotification(element));
-        }
-
-        return result;
+        return Lists.newArrayList(Iterables.transform(list, NotificationParser::parseNotification));
     }
 
     public static int parseUnreadCount(Document doc) {
-        final Elements elements = doc.select("#Rightbar > div:nth-child(2)");
-        Preconditions.checkState(elements.size() == 1);
+        Element box = new JsoupObjects(doc).body().child("#Wrapper").child(".content")
+                .child("#Rightbar").child(".box").getOne();
 
-        return MyselfParser.getNotificationsNum(elements.get(0));
+        return MyselfParser.getNotificationsNum(box);
     }
 
     private static Notification parseNotification(Element element) {
@@ -50,13 +50,13 @@ public class NotificationParser {
     }
 
     private static void parseContent(Notification.Builder builder, Element ele) {
-        Elements elements = ele.select(".payload");
-        if (elements.size() != 1) {
+        Optional<Element> optional = new JsoupObjects(ele).child(".payload").getOptional();
+        if (!optional.isPresent()) {
             // don't have content
             return;
         }
 
-        builder.setContent(elements.get(0).html());
+        builder.setContent(optional.get().html());
     }
 
     private static void parseInfo(Notification.Builder builder, Element ele) {
@@ -97,8 +97,7 @@ public class NotificationParser {
     }
 
     private static String parseTime(Element ele) {
-        Element timeEle = ele.select(".snow").get(0);
-        return timeEle.text();
+        return JsoupObjects.child(ele, ".snow").text();
     }
 
     private static Member parseMember(Element ele) {
@@ -122,13 +121,10 @@ public class NotificationParser {
 
     public static String parseToken(String html) {
         final Document doc = Parser.toDoc(html);
-        final Elements elements = doc.select(".sll");
-        Preconditions.checkState(elements.size() == 1, "token elements size should be one");
+        Element ele = new JsoupObjects(doc).body().child("#Wrapper").child(".content")
+                .child("#Main").child(".box:last-child").dfs(".sll").getOne();
 
-        final Element ele = elements.get(0);
-        final String val = ele.val();
-
-        final Matcher matcher = PATTERN_TOKEN.matcher(val);
+        final Matcher matcher = PATTERN_TOKEN.matcher(ele.val());
         Preconditions.checkState(matcher.matches(), "val not match token pattern");
 
         return matcher.group(1);
