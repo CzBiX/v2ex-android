@@ -195,6 +195,10 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
             scrollToPos(NO_POSITION, mLastFocusPos);
         });
+        mJumpBack.setOnLongClickListener(v -> {
+            Toast.makeText(getActivity(), R.string.toast_jump_to_last_read_pos, Toast.LENGTH_SHORT).show();
+            return true;
+        });
     }
 
     @Override

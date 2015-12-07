@@ -44,7 +44,8 @@
     <string name="pref_summary_load_image_on_mobile_network">Load image in topic/comment on mobile network</string>
     <string name="toast_has_sign_out">Account has sign out!</string>
     <string name="title_fragment_notifications">Notifications</string>
-    
+    <string name="toast_jump_to_last_read_pos">Jump back to last read position</string>
+
     <string name="notification_unknown">Unknown action</string>
     <string name="notification_reply_topic">Reply your topic</string>
     <string name="notification_thank_topic">Thank your topic</string>
