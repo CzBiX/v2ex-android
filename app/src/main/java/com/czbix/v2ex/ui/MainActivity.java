@@ -48,13 +48,14 @@ import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Node;
-import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.loader.GooglePhotoUrlLoader;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.presenter.TopicSearchPresenter;
 import com.czbix.v2ex.res.GoogleImg;
+import com.czbix.v2ex.ui.fragment.BaseTabFragment;
 import com.czbix.v2ex.ui.fragment.CategoryTabFragment;
+import com.czbix.v2ex.ui.fragment.FavoriteTabFragment;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.NotificationListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
@@ -94,7 +95,8 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     @IdRes
     private int mLastMenuId;
     private MenuItem mSearchMenuItem;
-    private boolean mIsCategoryTabFragment;
+    private boolean mIsTabFragment;
+    private MenuItem mFavItem;
 
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
@@ -189,6 +191,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         updateUsername();
         updateNavBackground();
         updateNotifications();
+        updateFavItem();
         setAwardVisibility(UserState.getInstance().hasAward());
     }
 
@@ -213,6 +216,10 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         mNotificationsItem.setEnabled(isEnable);
         mNotificationsItem.setIcon(iconId);
         mNotificationsItem.setTitle(titleId);
+    }
+
+    private void updateFavItem() {
+        mFavItem.setEnabled(UserState.getInstance().isLoggedIn());
     }
 
     private void updateNavBackground() {
@@ -250,7 +257,9 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         }
         final Menu menu = mNav.getMenu();
         mNotificationsItem = menu.findItem(R.id.drawer_notifications);
+        mFavItem = menu.findItem(R.id.drawer_favorite);
         updateNotifications();
+        updateFavItem();
 
         mAwardButton.setOnClickListener(v -> {
             mAwardButton.setEnabled(false);
@@ -344,7 +353,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
             case R.id.drawer_favorite:
                 mLastMenuId = R.id.drawer_favorite;
                 mDrawerLayout.closeDrawer(mNav);
-                switchFragment(TopicListFragment.newInstance(Page.PAGE_FAV_TOPIC));
+                switchFragment(FavoriteTabFragment.newInstance());
                 return true;
             case R.id.drawer_settings:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -388,8 +397,8 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
         }
         fragmentTransaction.commit();
 
-        mIsCategoryTabFragment = isCategoryTabFragment(fragment);
-        setAppBarShadow(!mIsCategoryTabFragment);
+        mIsTabFragment = isTabFragment(fragment);
+        setAppBarShadow(!mIsTabFragment);
         invalidateOptionsMenu();
     }
 
@@ -424,7 +433,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         mSearchMenuItem = menu.findItem(R.id.action_web_search);
-        mSearchMenuItem.setVisible(mIsCategoryTabFragment);
+        mSearchMenuItem.setVisible(mIsTabFragment);
 
         enableLoginMenu(menu);
 
@@ -463,6 +472,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
         updateUsername();
         updateNotifications();
+        updateFavItem();
     }
 
     @Subscribe
@@ -518,10 +528,10 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     @Override
     public void onBackStackChanged() {
         final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment);
-        setAppBarShadow(!isCategoryTabFragment(fragment));
+        setAppBarShadow(!isTabFragment(fragment));
     }
 
-    private static boolean isCategoryTabFragment(Fragment fragment) {
-        return fragment instanceof CategoryTabFragment;
+    private static boolean isTabFragment(Fragment fragment) {
+        return fragment instanceof BaseTabFragment;
     }
 }

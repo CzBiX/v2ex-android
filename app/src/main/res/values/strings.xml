@@ -11,6 +11,7 @@
     <string name="toast_copied">Copied to clipboard</string>
     <string name="drawer_explore">Explore</string>
     <string name="title_fragment_nodes">Nodes</string>
+    <string name="title_fragment_topics">Topics</string>
     <string name="action_reply">Reply</string>
     <string name="desc_add_reply">Add a reply</string>
     <string name="toast_reply_saved_as_draft">Reply saved as draft</string>

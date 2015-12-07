@@ -1,15 +1,20 @@
 package com.czbix.v2ex.parser;
 
+import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.helper.JsoupObjects;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.LoginResult;
+import com.czbix.v2ex.model.Node;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,6 +71,15 @@ public class MyselfParser extends Parser {
         final Matcher matcher = PATTERN_UNREAD_NUM.matcher(text);
         Preconditions.checkState(matcher.find());
         return Integer.parseInt(matcher.group());
+    }
+
+    public static List<Node> parseFavNodes(Document doc) {
+        final JsoupObjects elements = new JsoupObjects(doc).body().child("#Wrapper")
+                .child(".content").child("#Main").child(".box").child("#MyNodes").child("a");
+        return Lists.newArrayList(Iterables.transform(elements, ele -> {
+            final String name = Node.getNameFromUrl(ele.attr("href"));
+            return NodeDao.get(name);
+        }));
     }
 
     public static class MySelfInfo {

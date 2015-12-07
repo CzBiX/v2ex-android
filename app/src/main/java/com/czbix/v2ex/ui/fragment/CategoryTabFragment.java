@@ -20,15 +20,26 @@ import com.google.common.base.Preconditions;
 
 import java.util.List;
 
-public class CategoryTabFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class CategoryTabFragment extends BaseTabFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     private boolean isTabsChanged;
 
     public static CategoryTabFragment newInstance() {
         return new CategoryTabFragment();
     }
 
-    public CategoryTabFragment() {
-        // Required empty public constructor
+    @Override
+    protected FragmentPagerAdapter getAdapter(FragmentManager manager) {
+        return new CategoryFragmentAdapter(manager);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        //noinspection ConstantConditions
+        final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+        return view;
     }
 
     @Override
@@ -53,27 +64,6 @@ public class CategoryTabFragment extends Fragment implements SharedPreferences.O
         super.onDestroy();
 
         PrefStore.getInstance().unregisterPreferenceChangeListener(this);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.tab_layout, container, false);
-        ViewPager viewPager = ((ViewPager) view.findViewById(R.id.view_pager));
-        FragmentPagerAdapter adapter = new CategoryFragmentAdapter(getChildFragmentManager());
-        viewPager.setAdapter(adapter);
-        viewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin));
-
-        final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
-        ViewCompat.setElevation(tabLayout, getResources().getDimension(R.dimen.appbar_elevation));
-        tabLayout.setupWithViewPager(viewPager);
-
-        // XXX: TabLayout support tabContentStart, but no tabContentEnd, so set the padding manually
-        final View tabStrip = tabLayout.getChildAt(0);
-        Preconditions.checkNotNull(tabStrip, "tabStrip shouldn't be null");
-        final int padding = getResources().getDimensionPixelSize(R.dimen.tab_layout_padding);
-        ViewCompat.setPaddingRelative(tabStrip, padding, 0, padding, 0);
-
-        return view;
     }
 
     @Override

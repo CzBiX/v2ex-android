@@ -67,6 +67,7 @@ public class RequestHelper {
     private static final String URL_MISSION_DAILY = BASE_URL + "/mission/daily";
     private static final String URL_ONCE_CODE = URL_SIGN_IN;
     private static final String URL_NOTIFICATIONS = BASE_URL + "/notifications";
+    private static final String URL_FAVORITE_NODES = BASE_URL + "/my/nodes";
     private static final String URL_UNREAD_NOTIFICATIONS = BASE_URL + "/mission";
     private static final String URL_NEW_TOPIC = BASE_URL + "/new/%s";
 
@@ -198,6 +199,23 @@ public class RequestHelper {
 
             return GsonFactory.getInstance().fromJson(json, new TypeToken<List<Node>>() {
             }.getType());
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        }
+    }
+
+    public static List<Node> getFavNodes() throws ConnectionException, RemoteException {
+        Preconditions.checkState(UserState.getInstance().isLoggedIn(), "guest can't check notifications");
+        LogUtils.v(TAG, "get favorite nodes");
+
+        final Request request = new Request.Builder().url(URL_FAVORITE_NODES).build();
+        final Response response = sendRequest(request);
+
+        try {
+            final String html = response.body().string();
+
+            final Document doc = Parser.toDoc(html);
+            return MyselfParser.parseFavNodes(doc);
         } catch (IOException e) {
             throw new ConnectionException(e);
         }

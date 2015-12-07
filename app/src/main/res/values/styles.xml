@@ -16,7 +16,6 @@
 
     <style name="AppTheme.TabLayout" parent="Widget.Design.TabLayout">
         <item name="android:background">?colorPrimary</item>
-        <item name="tabMode">scrollable</item>
         <item name="tabMinWidth">0dp</item>
         <item name="tabIndicatorColor">@android:color/white</item>
         <item name="tabSelectedTextColor">@android:color/white</item>
