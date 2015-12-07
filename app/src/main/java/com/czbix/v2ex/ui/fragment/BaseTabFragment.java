@@ -12,9 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.czbix.v2ex.R;
-import com.google.common.base.Preconditions;
 
 public abstract class BaseTabFragment extends Fragment {
+    protected TabLayout mTabLayout;
+
     public BaseTabFragment() {
         // Required empty public constructor
     }
@@ -27,15 +28,9 @@ public abstract class BaseTabFragment extends Fragment {
         viewPager.setAdapter(adapter);
         viewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin));
 
-        final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
-        ViewCompat.setElevation(tabLayout, getResources().getDimension(R.dimen.appbar_elevation));
-        tabLayout.setupWithViewPager(viewPager);
-
-        // XXX: TabLayout support tabContentStart, but no tabContentEnd, so set the padding manually
-        final View tabStrip = tabLayout.getChildAt(0);
-        Preconditions.checkNotNull(tabStrip, "tabStrip shouldn't be null");
-        final int padding = getResources().getDimensionPixelSize(R.dimen.tab_layout_padding);
-        ViewCompat.setPaddingRelative(tabStrip, padding, 0, padding, 0);
+        mTabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
+        ViewCompat.setElevation(mTabLayout, getResources().getDimension(R.dimen.appbar_elevation));
+        mTabLayout.setupWithViewPager(viewPager);
 
         return view;
     }

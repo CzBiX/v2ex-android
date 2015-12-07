@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +38,13 @@ public class CategoryTabFragment extends BaseTabFragment implements SharedPrefer
         //noinspection ConstantConditions
         final TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tab_layout);
         tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
+
+        // XXX: TabLayout support tabContentStart, but no tabContentEnd, so set the padding manually
+        final View tabStrip = mTabLayout.getChildAt(0);
+        Preconditions.checkNotNull(tabStrip, "tabStrip shouldn't be null");
+        final int padding = getResources().getDimensionPixelSize(R.dimen.tab_layout_padding);
+        ViewCompat.setPaddingRelative(tabStrip, padding, 0, padding, 0);
+
         return view;
     }
 
