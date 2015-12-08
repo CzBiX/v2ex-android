@@ -451,21 +451,21 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onStop() {
         super.onStop();
 
-        TopicDao.updateLastRead(mTopic);
+        if (mIsLoaded) {
+            TopicDao.updateLastRead(mTopic);
 
-        if (mReplyForm == null) {
-            return;
+            if (mReplyForm != null) {
+                // save comment draft
+                final Editable content = mReplyForm.getContent();
+                if (TextUtils.isEmpty(content)) {
+                    return;
+                }
+
+                DraftDao.update(mTopic.getId(), content.toString());
+
+                Toast.makeText(getActivity(), R.string.toast_reply_saved_as_draft, Toast.LENGTH_LONG).show();
+            }
         }
-
-        // save comment draft
-        final Editable content = mReplyForm.getContent();
-        if (TextUtils.isEmpty(content)) {
-            return;
-        }
-
-        DraftDao.update(mTopic.getId(), content.toString());
-
-        Toast.makeText(getActivity(), R.string.toast_reply_saved_as_draft, Toast.LENGTH_LONG).show();
     }
 
     @Override

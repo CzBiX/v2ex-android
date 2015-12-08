@@ -71,7 +71,7 @@ public class TopicDao extends DaoBase {
     }
 
     public static void updateLastRead(final Topic topic) {
-        Preconditions.checkArgument(!Strings.isNullOrEmpty(topic.getTitle()));
+        Preconditions.checkArgument(topic.hasInfo(), "topic should has info");
 
         execute(new SqlOperation<Void>() {
             @Override
