@@ -67,7 +67,7 @@ public class MyselfParser extends Parser {
     }
 
     static int getNotificationsNum(Element ele) {
-        final String text = new JsoupObjects(ele).child(".inner").child(".fade").getOne().text();
+        final String text = new JsoupObjects(ele).child(".inner").bfs("a[href=/notifications]").getOne().text();
         final Matcher matcher = PATTERN_UNREAD_NUM.matcher(text);
         Preconditions.checkState(matcher.find());
         return Integer.parseInt(matcher.group());
