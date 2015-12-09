@@ -1,8 +1,6 @@
 package com.czbix.v2ex.ui.widget;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -13,36 +11,24 @@ import com.czbix.v2ex.model.Member;
 
 public class AvatarView extends ImageView {
     private int mRealSize;
-    private boolean hasRealSize;
+    private boolean mHasRealSize;
 
     public AvatarView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public AvatarView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public AvatarView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public AvatarView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
-    }
-
-    private void init() {
-        // empty
     }
 
     private int getRealSize() {
-        if (!hasRealSize) {
+        if (!mHasRealSize) {
             mRealSize = getLayoutParams().width - getPaddingTop() * 2 ;
+            mHasRealSize = true;
         }
 
         return mRealSize;

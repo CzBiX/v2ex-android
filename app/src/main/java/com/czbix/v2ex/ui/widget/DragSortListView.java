@@ -82,21 +82,16 @@ public class DragSortListView extends ListView {
     private int mScrollState = OnScrollListener.SCROLL_STATE_IDLE;
 
     public DragSortListView(Context context) {
-        super(context);
-        init();
+        this(context, null);
+    }
+
+    public DragSortListView(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
     public DragSortListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
-    }
 
-    public DragSortListView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public void init() {
         setOnItemLongClickListener(mOnItemLongClickListener);
         setOnScrollListener(mScrollListener);
         mSmoothScrollAmountAtEdge = (int)(SMOOTH_SCROLL_AMOUNT_AT_EDGE / ViewUtils.density);

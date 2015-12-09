@@ -20,21 +20,16 @@ public class SearchListView extends LinearLayout implements SearchView.OnQueryTe
     private View mLoading;
 
     public SearchListView(Context context) {
-        super(context);
-        init();
+        this(context, null);
     }
 
     public SearchListView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
+        this(context, attrs, 0);
     }
 
     public SearchListView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
-    }
 
-    private void init() {
         setOrientation(VERTICAL);
 
         inflate(getContext(), R.layout.view_select_node, this);

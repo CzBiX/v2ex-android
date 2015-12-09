@@ -45,12 +45,6 @@ public class SearchBoxLayout extends FrameLayout implements View.OnClickListener
         init();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public SearchBoxLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init();
-    }
-
     private void init() {
         final Context context = getContext();
         inflate(context, R.layout.view_search_box, this);

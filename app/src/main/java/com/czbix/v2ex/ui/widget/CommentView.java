@@ -1,8 +1,6 @@
 package com.czbix.v2ex.ui.widget;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -44,13 +42,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener,
     }
 
     public CommentView(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public CommentView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-
+        super(context, attrs, defStyleAttr);
         inflate(context, R.layout.view_comment, this);
 
         mAvatar = (AvatarView) findViewById(R.id.avatar_img);
