@@ -57,7 +57,7 @@ public class FavNodeFragment extends Fragment implements LoaderCallbacks<LoaderR
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_notification_list, container, false);
+        mLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_node_list, container, false);
         final RecyclerView recyclerView = (RecyclerView) mLayout.findViewById(R.id.recycle_view);
 
         mLayout.setOnRefreshListener(this);

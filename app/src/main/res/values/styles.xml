@@ -31,10 +31,6 @@
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 
-    <style name="AppTheme.Topic" parent="CardView">
-        <item name="cardUseCompatPadding">true</item>
-    </style>
-
     <style name="AppTheme.Topic.Username" parent="TextAppearance.AppCompat.Subhead">
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
