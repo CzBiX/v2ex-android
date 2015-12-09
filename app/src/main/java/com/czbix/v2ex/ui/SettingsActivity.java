@@ -173,7 +173,7 @@ public class SettingsActivity extends BaseActivity {
         @Subscribe
         public void onDeviceRegisterEvent(DeviceRegisterEvent e) {
             AppCtx.getEventBus().unregister(this);
-            if (e.isSuccess) {
+            if (!e.isSuccess) {
                 Toast.makeText(AppCtx.getInstance(), e.isRegister
                         ? R.string.toast_register_device_failed
                         : R.string.toast_unregister_device_failed, Toast.LENGTH_LONG).show();
