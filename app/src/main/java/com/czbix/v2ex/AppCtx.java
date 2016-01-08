@@ -117,8 +117,8 @@ public class AppCtx extends Application {
             try {
                 result = RequestHelper.getAllNodes(etag);
             } catch (ConnectionException | RemoteException e) {
-                // TODO
-                e.printStackTrace();
+                // just ignore it
+                LogUtils.w(TAG, "fetch all nodes failed");
                 return;
             }
 
