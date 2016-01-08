@@ -87,10 +87,6 @@ public class ReplyFormHelper implements TextWatcher, View.OnClickListener {
 
     public void setContent(CharSequence content) {
         mContent.setText(content);
-        if (TextUtils.isEmpty(content)) {
-            return;
-        }
-        setVisibility(true);
     }
 
     public Editable getContent() {

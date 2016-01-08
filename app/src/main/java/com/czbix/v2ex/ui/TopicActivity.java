@@ -2,6 +2,7 @@ package com.czbix.v2ex.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -14,12 +15,14 @@ import com.google.common.base.Strings;
 public class TopicActivity extends BaseActivity {
     public static final String KEY_TOPIC = "topic";
     public static final String KEY_TOPIC_ID = "topic_id";
+    private AppBarLayout mAppBarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic);
         ViewUtils.initToolbar(this);
+        mAppBarLayout = ((AppBarLayout) findViewById(R.id.appbar));
 
         if (savedInstanceState == null) {
             Topic topic = getTopicFromIntent();
@@ -30,6 +33,10 @@ public class TopicActivity extends BaseActivity {
 
             addFragmentToView(topic);
         }
+    }
+
+    public AppBarLayout getAppBarLayout() {
+        return mAppBarLayout;
     }
 
     private Topic getTopicFromIntent() {

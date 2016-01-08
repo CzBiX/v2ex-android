@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -112,6 +113,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private MenuItem mFavIcon;
     private int mLastFocusPos;
     private LinearLayoutManager mCommentsLayoutManager;
+    private AppBarLayout mAppBarLayout;
 
     /**
      * Use this factory method to create a new instance of
@@ -211,6 +213,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         final ActionBar actionBar = activity.getSupportActionBar();
         Preconditions.checkNotNull(actionBar);
         actionBar.setDisplayHomeAsUpEnabled(true);
+
+        mAppBarLayout = activity.getAppBarLayout();
 
         initCommentsView(activity);
 
@@ -319,18 +323,23 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void toggleReplyForm() {
-        if (mReplyForm != null) {
+        boolean isShow;
+        if (mReplyForm == null) {
+            final View rootView = getView();
+            Preconditions.checkNotNull(rootView);
+            final ViewStub viewStub = (ViewStub) rootView.findViewById(R.id.reply_form);
+            mReplyForm = new ReplyFormHelper(getActivity(), viewStub, this);
+
+            isShow = true;
+        } else {
             mReplyForm.toggle();
-            TrackerUtils.onTopicSwitchReply(mReplyForm.getVisibility());
-            return;
+            isShow = mReplyForm.getVisibility();
         }
 
-        final View rootView = getView();
-        Preconditions.checkNotNull(rootView);
-        final ViewStub viewStub = (ViewStub) rootView.findViewById(R.id.reply_form);
-        mReplyForm = new ReplyFormHelper(getActivity(), viewStub, this);
-
-        TrackerUtils.onTopicSwitchReply(true);
+        if (isShow) {
+            mAppBarLayout.setExpanded(false);
+        }
+        TrackerUtils.onTopicSwitchReply(isShow);
     }
 
     @Override
@@ -389,10 +398,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             toggleReplyForm();
         }
         if (mDraft != null) {
-            if (mReplyForm == null) {
+            if (mReplyForm == null || !mReplyForm.getVisibility()) {
                 toggleReplyForm();
-            } else {
-                mReplyForm.setVisibility(true);
             }
             mReplyForm.setContent(mDraft.mContent);
 
@@ -483,6 +490,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         }, future -> {
             if (cancelRequest(future)) {
                 mReplyForm.setContent(content);
+                if (!mReplyForm.getVisibility()) {
+                    mReplyForm.toggle();
+                }
             }
             return null;
         });
@@ -582,10 +592,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onCommentReply(Comment comment) {
-        if (mReplyForm == null) {
+        if (mReplyForm == null || !mReplyForm.getVisibility()) {
             toggleReplyForm();
-        } else {
-            mReplyForm.setVisibility(true);
         }
 
         mReplyForm.getContent().append("@").append(comment.getMember().getUsername()).append(" ");
