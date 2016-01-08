@@ -31,8 +31,9 @@ public class MiscUtils {
     private static final String PREFIX_NODE;
     public static final String PREFIX_MEMBER;
 
-    public static final boolean HAS_L;
     public static final boolean HAS_JB;
+    public static final boolean HAS_L;
+    public static final boolean HAS_M;
 
     static {
         final AppCtx context = AppCtx.getInstance();
@@ -44,8 +45,9 @@ public class MiscUtils {
         PREFIX_MEMBER = context.getString(R.string.member_url_prefix);
 
         final int sdkInt = VERSION.SDK_INT;
-        HAS_L = sdkInt >= VERSION_CODES.LOLLIPOP;
         HAS_JB = sdkInt >= VERSION_CODES.JELLY_BEAN;
+        HAS_L = sdkInt >= VERSION_CODES.LOLLIPOP;
+        HAS_M = sdkInt >= VERSION_CODES.M;
     }
 
     public static void setClipboard(Context context,@Nullable String title, String str) {

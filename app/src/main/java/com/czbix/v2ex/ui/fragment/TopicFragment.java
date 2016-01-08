@@ -286,12 +286,23 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void setupShareActionMenu(Menu menu) {
-        final ShareActionProvider actionProvider = ((ShareActionProvider)
-                MenuItemCompat.getActionProvider(menu.findItem(R.id.action_share)));
+        final MenuItem itemShare = menu.findItem(R.id.action_share);
+
         final Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TITLE, mTopic.getTitle());
         shareIntent.putExtra(Intent.EXTRA_TEXT, mTopic.getUrl());
-        actionProvider.setShareIntent(shareIntent);
+
+        if (MiscUtils.HAS_M) {
+            itemShare.setOnMenuItemClickListener(item -> {
+                startActivity(Intent.createChooser(shareIntent, null));
+                return true;
+            });
+        } else {
+            final ShareActionProvider actionProvider = new ShareActionProvider(getContext());
+            MenuItemCompat.setActionProvider(itemShare, actionProvider);
+            actionProvider.setShareIntent(shareIntent);
+        }
     }
 
     @Override
