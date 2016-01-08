@@ -22,7 +22,7 @@
         "url" : "http://www.v2ex.com/go/v2ex",
         "title" : "V2EX",
         "title_alternative" : "V2EX",
-        "topics" : 2556,
+        "topics" : 2581,
         
             "header" : "这里讨论和发布关于 V2EX 站点的发展。",
         
@@ -54,7 +54,7 @@
         "url" : "http://www.v2ex.com/go/music",
         "title" : "音乐",
         "title_alternative" : "Music",
-        "topics" : 758,
+        "topics" : 774,
         
             "header" : "Music is an art form whose medium is sound and silence.",
         
@@ -70,7 +70,7 @@
         "url" : "http://www.v2ex.com/go/movie",
         "title" : "电影",
         "title_alternative" : "Movie",
-        "topics" : 618,
+        "topics" : 639,
         
             "header" : "用 90 分钟去体验另外一个世界。",
         
@@ -118,7 +118,7 @@
         "url" : "http://www.v2ex.com/go/iphone",
         "title" : "iPhone",
         "title_alternative" : "iPhone",
-        "topics" : 3165,
+        "topics" : 3262,
         
             "header" : "\u003Ca href\u003D\u0022/go/apple\u0022\u003EApple\u003C/a\u003E 公司设计的世界上最好用的智能手机。",
         
@@ -134,7 +134,7 @@
         "url" : "http://www.v2ex.com/go/ipad",
         "title" : "iPad",
         "title_alternative" : "iPad",
-        "topics" : 761,
+        "topics" : 777,
         
             "header" : "\u003Ca href\u003D\u0022/go/apple\u0022\u003EApple\u003C/a\u003E 公司设计的全新理念的基于 \u003Ca href\u003D\u0022/go/ios\u0022\u003EiOS\u003C/a\u003E 的平板电脑。",
         
@@ -150,7 +150,7 @@
         "url" : "http://www.v2ex.com/go/mbp",
         "title" : "MacBook Pro",
         "title_alternative" : "MacBook Pro",
-        "topics" : 1944,
+        "topics" : 2001,
         
             "header" : "State\u002Dof\u002Dthe\u002Dart processors. All\u002Dnew graphics. Breakthrough high\u002Dspeed I/O. Three very big leaps forward.",
         
@@ -166,7 +166,7 @@
         "url" : "http://www.v2ex.com/go/linux",
         "title" : "Linux",
         "title_alternative" : "Linux",
-        "topics" : 1995,
+        "topics" : 2128,
         
             "header" : "Linux is a Unix\u002Dlike computer operating system assembled under the model of free and open source software development and distribution.",
         
@@ -182,7 +182,7 @@
         "url" : "http://www.v2ex.com/go/qna",
         "title" : "问与答",
         "title_alternative" : "Questions and Answers",
-        "topics" : 59799,
+        "topics" : 62655,
         
             "header" : "一个更好的世界需要你持续地提出好问题。",
         
@@ -198,7 +198,7 @@
         "url" : "http://www.v2ex.com/go/idev",
         "title" : "iDev",
         "title_alternative" : "iDev",
-        "topics" : 2538,
+        "topics" : 2635,
         
             "header" : "iOS 及 OS X 开发技术讨论区，iOS 是 \u003Ca href\u003D\u0022/go/iphone\u0022\u003EiPhone\u003C/a\u003E 及 \u003Ca href\u003D\u0022/go/ipad\u0022\u003EiPad\u003C/a\u003E 上运行的操作系统。",
         
@@ -214,7 +214,7 @@
         "url" : "http://www.v2ex.com/go/gae",
         "title" : "Google App Engine",
         "title_alternative" : "Google 企业应用套件引擎",
-        "topics" : 675,
+        "topics" : 676,
         
             "header" : "\u003Ca href\u003D\u0022/go/google\u0022\u003EGoogle\u003C/a\u003E 的公共云计算平台 App Engine，好用，免费的下一代网站搭建技术。",
         
@@ -230,7 +230,7 @@
         "url" : "http://www.v2ex.com/go/twitter",
         "title" : "Twitter",
         "title_alternative" : "Twitter",
-        "topics" : 265,
+        "topics" : 269,
         
             "header" : "Find out what’s happening, right now, with the people and organizations you care about.",
         
@@ -246,7 +246,7 @@
         "url" : "http://www.v2ex.com/go/share",
         "title" : "分享发现",
         "title_alternative" : "Share",
-        "topics" : 17346,
+        "topics" : 17895,
         
             "header" : "分享你看到的好玩的，有信息量的，欢迎从这里获取灵感。",
         
@@ -262,7 +262,7 @@
         "url" : "http://www.v2ex.com/go/create",
         "title" : "分享创造",
         "title_alternative" : "Create",
-        "topics" : 4619,
+        "topics" : 4884,
         
             "header" : "欢迎你在这里发布自己的最新作品！",
         
@@ -278,7 +278,7 @@
         "url" : "http://www.v2ex.com/go/shanghai",
         "title" : "上海",
         "title_alternative" : "Shanghai",
-        "topics" : 671,
+        "topics" : 698,
         
             "header" : null,
         
@@ -294,7 +294,7 @@
         "url" : "http://www.v2ex.com/go/beijing",
         "title" : "北京",
         "title_alternative" : "Beijing",
-        "topics" : 956,
+        "topics" : 1007,
         
             "header" : null,
         
@@ -310,7 +310,7 @@
         "url" : "http://www.v2ex.com/go/guangzhou",
         "title" : "广州",
         "title_alternative" : "Guangzhou",
-        "topics" : 271,
+        "topics" : 279,
         
             "header" : null,
         
@@ -326,7 +326,7 @@
         "url" : "http://www.v2ex.com/go/shenzhen",
         "title" : "深圳",
         "title_alternative" : "Shenzhen",
-        "topics" : 413,
+        "topics" : 435,
         
             "header" : null,
         
@@ -342,7 +342,7 @@
         "url" : "http://www.v2ex.com/go/macosx",
         "title" : "Mac OS X",
         "title_alternative" : "Mac OS X",
-        "topics" : 7228,
+        "topics" : 7545,
         
             "header" : "The world’s most advanced desktop operating system.",
         
@@ -406,7 +406,7 @@
         "url" : "http://www.v2ex.com/go/hangzhou",
         "title" : "杭州",
         "title_alternative" : "Hangzhou",
-        "topics" : 288,
+        "topics" : 312,
         
             "header" : null,
         
@@ -422,7 +422,7 @@
         "url" : "http://www.v2ex.com/go/photograph",
         "title" : "摄影",
         "title_alternative" : "Photograph",
-        "topics" : 227,
+        "topics" : 229,
         
             "header" : null,
         
@@ -470,7 +470,7 @@
         "url" : "http://www.v2ex.com/go/chengdu",
         "title" : "成都",
         "title_alternative" : "Chengdu",
-        "topics" : 232,
+        "topics" : 251,
         
             "header" : null,
         
@@ -486,7 +486,7 @@
         "url" : "http://www.v2ex.com/go/chongqing",
         "title" : "重庆",
         "title_alternative" : "Chongqing",
-        "topics" : 22,
+        "topics" : 26,
         
             "header" : null,
         
@@ -582,7 +582,7 @@
         "url" : "http://www.v2ex.com/go/kindle",
         "title" : "Kindle",
         "title_alternative" : "Kindle",
-        "topics" : 295,
+        "topics" : 296,
         
             "header" : "Amazon 公司设计生产的电子阅读设备",
         
@@ -614,7 +614,7 @@
         "url" : "http://www.v2ex.com/go/android",
         "title" : "Android",
         "title_alternative" : "Android",
-        "topics" : 1989,
+        "topics" : 2195,
         
             "header" : "来自 \u003Ca href\u003D\u0022/go/google\u0022\u003EGoogle\u003C/a\u003E 的开放源代码智能手机平台。",
         
@@ -630,7 +630,7 @@
         "url" : "http://www.v2ex.com/go/imac",
         "title" : "iMac",
         "title_alternative" : "iMac",
-        "topics" : 167,
+        "topics" : 172,
         
             "header" : "All\u002Din\u002Done design.",
         
@@ -646,7 +646,7 @@
         "url" : "http://www.v2ex.com/go/kunming",
         "title" : "昆明",
         "title_alternative" : "Kunming",
-        "topics" : 70,
+        "topics" : 71,
         
             "header" : "机场代码 KMG • 电话区号 0871 • 人口 726 万",
         
@@ -678,7 +678,7 @@
         "url" : "http://www.v2ex.com/go/jobs",
         "title" : "酷工作",
         "title_alternative" : "Jobs",
-        "topics" : 12855,
+        "topics" : 13555,
         
             "header" : "做有趣的有意义的事情。",
         
@@ -726,7 +726,7 @@
         "url" : "http://www.v2ex.com/go/icode",
         "title" : "iCode",
         "title_alternative" : "iCode",
-        "topics" : 24,
+        "topics" : 26,
         
             "header" : null,
         
@@ -742,7 +742,7 @@
         "url" : "http://www.v2ex.com/go/redis",
         "title" : "Redis",
         "title_alternative" : "Redis",
-        "topics" : 119,
+        "topics" : 122,
         
             "header" : "Redis is an open source, advanced key\u002Dvalue store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.",
         
@@ -758,7 +758,7 @@
         "url" : "http://www.v2ex.com/go/tv",
         "title" : "剧集",
         "title_alternative" : "TV",
-        "topics" : 284,
+        "topics" : 295,
         
             "header" : null,
         
@@ -774,7 +774,7 @@
         "url" : "http://www.v2ex.com/go/steam",
         "title" : "Steam",
         "title_alternative" : "Steam",
-        "topics" : 202,
+        "topics" : 225,
         
             "header" : "Delivers a range of games straight to a computer\u0027s desktop.",
         
@@ -806,7 +806,7 @@
         "url" : "http://www.v2ex.com/go/nosql",
         "title" : "NoSQL",
         "title_alternative" : "NoSQL",
-        "topics" : 19,
+        "topics" : 20,
         
             "header" : "非 SQL 型数据库技术讨论区。",
         
@@ -822,7 +822,7 @@
         "url" : "http://www.v2ex.com/go/hardware",
         "title" : "硬件",
         "title_alternative" : "Hardware",
-        "topics" : 808,
+        "topics" : 844,
         
             "header" : "硬件发烧友的讨论节点",
         
@@ -838,7 +838,7 @@
         "url" : "http://www.v2ex.com/go/autistic",
         "title" : "自言自语",
         "title_alternative" : "Autistic",
-        "topics" : 2057,
+        "topics" : 2101,
         
             "header" : "\u0026nbsp\u003B",
         
@@ -854,7 +854,7 @@
         "url" : "http://www.v2ex.com/go/adobe",
         "title" : "Adobe",
         "title_alternative" : "Adobe",
-        "topics" : 33,
+        "topics" : 34,
         
             "header" : null,
         
@@ -870,7 +870,7 @@
         "url" : "http://www.v2ex.com/go/games",
         "title" : "游戏",
         "title_alternative" : "Games",
-        "topics" : 761,
+        "topics" : 789,
         
             "header" : "Life is short, have more fun.",
         
@@ -886,7 +886,7 @@
         "url" : "http://www.v2ex.com/go/internet",
         "title" : "互联网",
         "title_alternative" : "Internet",
-        "topics" : 683,
+        "topics" : 770,
         
             "header" : "In Internet we trust",
         
@@ -902,7 +902,7 @@
         "url" : "http://www.v2ex.com/go/c",
         "title" : "C/C++/Obj\u002DC",
         "title_alternative" : "C/C++/Objective\u002DC",
-        "topics" : 193,
+        "topics" : 206,
         
             "header" : null,
         
@@ -934,7 +934,7 @@
         "url" : "http://www.v2ex.com/go/random",
         "title" : "随想",
         "title_alternative" : "Random",
-        "topics" : 1442,
+        "topics" : 1456,
         
             "header" : "有的时候，可以停下来找找灵感，然后再继续。",
         
@@ -950,7 +950,7 @@
         "url" : "http://www.v2ex.com/go/html",
         "title" : "HTML",
         "title_alternative" : "HTML",
-        "topics" : 126,
+        "topics" : 139,
         
             "header" : null,
         
@@ -966,7 +966,7 @@
         "url" : "http://www.v2ex.com/go/mysql",
         "title" : "MySQL",
         "title_alternative" : "MySQL",
-        "topics" : 452,
+        "topics" : 471,
         
             "header" : "地球上最流行的关系数据库。被大量的互联网企业运用在网站项目中。具有非常丰富的生态系统。",
         
@@ -982,7 +982,7 @@
         "url" : "http://www.v2ex.com/go/php",
         "title" : "PHP",
         "title_alternative" : "PHP",
-        "topics" : 1539,
+        "topics" : 1672,
         
             "header" : "PHP is a widely\u002Dused general\u002Dpurpose scripting language that is especially suited for Web development and can be embedded into HTML.",
         
@@ -998,7 +998,7 @@
         "url" : "http://www.v2ex.com/go/java",
         "title" : "Java",
         "title_alternative" : "Java",
-        "topics" : 426,
+        "topics" : 483,
         
             "header" : "The most popular programming language.",
         
@@ -1014,7 +1014,7 @@
         "url" : "http://www.v2ex.com/go/youtube",
         "title" : "YouTube",
         "title_alternative" : "YouTube",
-        "topics" : 46,
+        "topics" : 47,
         
             "header" : "世界上最大的视频网站，由前 PayPal 员工创建，后来被 Google 收购。一个你绝对不应该错过的信息源。",
         
@@ -1030,7 +1030,7 @@
         "url" : "http://www.v2ex.com/go/google",
         "title" : "Google",
         "title_alternative" : "Google",
-        "topics" : 1233,
+        "topics" : 1279,
         
             "header" : "Google’s mission is to organize the world’s information and make it universally accessible and useful.",
         
@@ -1046,7 +1046,7 @@
         "url" : "http://www.v2ex.com/go/3g",
         "title" : "3G",
         "title_alternative" : "3G",
-        "topics" : 37,
+        "topics" : 40,
         
             "header" : null,
         
@@ -1062,7 +1062,7 @@
         "url" : "http://www.v2ex.com/go/taste",
         "title" : "美酒与美食",
         "title_alternative" : "Taste",
-        "topics" : 267,
+        "topics" : 277,
         
             "header" : "关于那些好喝和好吃的",
         
@@ -1094,7 +1094,7 @@
         "url" : "http://www.v2ex.com/go/all4all",
         "title" : "二手交易",
         "title_alternative" : "All for All",
-        "topics" : 17988,
+        "topics" : 19062,
         
             "header" : "为自己的闲置物品找到更好的主人。",
         
@@ -1142,7 +1142,7 @@
         "url" : "http://www.v2ex.com/go/vpn",
         "title" : "VPN",
         "title_alternative" : "VPN",
-        "topics" : 1065,
+        "topics" : 1142,
         
             "header" : null,
         
@@ -1158,7 +1158,7 @@
         "url" : "http://www.v2ex.com/go/typography",
         "title" : "字体排印",
         "title_alternative" : "Typography",
-        "topics" : 152,
+        "topics" : 155,
         
             "header" : null,
         
@@ -1174,7 +1174,7 @@
         "url" : "http://www.v2ex.com/go/macpro",
         "title" : "Mac Pro",
         "title_alternative" : "Mac Pro",
-        "topics" : 37,
+        "topics" : 39,
         
             "header" : "Built for creativity on an epic scale.",
         
@@ -1190,7 +1190,7 @@
         "url" : "http://www.v2ex.com/go/uniqlo",
         "title" : "UNIQLO",
         "title_alternative" : "UNIQLO",
-        "topics" : 39,
+        "topics" : 40,
         
             "header" : null,
         
@@ -1254,7 +1254,7 @@
         "url" : "http://www.v2ex.com/go/server",
         "title" : "服务器",
         "title_alternative" : "Server",
-        "topics" : 758,
+        "topics" : 789,
         
             "header" : "关于服务器选择和使用的技术讨论。",
         
@@ -1270,7 +1270,7 @@
         "url" : "http://www.v2ex.com/go/wuhan",
         "title" : "武汉",
         "title_alternative" : "Wuhan",
-        "topics" : 70,
+        "topics" : 71,
         
             "header" : null,
         
@@ -1286,7 +1286,7 @@
         "url" : "http://www.v2ex.com/go/ror",
         "title" : "Ruby on Rails",
         "title_alternative" : "Ruby on Rails",
-        "topics" : 159,
+        "topics" : 166,
         
             "header" : "Full stack web application framework.",
         
@@ -1302,7 +1302,7 @@
         "url" : "http://www.v2ex.com/go/nginx",
         "title" : "NGINX",
         "title_alternative" : "NGINX",
-        "topics" : 381,
+        "topics" : 402,
         
             "header" : "A HTTP and mail proxy server licensed under a 2\u002Dclause BSD\u002Dlike license. By Igor Sysoev.",
         
@@ -1318,7 +1318,7 @@
         "url" : "http://www.v2ex.com/go/macmini",
         "title" : "Mac mini",
         "title_alternative" : "Mac mini",
-        "topics" : 123,
+        "topics" : 125,
         
             "header" : "\u003Ca href\u003D\u0022/go/apple\u0022\u003EApple\u003C/a\u003E 公司设计的世界上最轻巧的桌面主机。",
         
@@ -1334,7 +1334,7 @@
         "url" : "http://www.v2ex.com/go/macbook",
         "title" : "MacBook",
         "title_alternative" : "MacBook",
-        "topics" : 229,
+        "topics" : 246,
         
             "header" : null,
         
@@ -1382,7 +1382,7 @@
         "url" : "http://www.v2ex.com/go/wordpress",
         "title" : "WordPress",
         "title_alternative" : "WordPress",
-        "topics" : 239,
+        "topics" : 249,
         
             "header" : null,
         
@@ -1398,7 +1398,7 @@
         "url" : "http://www.v2ex.com/go/muji",
         "title" : "无印良品",
         "title_alternative" : "MUJI",
-        "topics" : 22,
+        "topics" : 25,
         
             "header" : null,
         
@@ -1430,7 +1430,7 @@
         "url" : "http://www.v2ex.com/go/python",
         "title" : "Python",
         "title_alternative" : "Python",
-        "topics" : 4002,
+        "topics" : 4233,
         
             "header" : "这里讨论各种 Python 语言编程话题，也包括 Django，Tornado 等框架的讨论。这里是一个能够帮助你解决实际问题的地方。",
         
@@ -1446,7 +1446,7 @@
         "url" : "http://www.v2ex.com/go/firefox",
         "title" : "Firefox",
         "title_alternative" : "Firefox",
-        "topics" : 152,
+        "topics" : 157,
         
             "header" : "Mozilla Firefox is a free and open source web browser.",
         
@@ -1462,7 +1462,7 @@
         "url" : "http://www.v2ex.com/go/chrome",
         "title" : "Chrome",
         "title_alternative" : "Chrome",
-        "topics" : 470,
+        "topics" : 490,
         
             "header" : "Google Chrome is a browser that combines a minimal design with sophisticated technology to make the web faster, safer, and easier.",
         
@@ -1478,7 +1478,7 @@
         "url" : "http://www.v2ex.com/go/safari",
         "title" : "Safari",
         "title_alternative" : "Safari",
-        "topics" : 46,
+        "topics" : 49,
         
             "header" : "Safari 日常使用及插件开发讨论",
         
@@ -1494,7 +1494,7 @@
         "url" : "http://www.v2ex.com/go/acg",
         "title" : "ACG",
         "title_alternative" : "ACG",
-        "topics" : 149,
+        "topics" : 157,
         
             "header" : "Anime / Comic / Games",
         
@@ -1526,7 +1526,7 @@
         "url" : "http://www.v2ex.com/go/feedback",
         "title" : "反馈",
         "title_alternative" : "Feedback",
-        "topics" : 600,
+        "topics" : 632,
         
             "header" : "欢迎在这里提出你对 V2EX 的任何疑问和建议",
         
@@ -1542,7 +1542,7 @@
         "url" : "http://www.v2ex.com/go/opera",
         "title" : "Opera",
         "title_alternative" : "Opera",
-        "topics" : 22,
+        "topics" : 23,
         
             "header" : "Opera is a web browser and Internet suite developed by Opera Software with over 300 million users worldwide.",
         
@@ -1558,7 +1558,7 @@
         "url" : "http://www.v2ex.com/go/sc2",
         "title" : "StarCraft 2",
         "title_alternative" : "StarCraft 2",
-        "topics" : 131,
+        "topics" : 133,
         
             "header" : null,
         
@@ -1574,7 +1574,7 @@
         "url" : "http://www.v2ex.com/go/in",
         "title" : "分享邀请码",
         "title_alternative" : "Invitations",
-        "topics" : 2927,
+        "topics" : 2954,
         
             "header" : "这里分享各类新酷网站的邀请码。",
         
@@ -1590,7 +1590,7 @@
         "url" : "http://www.v2ex.com/go/openstack",
         "title" : "OpenStack",
         "title_alternative" : "OpenStack",
-        "topics" : 54,
+        "topics" : 55,
         
             "header" : "建立云计算平台的开源软件。",
         
@@ -1606,7 +1606,7 @@
         "url" : "http://www.v2ex.com/go/animal",
         "title" : "动物",
         "title_alternative" : "Animal",
-        "topics" : 16,
+        "topics" : 15,
         
             "header" : null,
         
@@ -1622,7 +1622,7 @@
         "url" : "http://www.v2ex.com/go/git",
         "title" : "git",
         "title_alternative" : "git",
-        "topics" : 358,
+        "topics" : 376,
         
             "header" : "Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.",
         
@@ -1638,7 +1638,7 @@
         "url" : "http://www.v2ex.com/go/blogger",
         "title" : "Blogger",
         "title_alternative" : "Blogger",
-        "topics" : 23,
+        "topics" : 25,
         
             "header" : null,
         
@@ -1654,7 +1654,7 @@
         "url" : "http://www.v2ex.com/go/cloud",
         "title" : "云计算",
         "title_alternative" : "Cloud Computing",
-        "topics" : 1232,
+        "topics" : 1283,
         
             "header" : "关于云计算技术和平台的综合讨论区。",
         
@@ -1686,7 +1686,7 @@
         "url" : "http://www.v2ex.com/go/baby",
         "title" : "Baby",
         "title_alternative" : "Baby",
-        "topics" : 147,
+        "topics" : 150,
         
             "header" : ":)",
         
@@ -1718,7 +1718,7 @@
         "url" : "http://www.v2ex.com/go/bb",
         "title" : "宽带症候群",
         "title_alternative" : "Broadband Symptom Complex",
-        "topics" : 1053,
+        "topics" : 1193,
         
             "header" : "网速很重要。比快更快。",
         
@@ -1766,7 +1766,7 @@
         "url" : "http://www.v2ex.com/go/reading",
         "title" : "阅读",
         "title_alternative" : "Reading",
-        "topics" : 238,
+        "topics" : 249,
         
             "header" : "少上网，多读书",
         
@@ -1782,7 +1782,7 @@
         "url" : "http://www.v2ex.com/go/x",
         "title" : "翻译",
         "title_alternative" : "Translations",
-        "topics" : 38,
+        "topics" : 40,
         
             "header" : null,
         
@@ -1798,7 +1798,7 @@
         "url" : "http://www.v2ex.com/go/hongkong",
         "title" : "香港",
         "title_alternative" : "Hong Kong",
-        "topics" : 32,
+        "topics" : 34,
         
             "header" : null,
         
@@ -1846,7 +1846,7 @@
         "url" : "http://www.v2ex.com/go/wikipedia",
         "title" : "Wikipedia",
         "title_alternative" : "Wikipedia",
-        "topics" : 39,
+        "topics" : 48,
         
             "header" : "分享和讨论你在 Wikipedia 上看到的有意思的条目",
         
@@ -1926,7 +1926,7 @@
         "url" : "http://www.v2ex.com/go/jiong",
         "title" : "囧",
         "title_alternative" : "Jiong",
-        "topics" : 87,
+        "topics" : 97,
         
             "header" : null,
         
@@ -2006,7 +2006,7 @@
         "url" : "http://www.v2ex.com/go/edu",
         "title" : "教育",
         "title_alternative" : "Education",
-        "topics" : 8,
+        "topics" : 9,
         
             "header" : "终身学习",
         
@@ -2038,7 +2038,7 @@
         "url" : "http://www.v2ex.com/go/apache",
         "title" : "Apache",
         "title_alternative" : "Apache",
-        "topics" : 46,
+        "topics" : 50,
         
             "header" : "Apache HTTP Server",
         
@@ -2086,7 +2086,7 @@
         "url" : "http://www.v2ex.com/go/imarketing",
         "title" : "iMarketing",
         "title_alternative" : "iMarketing",
-        "topics" : 23,
+        "topics" : 24,
         
             "header" : "独立 iOS 开发者推广讨论",
         
@@ -2118,7 +2118,7 @@
         "url" : "http://www.v2ex.com/go/show",
         "title" : "晒晒更健康",
         "title_alternative" : "Show",
-        "topics" : 29,
+        "topics" : 32,
         
             "header" : null,
         
@@ -2150,7 +2150,7 @@
         "url" : "http://www.v2ex.com/go/http",
         "title" : "HTTP",
         "title_alternative" : "Hypertext Transport Protocol",
-        "topics" : 53,
+        "topics" : 60,
         
             "header" : "互联网基础协议之一 Hypertext Transport Protocol 的应用和技术细节讨论",
         
@@ -2182,7 +2182,7 @@
         "url" : "http://www.v2ex.com/go/re",
         "title" : "正则表达式",
         "title_alternative" : "Regular Expression",
-        "topics" : 34,
+        "topics" : 42,
         
             "header" : null,
         
@@ -2214,7 +2214,7 @@
         "url" : "http://www.v2ex.com/go/css",
         "title" : "CSS",
         "title_alternative" : "CSS",
-        "topics" : 202,
+        "topics" : 209,
         
             "header" : "Cascading Style Sheet，层叠样式表，网页外观设计的标准技术。",
         
@@ -2278,7 +2278,7 @@
         "url" : "http://www.v2ex.com/go/otaku",
         "title" : "宅",
         "title_alternative" : "Otaku",
-        "topics" : 15,
+        "topics" : 16,
         
             "header" : null,
         
@@ -2294,7 +2294,7 @@
         "url" : "http://www.v2ex.com/go/dell",
         "title" : "Dell",
         "title_alternative" : "Dell",
-        "topics" : 13,
+        "topics" : 14,
         
             "header" : null,
         
@@ -2326,7 +2326,7 @@
         "url" : "http://www.v2ex.com/go/js",
         "title" : "JavaScript",
         "title_alternative" : "JavaScript",
-        "topics" : 705,
+        "topics" : 757,
         
             "header" : "JavaScript (sometimes abbreviated JS) is a prototype\u002Dbased scripting language that is dynamic, weakly typed and has first\u002Dclass functions.",
         
@@ -2342,7 +2342,7 @@
         "url" : "http://www.v2ex.com/go/lua",
         "title" : "Lua",
         "title_alternative" : "Lua",
-        "topics" : 27,
+        "topics" : 28,
         
             "header" : "Lua is a powerful, fast, lightweight, embeddable scripting language.",
         
@@ -2358,7 +2358,7 @@
         "url" : "http://www.v2ex.com/go/pointless",
         "title" : "无要点",
         "title_alternative" : "Pointless",
-        "topics" : 2089,
+        "topics" : 2244,
         
             "header" : "Nothing is more emptier than pointless.",
         
@@ -2406,7 +2406,7 @@
         "url" : "http://www.v2ex.com/go/xiamen",
         "title" : "厦门",
         "title_alternative" : "Xiamen",
-        "topics" : 30,
+        "topics" : 32,
         
             "header" : null,
         
@@ -2470,7 +2470,7 @@
         "url" : "http://www.v2ex.com/go/xian",
         "title" : "西安",
         "title_alternative" : "Xi\u0027an",
-        "topics" : 23,
+        "topics" : 24,
         
             "header" : null,
         
@@ -2582,7 +2582,7 @@
         "url" : "http://www.v2ex.com/go/hadoop",
         "title" : "Hadoop",
         "title_alternative" : "Hadoop",
-        "topics" : 34,
+        "topics" : 35,
         
             "header" : "The Apache Hadoop software library is a framework that allows for the distributed processing of large data sets across clusters of computers using a simple programming model.",
         
@@ -2726,7 +2726,7 @@
         "url" : "http://www.v2ex.com/go/invest",
         "title" : "投资",
         "title_alternative" : "Invest",
-        "topics" : 260,
+        "topics" : 267,
         
             "header" : "Can you make money with money?",
         
@@ -2742,7 +2742,7 @@
         "url" : "http://www.v2ex.com/go/igame",
         "title" : "iGame",
         "title_alternative" : "iGame",
-        "topics" : 215,
+        "topics" : 216,
         
             "header" : "iOS 上有很多精彩游戏。",
         
@@ -2758,7 +2758,7 @@
         "url" : "http://www.v2ex.com/go/accessory",
         "title" : "配件",
         "title_alternative" : "Accessory",
-        "topics" : 306,
+        "topics" : 316,
         
             "header" : "关于各类新酷配件的购买和使用的讨论。",
         
@@ -2790,7 +2790,7 @@
         "url" : "http://www.v2ex.com/go/dalian",
         "title" : "大连",
         "title_alternative" : "Dalian",
-        "topics" : 7,
+        "topics" : 10,
         
             "header" : null,
         
@@ -2806,7 +2806,7 @@
         "url" : "http://www.v2ex.com/go/car",
         "title" : "汽车",
         "title_alternative" : "Car",
-        "topics" : 214,
+        "topics" : 219,
         
             "header" : "关于买车、开车的技术讨论",
         
@@ -2886,7 +2886,7 @@
         "url" : "http://www.v2ex.com/go/travel",
         "title" : "旅行",
         "title_alternative" : "Travel",
-        "topics" : 210,
+        "topics" : 228,
         
             "header" : "你会把上大学的学费用来环游世界么？",
         
@@ -2934,7 +2934,7 @@
         "url" : "http://www.v2ex.com/go/apple",
         "title" : "Apple",
         "title_alternative" : "Apple",
-        "topics" : 1906,
+        "topics" : 2052,
         
             "header" : "设计了 \u003Ca href\u003D\u0022/go/watch\u0022\u003EApple Watch\u003C/a\u003E，\u003Ca href\u003D\u0022/go/ipad\u0022\u003EiPad\u003C/a\u003E，\u003Ca href\u003D\u0022/go/iphone\u0022\u003EiPhone\u003C/a\u003E，\u003Ca href\u003D\u0022/go/imac\u0022\u003EiMac\u003C/a\u003E 及 \u003Ca href\u003D\u0022/go/mbp\u0022\u003EMacBook Pro\u003C/a\u003E 等电子产品的美国公司。",
         
@@ -2982,7 +2982,7 @@
         "url" : "http://www.v2ex.com/go/dream",
         "title" : "梦",
         "title_alternative" : "Dream",
-        "topics" : 22,
+        "topics" : 23,
         
             "header" : null,
         
@@ -3014,7 +3014,7 @@
         "url" : "http://www.v2ex.com/go/ssh",
         "title" : "SSH",
         "title_alternative" : "SSH",
-        "topics" : 32,
+        "topics" : 34,
         
             "header" : null,
         
@@ -3030,7 +3030,7 @@
         "url" : "http://www.v2ex.com/go/outsourcing",
         "title" : "外包",
         "title_alternative" : "Outsourcing",
-        "topics" : 949,
+        "topics" : 1017,
         
             "header" : null,
         
@@ -3174,7 +3174,7 @@
         "url" : "http://www.v2ex.com/go/dns",
         "title" : "DNS",
         "title_alternative" : "DNS",
-        "topics" : 829,
+        "topics" : 862,
         
             "header" : "互联网基础协议——DNS",
         
@@ -3222,7 +3222,7 @@
         "url" : "http://www.v2ex.com/go/mileage",
         "title" : "行程控",
         "title_alternative" : "Mileage",
-        "topics" : 9,
+        "topics" : 11,
         
             "header" : null,
         
@@ -3270,7 +3270,7 @@
         "url" : "http://www.v2ex.com/go/creditcard",
         "title" : "信用卡",
         "title_alternative" : "Credit Card",
-        "topics" : 287,
+        "topics" : 300,
         
             "header" : "关于各种信用卡的有用信息和使用的讨论",
         
@@ -3286,7 +3286,7 @@
         "url" : "http://www.v2ex.com/go/zhengzhou",
         "title" : "郑州",
         "title_alternative" : "Zhengzhou",
-        "topics" : 17,
+        "topics" : 18,
         
             "header" : null,
         
@@ -3318,7 +3318,7 @@
         "url" : "http://www.v2ex.com/go/linode",
         "title" : "Linode",
         "title_alternative" : "Linode",
-        "topics" : 534,
+        "topics" : 542,
         
             "header" : "Deploy and Manage Linux Virtual Servers in the Linode Cloud.",
         
@@ -3382,7 +3382,7 @@
         "url" : "http://www.v2ex.com/go/qingdao",
         "title" : "青岛",
         "title_alternative" : "Qingdao",
-        "topics" : 12,
+        "topics" : 13,
         
             "header" : null,
         
@@ -3430,7 +3430,7 @@
         "url" : "http://www.v2ex.com/go/design",
         "title" : "设计",
         "title_alternative" : "Design",
-        "topics" : 617,
+        "topics" : 643,
         
             "header" : "\u003Cstrong\u003EBeautiful\u003C/strong\u003E \u003Ccode\u003Eadj.\u003C/code\u003E \u003Cem\u003EPleasing the senses or mind aesthetically.\u003C/em\u003E",
         
@@ -3478,7 +3478,7 @@
         "url" : "http://www.v2ex.com/go/podcast",
         "title" : "Podcast",
         "title_alternative" : "Podcast",
-        "topics" : 51,
+        "topics" : 57,
         
             "header" : null,
         
@@ -3542,7 +3542,7 @@
         "url" : "http://www.v2ex.com/go/quora",
         "title" : "Quora",
         "title_alternative" : "Quora",
-        "topics" : 26,
+        "topics" : 27,
         
             "header" : "Quora connects you to everything you want to know about.",
         
@@ -3654,7 +3654,7 @@
         "url" : "http://www.v2ex.com/go/en",
         "title" : "English",
         "title_alternative" : "English",
-        "topics" : 38,
+        "topics" : 41,
         
             "header" : "英语学习及使用问题讨论。",
         
@@ -3702,7 +3702,7 @@
         "url" : "http://www.v2ex.com/go/nokia",
         "title" : "Nokia",
         "title_alternative" : "Nokia",
-        "topics" : 33,
+        "topics" : 34,
         
             "header" : "Connecting People.",
         
@@ -3734,7 +3734,7 @@
         "url" : "http://www.v2ex.com/go/herher",
         "title" : "她她",
         "title_alternative" : "Her Her",
-        "topics" : 5,
+        "topics" : 6,
         
             "header" : null,
         
@@ -3750,7 +3750,7 @@
         "url" : "http://www.v2ex.com/go/24",
         "title" : "24 小时",
         "title_alternative" : "24 Hours",
-        "topics" : 1,
+        "topics" : 2,
         
             "header" : null,
         
@@ -3830,7 +3830,7 @@
         "url" : "http://www.v2ex.com/go/changsha",
         "title" : "长沙",
         "title_alternative" : "Changsha",
-        "topics" : 22,
+        "topics" : 23,
         
             "header" : null,
         
@@ -3846,7 +3846,7 @@
         "url" : "http://www.v2ex.com/go/lifestyle",
         "title" : "生活方式",
         "title_alternative" : "Lifestyle",
-        "topics" : 21,
+        "topics" : 23,
         
             "header" : null,
         
@@ -3926,7 +3926,7 @@
         "url" : "http://www.v2ex.com/go/cod",
         "title" : "Call of Duty",
         "title_alternative" : "Call of Duty",
-        "topics" : 16,
+        "topics" : 17,
         
             "header" : null,
         
@@ -3974,7 +3974,7 @@
         "url" : "http://www.v2ex.com/go/vim",
         "title" : "Vim",
         "title_alternative" : "Vim",
-        "topics" : 238,
+        "topics" : 261,
         
             "header" : null,
         
@@ -4054,7 +4054,7 @@
         "url" : "http://www.v2ex.com/go/emacs",
         "title" : "Emacs",
         "title_alternative" : "Emacs",
-        "topics" : 62,
+        "topics" : 64,
         
             "header" : null,
         
@@ -4070,7 +4070,7 @@
         "url" : "http://www.v2ex.com/go/sjtu",
         "title" : "上海交通大学",
         "title_alternative" : "Shanghai Jiao Tong University",
-        "topics" : 0,
+        "topics" : 1,
         
             "header" : null,
         
@@ -4102,7 +4102,7 @@
         "url" : "http://www.v2ex.com/go/draw",
         "title" : "画画",
         "title_alternative" : "Draw",
-        "topics" : 15,
+        "topics" : 17,
         
             "header" : null,
         
@@ -4150,7 +4150,7 @@
         "url" : "http://www.v2ex.com/go/security",
         "title" : "信息安全",
         "title_alternative" : "Security",
-        "topics" : 376,
+        "topics" : 405,
         
             "header" : "我们都希望自己管理的计算机系统在运转过程中不要遇到任何安全事件。只是，这个不完美的世界的现实告诉我们：学无止境。",
         
@@ -4390,7 +4390,7 @@
         "url" : "http://www.v2ex.com/go/lisp",
         "title" : "Lisp",
         "title_alternative" : "Lisp",
-        "topics" : 18,
+        "topics" : 19,
         
             "header" : "Lisp (historically, LISP) is a family of computer programming languages with a long history and a distinctive, fully parenthesized Polish prefix notation.",
         
@@ -4550,7 +4550,7 @@
         "url" : "http://www.v2ex.com/go/exchange",
         "title" : "物物交换",
         "title_alternative" : "Exchange",
-        "topics" : 554,
+        "topics" : 575,
         
             "header" : "将自己不需要的闲置物品拿出来和大家交换吧。",
         
@@ -4566,7 +4566,7 @@
         "url" : "http://www.v2ex.com/go/afterdark",
         "title" : "天黑以后",
         "title_alternative" : "After Dark",
-        "topics" : 1683,
+        "topics" : 1734,
         
             "header" : "白天和晚上的我，是不一样的。",
         
@@ -4582,7 +4582,7 @@
         "url" : "http://www.v2ex.com/go/dropbox",
         "title" : "Dropbox",
         "title_alternative" : "Dropbox",
-        "topics" : 145,
+        "topics" : 149,
         
             "header" : "最好的免费同步工具",
         
@@ -4598,7 +4598,7 @@
         "url" : "http://www.v2ex.com/go/bicycle",
         "title" : "自行车",
         "title_alternative" : "Bicycle",
-        "topics" : 5,
+        "topics" : 6,
         
             "header" : null,
         
@@ -4646,7 +4646,7 @@
         "url" : "http://www.v2ex.com/go/facebook",
         "title" : "Facebook",
         "title_alternative" : "Facebook",
-        "topics" : 53,
+        "topics" : 54,
         
             "header" : "Facebook\u0027s mission is to give people the power to share and make the world more open and connected.",
         
@@ -4678,7 +4678,7 @@
         "url" : "http://www.v2ex.com/go/tuan",
         "title" : "团购",
         "title_alternative" : "Groupon",
-        "topics" : 233,
+        "topics" : 244,
         
             "header" : null,
         
@@ -4774,7 +4774,7 @@
         "url" : "http://www.v2ex.com/go/aws",
         "title" : "Amazon Web Services",
         "title_alternative" : "Amazon Web Services",
-        "topics" : 203,
+        "topics" : 214,
         
             "header" : "Amazon Web Services (AWS) delivers a set of services that together form a reliable, scalable, and inexpensive computing platform “in the cloud”.",
         
@@ -4790,7 +4790,7 @@
         "url" : "http://www.v2ex.com/go/programmer",
         "title" : "程序员",
         "title_alternative" : "Programmer",
-        "topics" : 10056,
+        "topics" : 10607,
         
             "header" : "While code monkeys are not eating bananas, they\u0027re coding.",
         
@@ -4806,7 +4806,7 @@
         "url" : "http://www.v2ex.com/go/designer",
         "title" : "设计师",
         "title_alternative" : "Designer",
-        "topics" : 388,
+        "topics" : 393,
         
             "header" : null,
         
@@ -4886,7 +4886,7 @@
         "url" : "http://www.v2ex.com/go/diary",
         "title" : "日记",
         "title_alternative" : "Diary",
-        "topics" : 52,
+        "topics" : 56,
         
             "header" : "用这里记录那些以为自己已经忘掉的心情吧。",
         
@@ -4902,7 +4902,7 @@
         "url" : "http://www.v2ex.com/go/api",
         "title" : "API",
         "title_alternative" : "API",
-        "topics" : 45,
+        "topics" : 50,
         
             "header" : null,
         
@@ -4950,7 +4950,7 @@
         "url" : "http://www.v2ex.com/go/business",
         "title" : "商业模式",
         "title_alternative" : "Business Model",
-        "topics" : 71,
+        "topics" : 78,
         
             "header" : null,
         
@@ -4966,7 +4966,7 @@
         "url" : "http://www.v2ex.com/go/mongodb",
         "title" : "MongoDB",
         "title_alternative" : "MongoDB",
-        "topics" : 141,
+        "topics" : 147,
         
             "header" : null,
         
@@ -4982,7 +4982,7 @@
         "url" : "http://www.v2ex.com/go/newbie",
         "title" : "新手求助",
         "title_alternative" : "Newbie",
-        "topics" : 683,
+        "topics" : 713,
         
             "header" : null,
         
@@ -5014,7 +5014,7 @@
         "url" : "http://www.v2ex.com/go/flamewar",
         "title" : "水深火热",
         "title_alternative" : "Flame War",
-        "topics" : 364,
+        "topics" : 395,
         
             "header" : "这个节点的存在，只是为了将一类信息进行归类。祝愿你的宝贵时间，能够被用到更健康的方面。",
         
@@ -5030,7 +5030,7 @@
         "url" : "http://www.v2ex.com/go/standard",
         "title" : "标准",
         "title_alternative" : "Standard",
-        "topics" : 2,
+        "topics" : 3,
         
             "header" : null,
         
@@ -5078,7 +5078,7 @@
         "url" : "http://www.v2ex.com/go/scifi",
         "title" : "科幻",
         "title_alternative" : "Science Fiction",
-        "topics" : 27,
+        "topics" : 28,
         
             "header" : null,
         
@@ -5094,7 +5094,7 @@
         "url" : "http://www.v2ex.com/go/lohas",
         "title" : "乐活",
         "title_alternative" : "Lohas",
-        "topics" : 104,
+        "topics" : 107,
         
             "header" : null,
         
@@ -5110,7 +5110,7 @@
         "url" : "http://www.v2ex.com/go/wtf",
         "title" : "不靠谱茶话会",
         "title_alternative" : "WTF",
-        "topics" : 117,
+        "topics" : 190,
         
             "header" : "为了那些你偶尔的小好奇和恶趣味，干杯！",
         
@@ -5126,7 +5126,7 @@
         "url" : "http://www.v2ex.com/go/528491",
         "title" : "528491",
         "title_alternative" : "528491",
-        "topics" : 73,
+        "topics" : 75,
         
             "header" : "A hidden place of thoughts.",
         
@@ -5206,7 +5206,7 @@
         "url" : "http://www.v2ex.com/go/mba",
         "title" : "MacBook Air",
         "title_alternative" : "MacBook Air",
-        "topics" : 341,
+        "topics" : 346,
         
             "header" : null,
         
@@ -5382,7 +5382,7 @@
         "url" : "http://www.v2ex.com/go/webmaster",
         "title" : "站长",
         "title_alternative" : "Webmaster",
-        "topics" : 640,
+        "topics" : 660,
         
             "header" : null,
         
@@ -5430,7 +5430,7 @@
         "url" : "http://www.v2ex.com/go/minecraft",
         "title" : "Minecraft",
         "title_alternative" : "Minecraft",
-        "topics" : 113,
+        "topics" : 117,
         
             "header" : "Minecraft is a game about breaking and placing blocks. At first, people built structures to protect against nocturnal monsters, but as the game grew players worked together to create wonderful, imaginative things.",
         
@@ -5574,7 +5574,7 @@
         "url" : "http://www.v2ex.com/go/dotnet",
         "title" : ".NET",
         "title_alternative" : ".NET",
-        "topics" : 35,
+        "topics" : 40,
         
             "header" : null,
         
@@ -5750,7 +5750,7 @@
         "url" : "http://www.v2ex.com/go/windows",
         "title" : "Windows",
         "title_alternative" : "Windows",
-        "topics" : 358,
+        "topics" : 384,
         
             "header" : "Windows, not walls.",
         
@@ -5766,7 +5766,7 @@
         "url" : "http://www.v2ex.com/go/tornado",
         "title" : "Tornado",
         "title_alternative" : "Tornado",
-        "topics" : 194,
+        "topics" : 198,
         
             "header" : "Tornado is an open source version of the scalable, non\u002Dblocking web server and tools that power FriendFeed.",
         
@@ -5782,7 +5782,7 @@
         "url" : "http://www.v2ex.com/go/path",
         "title" : "Path",
         "title_alternative" : "Path",
-        "topics" : 22,
+        "topics" : 23,
         
             "header" : "The smart journal that helps you share life with the ones you love.",
         
@@ -5814,7 +5814,7 @@
         "url" : "http://www.v2ex.com/go/chamber",
         "title" : "Chamber",
         "title_alternative" : "Chamber",
-        "topics" : 2205,
+        "topics" : 2367,
         
             "header" : "一些不适合出现在首页上的信息，请发布到这里",
         
@@ -5830,7 +5830,7 @@
         "url" : "http://www.v2ex.com/go/postgresql",
         "title" : "PostgreSQL",
         "title_alternative" : "PostgreSQL",
-        "topics" : 32,
+        "topics" : 34,
         
             "header" : null,
         
@@ -5862,7 +5862,7 @@
         "url" : "http://www.v2ex.com/go/ruby",
         "title" : "Ruby",
         "title_alternative" : "Ruby",
-        "topics" : 86,
+        "topics" : 91,
         
             "header" : "A dynamic, interpreted, open source programming language with a focus on simplicity and productivity.",
         
@@ -5878,7 +5878,7 @@
         "url" : "http://www.v2ex.com/go/beforesunrise",
         "title" : "早睡早起身体好俱乐部",
         "title_alternative" : "Before Sunrise",
-        "topics" : 110,
+        "topics" : 111,
         
             "header" : null,
         
@@ -5926,7 +5926,7 @@
         "url" : "http://www.v2ex.com/go/amazon",
         "title" : "Amazon",
         "title_alternative" : "Amazon",
-        "topics" : 27,
+        "topics" : 32,
         
             "header" : null,
         
@@ -5958,7 +5958,7 @@
         "url" : "http://www.v2ex.com/go/blog",
         "title" : "Blog",
         "title_alternative" : "Blog",
-        "topics" : 378,
+        "topics" : 389,
         
             "header" : null,
         
@@ -5990,7 +5990,7 @@
         "url" : "http://www.v2ex.com/go/go",
         "title" : "Go",
         "title_alternative" : "The Go Programming Language",
-        "topics" : 176,
+        "topics" : 195,
         
             "header" : "Go is an open source programming environment that makes it easy to build simple, reliable, and efficient software.",
         
@@ -6070,7 +6070,7 @@
         "url" : "http://www.v2ex.com/go/flood",
         "title" : "水",
         "title_alternative" : "Flood",
-        "topics" : 4273,
+        "topics" : 4556,
         
             "header" : "偶尔无聊一下是为了大部分时候不无聊，吗？",
         
@@ -6182,7 +6182,7 @@
         "url" : "http://www.v2ex.com/go/harbin",
         "title" : "哈尔滨",
         "title_alternative" : "Harbin",
-        "topics" : 4,
+        "topics" : 5,
         
             "header" : null,
         
@@ -6246,7 +6246,7 @@
         "url" : "http://www.v2ex.com/go/wp",
         "title" : "Windows Phone",
         "title_alternative" : "Windows Phone",
-        "topics" : 32,
+        "topics" : 33,
         
             "header" : null,
         
@@ -6262,7 +6262,7 @@
         "url" : "http://www.v2ex.com/go/arch",
         "title" : "Arch",
         "title_alternative" : "Arch",
-        "topics" : 49,
+        "topics" : 51,
         
             "header" : "A lightweight and flexible Linux® distribution that tries to Keep It Simple.",
         
@@ -6294,7 +6294,7 @@
         "url" : "http://www.v2ex.com/go/gtd",
         "title" : "Getting Things Done",
         "title_alternative" : "Getting Things Done",
-        "topics" : 50,
+        "topics" : 52,
         
             "header" : null,
         
@@ -6438,7 +6438,7 @@
         "url" : "http://www.v2ex.com/go/bitcoin",
         "title" : "Bitcoin",
         "title_alternative" : "Bitcoin",
-        "topics" : 628,
+        "topics" : 631,
         
             "header" : "P2P digital currency",
         
@@ -6502,7 +6502,7 @@
         "url" : "http://www.v2ex.com/go/oracle",
         "title" : "Oracle",
         "title_alternative" : "Oracle",
-        "topics" : 18,
+        "topics" : 21,
         
             "header" : null,
         
@@ -6550,7 +6550,7 @@
         "url" : "http://www.v2ex.com/go/jekyll",
         "title" : "Jekyll",
         "title_alternative" : "Jekyll",
-        "topics" : 95,
+        "topics" : 97,
         
             "header" : "简单好用的静态网站生成工具。",
         
@@ -6598,7 +6598,7 @@
         "url" : "http://www.v2ex.com/go/programming",
         "title" : "编程",
         "title_alternative" : "Programming",
-        "topics" : 286,
+        "topics" : 316,
         
             "header" : "Have fun and make money and art.",
         
@@ -6662,7 +6662,7 @@
         "url" : "http://www.v2ex.com/go/software",
         "title" : "软件",
         "title_alternative" : "Software",
-        "topics" : 82,
+        "topics" : 90,
         
             "header" : "关于软件使用的日常讨论",
         
@@ -6726,7 +6726,7 @@
         "url" : "http://www.v2ex.com/go/db",
         "title" : "数据库",
         "title_alternative" : "Database",
-        "topics" : 77,
+        "topics" : 90,
         
             "header" : null,
         
@@ -6742,7 +6742,7 @@
         "url" : "http://www.v2ex.com/go/browsers",
         "title" : "浏览器",
         "title_alternative" : "Browsers",
-        "topics" : 73,
+        "topics" : 80,
         
             "header" : null,
         
@@ -6790,7 +6790,7 @@
         "url" : "http://www.v2ex.com/go/jquery",
         "title" : "jQuery",
         "title_alternative" : "jQuery",
-        "topics" : 77,
+        "topics" : 84,
         
             "header" : "A fast, concise, library that simplifies how to traverse HTML documents, handle events, perform animations, and add AJAX.",
         
@@ -6870,7 +6870,7 @@
         "url" : "http://www.v2ex.com/go/icloud",
         "title" : "iCloud",
         "title_alternative" : "iCloud",
-        "topics" : 50,
+        "topics" : 55,
         
             "header" : "Store contacts, calendars, photos, music, books, apps and more in the cloud and access them on all your devices.",
         
@@ -6886,7 +6886,7 @@
         "url" : "http://www.v2ex.com/go/django",
         "title" : "Django",
         "title_alternative" : "Django",
-        "topics" : 168,
+        "topics" : 178,
         
             "header" : "Django is a high\u002Dlevel Python Web framework that encourages rapid development and clean, pragmatic design.",
         
@@ -6902,7 +6902,7 @@
         "url" : "http://www.v2ex.com/go/zh2",
         "title" : "中二病",
         "title_alternative" : "ちゅうにびょう",
-        "topics" : 35,
+        "topics" : 43,
         
             "header" : null,
         
@@ -6918,7 +6918,7 @@
         "url" : "http://www.v2ex.com/go/1990",
         "title" : "1990",
         "title_alternative" : "1990",
-        "topics" : 23,
+        "topics" : 25,
         
             "header" : null,
         
@@ -6966,7 +6966,7 @@
         "url" : "http://www.v2ex.com/go/nodejs",
         "title" : "node.js",
         "title_alternative" : "node.js",
-        "topics" : 790,
+        "topics" : 845,
         
             "header" : "Node.js is a platform built on \u003Ca href\u003D\u0022http://code.google.com/p/v8/\u0022 target\u003D\u0022_blank\u0022\u003EChrome\u0027s JavaScript runtime\u003C/a\u003E for easily building fast, scalable network applications.",
         
@@ -7094,7 +7094,7 @@
         "url" : "http://www.v2ex.com/go/appstore",
         "title" : "App Store",
         "title_alternative" : "App Store",
-        "topics" : 87,
+        "topics" : 97,
         
             "header" : "一个开始于 2008 年的改变人类花费时间方式的传奇。",
         
@@ -7110,7 +7110,7 @@
         "url" : "http://www.v2ex.com/go/tech",
         "title" : "科技",
         "title_alternative" : "Technology",
-        "topics" : 18,
+        "topics" : 31,
         
             "header" : null,
         
@@ -7222,7 +7222,7 @@
         "url" : "http://www.v2ex.com/go/dota",
         "title" : "DotA",
         "title_alternative" : "DotA",
-        "topics" : 92,
+        "topics" : 94,
         
             "header" : "Dota 2 is a multiplayer online battle arena video game and the stand\u002Dalone sequel to the Defense of the Ancients (DotA) mod.",
         
@@ -7238,7 +7238,7 @@
         "url" : "http://www.v2ex.com/go/cdn",
         "title" : "CDN",
         "title_alternative" : "CDN",
-        "topics" : 133,
+        "topics" : 142,
         
             "header" : "关于 CDN 应用和技术的讨论。",
         
@@ -7254,7 +7254,7 @@
         "url" : "http://www.v2ex.com/go/lol",
         "title" : "英雄联盟",
         "title_alternative" : "League of Legends",
-        "topics" : 173,
+        "topics" : 175,
         
             "header" : "League of Legends (LoL) is a multiplayer online battle arena video game.",
         
@@ -7286,7 +7286,7 @@
         "url" : "http://www.v2ex.com/go/centos",
         "title" : "CentOS",
         "title_alternative" : "CentOS",
-        "topics" : 33,
+        "topics" : 36,
         
             "header" : "CentOS is an Enterprise\u002Dclass Linux Distribution derived from sources freely provided to the public by a prominent North American Enterprise Linux vendor.",
         
@@ -7302,7 +7302,7 @@
         "url" : "http://www.v2ex.com/go/gamedev",
         "title" : "游戏开发",
         "title_alternative" : "Game Development",
-        "topics" : 53,
+        "topics" : 55,
         
             "header" : "无论你正在制作自己的 indie game，或是在大公司参与 AAA 大作，这里是大家讨论技术和理念的地方。",
         
@@ -7366,7 +7366,7 @@
         "url" : "http://www.v2ex.com/go/jinja",
         "title" : "Jinja",
         "title_alternative" : "Jinja",
-        "topics" : 2,
+        "topics" : 3,
         
             "header" : null,
         
@@ -7462,7 +7462,7 @@
         "url" : "http://www.v2ex.com/go/flask",
         "title" : "Flask",
         "title_alternative" : "Flask",
-        "topics" : 65,
+        "topics" : 81,
         
             "header" : "Flask is a microframework for Python based on Werkzeug, Jinja 2 and good intentions.",
         
@@ -7526,7 +7526,7 @@
         "url" : "http://www.v2ex.com/go/running",
         "title" : "跑步",
         "title_alternative" : "Running",
-        "topics" : 35,
+        "topics" : 37,
         
             "header" : null,
         
@@ -7622,7 +7622,7 @@
         "url" : "http://www.v2ex.com/go/editors",
         "title" : "编辑器",
         "title_alternative" : "Editors",
-        "topics" : 37,
+        "topics" : 40,
         
             "header" : null,
         
@@ -7638,7 +7638,7 @@
         "url" : "http://www.v2ex.com/go/jlu",
         "title" : "吉林大学",
         "title_alternative" : "Jilin University",
-        "topics" : 2,
+        "topics" : 3,
         
             "header" : null,
         
@@ -7686,7 +7686,7 @@
         "url" : "http://www.v2ex.com/go/sae",
         "title" : "Sina App Engine",
         "title_alternative" : "Sina App Engine",
-        "topics" : 139,
+        "topics" : 140,
         
             "header" : "新浪开放云计算平台",
         
@@ -7718,7 +7718,7 @@
         "url" : "http://www.v2ex.com/go/global",
         "title" : "海外留学",
         "title_alternative" : "Global",
-        "topics" : 31,
+        "topics" : 32,
         
             "header" : null,
         
@@ -7750,7 +7750,7 @@
         "url" : "http://www.v2ex.com/go/lego",
         "title" : "LEGO",
         "title_alternative" : "LEGO",
-        "topics" : 44,
+        "topics" : 46,
         
             "header" : "The toy building brick.",
         
@@ -7782,7 +7782,7 @@
         "url" : "http://www.v2ex.com/go/inc",
         "title" : "公司运营",
         "title_alternative" : "Inc",
-        "topics" : 55,
+        "topics" : 58,
         
             "header" : null,
         
@@ -7798,7 +7798,7 @@
         "url" : "http://www.v2ex.com/go/alipay",
         "title" : "支付宝",
         "title_alternative" : "Alipay",
-        "topics" : 144,
+        "topics" : 161,
         
             "header" : "支付宝，全球领先的独立第三方支付平台。",
         
@@ -7814,7 +7814,7 @@
         "url" : "http://www.v2ex.com/go/xcode",
         "title" : "Xcode",
         "title_alternative" : "Xcode",
-        "topics" : 70,
+        "topics" : 78,
         
             "header" : null,
         
@@ -7862,7 +7862,7 @@
         "url" : "http://www.v2ex.com/go/homebrew",
         "title" : "Homebrew",
         "title_alternative" : "homebrew",
-        "topics" : 6,
+        "topics" : 7,
         
             "header" : "在 \u003Ca href\u003D\u0022/go/macosx\u0022\u003EOS X\u003C/a\u003E 上安装各种开源软件的最佳途径",
         
@@ -7894,7 +7894,7 @@
         "url" : "http://www.v2ex.com/go/gossip",
         "title" : "业界八卦",
         "title_alternative" : "Gossip",
-        "topics" : 44,
+        "topics" : 49,
         
             "header" : null,
         
@@ -8022,7 +8022,7 @@
         "url" : "http://www.v2ex.com/go/freebsd",
         "title" : "FreeBSD",
         "title_alternative" : "FreeBSD",
-        "topics" : 21,
+        "topics" : 22,
         
             "header" : "FreeBSD® is an advanced operating system for modern server, desktop, and embedded computer platforms.",
         
@@ -8086,7 +8086,7 @@
         "url" : "http://www.v2ex.com/go/arduino",
         "title" : "Arduino",
         "title_alternative" : "Arduino",
-        "topics" : 55,
+        "topics" : 56,
         
             "header" : "Open\u002Dsource electronic prototyping platform allowing to create interactive electronic objects.",
         
@@ -8102,7 +8102,7 @@
         "url" : "http://www.v2ex.com/go/cv",
         "title" : "求职",
         "title_alternative" : "CV",
-        "topics" : 1465,
+        "topics" : 1583,
         
             "header" : "欢迎在这里发布自己的求职简历。",
         
@@ -8134,7 +8134,7 @@
         "url" : "http://www.v2ex.com/go/pet",
         "title" : "宠物",
         "title_alternative" : "宠物",
-        "topics" : 92,
+        "topics" : 102,
         
             "header" : null,
         
@@ -8198,7 +8198,7 @@
         "url" : "http://www.v2ex.com/go/markdown",
         "title" : "Markdown",
         "title_alternative" : "Markdown",
-        "topics" : 218,
+        "topics" : 236,
         
             "header" : "Markdown is a text\u002Dto\u002DHTML conversion tool for web writers.",
         
@@ -8246,7 +8246,7 @@
         "url" : "http://www.v2ex.com/go/weibo",
         "title" : "微博",
         "title_alternative" : "Weibo",
-        "topics" : 92,
+        "topics" : 94,
         
             "header" : null,
         
@@ -8294,7 +8294,7 @@
         "url" : "http://www.v2ex.com/go/ideas",
         "title" : "奇思妙想",
         "title_alternative" : "Ideas",
-        "topics" : 1556,
+        "topics" : 1638,
         
             "header" : "让你的创意在这里自由流动吧。",
         
@@ -8422,7 +8422,7 @@
         "url" : "http://www.v2ex.com/go/dn",
         "title" : "域名",
         "title_alternative" : "Domain Names",
-        "topics" : 1140,
+        "topics" : 1183,
         
             "header" : "域名交易节点",
         
@@ -8534,7 +8534,7 @@
         "url" : "http://www.v2ex.com/go/soccer",
         "title" : "绿茵场",
         "title_alternative" : "Soccer",
-        "topics" : 198,
+        "topics" : 206,
         
             "header" : "Brazil 2014",
         
@@ -8550,7 +8550,7 @@
         "url" : "http://www.v2ex.com/go/sublime",
         "title" : "Sublime Text",
         "title_alternative" : "Sublime Text",
-        "topics" : 179,
+        "topics" : 185,
         
             "header" : "Sublime Text 是一个功能复杂的跨平台文本编辑器",
         
@@ -8566,7 +8566,7 @@
         "url" : "http://www.v2ex.com/go/ubuntu",
         "title" : "Ubuntu",
         "title_alternative" : "Ubuntu",
-        "topics" : 183,
+        "topics" : 191,
         
             "header" : "Super\u002Dfast, easy to use and free, the Ubuntu operating system powers millions of desktops, netbooks and servers around the world.",
         
@@ -8614,7 +8614,7 @@
         "url" : "http://www.v2ex.com/go/la",
         "title" : "Los Angeles",
         "title_alternative" : "Los Angeles",
-        "topics" : 13,
+        "topics" : 14,
         
             "header" : null,
         
@@ -8630,7 +8630,7 @@
         "url" : "http://www.v2ex.com/go/evernote",
         "title" : "Evernote",
         "title_alternative" : "Evernote",
-        "topics" : 100,
+        "topics" : 105,
         
             "header" : "Remember everything.",
         
@@ -8662,7 +8662,7 @@
         "url" : "http://www.v2ex.com/go/sandbox",
         "title" : "沙盒",
         "title_alternative" : "Sandbox",
-        "topics" : 444,
+        "topics" : 471,
         
             "header" : "用于各种实验性的发帖，内容会被不定期清理",
         
@@ -8694,7 +8694,7 @@
         "url" : "http://www.v2ex.com/go/reprocess",
         "title" : "信息处理中心",
         "title_alternative" : "Information Reprocess Center",
-        "topics" : 35,
+        "topics" : 39,
         
             "header" : "re·proc·ess \u002D Process (something, esp. spent nuclear fuel) again or differently, typically in order to reuse it.",
         
@@ -8758,7 +8758,7 @@
         "url" : "http://www.v2ex.com/go/dev",
         "title" : "Dev",
         "title_alternative" : "Dev",
-        "topics" : 100,
+        "topics" : 102,
         
             "header" : "A place for internal discussions of development of Project Babel 3.",
         
@@ -8806,7 +8806,7 @@
         "url" : "http://www.v2ex.com/go/free",
         "title" : "免费赠送",
         "title_alternative" : "Free",
-        "topics" : 1139,
+        "topics" : 1180,
         
             "header" : "\u0026nbsp\u003B",
         
@@ -8822,7 +8822,7 @@
         "url" : "http://www.v2ex.com/go/stripe",
         "title" : "Stripe",
         "title_alternative" : "Stripe",
-        "topics" : 33,
+        "topics" : 34,
         
             "header" : "Payments for developers.",
         
@@ -8902,7 +8902,7 @@
         "url" : "http://www.v2ex.com/go/life",
         "title" : "生活",
         "title_alternative" : "Life",
-        "topics" : 210,
+        "topics" : 232,
         
             "header" : null,
         
@@ -9014,7 +9014,7 @@
         "url" : "http://www.v2ex.com/go/haproxy",
         "title" : "HAProxy",
         "title_alternative" : "HAProxy",
-        "topics" : 4,
+        "topics" : 5,
         
             "header" : "带有健康检查功能的非常强大的负载均衡软件",
         
@@ -9078,7 +9078,7 @@
         "url" : "http://www.v2ex.com/go/ssl",
         "title" : "SSL",
         "title_alternative" : "SSL",
-        "topics" : 214,
+        "topics" : 235,
         
             "header" : "关于 SSL 证书在网站及软件使用场景中的讨论。为了你的用户，一切都应该变得更加安全。",
         
@@ -9254,7 +9254,7 @@
         "url" : "http://www.v2ex.com/go/survey",
         "title" : "调查",
         "title_alternative" : "Survey",
-        "topics" : 419,
+        "topics" : 470,
         
             "header" : "所有调查类的主题请发布到这里",
         
@@ -9270,7 +9270,7 @@
         "url" : "http://www.v2ex.com/go/ios",
         "title" : "iOS",
         "title_alternative" : "iOS",
-        "topics" : 604,
+        "topics" : 660,
         
             "header" : "世界上最先进的移动操作系统。",
         
@@ -9414,7 +9414,7 @@
         "url" : "http://www.v2ex.com/go/4g",
         "title" : "4G",
         "title_alternative" : "4G",
-        "topics" : 77,
+        "topics" : 84,
         
             "header" : "4G \u002D 第四代移动通信技术",
         
@@ -9462,7 +9462,7 @@
         "url" : "http://www.v2ex.com/go/nba",
         "title" : "NBA",
         "title_alternative" : "NBA",
-        "topics" : 11,
+        "topics" : 12,
         
             "header" : null,
         
@@ -9494,7 +9494,7 @@
         "url" : "http://www.v2ex.com/go/fitbit",
         "title" : "Fitbit",
         "title_alternative" : "Fitbit",
-        "topics" : 19,
+        "topics" : 20,
         
             "header" : "Make every day count.",
         
@@ -9686,7 +9686,7 @@
         "url" : "http://www.v2ex.com/go/meizu",
         "title" : "魅族",
         "title_alternative" : "Meizu",
-        "topics" : 41,
+        "topics" : 43,
         
             "header" : "M8, M9, MX, MX2, MX3 \u0026amp\u003B MX4",
         
@@ -9702,7 +9702,7 @@
         "url" : "http://www.v2ex.com/go/naq",
         "title" : "不是问题的问题",
         "title_alternative" : "Not a Question",
-        "topics" : 14,
+        "topics" : 16,
         
             "header" : null,
         
@@ -9782,7 +9782,7 @@
         "url" : "http://www.v2ex.com/go/nexus",
         "title" : "Nexus",
         "title_alternative" : "Nexus",
-        "topics" : 169,
+        "topics" : 185,
         
             "header" : "关于 Nexus 系列设备的使用和 hack 的讨论。",
         
@@ -9798,7 +9798,7 @@
         "url" : "http://www.v2ex.com/go/monthly",
         "title" : "每个月都会出现的那种主题",
         "title_alternative" : "Monthly",
-        "topics" : 299,
+        "topics" : 385,
         
             "header" : "本节点内的主题不会出现在首页和 RSS 中。",
         
@@ -9814,7 +9814,7 @@
         "url" : "http://www.v2ex.com/go/appnet",
         "title" : "App.net",
         "title_alternative" : "App.net",
-        "topics" : 16,
+        "topics" : 17,
         
             "header" : "App.net is a different kind of social platform.",
         
@@ -9830,7 +9830,7 @@
         "url" : "http://www.v2ex.com/go/elasticsearch",
         "title" : "elasticsearch",
         "title_alternative" : "elasticsearch",
-        "topics" : 34,
+        "topics" : 38,
         
             "header" : "一个基于 Lucene 构建的、Apache 协议开源的、分布式的、提供 REST API 的搜索引擎。",
         
@@ -9910,7 +9910,7 @@
         "url" : "http://www.v2ex.com/go/sanfrancisco",
         "title" : "San Francisco",
         "title_alternative" : "San Francisco",
-        "topics" : 18,
+        "topics" : 21,
         
             "header" : "San Francisco, officially the City and County of San Francisco, is the leading financial and cultural center of Northern California and the San Francisco Bay Area.",
         
@@ -9942,7 +9942,7 @@
         "url" : "http://www.v2ex.com/go/devops",
         "title" : "DevOps",
         "title_alternative" : "DevOps",
-        "topics" : 102,
+        "topics" : 109,
         
             "header" : "我们不仅写代码，我们同时也关心代码将如何运行。",
         
@@ -10102,7 +10102,7 @@
         "url" : "http://www.v2ex.com/go/ingress",
         "title" : "Ingress",
         "title_alternative" : "Ingress",
-        "topics" : 66,
+        "topics" : 70,
         
             "header" : "The world around you is not what it seems.",
         
@@ -10198,7 +10198,7 @@
         "url" : "http://www.v2ex.com/go/swift",
         "title" : "Swift",
         "title_alternative" : "Swift",
-        "topics" : 108,
+        "topics" : 142,
         
             "header" : "New programming language from Apple.",
         
@@ -10342,7 +10342,7 @@
         "url" : "http://www.v2ex.com/go/coc",
         "title" : "Clash of Clans",
         "title_alternative" : "Clash of Clans",
-        "topics" : 300,
+        "topics" : 301,
         
             "header" : "Lead your clan to victory! Clash of Clans is an epic combat strategy game. Build your village, train your troops and battle with thousands of other players online!",
         
@@ -10358,7 +10358,7 @@
         "url" : "http://www.v2ex.com/go/shadowsocks",
         "title" : "shadowsocks",
         "title_alternative" : "shadowsocks",
-        "topics" : 3605,
+        "topics" : 3676,
         
             "header" : "各种语言的服务器和客户端对于数据加密和传输的尝试。",
         
@@ -10374,7 +10374,7 @@
         "url" : "http://www.v2ex.com/go/wechat",
         "title" : "微信",
         "title_alternative" : "WeChat",
-        "topics" : 300,
+        "topics" : 319,
         
             "header" : "腾讯旗下的新的移动沟通平台",
         
@@ -10390,7 +10390,7 @@
         "url" : "http://www.v2ex.com/go/pi",
         "title" : "Raspberry Pi",
         "title_alternative" : "Raspberry Pi",
-        "topics" : 101,
+        "topics" : 104,
         
             "header" : "The Raspberry Pi is a credit\u002Dcard sized computer that plugs into your TV and a keyboard.",
         
@@ -10438,7 +10438,7 @@
         "url" : "http://www.v2ex.com/go/vps",
         "title" : "VPS",
         "title_alternative" : "VPS",
-        "topics" : 2429,
+        "topics" : 2660,
         
             "header" : "关于 VPS 购买和使用的讨论。",
         
@@ -10582,7 +10582,7 @@
         "url" : "http://www.v2ex.com/go/ansible",
         "title" : "Ansible",
         "title_alternative" : "Ansible",
-        "topics" : 5,
+        "topics" : 7,
         
             "header" : "超级简洁的配置管理工具。",
         
@@ -10742,7 +10742,7 @@
         "url" : "http://www.v2ex.com/go/alfred",
         "title" : "Alfred",
         "title_alternative" : "Alfred",
-        "topics" : 51,
+        "topics" : 54,
         
             "header" : "OS X 下神奇的 launcher 应用。",
         
@@ -10790,7 +10790,7 @@
         "url" : "http://www.v2ex.com/go/ps4",
         "title" : "PlayStation 4",
         "title_alternative" : "PlayStation 4",
-        "topics" : 150,
+        "topics" : 156,
         
             "header" : "Greatness Awaits",
         
@@ -10838,7 +10838,7 @@
         "url" : "http://www.v2ex.com/go/ml",
         "title" : "机器学习",
         "title_alternative" : "Machine Learning",
-        "topics" : 75,
+        "topics" : 80,
         
             "header" : null,
         
@@ -10854,7 +10854,7 @@
         "url" : "http://www.v2ex.com/go/tw",
         "title" : "台湾",
         "title_alternative" : "Taiwan",
-        "topics" : 2,
+        "topics" : 4,
         
             "header" : null,
         
@@ -10870,7 +10870,7 @@
         "url" : "http://www.v2ex.com/go/paypal",
         "title" : "PayPal",
         "title_alternative" : "PayPal",
-        "topics" : 43,
+        "topics" : 44,
         
             "header" : null,
         
@@ -10982,7 +10982,7 @@
         "url" : "http://www.v2ex.com/go/smartisanos",
         "title" : "Smartisan OS",
         "title_alternative" : "Smartisan OS",
-        "topics" : 129,
+        "topics" : 130,
         
             "header" : "6.15 Public Beta",
         
@@ -10998,7 +10998,7 @@
         "url" : "http://www.v2ex.com/go/ssd",
         "title" : "SSD",
         "title_alternative" : "SSD",
-        "topics" : 215,
+        "topics" : 224,
         
             "header" : "固态硬盘发烧友的讨论节点",
         
@@ -11046,7 +11046,7 @@
         "url" : "http://www.v2ex.com/go/feo",
         "title" : "前端优化",
         "title_alternative" : "Front End Optimization",
-        "topics" : 38,
+        "topics" : 42,
         
             "header" : "让页面加载更快，更科学的黑魔法讨论",
         
@@ -11078,7 +11078,7 @@
         "url" : "http://www.v2ex.com/go/mechanical",
         "title" : "机械键盘",
         "title_alternative" : "Mechanical Keyboard",
-        "topics" : 277,
+        "topics" : 307,
         
             "header" : "机械键盘发烧友的讨论节点",
         
@@ -11094,7 +11094,7 @@
         "url" : "http://www.v2ex.com/go/line",
         "title" : "LINE",
         "title_alternative" : "LINE",
-        "topics" : 12,
+        "topics" : 13,
         
             "header" : "A lovely town",
         
@@ -11174,7 +11174,7 @@
         "url" : "http://www.v2ex.com/go/microsoft",
         "title" : "微软",
         "title_alternative" : "Microsoft",
-        "topics" : 83,
+        "topics" : 86,
         
             "header" : "总部位于 Seattle, Redmond 的世界级通用软件公司，生产了 Windows、Office、SQL Server、Exchange Server、Xbox 等重要软硬件产品。",
         
@@ -11190,7 +11190,7 @@
         "url" : "http://www.v2ex.com/go/fit",
         "title" : "健康",
         "title_alternative" : "Fit",
-        "topics" : 103,
+        "topics" : 114,
         
             "header" : "好身体，好心情",
         
@@ -11206,7 +11206,7 @@
         "url" : "http://www.v2ex.com/go/webrtc",
         "title" : "WebRTC",
         "title_alternative" : "WebRTC",
-        "topics" : 27,
+        "topics" : 28,
         
             "header" : "WebRTC is a free, open project that enables web browsers with Real\u002DTime Communications (RTC) capabilities via simple JavaScript APIs.",
         
@@ -11238,7 +11238,7 @@
         "url" : "http://www.v2ex.com/go/soho",
         "title" : "SOHO",
         "title_alternative" : "SOHO",
-        "topics" : 10,
+        "topics" : 11,
         
             "header" : "关于 Freelancer 的生活、技巧和感悟。",
         
@@ -11270,7 +11270,7 @@
         "url" : "http://www.v2ex.com/go/offworld",
         "title" : "重口味问与答",
         "title_alternative" : "Offworld Q \u0026 A",
-        "topics" : 30,
+        "topics" : 34,
         
             "header" : "一个能够让你放松心情的地方，请爱惜使用。",
         
@@ -11284,8 +11284,8 @@
         "id" : 706,
         "name" : "german",
         "url" : "http://www.v2ex.com/go/german",
-        "title" : "German",
-        "title_alternative" : "德语",
+        "title" : "德语",
+        "title_alternative" : "Deutsch",
         "topics" : 3,
         
             "header" : null,
@@ -11302,7 +11302,7 @@
         "url" : "http://www.v2ex.com/go/duolingo",
         "title" : "Duolingo",
         "title_alternative" : "Duolingo",
-        "topics" : 12,
+        "topics" : 13,
         
             "header" : "最好的语言学习 app，同时支持 iPhone 和 Android",
         
@@ -11382,7 +11382,7 @@
         "url" : "http://www.v2ex.com/go/oculusvr",
         "title" : "Oculus VR",
         "title_alternative" : "Oculus VR",
-        "topics" : 6,
+        "topics" : 7,
         
             "header" : "The Oculus Rift is a next\u002Dgeneration virtual reality headset designed for immersive gaming.",
         
@@ -11446,7 +11446,7 @@
         "url" : "http://www.v2ex.com/go/docker",
         "title" : "Docker",
         "title_alternative" : "Docker",
-        "topics" : 137,
+        "topics" : 150,
         
             "header" : "基于 Linux Container 技术的轻量级虚拟化环境。",
         
@@ -11590,7 +11590,7 @@
         "url" : "http://www.v2ex.com/go/documentary",
         "title" : "纪录片",
         "title_alternative" : "Documentary",
-        "topics" : 5,
+        "topics" : 6,
         
             "header" : "这个世界充满了有趣的事物。",
         
@@ -11606,7 +11606,7 @@
         "url" : "http://www.v2ex.com/go/taobao",
         "title" : "淘宝",
         "title_alternative" : "淘宝",
-        "topics" : 60,
+        "topics" : 73,
         
             "header" : null,
         
@@ -11702,7 +11702,7 @@
         "url" : "http://www.v2ex.com/go/ghost",
         "title" : "Ghost",
         "title_alternative" : "Ghost",
-        "topics" : 46,
+        "topics" : 48,
         
             "header" : "Just a blogging platform",
         
@@ -11782,7 +11782,7 @@
         "url" : "http://www.v2ex.com/go/hearthstone",
         "title" : "Hearthstone",
         "title_alternative" : "炉石传说",
-        "topics" : 65,
+        "topics" : 67,
         
             "header" : "Heroes of Warcraft",
         
@@ -11878,7 +11878,7 @@
         "url" : "http://www.v2ex.com/go/xboxone",
         "title" : "Xbox One",
         "title_alternative" : "Xbox One",
-        "topics" : 22,
+        "topics" : 23,
         
             "header" : null,
         
@@ -11942,7 +11942,7 @@
         "url" : "http://www.v2ex.com/go/deals",
         "title" : "优惠信息",
         "title_alternative" : "Deals",
-        "topics" : 18,
+        "topics" : 84,
         
             "header" : "这里分享和发布来自互联网上的最新优惠信息",
         
@@ -12070,7 +12070,7 @@
         "url" : "http://www.v2ex.com/go/libido",
         "title" : "情感问题",
         "title_alternative" : "Libido",
-        "topics" : 144,
+        "topics" : 158,
         
             "header" : "有些事情不必一直憋在心里，说出来让大家听听，然后一起想办法吧。",
         
@@ -12182,7 +12182,7 @@
         "url" : "http://www.v2ex.com/go/boston",
         "title" : "Boston",
         "title_alternative" : "Boston",
-        "topics" : 0,
+        "topics" : 1,
         
             "header" : null,
         
@@ -12310,7 +12310,7 @@
         "url" : "http://www.v2ex.com/go/career",
         "title" : "职场话题",
         "title_alternative" : "Career",
-        "topics" : 961,
+        "topics" : 1125,
         
             "header" : "这里，我们聊聊那些工作中遇到的开心和不开心的事。",
         
@@ -12342,7 +12342,7 @@
         "url" : "http://www.v2ex.com/go/github",
         "title" : "GitHub",
         "title_alternative" : "GitHub",
-        "topics" : 156,
+        "topics" : 180,
         
             "header" : "A global place for programmers.",
         
@@ -12358,7 +12358,7 @@
         "url" : "http://www.v2ex.com/go/atom",
         "title" : "Atom",
         "title_alternative" : "Atom",
-        "topics" : 148,
+        "topics" : 155,
         
             "header" : "来自 \u003Ca href\u003D\u0022/go/github\u0022\u003EGitHub\u003C/a\u003E 的新编辑器",
         
@@ -12406,7 +12406,7 @@
         "url" : "http://www.v2ex.com/go/powershell",
         "title" : "PowerShell",
         "title_alternative" : "PowerShell",
-        "topics" : 1,
+        "topics" : 2,
         
             "header" : "Windows PowerShell is Microsoft\u0027s task automation and configuration management framework, consisting of a command\u002Dline shell and associated scripting language built on .NET Framework.",
         
@@ -12422,7 +12422,7 @@
         "url" : "http://www.v2ex.com/go/seo",
         "title" : "搜索引擎优化",
         "title_alternative" : "SEO",
-        "topics" : 41,
+        "topics" : 43,
         
             "header" : "这里讨论关于帮助 Google、Bing、百度、搜狗等搜索引擎更好地理解网站的内容和结构",
         
@@ -12518,7 +12518,7 @@
         "url" : "http://www.v2ex.com/go/sketch",
         "title" : "Sketch",
         "title_alternative" : "Sketch",
-        "topics" : 35,
+        "topics" : 36,
         
             "header" : "简单好用的矢量设计软件，来自 Bohemian Coding 工作室。",
         
@@ -12630,7 +12630,7 @@
         "url" : "http://www.v2ex.com/go/rustlang",
         "title" : "Rust",
         "title_alternative" : "Rust",
-        "topics" : 22,
+        "topics" : 23,
         
             "header" : "Rust is a systems programming language that runs blazingly fast, prevents almost all crashes, and eliminates data races.",
         
@@ -12646,7 +12646,7 @@
         "url" : "http://www.v2ex.com/go/fe",
         "title" : "前端开发",
         "title_alternative" : "Frontend",
-        "topics" : 263,
+        "topics" : 314,
         
             "header" : null,
         
@@ -12710,7 +12710,7 @@
         "url" : "http://www.v2ex.com/go/leancloud",
         "title" : "LeanCloud",
         "title_alternative" : "LeanCloud",
-        "topics" : 81,
+        "topics" : 82,
         
             "header" : "最好的移动应用开发一站式服务，让小团队也能做出大产品。",
         
@@ -12822,7 +12822,7 @@
         "url" : "http://www.v2ex.com/go/uber",
         "title" : "Uber",
         "title_alternative" : "Uber",
-        "topics" : 32,
+        "topics" : 35,
         
             "header" : "一个在全世界大部分城市都可以使用的叫车 App",
         
@@ -12854,7 +12854,7 @@
         "url" : "http://www.v2ex.com/go/mmm",
         "title" : "买买买",
         "title_alternative" : "Buy Buy Buy",
-        "topics" : 105,
+        "topics" : 113,
         
             "header" : "如果你最近买了某个有点点奢侈，但是又非常酷的东西，那就发到这个节点来交（xia）流（du）一下吧",
         
@@ -12886,7 +12886,7 @@
         "url" : "http://www.v2ex.com/go/openwrt",
         "title" : "OpenWrt",
         "title_alternative" : "OpenWrt",
-        "topics" : 285,
+        "topics" : 304,
         
             "header" : "Wireless Freedom",
         
@@ -12950,7 +12950,7 @@
         "url" : "http://www.v2ex.com/go/simracing",
         "title" : "模拟驾驶",
         "title_alternative" : "Sim Racing",
-        "topics" : 24,
+        "topics" : 25,
         
             "header" : "模拟驾驶爱好者的讨论节点",
         
@@ -12966,7 +12966,7 @@
         "url" : "http://www.v2ex.com/go/oneapm",
         "title" : "OneAPM",
         "title_alternative" : "OneAPM",
-        "topics" : 9,
+        "topics" : 10,
         
             "header" : "支持 Java，.NET，Python 及移动应用的性能管理平台（Application Performance Management）",
         
@@ -13014,7 +13014,7 @@
         "url" : "http://www.v2ex.com/go/angularjs",
         "title" : "AngularJS",
         "title_alternative" : "AngularJS",
-        "topics" : 32,
+        "topics" : 38,
         
             "header" : "Superheroic JavaScript MVW Framework",
         
@@ -13094,7 +13094,7 @@
         "url" : "http://www.v2ex.com/go/watch",
         "title" : " WATCH",
         "title_alternative" : " WATCH",
-        "topics" : 56,
+        "topics" : 57,
         
             "header" : null,
         
@@ -13142,7 +13142,7 @@
         "url" : "http://www.v2ex.com/go/fir",
         "title" : "fir.im",
         "title_alternative" : "Fly It Remotely",
-        "topics" : 57,
+        "topics" : 65,
         
             "header" : "fir.im 是面向移动开发者的 Beta App 托管分发平台，同时支持 iOS 与 Android",
         
@@ -13158,7 +13158,7 @@
         "url" : "http://www.v2ex.com/go/coding",
         "title" : "Coding",
         "title_alternative" : "Coding",
-        "topics" : 50,
+        "topics" : 57,
         
             "header" : "\u003Ca href\u003D\u0022https://coding.net/\u0022 target\u003D\u0022_blank\u0022\u003ECoding.net\u003C/a\u003E 为软件开发者提供基于云计算技术的软件开发平台，包括项目管理，代码托管，运行空间和质量控制等等",
         
@@ -13174,7 +13174,7 @@
         "url" : "http://www.v2ex.com/go/router",
         "title" : "路由器",
         "title_alternative" : "Router",
-        "topics" : 187,
+        "topics" : 209,
         
             "header" : "数据包流动的乐趣",
         
@@ -13190,7 +13190,7 @@
         "url" : "http://www.v2ex.com/go/gdg",
         "title" : "GDG",
         "title_alternative" : "Google Developer Groups",
-        "topics" : 33,
+        "topics" : 34,
         
             "header" : "Google Developer Groups —— 与所有追求自由、开放、平等的你们共勉。",
         
@@ -13254,7 +13254,7 @@
         "url" : "http://www.v2ex.com/go/pm",
         "title" : "产品经理茶话会",
         "title_alternative" : "PM",
-        "topics" : 22,
+        "topics" : 25,
         
             "header" : "关于产品设计和运营的讨论",
         
@@ -13270,7 +13270,7 @@
         "url" : "http://www.v2ex.com/go/2015",
         "title" : "2015",
         "title_alternative" : "2015",
-        "topics" : 191,
+        "topics" : 211,
         
             "header" : "关于 2015 年的一切：新年目标，及任何你希望记住的时刻",
         
@@ -13302,7 +13302,7 @@
         "url" : "http://www.v2ex.com/go/gitcafe",
         "title" : "GitCafe",
         "title_alternative" : "GitCafe",
-        "topics" : 21,
+        "topics" : 24,
         
             "header" : null,
         
@@ -13334,7 +13334,7 @@
         "url" : "http://www.v2ex.com/go/xiaomi",
         "title" : "小米",
         "title_alternative" : "Xiaomi",
-        "topics" : 59,
+        "topics" : 71,
         
             "header" : "关于小米公司出品的各种智能硬件的使用讨论",
         
@@ -13366,7 +13366,7 @@
         "url" : "http://www.v2ex.com/go/telegram",
         "title" : "Telegram",
         "title_alternative" : "Telegram",
-        "topics" : 56,
+        "topics" : 61,
         
             "header" : "一个全新的主打安全和隐私的通讯平台——Telegram Messenger，来自俄罗斯最大的社交网站 VK 的创建人 Nikolai Durov 和 Pavel Durov 兄弟",
         
@@ -13382,7 +13382,7 @@
         "url" : "http://www.v2ex.com/go/react",
         "title" : "React",
         "title_alternative" : "React",
-        "topics" : 32,
+        "topics" : 43,
         
             "header" : "一个用于构建用户界面的 JavaScript 库",
         
@@ -13398,7 +13398,7 @@
         "url" : "http://www.v2ex.com/go/dotgeek",
         "title" : "DotGeek",
         "title_alternative" : "DotGeek",
-        "topics" : 0,
+        "topics" : 1,
         
             "header" : null,
         
@@ -13414,7 +13414,7 @@
         "url" : "http://www.v2ex.com/go/fitness",
         "title" : "健身",
         "title_alternative" : "Fitness",
-        "topics" : 27,
+        "topics" : 28,
         
             "header" : null,
         
@@ -13462,7 +13462,7 @@
         "url" : "http://www.v2ex.com/go/pay",
         "title" : " Pay",
         "title_alternative" : " Pay",
-        "topics" : 8,
+        "topics" : 12,
         
             "header" : null,
         
@@ -13574,7 +13574,7 @@
         "url" : "http://www.v2ex.com/go/drones",
         "title" : "无人机",
         "title_alternative" : "Drones",
-        "topics" : 27,
+        "topics" : 28,
         
             "header" : "无人机爱好者的讨论节点",
         
@@ -13606,7 +13606,7 @@
         "url" : "http://www.v2ex.com/go/jiankongbao",
         "title" : "监控宝",
         "title_alternative" : "Jian Kong Bao",
-        "topics" : 22,
+        "topics" : 28,
         
             "header" : "云智慧旗下产品监控宝专注于立体式云监控服务，为企业级用户提供网站可用率、网站内容、服务器和服务性能立体多维的监控管理服务，帮助用户监控性能变化趋势，及时发现问题、解决问题，全面保障 IT 基础设施及交付能力。",
         
@@ -13654,7 +13654,7 @@
         "url" : "http://www.v2ex.com/go/udacity",
         "title" : "Udacity",
         "title_alternative" : "Udacity",
-        "topics" : 12,
+        "topics" : 13,
         
             "header" : "可以免费学习最新编程技术的网站",
         
@@ -13718,7 +13718,7 @@
         "url" : "http://www.v2ex.com/go/u",
         "title" : "大学",
         "title_alternative" : "U",
-        "topics" : 40,
+        "topics" : 45,
         
             "header" : "关于志愿填报、大学生活、实习、出国等等各类大学相关话题的讨论",
         
@@ -13734,7 +13734,7 @@
         "url" : "http://www.v2ex.com/go/pronunciation",
         "title" : "发音",
         "title_alternative" : "",
-        "topics" : 17,
+        "topics" : 20,
         
             "header" : "I\u0027m sorry, I don\u0027t speak English.",
         
@@ -13750,7 +13750,7 @@
         "url" : "http://www.v2ex.com/go/imperfect",
         "title" : "这个世界不完美",
         "title_alternative" : "Imperfect",
-        "topics" : 7,
+        "topics" : 8,
         
             "header" : "如果你在用的软件或者硬件遇到了什么设计不科学的地方，欢迎你在这个节点吐槽和分享自己的经历。请大家注意，吐槽是为了能够让问题得到尽快解决。请不要使用脏话。",
         
@@ -13782,7 +13782,7 @@
         "url" : "http://www.v2ex.com/go/surface",
         "title" : "Surface",
         "title_alternative" : "Surface",
-        "topics" : 19,
+        "topics" : 22,
         
             "header" : null,
         
@@ -13814,7 +13814,7 @@
         "url" : "http://www.v2ex.com/go/promotions",
         "title" : "推广",
         "title_alternative" : "Promotions",
-        "topics" : 151,
+        "topics" : 213,
         
             "header" : "来自厂商的推广活动类主题，会被归类到这个节点。希望有情怀的产商们在发布推广内容时，主动选择发布到本节点下。",
         
@@ -13830,7 +13830,7 @@
         "url" : "http://www.v2ex.com/go/however",
         "title" : "然而并没有",
         "title_alternative" : "However",
-        "topics" : 30,
+        "topics" : 50,
         
             "header" : "不要怪我们没有警告过你 / 我们都有不顺利的时候 / Something happened / 这真是让人尴尬 / 请坐和放宽 / 滚回以前的版本 / 这就是你的人生 / 是的，你的人生",
         
@@ -13862,7 +13862,7 @@
         "url" : "http://www.v2ex.com/go/vscode",
         "title" : "Visual Studio Code",
         "title_alternative" : "Visual Studio Code",
-        "topics" : 14,
+        "topics" : 17,
         
             "header" : "来自 \u003Ca href\u003D\u0022/go/microsoft\u0022\u003EMicrosoft\u003C/a\u003E 的全新代码编辑器",
         
@@ -13894,7 +13894,7 @@
         "url" : "http://www.v2ex.com/go/smartisan",
         "title" : "锤子手机",
         "title_alternative" : "Smartisan",
-        "topics" : 8,
+        "topics" : 13,
         
             "header" : null,
         
@@ -13910,7 +13910,7 @@
         "url" : "http://www.v2ex.com/go/earphone",
         "title" : "耳机",
         "title_alternative" : "Earphone",
-        "topics" : 39,
+        "topics" : 43,
         
             "header" : null,
         
@@ -13974,7 +13974,7 @@
         "url" : "http://www.v2ex.com/go/tvos",
         "title" : "tvOS",
         "title_alternative" : "tvOS",
-        "topics" : 2,
+        "topics" : 3,
         
             "header" : null,
         
@@ -14054,7 +14054,7 @@
         "url" : "http://www.v2ex.com/go/soylent",
         "title" : "Soylent",
         "title_alternative" : "Soylent",
-        "topics" : 9,
+        "topics" : 10,
         
             "header" : "Simple, healthy, affordable food",
         
@@ -14078,6 +14078,118 @@
             "footer" : null,
         
         "created" : 1447312601
+    },
+
+    {
+        "id" : 881,
+        "name" : "vue",
+        "url" : "http://www.v2ex.com/go/vue",
+        "title" : "vue",
+        "title_alternative" : "vue",
+        "topics" : 6,
+        
+            "header" : "Reactive Components for Modern Web Interfaces",
+        
+        
+            "footer" : null,
+        
+        "created" : 1447829442
+    },
+
+    {
+        "id" : 882,
+        "name" : "surge",
+        "url" : "http://www.v2ex.com/go/surge",
+        "title" : "Surge",
+        "title_alternative" : "Surge",
+        "topics" : 84,
+        
+            "header" : "Surge is a web developer tool and proxy utility for iOS 9. This app is designed for developers and may require some level of professional knowledge to use.",
+        
+        
+            "footer" : null,
+        
+        "created" : 1448034605
+    },
+
+    {
+        "id" : 883,
+        "name" : "nlp",
+        "url" : "http://www.v2ex.com/go/nlp",
+        "title" : "自然语言处理",
+        "title_alternative" : "Natural Language Processing",
+        "topics" : 15,
+        
+            "header" : null,
+        
+        
+            "footer" : null,
+        
+        "created" : 1448287402
+    },
+
+    {
+        "id" : 884,
+        "name" : "koukaku",
+        "url" : "http://www.v2ex.com/go/koukaku",
+        "title" : "Ghost in the Shell",
+        "title_alternative" : "攻殻機動隊",
+        "topics" : 2,
+        
+            "header" : "《攻壳机动队》是由日本漫画家士郎正宗 1989 年 4 月 22 日首次连载于讲谈社青年漫画月刊《Young Magazine海贼版》的漫画——Wikipedia",
+        
+        
+            "footer" : null,
+        
+        "created" : 1448949096
+    },
+
+    {
+        "id" : 885,
+        "name" : "2016",
+        "url" : "http://www.v2ex.com/go/2016",
+        "title" : "2016",
+        "title_alternative" : "2016",
+        "topics" : 4,
+        
+            "header" : "关于 2016 年的一切：新年目标，及任何你希望记住的时刻",
+        
+        
+            "footer" : null,
+        
+        "created" : 1449648300
+    },
+
+    {
+        "id" : 886,
+        "name" : "tmux",
+        "url" : "http://www.v2ex.com/go/tmux",
+        "title" : "tmux",
+        "title_alternative" : "tmux",
+        "topics" : 31,
+        
+            "header" : "Terminal Multiplexer",
+        
+        
+            "footer" : null,
+        
+        "created" : 1449677606
+    },
+
+    {
+        "id" : 887,
+        "name" : "iceland",
+        "url" : "http://www.v2ex.com/go/iceland",
+        "title" : "冰岛",
+        "title_alternative" : "Iceland",
+        "topics" : 1,
+        
+            "header" : "国际区号 +354",
+        
+        
+            "footer" : null,
+        
+        "created" : 1450942039
     }
 
 ]
