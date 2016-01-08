@@ -293,7 +293,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         shareIntent.putExtra(Intent.EXTRA_TITLE, mTopic.getTitle());
         shareIntent.putExtra(Intent.EXTRA_TEXT, mTopic.getUrl());
 
-        if (MiscUtils.HAS_M) {
+        if (MiscUtils.HAS_L) {
             itemShare.setOnMenuItemClickListener(item -> {
                 startActivity(Intent.createChooser(shareIntent, null));
                 return true;
