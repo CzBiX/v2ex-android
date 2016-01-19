@@ -13,13 +13,16 @@ import java.util.List;
 
 public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = PrefStore.class.getSimpleName();
+    private static final int VERSION = 1;
 
-    private static final PrefStore instance;
+    private static PrefStore instance;
     private static final String PREF_LOAD_IMAGE_ON_MOBILE_NETWORK = "load_image_on_mobile_network";
     public static final String PREF_TABS_TO_SHOW = "tabs_to_show";
     public static final String PREF_RECEIVE_NOTIFICATIONS = "receive_notifications";
     private static final String PREF_ALWAYS_SHOW_REPLY_FORM = "always_show_reply_form";
     private static final String PREF_ENABLE_UNDO = "enable_undo";
+    private static final String PREF_LAST_PREF_VERSION = "last_app_version";
+    private static final String PREF_SHOULD_CLEAR_GCM_INFO = "should_clear_gcm_info";
 
     private final SharedPreferences mPreferences;
 
@@ -29,7 +32,19 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
 
     PrefStore(Context context) {
         mPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        initPref();
         mPreferences.registerOnSharedPreferenceChangeListener(this);
+    }
+
+    private void initPref() {
+        if (mPreferences.contains(PREF_LAST_PREF_VERSION)) {
+            return;
+        }
+
+        // HACK: server data loss, force register gcm, remove this line at future
+        mPreferences.edit().putBoolean(PREF_SHOULD_CLEAR_GCM_INFO, true).apply();
+
+        mPreferences.edit().putInt(PREF_LAST_PREF_VERSION, VERSION).apply();
     }
 
     public static void requestBackup() {
@@ -85,5 +100,13 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
 
     public void registerPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
         mPreferences.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    public boolean shouldClearGcmInfo() {
+        return mPreferences.getBoolean(PREF_SHOULD_CLEAR_GCM_INFO, false);
+    }
+
+    public void unsetShouldClearGcmInfo() {
+        mPreferences.edit().remove(PREF_SHOULD_CLEAR_GCM_INFO).apply();
     }
 }

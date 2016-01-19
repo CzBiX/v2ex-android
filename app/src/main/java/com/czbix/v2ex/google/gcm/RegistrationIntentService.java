@@ -45,9 +45,18 @@ public class RegistrationIntentService extends IntentService {
         }
 
         mPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
+        checkPref();
+
         final boolean isSuccess = isRegister ? register() : unregister();
 
         AppCtx.getEventBus().post(new DeviceRegisterEvent(isRegister, isSuccess));
+    }
+
+    private void checkPref() {
+        if (PrefStore.getInstance().shouldClearGcmInfo()) {
+            mPreferences.edit().clear().apply();
+            PrefStore.getInstance().unsetShouldClearGcmInfo();
+        }
     }
 
     private boolean register() {
