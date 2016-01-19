@@ -27,6 +27,8 @@ public class ConfigDao extends DaoBase {
     // TODO: remove this key when upgrade
     @Deprecated
     public static final String KEY_NOTIFICATION_COUNT = "notification_count";
+    // TODO: moved into pref, remove this key when upgrade
+    @Deprecated
     public static final String KEY_IS_USER_REGISTERED = "is_user_registered";
 
     static void createTable(SQLiteDatabase db) {

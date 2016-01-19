@@ -3,20 +3,17 @@ package com.czbix.v2ex.google.gcm;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
 import com.czbix.v2ex.AppCtx;
-import com.czbix.v2ex.R;
+import com.czbix.v2ex.common.PrefStore;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.UnauthorizedException;
-import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.eventbus.gcm.DeviceRegisterEvent;
 import com.czbix.v2ex.google.GoogleHelper;
 import com.czbix.v2ex.network.CzRequestHelper;
 import com.czbix.v2ex.network.RequestHelper;
-import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -27,6 +24,7 @@ public class RegistrationIntentService extends IntentService {
     public static final String KEY_UNREGISTER = "unregister";
 
     private static final String PREF_NAME = "gcm";
+    private static final String PREF_IS_USER_REGISTERED = "is_user_registered";
     private static final String PREF_LAST_GCM_TOKEN = "last_gcm_token";
     private static final String PREF_LAST_NTF_TOKEN = "last_ntf_token";
 
@@ -113,9 +111,9 @@ public class RegistrationIntentService extends IntentService {
         }
 
         final String username = UserState.getInstance().getUsername();
-        if (!ConfigDao.get(ConfigDao.KEY_IS_USER_REGISTERED, false)) {
+        if (!mPreferences.getBoolean(PREF_IS_USER_REGISTERED, false)) {
             CzRequestHelper.registerUser(username);
-            ConfigDao.put(ConfigDao.KEY_IS_USER_REGISTERED, true);
+            mPreferences.edit().putBoolean(PREF_IS_USER_REGISTERED, true).apply();
         }
 
         if (!notificationsToken.equals(mPreferences.getString(PREF_LAST_NTF_TOKEN, null))) {
