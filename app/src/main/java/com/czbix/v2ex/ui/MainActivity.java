@@ -11,6 +11,7 @@ import android.graphics.Outline;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.IdRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -59,6 +60,7 @@ import com.czbix.v2ex.ui.fragment.FavoriteTabFragment;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.fragment.NotificationListFragment;
 import com.czbix.v2ex.ui.fragment.TopicListFragment;
+import com.czbix.v2ex.ui.presenter.FloatTopicPresenter;
 import com.czbix.v2ex.ui.widget.SearchBoxLayout;
 import com.czbix.v2ex.ui.widget.TopicView.OnTopicActionListener;
 import com.czbix.v2ex.util.ExecutorUtils;
@@ -97,6 +99,7 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     private MenuItem mSearchMenuItem;
     private boolean mIsTabFragment;
     private MenuItem mFavItem;
+    private FloatTopicPresenter mFloatTopic;
 
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme_NoActionBar);
@@ -516,12 +519,13 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
     @Override
     public void onTopicStartPreview(View view, Topic topic) {
-        LogUtils.d(TAG, "start preview");
+        getFloatTopic().fillData(topic);
+        getFloatTopic().setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onTopicStopPreview(View view, Topic topic) {
-        LogUtils.d(TAG, "stop preview");
+        getFloatTopic().setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -543,5 +547,13 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
     private static boolean isTabFragment(Fragment fragment) {
         return fragment instanceof BaseTabFragment;
+    }
+
+    private FloatTopicPresenter getFloatTopic() {
+        if (mFloatTopic == null) {
+            mFloatTopic = new FloatTopicPresenter(this);
+        }
+
+        return mFloatTopic;
     }
 }
