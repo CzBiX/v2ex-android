@@ -88,21 +88,13 @@ public class SettingsActivity extends BaseActivity {
             final Preference logoutPref = findPreference(PREF_KEY_LOGOUT);
 
             infoPref.setTitle(UserState.getInstance().getUsername());
-            infoPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    MiscUtils.openUrl(getActivity(), Member.buildUrlFromName(
-                            UserState.getInstance().getUsername()));
-                    return false;
-                }
+            infoPref.setOnPreferenceClickListener(preference -> {
+                MiscUtils.openUrl(getActivity(), Member.buildUrlFromName(
+                        UserState.getInstance().getUsername()));
+                return false;
             });
 
-            mNotificationsPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    return toggleReceiveNotifications((Boolean) newValue);
-                }
-            });
+            mNotificationsPref.setOnPreferenceChangeListener((preference, newValue) -> toggleReceiveNotifications((Boolean) newValue));
             logoutPref.setOnPreferenceClickListener(this);
         }
 
@@ -173,11 +165,13 @@ public class SettingsActivity extends BaseActivity {
         @Subscribe
         public void onDeviceRegisterEvent(DeviceRegisterEvent e) {
             AppCtx.getEventBus().unregister(this);
-            if (!e.isSuccess) {
+            if (e.isSuccess) {
+                mNotificationsPref.setChecked(e.isRegister);
+            } else {
                 Toast.makeText(AppCtx.getInstance(), e.isRegister
                         ? R.string.toast_register_device_failed
                         : R.string.toast_unregister_device_failed, Toast.LENGTH_LONG).show();
-                mNotificationsPref.setChecked(e.isRegister);
+                mNotificationsPref.setChecked(!e.isRegister);
             }
             mNotificationsPref.setEnabled(true);
         }
