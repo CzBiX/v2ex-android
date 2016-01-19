@@ -64,7 +64,7 @@
         android:id="@+id/title_tv"
         style="@style/AppTheme.Topic.Title"
         tools:text="Title"
-        android:layout_below="@id/avatar_img"
+        android:layout_below="@id/time_tv"
         android:layout_marginTop="4dp"
         android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp"

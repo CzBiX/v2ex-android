@@ -52,6 +52,7 @@
     </style>
 
     <style name="AppTheme.Topic.Content" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:lineSpacingMultiplier">1.2</item>
     </style>
 
     <style name="AppTheme.Topic.Count" parent="TextAppearance.AppCompat.Caption">
