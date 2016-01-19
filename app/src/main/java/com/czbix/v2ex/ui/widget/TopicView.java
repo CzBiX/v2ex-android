@@ -1,7 +1,9 @@
 package com.czbix.v2ex.ui.widget;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -9,10 +11,12 @@ import android.widget.TextView;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
+import com.czbix.v2ex.ui.helper.ForceTouchDetector;
+import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Strings;
 
-public class TopicView extends FrameLayout implements View.OnClickListener {
+public class TopicView extends FrameLayout implements View.OnClickListener, View.OnTouchListener {
     private static final int TOPIC_PICTURE_OTHER_WIDTH = ViewUtils.getDimensionPixelSize(R.dimen.topic_picture_other_width);
 
     public final TextView mTitle;
@@ -24,6 +28,7 @@ public class TopicView extends FrameLayout implements View.OnClickListener {
     public final TextView mContent;
 
     private OnTopicActionListener mListener;
+    private ForceTouchDetector mTouchDetector;
     private Topic mTopic;
 
     public TopicView(Context context) {
@@ -38,8 +43,6 @@ public class TopicView extends FrameLayout implements View.OnClickListener {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.view_topic, this);
 
-        setOnClickListener(this);
-
         mAvatar = (AvatarView) findViewById(R.id.avatar_img);
         mTitle = (TextView) findViewById(R.id.title_tv);
         mUsername = (TextView) findViewById(R.id.username_tv);
@@ -49,8 +52,15 @@ public class TopicView extends FrameLayout implements View.OnClickListener {
         mContent = (TextView) findViewById(R.id.content);
     }
 
-    public void setListener(OnTopicActionListener listener) {
+    public void setListener(@NonNull OnTopicActionListener listener) {
         mListener = listener;
+
+        setOnClickListener(this);
+        setOnTouchListener(this);
+        mTouchDetector = new ForceTouchDetector(
+                () -> mListener.onTopicStartPreview(TopicView.this, mTopic),
+                () -> mListener.onTopicStopPreview(TopicView.this, mTopic)
+        );
     }
 
     public void setContentListener(HtmlMovementMethod.OnHtmlActionListener listener) {
@@ -116,15 +126,18 @@ public class TopicView extends FrameLayout implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (mListener == null) {
-            return;
-        }
-
         mListener.onTopicOpen(v, mTopic);
         updateForRead();
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return mTouchDetector.handleEvent(event);
+    }
+
     public interface OnTopicActionListener {
         void onTopicOpen(View view, Topic topic);
+        void onTopicStartPreview(View view, Topic topic);
+        void onTopicStopPreview(View view, Topic topic);
     }
 }

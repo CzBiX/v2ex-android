@@ -515,6 +515,16 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
     }
 
     @Override
+    public void onTopicStartPreview(View view, Topic topic) {
+        LogUtils.d(TAG, "start preview");
+    }
+
+    @Override
+    public void onTopicStopPreview(View view, Topic topic) {
+        LogUtils.d(TAG, "stop preview");
+    }
+
+    @Override
     public void onNodeOpen(Node node) {
         final TopicListFragment topicListFragment = TopicListFragment.newInstance(node);
 
