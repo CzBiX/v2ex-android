@@ -3,6 +3,7 @@ package com.czbix.v2ex.ui.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -27,27 +28,31 @@ import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.Page;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.MainActivity;
+import com.czbix.v2ex.ui.TopicActivity;
 import com.czbix.v2ex.ui.TopicEditActivity;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.ui.loader.TopicListLoader;
+import com.czbix.v2ex.ui.presenter.FloatTopicPresenter;
 import com.czbix.v2ex.ui.widget.DividerItemDecoration;
 import com.czbix.v2ex.ui.widget.TopicView.OnTopicActionListener;
 import com.czbix.v2ex.util.ExceptionUtils;
 import com.czbix.v2ex.util.LogUtils;
+import com.czbix.v2ex.util.TrackerUtils;
 
 import java.util.List;
 
-public class TopicListFragment extends Fragment implements LoaderCallbacks<LoaderResult<List<Topic>>>, SwipeRefreshLayout.OnRefreshListener {
+public class TopicListFragment extends Fragment implements LoaderCallbacks<LoaderResult<List<Topic>>>,
+        SwipeRefreshLayout.OnRefreshListener, OnTopicActionListener {
     private static final String TAG = TopicListFragment.class.getSimpleName();
     private static final String ARG_PAGE = "page";
 
     private Page mPage;
 
-    private OnTopicActionListener mListener;
     private TopicAdapter mAdapter;
     private SwipeRefreshLayout mLayout;
     private TopicListLoader mLoader;
+    private FloatTopicPresenter mFloatTopic;
 
     /**
      * Use this factory method to create a new instance of
@@ -95,7 +100,7 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
 
-        mAdapter = new TopicAdapter(mListener);
+        mAdapter = new TopicAdapter(this);
         recyclerView.setAdapter(mAdapter);
 
         mLayout.setRefreshing(true);
@@ -144,24 +149,10 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
     }
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-        mListener = (OnTopicActionListener) context;
-    }
-
-    @Override
     public void onStop() {
         super.onStop();
 
         AppCtx.getEventBus().unregister(this);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-
-        mListener = null;
     }
 
     @Override
@@ -225,5 +216,39 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTopicOpen(View view, Topic topic) {
+        final Intent intent = new Intent(getContext(), TopicActivity.class);
+        intent.putExtra(TopicActivity.KEY_TOPIC, topic);
+
+        startActivity(intent);
+
+        topic.setHasRead();
+    }
+
+    @Override
+    public void onTopicStartPreview(View view, Topic topic) {
+        TrackerUtils.onTopicForceTouch();
+
+        final Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(20);
+
+        getFloatTopic().fillData(topic);
+        getFloatTopic().setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onTopicStopPreview(View view, Topic topic) {
+        getFloatTopic().setVisibility(View.INVISIBLE);
+    }
+
+    private FloatTopicPresenter getFloatTopic() {
+        if (mFloatTopic == null) {
+            mFloatTopic = new FloatTopicPresenter(getContext());
+        }
+
+        return mFloatTopic;
     }
 }
