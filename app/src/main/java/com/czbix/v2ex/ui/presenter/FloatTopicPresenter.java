@@ -1,5 +1,8 @@
 package com.czbix.v2ex.ui.presenter;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -7,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -57,20 +62,31 @@ public class FloatTopicPresenter {
         RequestHelper.getTopicByApi(topic)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(t -> {
-                    mTopicView.fillData(t);
+                .subscribe(mTopicView::fillData, e -> {
                     mProgress.setVisibility(View.INVISIBLE);
-                }, e -> {
                     if (e instanceof ConnectionException) {
                         Toast.makeText(mRootView.getContext(), R.string.toast_connection_exception,
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         throw Exceptions.propagate(e);
                     }
-                });
+                }, () -> mProgress.setVisibility(View.INVISIBLE));
     }
 
     public void setVisibility(int visibility) {
-        mRootView.setVisibility(visibility);
+        if (visibility == View.VISIBLE) {
+            mTopicView.setScaleY(0.01f);
+            mTopicView.animate().scaleY(1);
+
+            mRootView.setVisibility(View.VISIBLE);
+        } else {
+            mTopicView.animate().scaleY(0.01f).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mRootView.setVisibility(View.INVISIBLE);
+                    mTopicView.animate().setListener(null);
+                }
+            });
+        }
     }
 }

@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.annotation.IdRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -519,6 +520,9 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
     @Override
     public void onTopicStartPreview(View view, Topic topic) {
+        final Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        vibrator.vibrate(20);
+
         getFloatTopic().fillData(topic);
         getFloatTopic().setVisibility(View.VISIBLE);
     }

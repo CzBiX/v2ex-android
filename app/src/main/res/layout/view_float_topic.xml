@@ -1,28 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:background="@color/transparent_background"
-              android:orientation="vertical"
-              android:weightSum="4"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="@color/transparent_background"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <com.czbix.v2ex.ui.widget.TopicView
+        android:background="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:id="@+id/topic" />
 
     <ProgressBar
         android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:id="@+id/progress"/>
 
-    <com.czbix.v2ex.ui.widget.TopicView
-        android:id="@+id/topic"
-        android:background="@android:color/white"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        />
-
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
-</LinearLayout>
+</RelativeLayout>
