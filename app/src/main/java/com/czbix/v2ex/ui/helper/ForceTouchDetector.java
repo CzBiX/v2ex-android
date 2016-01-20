@@ -24,8 +24,9 @@ public class ForceTouchDetector {
 
         final int action = e.getActionMasked();
         final float pressure = e.getPressure();
+        LogUtils.d("Touch", "%d, %f", action, pressure);
 
-        if (action == MotionEvent.ACTION_UP) {
+        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
             if (mInForceTouch) {
                 onStop();
                 e.setAction(MotionEvent.ACTION_CANCEL);

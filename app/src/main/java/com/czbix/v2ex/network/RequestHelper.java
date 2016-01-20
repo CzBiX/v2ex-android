@@ -25,6 +25,7 @@ import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.model.Thankable;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
+import com.czbix.v2ex.model.json.TopicBean;
 import com.czbix.v2ex.network.interceptor.UserAgentInterceptor;
 import com.czbix.v2ex.parser.MyselfParser;
 import com.czbix.v2ex.parser.NotificationParser;
@@ -41,6 +42,7 @@ import com.google.common.net.HttpHeaders;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
@@ -58,11 +60,14 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
+
 public class RequestHelper {
     public static final String BASE_URL = "https://www.v2ex.com";
 
     private static final String TAG = RequestHelper.class.getSimpleName();
     private static final String API_GET_ALL_NODES = BASE_URL + "/api/nodes/all.json";
+    private static final String API_GET_TOPIC = BASE_URL + "/api/topics/show.json";
     private static final String URL_SIGN_IN = BASE_URL + "/signin";
     private static final String URL_MISSION_DAILY = BASE_URL + "/mission/daily";
     private static final String URL_ONCE_CODE = URL_SIGN_IN;
@@ -166,6 +171,32 @@ public class RequestHelper {
 
         return result;
     }
+
+    public static Observable<Topic> getTopicByApi(Topic topic) {
+        LogUtils.v(TAG, "request topic by api, id: %d, title: %s", topic.getId(), topic.getTitle());
+
+        return Observable.create(subscriber -> {
+            final Request request = new Request.Builder()
+                    .url(API_GET_TOPIC + "?id=" + topic.getId())
+                    .build();
+            try {
+                final Response response = sendRequest(request);
+                final List<TopicBean> list = GsonFactory.getInstance().fromJson(response.body().charStream(),
+                        new TypeToken<List<TopicBean>>() {
+                        }.getType());
+
+                final Topic result = list.get(0).toModel();
+                subscriber.onNext(result);
+                subscriber.onCompleted();
+            } catch (Exception e) {
+                if (e instanceof IOException) {
+                    e = new ConnectionException(e);
+                }
+                subscriber.onError(e);
+            }
+        });
+    }
+
     private static void processUserState(Document doc) {
         processUserState(doc, false);
     }
