@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.ui.MainActivity;
@@ -121,7 +122,10 @@ public class NodeListFragment extends Fragment implements LoaderCallbacks<Loader
 
     @Override
     public void onLoadFinished(Loader<LoaderResult<List<Node>>> loader, LoaderResult<List<Node>> result) {
-        Preconditions.checkState(!result.hasException());
+        if (result.hasException()) {
+            throw new FatalException(result.mException);
+        }
+
         mAdapter.setDataSource(result.mResult);
         mAdapter.filterText(mQueryText);
     }
