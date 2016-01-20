@@ -58,7 +58,11 @@ public class TrackerUtils {
         }
         final Map<String, String> hit = builder.build();
         mTracker.send(hit);
+    }
 
+    public static void onTopicForceTouch() {
+        final Map<String, String> hit = new HitBuilders.EventBuilder(Category.TOPIC, Action.FORCE_TOUCH).build();
+        mTracker.send(hit);
     }
 
     private static class Category {
@@ -72,6 +76,7 @@ public class TrackerUtils {
         public static final String REPLY = "Reply";
         public static final String SEARCH = "Search";
         public static final String PARSE_TOPIC = "Parse Topic";
+        public static final String FORCE_TOUCH = "Force Touch";
     }
 
     private static class Label {

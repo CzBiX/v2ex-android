@@ -520,6 +520,8 @@ public class MainActivity extends BaseActivity implements OnTopicActionListener,
 
     @Override
     public void onTopicStartPreview(View view, Topic topic) {
+        TrackerUtils.onTopicForceTouch();
+
         final Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         vibrator.vibrate(20);
 
