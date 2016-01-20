@@ -102,5 +102,5 @@
     <string name="title_fragment_topics">主题</string>
     <string name="toast_jump_to_last_read_pos">跳到最后阅读位置</string>
     <string name="pref_summary_force_touch">重压来快速预览主题</string>
-    <string name="pref_title_force_touch" translatable="false">2.5D Touch（实验性)</string>
+    <string name="pref_title_force_touch">2.5D Touch（实验性）</string>
 </resources>
