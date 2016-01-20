@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.common.PrefStore;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.fragment.NodeListFragment;
 import com.czbix.v2ex.ui.helper.ForceTouchDetector;
@@ -56,11 +57,15 @@ public class TopicView extends FrameLayout implements View.OnClickListener, View
         mListener = listener;
 
         setOnClickListener(this);
-        setOnTouchListener(this);
-        mTouchDetector = new ForceTouchDetector(
-                () -> mListener.onTopicStartPreview(TopicView.this, mTopic),
-                () -> mListener.onTopicStopPreview(TopicView.this, mTopic)
-        );
+
+        if (PrefStore.getInstance().isForceTouchEnabled()) {
+            mTouchDetector = new ForceTouchDetector(
+                    () -> mListener.onTopicStartPreview(TopicView.this, mTopic),
+                    () -> mListener.onTopicStopPreview(TopicView.this, mTopic)
+            );
+
+            setOnTouchListener(this);
+        }
     }
 
     public void setContentListener(HtmlMovementMethod.OnHtmlActionListener listener) {
