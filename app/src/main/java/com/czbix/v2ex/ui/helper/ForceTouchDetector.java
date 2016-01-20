@@ -3,6 +3,8 @@ package com.czbix.v2ex.ui.helper;
 import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 
+import com.czbix.v2ex.util.LogUtils;
+
 public class ForceTouchDetector {
     private boolean mInForceTouch;
     private final Runnable mOnStartListener;
@@ -20,26 +22,40 @@ public class ForceTouchDetector {
             return false;
         }
 
-        if (e.getPressure() < 0.8) {
+        final int action = e.getActionMasked();
+        final float pressure = e.getPressure();
+
+        if (action == MotionEvent.ACTION_UP) {
             if (mInForceTouch) {
                 onStop();
-                return true;
+                e.setAction(MotionEvent.ACTION_CANCEL);
+                return false;
             }
-            // handle heavy pressure only
-            return false;
         }
 
-        if (e.getActionMasked() == MotionEvent.ACTION_MOVE) {
-            onStart();
-        } else {
+        if (pressure < 0.8) {
             if (mInForceTouch) {
-                onStop();
+                if (pressure < 0.7) {
+                    onStop();
+                    e.setAction(MotionEvent.ACTION_CANCEL);
+                    return false;
+                }
             } else {
                 return false;
             }
         }
 
-        return true;
+        if (action == MotionEvent.ACTION_MOVE) {
+            onStart();
+            return true;
+        } else {
+            if (mInForceTouch) {
+                onStop();
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     private void onStart() {
