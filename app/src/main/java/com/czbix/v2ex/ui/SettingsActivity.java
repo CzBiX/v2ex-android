@@ -60,6 +60,7 @@ public class SettingsActivity extends BaseActivity {
         private static final String PREF_KEY_LOGIN = "login";
         private static final String PREF_KEY_DEBUG = "debug";
         private static final String PREF_KEY_LOGOUT = "logout";
+        private static final String PREF_KEY_ENABLE_FORCE_TOUCH = "enable_force_touch";
 
         private static final int REQ_LOGIN = 0;
         private SwitchPreference mNotificationsPref;
@@ -131,6 +132,7 @@ public class SettingsActivity extends BaseActivity {
                 debugPref.setOnPreferenceClickListener(this);
             } else {
                 general.removePreference(debugPref);
+                general.removePreference(findPreference(PREF_KEY_ENABLE_FORCE_TOUCH));
             }
 
             if (UserState.getInstance().isLoggedIn()) {
