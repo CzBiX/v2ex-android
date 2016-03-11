@@ -178,6 +178,9 @@ public class Node extends Page implements Comparable<Node>,ExArrayAdapter.Filter
 
         public Node createNode() {
             try {
+                if (mTitle == null) {
+                    return new Node(null, mId, mAvatar, mName, mTitleAlternative, mTopics);
+                }
                 return CACHE.get(mName, () -> new Node(mTitle, mId, mAvatar, mName, mTitleAlternative, mTopics));
             } catch (ExecutionException e) {
                 throw new FatalException(e);
