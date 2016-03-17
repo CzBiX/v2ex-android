@@ -494,7 +494,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             try {
                 RequestHelper.reply(mTopic, content.toString(), mOnceToken);
             } catch (ConnectionException | RemoteException e) {
-                throw new FatalException(e);
+                ExecutorUtils.runInUiThread(() -> doActionException(e));
+                return;
             }
 
             AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_REPLY));
@@ -509,6 +510,11 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         });
 
         mReplyForm.setVisibility(false);
+    }
+
+    private void doActionException(Exception e) {
+        ExceptionUtils.handleExceptionNoCatch(this, e);
+        getActivity().finish();
     }
 
     @Subscribe
@@ -559,7 +565,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             try {
                 RequestHelper.ignore(obj, mOnceToken);
             } catch (ConnectionException | RemoteException e) {
-                throw new FatalException(e);
+                ExecutorUtils.runInUiThread(() -> doActionException(e));
+                return;
             }
 
             AppCtx.getEventBus().post(new TopicEvent(isTopic ? TopicEvent.TYPE_IGNORE_TOPIC
@@ -591,7 +598,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             try {
                 RequestHelper.thank(obj, mCsrfToken);
             } catch (ConnectionException | RemoteException e) {
-                throw new FatalException(e);
+                ExecutorUtils.runInUiThread(() -> doActionException(e));
+                return;
             }
 
             AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_THANK));
