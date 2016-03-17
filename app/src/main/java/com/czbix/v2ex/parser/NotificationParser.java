@@ -25,7 +25,7 @@ public class NotificationParser {
     public static List<Notification> parseDoc(Document doc) {
         Element box = new JsoupObjects(doc).body().child("#Wrapper").child(".content")
                 .child("#Main").child(".box").getOne();
-        JsoupObjects list = new JsoupObjects(box).child(".cell").child("table").child("tbody").child("tr");
+        JsoupObjects list = new JsoupObjects(box).child(".cell[id]").child("table").child("tbody").child("tr");
 
         return Lists.newArrayList(Iterables.transform(list, NotificationParser::parseNotification));
     }
