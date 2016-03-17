@@ -718,7 +718,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             return;
         }
 
-        if ((totalItemCount - lastVisibleItem) > 10) {
+        if ((totalItemCount - lastVisibleItem) > 20) {
             return;
         }
 
