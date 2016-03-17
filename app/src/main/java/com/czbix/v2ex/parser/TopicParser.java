@@ -56,11 +56,11 @@ public class TopicParser extends Parser {
 
     private static int[] getMaxPage(Element main) {
         final Optional<Element> optional = new JsoupObjects(main).child(".box:nth-child(4):not(.transparent)")
-                .child(".inner:last-child:not([id])").getOptional();
+                .child(".cell:last-child:not([id])").dfs(".page_input").getOptional();
         if (optional.isPresent()) {
             final Element element = optional.get();
-            final int maxPage = element.children().size();
-            final int curPage = Integer.parseInt(JsoupObjects.child(element, ".page_current").text());
+            final int maxPage = Integer.parseInt(element.attr("max"));
+            final int curPage = Integer.parseInt(element.attr("value"));
 
             return new int[]{curPage, maxPage};
         } else {
@@ -148,7 +148,7 @@ public class TopicParser extends Parser {
     }
 
     private static List<Comment> parseComments(Element main) {
-        final JsoupObjects elements = new JsoupObjects(main).child(":nth-child(4)").child("div").child("table").child("tbody").child("tr");
+        final JsoupObjects elements = new JsoupObjects(main).child(":nth-child(4)").child(".cell[id]").child("table").child("tbody").child("tr");
         return Lists.newArrayList(Iterables.transform(elements, (ele) -> {
             final Avatar.Builder avatarBuilder = new Avatar.Builder();
             parseAvatar(avatarBuilder, ele);
