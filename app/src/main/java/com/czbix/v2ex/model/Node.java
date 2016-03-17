@@ -98,9 +98,7 @@ public class Node extends Page implements Comparable<Node>,ExArrayAdapter.Filter
 
     public static String getNameFromUrl(String url) {
         final Matcher matcher = PATTERN.matcher(url);
-        if (!matcher.find()) {
-            throw new FatalException("match name for node failed: " + url);
-        }
+        Preconditions.checkState(matcher.find(), "match name for node failed: " + url);
         return matcher.group(1);
     }
 
