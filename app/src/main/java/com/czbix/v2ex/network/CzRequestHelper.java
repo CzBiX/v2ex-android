@@ -11,6 +11,8 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import static com.czbix.v2ex.network.RequestHelper.newRequest;
+
 public class CzRequestHelper {
     private static final String BASE_URL = BuildConfig.DEBUG ? "http://192.168.1.103:8000" :"https://v2ex.czbix.com";
 
@@ -29,7 +31,7 @@ public class CzRequestHelper {
     public static void registerUser(String username) throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "register user, username: %s", username);
 
-        final Request request = new Request.Builder().url(String.format(API_USER, username))
+        final Request request = newRequest().url(String.format(API_USER, username))
                 .put(RequestBody.create(null, new byte[0])).build();
         final Response response = RequestHelper.sendRequest(request);
 
@@ -45,7 +47,7 @@ public class CzRequestHelper {
         final RequestBody body = new FormEncodingBuilder()
                 .add("action", "add_gcm_token")
                 .add("token", token).build();
-        final Request request = new Request.Builder().url(String.format(API_SETTINGS, username))
+        final Request request = newRequest().url(String.format(API_SETTINGS, username))
                 .post(body).build();
 
         RequestHelper.sendRequest(request);
@@ -57,7 +59,7 @@ public class CzRequestHelper {
         final RequestBody body = new FormEncodingBuilder()
                 .add("action", "del_gcm_token")
                 .add("token", token).build();
-        final Request request = new Request.Builder().url(String.format(API_SETTINGS, username))
+        final Request request = newRequest().url(String.format(API_SETTINGS, username))
                 .post(body).build();
 
         RequestHelper.sendRequest(request);
@@ -69,7 +71,7 @@ public class CzRequestHelper {
         final RequestBody body = new FormEncodingBuilder()
                 .add("action", "set_ntf_token")
                 .add("token", token).build();
-        final Request request = new Request.Builder().url(String.format(API_SETTINGS, username))
+        final Request request = newRequest().url(String.format(API_SETTINGS, username))
                 .post(body).build();
 
         RequestHelper.sendRequest(request);

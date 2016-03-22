@@ -26,7 +26,6 @@ import com.czbix.v2ex.model.Thankable;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.model.json.TopicBean;
-import com.czbix.v2ex.network.interceptor.UserAgentInterceptor;
 import com.czbix.v2ex.parser.MyselfParser;
 import com.czbix.v2ex.parser.NotificationParser;
 import com.czbix.v2ex.parser.Parser;
@@ -42,7 +41,6 @@ import com.google.common.net.HttpHeaders;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Cache;
 import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
@@ -64,6 +62,8 @@ import rx.Observable;
 
 public class RequestHelper {
     public static final String BASE_URL = "https://www.v2ex.com";
+    private static final String USER_AGENT = "V2EX+/" + BuildConfig.VERSION_NAME;
+    private static final String USER_AGENT_ANDROID = USER_AGENT + " (Android)";
 
     private static final String TAG = RequestHelper.class.getSimpleName();
     private static final String API_GET_ALL_NODES = BASE_URL + "/api/nodes/all.json";
@@ -88,7 +88,6 @@ public class RequestHelper {
         CLIENT.setConnectTimeout(10, TimeUnit.SECONDS);
         CLIENT.setWriteTimeout(10, TimeUnit.SECONDS);
         CLIENT.setReadTimeout(30, TimeUnit.SECONDS);
-        CLIENT.networkInterceptors().add(new UserAgentInterceptor());
         CLIENT.setFollowRedirects(false);
 
         mCookies = new V2CookieStore(AppCtx.getInstance());
@@ -102,7 +101,14 @@ public class RequestHelper {
         return new Cache(cacheDir, cacheSize);
     }
 
-    public static OkHttpClient getClient() {
+    static Request.Builder newRequest() {
+        Request.Builder builder = new Request.Builder();
+        builder.header(HttpHeaders.USER_AGENT, USER_AGENT);
+
+        return builder;
+    }
+
+    static OkHttpClient getClient() {
         return CLIENT;
     }
 
@@ -115,7 +121,7 @@ public class RequestHelper {
             Log.v(TAG, "request latest topic for page: " + page.getTitle());
         }
 
-        final Request request = new Request.Builder()
+        final Request request = newRequest()
                 .url(page.getUrl())
                 .build();
 
@@ -146,7 +152,7 @@ public class RequestHelper {
 
         LogUtils.v(TAG, "request topic with comments, id: %d, title: %s", topic.getId(), topic.getTitle());
 
-        final Request request = new Request.Builder()
+        final Request request = newRequest()
                 .url(topic.getUrl() + "?p=" + page)
                 .build();
         final Response response = sendRequest(request);
@@ -176,7 +182,7 @@ public class RequestHelper {
         LogUtils.v(TAG, "request topic by api, id: %d, title: %s", topic.getId(), topic.getTitle());
 
         return Observable.create(subscriber -> {
-            final Request request = new Request.Builder()
+            final Request request = newRequest()
                     .url(API_GET_TOPIC + "?id=" + topic.getId())
                     .build();
             try {
@@ -217,7 +223,7 @@ public class RequestHelper {
             Log.v(TAG, "request all nodes");
         }
 
-        final Request request = new Request.Builder().url(API_GET_ALL_NODES).build();
+        final Request request = newRequest().url(API_GET_ALL_NODES).build();
         final Response response = sendRequest(request);
 
         final String newEtag = response.header(HttpHeaders.ETAG);
@@ -239,7 +245,7 @@ public class RequestHelper {
         Preconditions.checkState(UserState.getInstance().isLoggedIn(), "guest can't check notifications");
         LogUtils.v(TAG, "get favorite nodes");
 
-        final Request request = new Request.Builder().url(URL_FAVORITE_NODES).build();
+        final Request request = newRequest().url(URL_FAVORITE_NODES).build();
         final Response response = sendRequest(request);
 
         try {
@@ -256,7 +262,7 @@ public class RequestHelper {
         Preconditions.checkState(UserState.getInstance().isLoggedIn(), "guest can't check notifications");
         LogUtils.v(TAG, "get unread num");
 
-        final Request request = new Request.Builder().url(URL_UNREAD_NOTIFICATIONS).build();
+        final Request request = newRequest().url(URL_UNREAD_NOTIFICATIONS).build();
         final Response response = sendRequest(request);
 
         try {
@@ -273,7 +279,7 @@ public class RequestHelper {
         Preconditions.checkState(UserState.getInstance().isLoggedIn(), "guest can't check notifications");
         LogUtils.v(TAG, "get notifications");
 
-        final Request request = new Request.Builder().url(URL_NOTIFICATIONS).build();
+        final Request request = newRequest().url(URL_NOTIFICATIONS).build();
         final Response response = sendRequest(request);
 
         try {
@@ -296,7 +302,8 @@ public class RequestHelper {
                 .add("content", content)
                 .build();
 
-        final Request request = new Request.Builder().url(topic.getUrl())
+        final Request request = newRequest().url(topic.getUrl())
+                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
                 .post(requestBody).build();
         final Response response = sendRequest(request, false);
 
@@ -305,7 +312,7 @@ public class RequestHelper {
     }
 
     public static void ignore(Ignorable obj, String onceToken) throws ConnectionException, RemoteException {
-        final Request.Builder builder = new Request.Builder().url(obj.getIgnoreUrl() + "?once=" + onceToken);
+        final Request.Builder builder = newRequest().url(obj.getIgnoreUrl() + "?once=" + onceToken);
         final boolean isComment = obj instanceof Comment;
         if (isComment) {
             builder.post(RequestBody.create(null, new byte[0]));
@@ -317,7 +324,7 @@ public class RequestHelper {
 
     public static void favor(Favable obj, boolean isFavor, String csrfToken) throws ConnectionException, RemoteException {
         final String url = isFavor ? obj.getFavUrl() : obj.getUnFavUrl();
-        final Request request = new Request.Builder().url(url + "?t=" + csrfToken)
+        final Request request = newRequest().url(url + "?t=" + csrfToken)
                 .build();
 
         final Response response = sendRequest(request, false);
@@ -328,7 +335,7 @@ public class RequestHelper {
     }
 
     public static void thank(Thankable obj, String csrfToken) throws ConnectionException, RemoteException {
-        final Request request = new Request.Builder().url(obj.getThankUrl() + "?t=" + csrfToken)
+        final Request request = newRequest().url(obj.getThankUrl() + "?t=" + csrfToken)
                 .post(RequestBody.create(null, new byte[0])).build();
 
         sendRequest(request);
@@ -336,7 +343,7 @@ public class RequestHelper {
 
     public static void dailyMission() throws ConnectionException, RemoteException {
         final String onceCode = getOnceCode();
-        final Request request = new Request.Builder().url(String.format("%s/redeem?once=%s",
+        final Request request = newRequest().url(String.format("%s/redeem?once=%s",
                 URL_MISSION_DAILY, onceCode))
                 .header(HttpHeaders.REFERER, URL_MISSION_DAILY)
                 .build();
@@ -357,7 +364,7 @@ public class RequestHelper {
                 .add("content", content)
                 .build();
 
-        final Request request = new Request.Builder().url(String.format(URL_NEW_TOPIC, nodeName))
+        final Request request = newRequest().url(String.format(URL_NEW_TOPIC, nodeName))
                 .post(requestBody).build();
         final Response response = sendRequest(request);
 
@@ -377,7 +384,7 @@ public class RequestHelper {
     }
 
     public static boolean hasDailyAward() throws ConnectionException, RemoteException {
-        final Request request = new Request.Builder().url(URL_MISSION_DAILY).build();
+        final Request request = newRequest().url(URL_MISSION_DAILY).build();
 
         final Response response = sendRequest(request);
 
@@ -400,7 +407,7 @@ public class RequestHelper {
                 .add("p", password)
                 .add("next", nextUrl)
                 .build();
-        Request request = new Request.Builder().url(URL_SIGN_IN)
+        Request request = newRequest().url(URL_SIGN_IN)
                 .header(HttpHeaders.REFERER, URL_SIGN_IN)
                 .post(requestBody).build();
         Response response = sendRequest(request, false);
@@ -416,7 +423,7 @@ public class RequestHelper {
         }
 
         try {
-            request = new Request.Builder().url(new URL(request.url(), location)).build();
+            request = newRequest().url(new URL(request.url(), location)).build();
         } catch (MalformedURLException e) {
             throw new FatalException(e);
         }
@@ -434,7 +441,7 @@ public class RequestHelper {
     public static String getOnceCode() throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "get once code");
 
-        final Request request = new Request.Builder().url(URL_ONCE_CODE).build();
+        final Request request = newRequest().url(URL_ONCE_CODE).build();
         final Response response = sendRequest(request);
 
         try {
@@ -448,7 +455,7 @@ public class RequestHelper {
     public static String getNotificationsToken() throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "get notifications token");
 
-        final Request request = new Request.Builder().url(URL_NOTIFICATIONS).build();
+        final Request request = newRequest().url(URL_NOTIFICATIONS).build();
         final Response response = sendRequest(request);
 
         try {
