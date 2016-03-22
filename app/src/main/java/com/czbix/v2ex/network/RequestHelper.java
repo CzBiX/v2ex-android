@@ -1,5 +1,6 @@
 package com.czbix.v2ex.network;
 
+import android.os.Build;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -63,7 +64,7 @@ import rx.Observable;
 public class RequestHelper {
     public static final String BASE_URL = "https://www.v2ex.com";
     private static final String USER_AGENT = "V2EX+/" + BuildConfig.VERSION_NAME;
-    private static final String USER_AGENT_ANDROID = USER_AGENT + " (Android)";
+    private static String USER_AGENT_ANDROID = String.format("%s (Android %s)", USER_AGENT, Build.VERSION.RELEASE);
 
     private static final String TAG = RequestHelper.class.getSimpleName();
     private static final String API_GET_ALL_NODES = BASE_URL + "/api/nodes/all.json";
