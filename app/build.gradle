@@ -1,4 +1,5 @@
 buildscript {
+    ext.kotlin_version = '1.0.1'
     repositories {
         maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
@@ -7,6 +8,7 @@ buildscript {
     dependencies {
         classpath 'io.fabric.tools:gradle:1.20.1'
         classpath 'me.tatarka:gradle-retrolambda:3.2.4'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
@@ -16,6 +18,7 @@ repositories {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 apply plugin: 'me.tatarka.retrolambda'
 
@@ -29,7 +32,7 @@ android {
         versionCode 55
         versionName "1.19.4"
 
-        resValue "bool", "isDebuggable", "false"
+        resValue 'bool', 'isDebuggable', 'false'
     }
     packagingOptions {
         exclude '.readme'
@@ -43,7 +46,7 @@ android {
         debug {
             applicationIdSuffix '.debug'
             versionNameSuffix '.debug'
-            resValue "bool", "isDebuggable", "true"
+            resValue 'bool', 'isDebuggable', 'true'
             ext.enableCrashlytics = false
         }
     }
@@ -53,6 +56,9 @@ android {
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.6
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
 }
 
@@ -72,7 +78,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
         transitive = true;
     }
-    compile('com.android.support:customtabs:23.1.1')
+    compile 'com.android.support:customtabs:23.1.1'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     compile 'io.reactivex:rxandroid:1.1.0'
     // Because RxAndroid releases are few and far between, explicitly depend on RxJava's latest

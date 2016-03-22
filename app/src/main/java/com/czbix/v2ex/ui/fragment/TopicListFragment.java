@@ -53,6 +53,7 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
     private SwipeRefreshLayout mLayout;
     private TopicListLoader mLoader;
     private FloatTopicPresenter mFloatTopic;
+    private RecyclerView mRecyclerView;
 
     /**
      * Use this factory method to create a new instance of
@@ -93,15 +94,15 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
         // Inflate the layout for this fragment
         mLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_topic_list,
                 container, false);
-        RecyclerView recyclerView = ((RecyclerView) mLayout.findViewById(R.id.recycle_view));
+        mRecyclerView = ((RecyclerView) mLayout.findViewById(R.id.recycle_view));
 
         mLayout.setOnRefreshListener(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mLayout.getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
 
         mAdapter = new TopicAdapter(this);
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
 
         mLayout.setRefreshing(true);
         return mLayout;
@@ -187,6 +188,8 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
             return;
         }
         loader.forceLoad();
+
+        mRecyclerView.smoothScrollToPosition(0);
     }
 
     @Override
