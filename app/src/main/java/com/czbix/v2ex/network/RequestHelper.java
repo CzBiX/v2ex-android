@@ -30,6 +30,7 @@ import com.czbix.v2ex.model.json.TopicBean;
 import com.czbix.v2ex.parser.MyselfParser;
 import com.czbix.v2ex.parser.NotificationParser;
 import com.czbix.v2ex.parser.Parser;
+import com.czbix.v2ex.parser.Parser.PageType;
 import com.czbix.v2ex.parser.TopicListParser;
 import com.czbix.v2ex.parser.TopicParser;
 import com.czbix.v2ex.util.IoUtils;
@@ -135,7 +136,7 @@ public class RequestHelper {
         final List<Topic> topics;
         try {
             doc = Parser.toDoc(response.body().string());
-            processUserState(doc, page instanceof Tab);
+            processUserState(doc, page instanceof Tab ? PageType.Tab : PageType.Node);
             topics = TopicListParser.parseDoc(doc, page);
         } catch (IOException e) {
             throw new ConnectionException(e);
@@ -167,8 +168,7 @@ public class RequestHelper {
 
         try {
             doc = Parser.toDoc(response.body().string());
-            // TODO: handle user state
-            processUserState(doc);
+            processUserState(doc, PageType.Topic);
 
             final Stopwatch stopwatch = Stopwatch.createStarted();
             result = TopicParser.parseDoc(doc, topic);
@@ -206,17 +206,13 @@ public class RequestHelper {
         });
     }
 
-    private static void processUserState(Document doc) {
-        processUserState(doc, false);
-    }
-
-    private static void processUserState(Document doc, boolean isTab) {
+    private static void processUserState(Document doc, PageType pageType) {
         if (!UserState.getInstance().isLoggedIn()) {
             return;
         }
 
-        final MyselfParser.MySelfInfo info = MyselfParser.parseDoc(doc, isTab);
-        UserState.getInstance().handleInfo(info, isTab);
+        final MyselfParser.MySelfInfo info = MyselfParser.parseDoc(doc, pageType);
+        UserState.getInstance().handleInfo(info, pageType);
     }
 
     public static List<Node> getAllNodes(Etag etag) throws ConnectionException, RemoteException {

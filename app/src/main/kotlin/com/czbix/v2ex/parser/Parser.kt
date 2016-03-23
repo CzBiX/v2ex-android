@@ -36,4 +36,13 @@ abstract class Parser {
             return Node.Builder().setTitle(title).setName(name).createNode()
         }
     }
+
+    enum class PageType {
+        Tab,
+        Node,
+        /**
+         * Topic page in mobile style
+         */
+        Topic,
+    }
 }

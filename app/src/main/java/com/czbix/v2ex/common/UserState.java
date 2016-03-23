@@ -11,6 +11,8 @@ import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.parser.MyselfParser;
+import com.czbix.v2ex.parser.Parser;
+import com.czbix.v2ex.parser.Parser.PageType;
 import com.czbix.v2ex.util.CrashlyticsUtils;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.UserUtils;
@@ -39,19 +41,23 @@ public class UserState {
         CrashlyticsUtils.setUserState(isLoggedIn());
     }
 
-    public void handleInfo(MyselfParser.MySelfInfo info, boolean isTab) {
+    public void handleInfo(MyselfParser.MySelfInfo info, PageType pageType) {
         if (info == null) {
             logout();
             return;
         }
 
-        final EventBus eventBus = AppCtx.getEventBus();
-        if (info.mUnread > 0) {
-            mHasUnread = true;
-            eventBus.post(new NewUnreadEvent(info.mUnread));
+        if (pageType == PageType.Topic) {
+            return;
         }
-        if (isTab && info.mHasAward != mHasAward) {
-            eventBus.post(new DailyAwardEvent(info.mHasAward));
+
+        final EventBus eventBus = AppCtx.getEventBus();
+        if (info.getUnread() > 0) {
+            mHasUnread = true;
+            eventBus.post(new NewUnreadEvent(info.getUnread()));
+        }
+        if (pageType == PageType.Tab && info.getHasAward() != mHasAward) {
+            eventBus.post(new DailyAwardEvent(info.getHasAward()));
         }
     }
 
