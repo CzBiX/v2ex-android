@@ -154,6 +154,7 @@ public class RequestHelper {
         LogUtils.v(TAG, "request topic with comments, id: %d, title: %s", topic.getId(), topic.getTitle());
 
         final Request request = newRequest()
+                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
                 .url(topic.getUrl() + "?p=" + page)
                 .build();
         final Response response = sendRequest(request);
@@ -166,6 +167,7 @@ public class RequestHelper {
 
         try {
             doc = Parser.toDoc(response.body().string());
+            // TODO: handle user state
             processUserState(doc);
 
             final Stopwatch stopwatch = Stopwatch.createStarted();

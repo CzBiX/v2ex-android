@@ -114,14 +114,6 @@ public class TopicListParser extends Parser {
         }
     }
 
-    static Node parseNode(Element nodeEle) {
-        final String title = nodeEle.text();
-        final String url = nodeEle.attr("href");
-        final String name = Node.getNameFromUrl(url);
-
-        return new Node.Builder().setTitle(title).setName(name).createNode();
-    }
-
     private static void parseReplyTime(Topic.Builder topicBuilder, TextNode textNode) {
         final String text = textNode.text();
         final Matcher matcher = PATTERN_REPLY_TIME.matcher(text);
