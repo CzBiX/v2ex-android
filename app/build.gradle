@@ -48,6 +48,7 @@ android {
             versionNameSuffix '.debug'
             resValue 'bool', 'isDebuggable', 'true'
             ext.enableCrashlytics = false
+            multiDexEnabled true
         }
     }
     lintOptions {
