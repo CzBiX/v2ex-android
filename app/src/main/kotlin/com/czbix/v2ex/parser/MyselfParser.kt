@@ -56,15 +56,15 @@ object MyselfParser : Parser() {
     }
 
     private fun hasAwardInTab(box: Element): Boolean {
-        val optional = JsoupObjects(box.parent()).child(".box").child(".inner").child(".fa-gift").optional
-        return optional.isPresent
+        val ele = JsoupObjects(box.parent()).child(".box").child(".inner").child(".fa-gift").firstOrNull()
+        return ele != null
     }
 
     @JvmStatic
     fun hasAward(html: String): Boolean {
         val doc = Parser.toDoc(html)
-        val optional = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Main").child(".box").child(".cell").child(".gray").child(".fa-ok-sign").optional
-        return !optional.isPresent
+        val ele = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Main").child(".box").child(".cell").child(".gray").child(".fa-ok-sign").firstOrNull()
+        return ele == null
     }
 
     @JvmStatic
