@@ -17,9 +17,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.PrefStore;
-import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.ui.util.Html;
 import com.czbix.v2ex.util.LogUtils;
+import com.czbix.v2ex.util.MiscUtils;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
 
@@ -35,11 +35,7 @@ public class AsyncImageGetter implements Html.ImageGetter {
 
     @Override
     public Drawable getDrawable(String source) {
-        if (source.startsWith("//")) {
-            source = "https:" + source;
-        } else if (source.startsWith("/")) {
-            source = RequestHelper.BASE_URL + source;
-        }
+        source = MiscUtils.formatUrl(source);
         LogUtils.v(TAG, "load image for text view: %s", source);
 
         boolean shouldLoadImage = PrefStore.getInstance().shouldLoadImage();

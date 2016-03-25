@@ -66,14 +66,14 @@ public class MiscUtils {
         return new Intent(Intent.ACTION_SENDTO, uri);
     }
 
-    public static Uri formatUri(String url) {
-        Uri uri = Uri.parse(url);
-
-        if (uri.isRelative()) {
-            uri = Uri.parse(RequestHelper.BASE_URL + url);
+    public static String formatUrl(String url) {
+        if (url.startsWith("//")) {
+            url = "https:" + url;
+        } else if (url.startsWith("/")) {
+            url = RequestHelper.BASE_URL + url;
         }
 
-        return uri;
+        return url;
     }
 
     public static void openUrl(Activity activity, String url) {
@@ -83,7 +83,7 @@ public class MiscUtils {
             return;
         }
 
-        final Uri uri = formatUri(url);
+        final Uri uri = Uri.parse(formatUrl(url));
         final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         final PackageManager packageManager = activity.getPackageManager();
         final List<ResolveInfo> resolveInfos = packageManager.queryIntentActivities(intent, 0);
