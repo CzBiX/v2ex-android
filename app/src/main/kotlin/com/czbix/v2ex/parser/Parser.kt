@@ -2,6 +2,8 @@ package com.czbix.v2ex.parser
 
 import com.czbix.v2ex.BuildConfig
 import com.czbix.v2ex.helper.JsoupObjects
+import com.czbix.v2ex.model.Avatar
+import com.czbix.v2ex.model.Member
 import com.czbix.v2ex.model.Node
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -34,6 +36,27 @@ abstract class Parser {
             val name = Node.getNameFromUrl(url)
 
             return Node.Builder().setTitle(title).setName(name).createNode()
+        }
+
+        @JvmStatic
+        protected fun parseMember(td: Element): Member {
+            val memberBuilder = Member.Builder()
+
+            var ele = td.child(0)
+            // get member url
+            check(ele.tagName() == "a")
+            val url = ele.attr("href")
+            memberBuilder.setUsername(Member.getNameFromUrl(url))
+
+            // get member avatar
+            ele = ele.child(0)
+            val avatarBuilder = Avatar.Builder()
+            check(ele.tagName() == "img")
+            avatarBuilder.setUrl(ele.attr("src"))
+
+            memberBuilder.setAvatar(avatarBuilder.createAvatar())
+
+            return memberBuilder.createMember()
         }
     }
 

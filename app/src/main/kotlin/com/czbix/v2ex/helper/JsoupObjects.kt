@@ -70,9 +70,9 @@ class JsoupObjects : Iterable<Element> {
         return this
     }
 
-    fun body(): JsoupObjects {
-        return bfs("body")
-    }
+    fun head(): JsoupObjects = bfs("head")
+
+    fun body(): JsoupObjects = bfs("body")
 
     /**
      * find elements by breadth-first-search

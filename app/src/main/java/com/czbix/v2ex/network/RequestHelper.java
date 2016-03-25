@@ -261,7 +261,9 @@ public class RequestHelper {
         Preconditions.checkState(UserState.getInstance().isLoggedIn(), "guest can't check notifications");
         LogUtils.v(TAG, "get unread num");
 
-        final Request request = newRequest().url(URL_UNREAD_NOTIFICATIONS).build();
+        final Request request = newRequest()
+                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+                .url(URL_UNREAD_NOTIFICATIONS).build();
         final Response response = sendRequest(request);
 
         try {
@@ -278,7 +280,9 @@ public class RequestHelper {
         Preconditions.checkState(UserState.getInstance().isLoggedIn(), "guest can't check notifications");
         LogUtils.v(TAG, "get notifications");
 
-        final Request request = newRequest().url(URL_NOTIFICATIONS).build();
+        final Request request = newRequest().url(URL_NOTIFICATIONS)
+                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+                .build();
         final Response response = sendRequest(request);
 
         try {
