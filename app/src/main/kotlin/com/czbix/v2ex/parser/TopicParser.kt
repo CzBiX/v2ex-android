@@ -119,7 +119,7 @@ object TopicParser : Parser() {
     }
 
     private fun parseComments(main: Element): List<Comment> {
-        val elements = JsoupObjects(main).child(".box:nth-child(3)").child(".cell[id]").child("table").child("tbody").child("tr")
+        val elements = JsoupObjects(main).child(".box:nth-child(3)").child("[id^=r_]").child("table").child("tbody").child("tr")
         return elements.map { ele ->
             val avatarBuilder = Avatar.Builder()
             parseAvatar(avatarBuilder, ele)
