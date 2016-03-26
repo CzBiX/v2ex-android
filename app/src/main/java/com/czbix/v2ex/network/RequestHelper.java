@@ -72,7 +72,7 @@ public class RequestHelper {
     private static final String API_GET_TOPIC = BASE_URL + "/api/topics/show.json";
     private static final String URL_SIGN_IN = BASE_URL + "/signin";
     private static final String URL_MISSION_DAILY = BASE_URL + "/mission/daily";
-    private static final String URL_ONCE_CODE = URL_SIGN_IN;
+    private static final String URL_ONCE_TOKEN = URL_SIGN_IN;
     private static final String URL_NOTIFICATIONS = BASE_URL + "/notifications";
     private static final String URL_FAVORITE_NODES = BASE_URL + "/my/nodes";
     private static final String URL_UNREAD_NOTIFICATIONS = BASE_URL + "/mission";
@@ -299,7 +299,7 @@ public class RequestHelper {
         LogUtils.v(TAG, "reply to topic: %s", topic.getTitle());
 
         if (Strings.isNullOrEmpty(once)) {
-            once = getOnceCode();
+            once = getOnceToken();
         }
         final RequestBody requestBody = new FormEncodingBuilder().add("once", once)
                 .add("content", content)
@@ -345,7 +345,7 @@ public class RequestHelper {
     }
 
     public static void dailyMission() throws ConnectionException, RemoteException {
-        final String onceCode = getOnceCode();
+        final String onceCode = getOnceToken();
         final Request request = newRequest().url(String.format("%s/redeem?once=%s",
                 URL_MISSION_DAILY, onceCode))
                 .header(HttpHeaders.REFERER, URL_MISSION_DAILY)
@@ -361,7 +361,7 @@ public class RequestHelper {
     public static int newTopic(String nodeName, String title, String content) throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "new topic in node: %s, title: %s", nodeName, title);
 
-        final String once = getOnceCode();
+        final String once = getOnceToken();
         final RequestBody requestBody = new FormEncodingBuilder().add("once", once)
                 .add("title", title)
                 .add("content", content)
@@ -403,7 +403,7 @@ public class RequestHelper {
     public static LoginResult login(String account, String password) throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "login user: " + account);
 
-        final String onceCode = getOnceCode();
+        final String onceCode = getOnceToken();
         final String nextUrl = "/mission";
         final RequestBody requestBody = new FormEncodingBuilder().add("once", onceCode)
                 .add("u", account)
@@ -441,10 +441,12 @@ public class RequestHelper {
         }
     }
 
-    public static String getOnceCode() throws ConnectionException, RemoteException {
-        LogUtils.v(TAG, "get once code");
+    public static String getOnceToken() throws ConnectionException, RemoteException {
+        LogUtils.v(TAG, "get once token");
 
-        final Request request = newRequest().url(URL_ONCE_CODE).build();
+        final Request request = newRequest()
+                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+                .url(URL_ONCE_TOKEN).build();
         final Response response = sendRequest(request);
 
         try {
@@ -458,7 +460,8 @@ public class RequestHelper {
     public static String getNotificationsToken() throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "get notifications token");
 
-        final Request request = newRequest().url(URL_NOTIFICATIONS).build();
+        final Request request = newRequest()
+                .url(URL_NOTIFICATIONS).build();
         final Response response = sendRequest(request);
 
         try {

@@ -24,7 +24,8 @@ abstract class Parser {
         @JvmStatic
         fun parseOnceCode(html: String): String {
             val doc = toDoc(html)
-            val ele = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Main").child(".box").child(".cell").dfs("form").dfs("[name=once]").first()
+            val ele = JsoupObjects(doc).body().child("#Wrapper").child(".content").child(".box")
+                    .child(".cell").dfs("form").dfs("input[name=once]").first()
 
             return ele.`val`()
         }
