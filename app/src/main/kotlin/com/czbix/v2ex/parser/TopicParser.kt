@@ -29,19 +29,19 @@ object TopicParser : Parser() {
             null
         }
 
-        return TopicWithComments(topicBuilder.createTopic(), comments, pageNum[0],
-                pageNum[1], csrfToken, onceToken)
+        return TopicWithComments(topicBuilder.createTopic(), comments, pageNum.first,
+                pageNum.second, csrfToken, onceToken)
     }
 
-    private fun getMaxPage(parent: Element): IntArray {
+    private fun getMaxPage(parent: Element): Pair<Int, Int> {
         val ele = JsoupObjects(parent).child(".box:nth-child(3):not(.transparent)").child(".inner:last-child:not([id])").firstOrNull()
-        if (ele == null) {
-            return intArrayOf(1, 1)
+        return if (ele == null) {
+            1 to 1
         } else {
             val maxPage = ele.children().size
             val curPage = JsoupObjects.child(ele, ".page_current").text().toInt()
 
-            return intArrayOf(curPage, maxPage)
+            curPage to maxPage
         }
     }
 

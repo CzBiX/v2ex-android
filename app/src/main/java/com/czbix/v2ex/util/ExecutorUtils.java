@@ -65,6 +65,13 @@ public class ExecutorUtils {
     }
 
     /**
+     * @see ScheduledExecutorService#schedule(Runnable, long, TimeUnit)
+     */
+    public static ScheduledFuture<?> schedule(long delay, TimeUnit unit, Runnable command) {
+        return mScheduledPool.schedule(command, delay, unit);
+    }
+
+    /**
      * @see ScheduledExecutorService#schedule(Callable, long, TimeUnit)
      */
     public static <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
