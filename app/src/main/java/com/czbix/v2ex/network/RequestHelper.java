@@ -387,7 +387,9 @@ public class RequestHelper {
     }
 
     public static boolean hasDailyAward() throws ConnectionException, RemoteException {
-        final Request request = newRequest().url(URL_MISSION_DAILY).build();
+        final Request request = newRequest()
+                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+                .url(URL_MISSION_DAILY).build();
 
         final Response response = sendRequest(request);
 

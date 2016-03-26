@@ -23,18 +23,10 @@ class JsoupObjects : Iterable<Element> {
     /**
      * get one element and remove it.
      * @throws NoSuchElementException result is empty
-     * @see .getOptional
      */
     val one: Element
         @Throws(NoSuchElementException::class)
         get() = mResult.first()
-
-    /**
-     * get one element and remove it
-     * @see .getOne
-     */
-    val optional: Optional<Element>
-        get() = Optional.fromNullable(mResult.firstOrNull())
 
     private fun addOneQuery(evaluator: Evaluator, getElement: (Element) -> Element?) {
         mResult = mResult.mapNotNull { ele ->

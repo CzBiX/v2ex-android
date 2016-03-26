@@ -17,12 +17,12 @@ object MyselfParser : Parser() {
 
     @JvmStatic
     fun parseLoginResult(doc: Document): LoginResult {
-        val tr = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Rightbar").dfs("tr").one
+        val tr = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Rightbar").dfs("tr").first()
 
         val url = JsoupObjects(tr).dfs(".avatar").one.attr("src")
         val avatar = Avatar.Builder().setUrl(url).createAvatar()
 
-        val username = JsoupObjects(tr).child("td").child(".bigger").child("a").one.text()
+        val username = JsoupObjects(tr).child("td").child(".bigger").child("a").first().text()
         return LoginResult(username, avatar)
     }
 
@@ -35,7 +35,7 @@ object MyselfParser : Parser() {
             return parseTopic(doc)
         }
 
-        val box = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Rightbar").child(".box").one
+        val box = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Rightbar").child(".box").first()
 
         val children = box.children()
         if (children.size <= 2) {
@@ -62,14 +62,15 @@ object MyselfParser : Parser() {
 
     @JvmStatic
     fun hasAward(html: String): Boolean {
-        val doc = Parser.toDoc(html)
-        val ele = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Main").child(".box").child(".cell").child(".gray").child(".fa-ok-sign").firstOrNull()
+        val doc = toDoc(html)
+        val ele = JsoupObjects(doc).body().child("#Wrapper").child(".content").child(".box")
+                .child(".cell").child(".gray").child(".fa-ok-sign").firstOrNull()
         return ele == null
     }
 
     @JvmStatic
     fun getNotificationsNum(ele: Element): Int {
-        val text = JsoupObjects(ele).child(".inner").bfs("a[href=/notifications]").one.text()
+        val text = JsoupObjects(ele).child(".inner").bfs("a[href=/notifications]").first().text()
         val matcher = PATTERN_UNREAD_NUM.matcher(text)
         Preconditions.checkState(matcher.find())
         return Integer.parseInt(matcher.group())
