@@ -24,7 +24,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    buildToolsVersion "23.0.3"
     defaultConfig {
         applicationId "com.czbix.v2ex"
         minSdkVersion 15
@@ -48,6 +48,7 @@ android {
             versionNameSuffix '.debug'
             resValue 'bool', 'isDebuggable', 'true'
             ext.enableCrashlytics = false
+
             multiDexEnabled true
         }
     }
@@ -60,6 +61,13 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+    }
+    productFlavors {
+        prod {
+        }
+        dev {
+            minSdkVersion 21
+        }
     }
 }
 
