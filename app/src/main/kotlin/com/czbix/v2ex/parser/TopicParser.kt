@@ -92,11 +92,11 @@ object TopicParser : Parser() {
     internal fun parseTopicReplyTime(topicBuilder: Topic.Builder, textNode: TextNode) {
         val text = textNode.text()
         val matcher = PATTERN_TOPIC_REPLY_TIME.find(text)
-        if (matcher == null) {
-            throw FatalException("match reply time for topic failed: " + text)
+        checkNotNull(matcher) {
+            "match reply time for topic failed: $text"
         }
 
-        matcher.groupValues[1].let { topicBuilder.setReplyTime(it) }
+        matcher!!.groupValues[1].let { topicBuilder.setReplyTime(it) }
     }
 
     private fun parseTopicTitle(builder: Topic.Builder, header: Element) {
