@@ -28,7 +28,7 @@ object NotificationParser : Parser() {
         val title = JsoupObjects(doc).head().bfs("title").first()
 
         return REGEX_UNREAD.matchEntire(title.text())?.let {
-            it.groupValues.first().toInt()
+            it.groupValues[1].toInt()
         } ?: 0
     }
 
@@ -98,7 +98,7 @@ object NotificationParser : Parser() {
         val ele = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Main").child(".box:last-child").dfs(".sll").one
 
         REGEX_TOKEN.matchEntire(ele.`val`())!!.let {
-            return it.groupValues.first()
+            return it.groupValues[1]
         }
     }
 }
