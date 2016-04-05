@@ -13,7 +13,7 @@ import java.util.regex.Pattern
 
 object NotificationParser : Parser() {
     private val REGEX_TOKEN = "http://www.v2ex.com/n/(.+).xml".toRegex()
-    private val REGEX_UNREAD = "V2EX (\\d+)".toRegex()
+    private val REGEX_UNREAD = "V2EX \\((\\d+)\\)".toRegex()
 
     @JvmStatic
     fun parseDoc(doc: Document): List<Notification> {
