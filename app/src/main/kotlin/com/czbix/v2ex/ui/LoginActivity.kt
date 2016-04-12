@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.PrefStore
 import com.czbix.v2ex.common.UserState
@@ -25,10 +26,8 @@ import com.czbix.v2ex.helper.CustomTabsHelper
 import com.czbix.v2ex.model.LoginResult
 import com.czbix.v2ex.network.RequestHelper
 import com.czbix.v2ex.ui.fragment.GoogleLoginDialog
-import com.czbix.v2ex.util.LogUtils
-import com.czbix.v2ex.util.aforeach
-import com.czbix.v2ex.util.async
-import com.czbix.v2ex.util.await
+import com.czbix.v2ex.util.*
+import io.fabric.sdk.android.Fabric
 
 /**
  * A login screen that offers login via account/password.
@@ -102,6 +101,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
 
     private fun onGoogleSignInFailed(throwable: Throwable) {
         LogUtils.w(TAG, "google login failed", throwable)
+        Crashlytics.logException(throwable)
         Toast.makeText(this, R.string.toast_sign_in_failed, Toast.LENGTH_LONG).show()
         onGoogleSignInCancelled()
     }
