@@ -10,7 +10,6 @@ import com.czbix.v2ex.common.DeviceStatus;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.ExIllegalStateException;
-import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.common.exception.UnauthorizedException;
@@ -49,13 +48,12 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.CookieManager;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -77,6 +75,7 @@ public class RequestHelper {
     private static final String URL_FAVORITE_NODES = BASE_URL + "/my/nodes";
     private static final String URL_UNREAD_NOTIFICATIONS = BASE_URL + "/mission";
     private static final String URL_NEW_TOPIC = BASE_URL + "/new/%s";
+    private static final String URL_GOOGLE_SIGN_IN = BASE_URL + "/auth/google?once=%s";
 
     private static final int SERVER_ERROR_CODE = 500;
 
@@ -417,21 +416,22 @@ public class RequestHelper {
                 .post(requestBody).build();
         Response response = sendRequest(request, false);
 
+        return innerLogin(response, nextUrl);
+    }
+
+    @NotNull
+    private static LoginResult innerLogin(Response response, String nextUrl) throws ConnectionException, RemoteException {
         // v2ex will redirect if login success
         if (response.code() != HttpStatus.SC_MOVED_TEMPORARILY) {
-            return null;
+            throw new RequestException("code should not be " + response.code(), response);
         }
 
         final String location = response.header(HttpHeaders.LOCATION);
         if (!location.equals(nextUrl)) {
-            return null;
+            throw new RequestException("location should not be " + location, response);
         }
 
-        try {
-            request = newRequest().url(new URL(request.url(), location)).build();
-        } catch (MalformedURLException e) {
-            throw new FatalException(e);
-        }
+        final Request request = newRequest().url(BASE_URL + location).build();
         response = sendRequest(request);
 
         try {
@@ -441,6 +441,16 @@ public class RequestHelper {
         } catch (IOException e) {
             throw new ConnectionException(e);
         }
+    }
+
+    public static LoginResult loginViaGoogle(String urlWithCode) throws ConnectionException, RemoteException {
+        LogUtils.v(TAG, "login via google: %s", urlWithCode);
+
+        final Request request = newRequest()
+                .url(urlWithCode).build();
+        final Response response = sendRequest(request, false);
+
+        return innerLogin(response, "/");
     }
 
     public static String getOnceToken() throws ConnectionException, RemoteException {
@@ -457,6 +467,27 @@ public class RequestHelper {
         } catch (IOException e) {
             throw new ConnectionException(e);
         }
+    }
+
+    public static String getGoogleSignInUrl() throws ConnectionException, RemoteException {
+        LogUtils.v(TAG, "get google sign in url");
+
+        final String onceCode = getOnceToken();
+        final String url = String.format(URL_GOOGLE_SIGN_IN, onceCode);
+
+        final Request request = newRequest()
+                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+                .url(url).build();
+        final Response response = sendRequest(request, false);
+
+        if (response.code() == HttpStatus.SC_MOVED_TEMPORARILY) {
+            final String location = response.header(HttpHeaders.LOCATION);
+            // google login url
+            if (location.startsWith("https")) {
+                return location;
+            }
+        }
+        throw new RequestException(response);
     }
 
     public static String getNotificationsToken() throws ConnectionException, RemoteException {

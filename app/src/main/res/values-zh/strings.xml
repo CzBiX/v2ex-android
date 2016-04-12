@@ -6,7 +6,7 @@
     <string name="action_search">搜索</string>
     <string name="action_settings">设置</string>
     <string name="action_sign_in">登录</string>
-    <string name="action_sign_up"><u>现在加入！</u></string>
+    <string name="action_sign_up"><u>注册</u></string>
     <string name="desc_add_reply">添加回复</string>
     <string name="desc_avatar">头像</string>
     <string name="desc_close_drawer">关闭导航栏</string>
@@ -103,4 +103,6 @@
     <string name="toast_jump_to_last_read_pos">跳到最后阅读位置</string>
     <string name="pref_summary_force_touch">重压来快速预览主题</string>
     <string name="pref_title_force_touch">2.5D Touch（实验性）</string>
+    <string name="desc_google_sign_in">通过 Google 登录</string>
+    <string name="toast_sign_in_failed">登录失败！</string>
 </resources>
