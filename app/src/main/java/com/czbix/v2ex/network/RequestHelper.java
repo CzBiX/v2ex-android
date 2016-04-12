@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import kotlin.jvm.functions.Function1;
 import rx.Observable;
 
 public class RequestHelper {
@@ -416,18 +417,23 @@ public class RequestHelper {
                 .post(requestBody).build();
         Response response = sendRequest(request, false);
 
-        return innerLogin(response, nextUrl);
+        return innerLogin(response, new Function1<String, Boolean>() {
+            @Override
+            public Boolean invoke(String s) {
+                return s.equals(nextUrl);
+            }
+        });
     }
 
     @NotNull
-    private static LoginResult innerLogin(Response response, String nextUrl) throws ConnectionException, RemoteException {
+    private static LoginResult innerLogin(Response response, Function1<String, Boolean> isValidLocation) throws ConnectionException, RemoteException {
         // v2ex will redirect if login success
         if (response.code() != HttpStatus.SC_MOVED_TEMPORARILY) {
             throw new RequestException("code should not be " + response.code(), response);
         }
 
         final String location = response.header(HttpHeaders.LOCATION);
-        if (!location.equals(nextUrl)) {
+        if (!isValidLocation.invoke(location)) {
             throw new RequestException("location should not be " + location, response);
         }
 
@@ -450,7 +456,12 @@ public class RequestHelper {
                 .url(urlWithCode).build();
         final Response response = sendRequest(request, false);
 
-        return innerLogin(response, "/");
+        return innerLogin(response, new Function1<String, Boolean>() {
+            @Override
+            public Boolean invoke(String s) {
+                return s.equals("/") || s.equals("/settings/username");
+            }
+        });
     }
 
     public static String getOnceToken() throws ConnectionException, RemoteException {
