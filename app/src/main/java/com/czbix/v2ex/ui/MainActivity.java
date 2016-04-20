@@ -90,8 +90,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private View mAwardButton;
     private SearchBoxLayout mSearchBox;
     private TopicSearchPresenter mSearchPresenter;
-    @IdRes
-    private int mLastMenuId;
     private MenuItem mSearchMenuItem;
     private boolean mIsTabFragment;
     private MenuItem mFavItem;
@@ -247,7 +245,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void initNavDrawer() {
-        mLastMenuId = R.id.drawer_explore;
         mNav.setNavigationItemSelectedListener(this);
         if (!mPreferences.getBoolean(PREF_DRAWER_SHOWED, false)) {
             mDrawerLayout.openDrawer(mNav);
@@ -327,29 +324,25 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        final int itemId = item.getItemId();
-        if (itemId == mLastMenuId) {
-            return false;
+        if (item.isChecked()) {
+            mDrawerLayout.closeDrawer(mNav);
+            return true;
         }
 
-        switch (itemId) {
+        switch (item.getItemId()) {
             case R.id.drawer_explore:
-                mLastMenuId = R.id.drawer_explore;
                 mDrawerLayout.closeDrawer(mNav);
                 switchFragment(CategoryTabFragment.newInstance());
                 return true;
             case R.id.drawer_nodes:
-                mLastMenuId = R.id.drawer_nodes;
                 mDrawerLayout.closeDrawer(mNav);
                 switchFragment(NodeListFragment.newInstance());
                 return true;
             case R.id.drawer_notifications:
-                mLastMenuId = R.id.drawer_notifications;
                 mDrawerLayout.closeDrawer(mNav);
                 switchFragment(NotificationListFragment.newInstance());
                 return true;
             case R.id.drawer_favorite:
-                mLastMenuId = R.id.drawer_favorite;
                 mDrawerLayout.closeDrawer(mNav);
                 switchFragment(FavoriteTabFragment.newInstance());
                 return true;
@@ -377,7 +370,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     public void setNavSelected(@IdRes int menuId) {
-        mLastMenuId = menuId;
         mNav.setCheckedItem(menuId);
     }
 
