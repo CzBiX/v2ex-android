@@ -51,6 +51,10 @@ public class TopicView extends FrameLayout implements View.OnClickListener, View
         mTime = (TextView) findViewById(R.id.time_tv);
         mReplyCount = (TextView) findViewById(R.id.reply_count_tv);
         mContent = (TextView) findViewById(R.id.content);
+
+        if (PrefStore.getInstance().isContentSelectable()) {
+            mContent.setTextIsSelectable(true);
+        }
     }
 
     public void setListener(@NonNull OnTopicActionListener listener) {
