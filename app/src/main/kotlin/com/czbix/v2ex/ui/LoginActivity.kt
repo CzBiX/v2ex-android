@@ -21,6 +21,7 @@ import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.common.exception.ConnectionException
 import com.czbix.v2ex.common.exception.FatalException
 import com.czbix.v2ex.common.exception.RemoteException
+import com.czbix.v2ex.common.exception.RequestException
 import com.czbix.v2ex.google.GoogleHelper
 import com.czbix.v2ex.helper.CustomTabsHelper
 import com.czbix.v2ex.model.LoginResult
@@ -227,6 +228,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
                 mException = e
             } catch (e: RemoteException) {
                 mException = e
+            } catch (e: RequestException) {
+                mException = e
             }
 
             return false
@@ -246,6 +249,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
             val resId = when (mException) {
                 is ConnectionException -> R.string.toast_connection_exception
                 is RemoteException -> R.string.toast_remote_exception
+                is RequestException -> R.string.toast_sign_in_failed
                 else -> throw FatalException(mException)
             }
 

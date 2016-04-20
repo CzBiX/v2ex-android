@@ -14,7 +14,6 @@
     <string name="desc_topic_link">帖子链接</string>
     <string name="drawer_explore">浏览</string>
     <string name="error_field_required">必填项</string>
-    <string name="error_incorrect_password">登录失败！</string>
     <string name="menu_action_copy">复制内容</string>
     <string name="menu_action_ignore">隐藏评论</string>
     <string name="menu_action_reply">回复评论</string>
