@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import kotlin.Triple;
 import kotlin.jvm.functions.Function1;
 import rx.Observable;
 
@@ -405,11 +406,11 @@ public class RequestHelper {
     public static LoginResult login(String account, String password) throws ConnectionException, RemoteException {
         LogUtils.v(TAG, "login user: " + account);
 
-        final String onceCode = getOnceToken();
+        final Triple<String, String, String> signInForm = getSignInForm();
         final String nextUrl = "/mission";
-        final RequestBody requestBody = new FormEncodingBuilder().add("once", onceCode)
-                .add("u", account)
-                .add("p", password)
+        final RequestBody requestBody = new FormEncodingBuilder().add("once", signInForm.component3())
+                .add(signInForm.component1(), account)
+                .add(signInForm.component2(), password)
                 .add("next", nextUrl)
                 .build();
         Request request = newRequest().url(URL_SIGN_IN)
@@ -475,6 +476,22 @@ public class RequestHelper {
         try {
             final String html = response.body().string();
             return Parser.parseOnceCode(html);
+        } catch (IOException e) {
+            throw new ConnectionException(e);
+        }
+    }
+
+    public static Triple<String, String, String> getSignInForm() throws ConnectionException, RemoteException {
+        LogUtils.v(TAG, "get sign in form");
+
+        final Request request = newRequest()
+                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+                .url(URL_ONCE_TOKEN).build();
+        final Response response = sendRequest(request);
+
+        try {
+            final String html = response.body().string();
+            return Parser.parseSignInForm(html);
         } catch (IOException e) {
             throw new ConnectionException(e);
         }

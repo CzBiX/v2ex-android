@@ -31,6 +31,20 @@ abstract class Parser {
         }
 
         @JvmStatic
+        fun parseSignInForm(html: String): Triple<String, String, String> {
+            val doc = toDoc(html)
+            val form = JsoupObjects(doc).body().child("#Wrapper").child(".content").child(".box")
+                    .child(".cell").dfs("form").first()
+            val name = JsoupObjects(form).dfs("input[type=text]").first()
+            val once = JsoupObjects(form).dfs("input[name=once]").first()
+            val password = once.nextElementSibling()
+
+            check(password.tagName() == "input")
+
+            return Triple(name.attr("name"), password.attr("name"), once.`val`())
+        }
+
+        @JvmStatic
         fun parseNode(nodeEle: Element): Node {
             val title = nodeEle.text()
             val url = nodeEle.attr("href")
