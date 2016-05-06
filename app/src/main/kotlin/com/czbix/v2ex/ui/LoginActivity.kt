@@ -56,7 +56,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
         mPwdView.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             private val mActionIdSignIn = resources.getInteger(R.integer.id_action_sign)
 
-            override fun onEditorAction(textView: TextView, id: Int, keyEvent: KeyEvent): Boolean {
+            override fun onEditorAction(textView: TextView, id: Int, keyEvent: KeyEvent?): Boolean {
                 if (id == mActionIdSignIn || id == EditorInfo.IME_ACTION_DONE) {
                     attemptLogin()
                     return true
