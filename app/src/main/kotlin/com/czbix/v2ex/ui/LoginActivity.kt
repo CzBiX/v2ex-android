@@ -29,6 +29,7 @@ import com.czbix.v2ex.network.RequestHelper
 import com.czbix.v2ex.ui.fragment.GoogleLoginDialog
 import com.czbix.v2ex.util.*
 import io.fabric.sdk.android.Fabric
+import java.io.IOException
 
 /**
  * A login screen that offers login via account/password.
@@ -102,7 +103,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
 
     private fun onGoogleSignInFailed(throwable: Throwable) {
         LogUtils.w(TAG, "google login failed", throwable)
-        Crashlytics.logException(throwable)
+        if (throwable !is IOException) {
+            Crashlytics.logException(throwable)
+        }
         Toast.makeText(this, R.string.toast_sign_in_failed, Toast.LENGTH_LONG).show()
         onGoogleSignInCancelled()
     }
