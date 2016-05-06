@@ -7,34 +7,23 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.lang.kotlin.observable
 import rx.schedulers.Schedulers
 
-inline fun <T> async(scheduler: Scheduler = Schedulers.io(), crossinline runnable: () -> T): Observable<T> {
+inline fun <T> async(scheduler: Scheduler = Schedulers.computation(), crossinline runnable: () -> T): Observable<T> {
     return observable<T> { subscriber ->
         subscriber.onNext(runnable())
         subscriber.onCompleted()
     }.subscribeOn(scheduler)
 }
 
-inline fun <T, R> Observable<T>.amap(scheduler: Scheduler = Schedulers.computation(),
-                                     crossinline block: (T) -> R): Observable<R> {
-    return this.subscribeOn(scheduler).map { block(it) }
+fun <T : Any> Observable<T>.await(callable: (T) -> Unit): Subscription {
+    return this.observeOn(AndroidSchedulers.mainThread()).subscribe(callable)
 }
 
-inline fun <T, R> Observable<T>.aflatMap(scheduler: Scheduler = Schedulers.computation(),
-                                     crossinline block: (T) -> Observable<R>): Observable<R> {
-    return this.subscribeOn(scheduler).flatMap { block(it) }
+fun <T> Observable<T>.await(onNext: (T) -> Unit, onError: (Throwable) -> Unit): Subscription {
+    return this.observeOn(AndroidSchedulers.mainThread()).subscribe(onNext, onError)
 }
 
-inline fun <T> Observable<T>.aforeach(scheduler: Scheduler = Schedulers.computation(),
-                                      crossinline callable: (T) -> Unit): Observable<T> {
-    return this.subscribeOn(scheduler).doOnNext{ callable(it) }
+fun MutableList<Subscription>.unsubscribe() {
+    this.forEach { it.unsubscribe() }
+    this.clear()
 }
 
-inline fun <T> Observable<T>.await(scheduler: Scheduler = AndroidSchedulers.mainThread(),
-                                   crossinline callable: (T) -> Unit): Subscription {
-    return this.observeOn(scheduler).subscribe { callable(it) }
-}
-
-inline fun <T> Observable<T>.await(scheduler: Scheduler = AndroidSchedulers.mainThread(),
-                                   crossinline onNext: (T) -> Unit, crossinline onError: (Throwable) -> Unit): Subscription {
-    return this.observeOn(scheduler).subscribe({ onNext(it) }, { onError(it) })
-}

@@ -8,7 +8,7 @@ object IoUtils {
     private lateinit var cacheDir: File
 
     init {
-        cacheDir = AppCtx.getInstance().cacheDir
+        cacheDir = AppCtx.instance.cacheDir
     }
 
     @JvmStatic

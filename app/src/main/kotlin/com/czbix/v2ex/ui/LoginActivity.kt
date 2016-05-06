@@ -115,7 +115,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
 
         async() {
             RequestHelper.loginViaGoogle(url)
-        }.aforeach {
+        }.doOnNext {
             onLogin(it)
         }.await(onNext = {
             onLoginSuccess(it.mUsername)

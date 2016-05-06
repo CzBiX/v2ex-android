@@ -24,6 +24,11 @@
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/action_settings"/>
         <item
+            android:id="@+id/drawer_update"
+            android:visible="false"
+            android:icon="@drawable/ic_get_app_black_24dp"
+            android:title="@string/action_update"/>
+        <item
             android:id="@+id/drawer_feedback"
             android:icon="@drawable/ic_feedback_black_24dp"
             android:title="@string/drawer_feedback"/>

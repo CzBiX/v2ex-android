@@ -49,6 +49,7 @@ import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jsoup.nodes.Document;
 
 import java.io.File;
@@ -216,6 +217,7 @@ public class RequestHelper {
         UserState.getInstance().handleInfo(info, pageType);
     }
 
+    @Nullable
     public static List<Node> getAllNodes(Etag etag) throws ConnectionException, RemoteException {
         Preconditions.checkNotNull(etag);
 

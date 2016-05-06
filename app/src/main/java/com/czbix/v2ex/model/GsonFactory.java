@@ -30,7 +30,7 @@ public class GsonFactory {
                 return handleWords(f.getName().substring(1));
             }
             else {
-                throw new IllegalArgumentException("Don't know how to handle field not starting with m prefix: " + f.getName());
+                return f.getName();
             }
         }
 
