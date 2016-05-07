@@ -7,12 +7,12 @@ import com.czbix.v2ex.model.GsonFactory
 import com.czbix.v2ex.model.ServerConfig
 import com.czbix.v2ex.network.RequestHelper.newRequest
 import com.czbix.v2ex.util.LogUtils
-import com.google.gson.reflect.TypeToken
+import com.czbix.v2ex.util.async
 import com.squareup.okhttp.FormEncodingBuilder
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.RequestBody
 import rx.Observable
-import rx.lang.kotlin.observable
+import rx.schedulers.Schedulers
 import java.io.IOException
 
 object CzRequestHelper {
@@ -81,26 +81,21 @@ object CzRequestHelper {
     fun getServerConfig(): Observable<ServerConfig> {
         LogUtils.v(TAG, "get server config")
 
-        return observable { subscriber ->
+        return async(Schedulers.io()) {
             val request = newRequest().url(API_SERVER_CONFIG).build()
 
             try {
                 val response = RequestHelper.sendRequest(request)
 
-                val map = GsonFactory.getInstance().fromJson<ServerConfig>(
+                GsonFactory.getInstance().fromJson<ServerConfig>(
                         response.body().charStream(),
                         ServerConfig::class.java)
-
-                subscriber.onNext(map)
-                subscriber.onCompleted()
             } catch (e: Exception) {
-                val ex = if (e is IOException) {
+                throw if (e is IOException) {
                     ConnectionException(e)
                 } else {
                     e
                 }
-
-                subscriber.onError(ex)
             }
         }
     }

@@ -2,7 +2,6 @@ package com.czbix.v2ex.helper
 
 import android.util.LruCache
 import com.czbix.v2ex.common.exception.FatalException
-import com.google.common.base.Optional
 import com.google.common.collect.TreeTraverser
 import org.jsoup.nodes.Element
 import org.jsoup.select.Evaluator
@@ -24,9 +23,8 @@ class JsoupObjects : Iterable<Element> {
      * get one element and remove it.
      * @throws NoSuchElementException result is empty
      */
-    val one: Element
-        @Throws(NoSuchElementException::class)
-        get() = mResult.first()
+    @Throws(NoSuchElementException::class)
+    fun getOne(): Element = first()
 
     private fun addOneQuery(evaluator: Evaluator, getElement: (Element) -> Element?) {
         mResult = mResult.mapNotNull { ele ->

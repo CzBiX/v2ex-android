@@ -28,6 +28,7 @@ import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
 
 import io.fabric.sdk.android.Fabric
+import rx.schedulers.Schedulers
 
 class AppCtx : Application() {
     private lateinit var mEventBus: EventBus
@@ -117,7 +118,7 @@ class AppCtx : Application() {
         }
 
         private fun updateServerConfig() {
-            CzRequestHelper.getServerConfig().subscribe({ config ->
+            CzRequestHelper.getServerConfig().observeOn(Schedulers.computation()).subscribe({ config ->
                 UpdateInfo.parseVersionData(config.version)
             }, { throwable ->
                 LogUtils.i(TAG, "update server config failed", throwable)

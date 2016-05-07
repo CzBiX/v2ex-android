@@ -1,15 +1,11 @@
 package com.czbix.v2ex.parser
 
 import com.czbix.v2ex.helper.JsoupObjects
-import com.czbix.v2ex.model.Avatar
-import com.czbix.v2ex.model.Member
 import com.czbix.v2ex.model.Notification
 import com.czbix.v2ex.model.Notification.NotificationType
 import com.czbix.v2ex.model.Topic
-import com.google.common.base.Preconditions
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import java.util.regex.Pattern
 
 object NotificationParser : Parser() {
     private val REGEX_TOKEN = "http://www.v2ex.com/n/(.+).xml".toRegex()
@@ -95,7 +91,7 @@ object NotificationParser : Parser() {
     @JvmStatic
     fun parseToken(html: String): String {
         val doc = Parser.toDoc(html)
-        val ele = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Main").child(".box:last-child").dfs(".sll").one
+        val ele = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Main").child(".box:last-child").dfs(".sll").first()
 
         REGEX_TOKEN.matchEntire(ele.`val`())!!.let {
             return it.groupValues[1]
