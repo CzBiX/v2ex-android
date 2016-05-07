@@ -23,6 +23,7 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
     private static final String PREF_ENABLE_UNDO = "enable_undo";
     private static final String PREF_LAST_PREF_VERSION = "last_app_version";
     private static final String PREF_SHOULD_CLEAR_GCM_INFO = "should_clear_gcm_info";
+    @Deprecated
     private static final String PREF_ENABLE_FORCE_TOUCH = "enable_force_touch";
     private static final String PREF_CONTENT_SELECTABLE = "content_selectable";
 
@@ -44,6 +45,7 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
 
             // disable force touch
             if (version == 1) {
+                //noinspection deprecation
                 mPreferences.edit().remove(PREF_ENABLE_FORCE_TOUCH)
                         .putInt(PREF_LAST_PREF_VERSION, 2).apply();
                 version = 2;
@@ -118,10 +120,6 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
 
     public void unsetShouldClearGcmInfo() {
         mPreferences.edit().remove(PREF_SHOULD_CLEAR_GCM_INFO).apply();
-    }
-
-    public boolean isForceTouchEnabled() {
-        return mPreferences.getBoolean(PREF_ENABLE_FORCE_TOUCH, false);
     }
 
     public boolean isContentSelectable() {

@@ -1,9 +1,7 @@
 package com.czbix.v2ex.ui.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -33,12 +31,10 @@ import com.czbix.v2ex.ui.TopicEditActivity;
 import com.czbix.v2ex.ui.adapter.TopicAdapter;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.ui.loader.TopicListLoader;
-import com.czbix.v2ex.ui.presenter.FloatTopicPresenter;
 import com.czbix.v2ex.ui.widget.DividerItemDecoration;
 import com.czbix.v2ex.ui.widget.TopicView.OnTopicActionListener;
 import com.czbix.v2ex.util.ExceptionUtils;
 import com.czbix.v2ex.util.LogUtils;
-import com.czbix.v2ex.util.TrackerUtils;
 
 import java.util.List;
 
@@ -52,7 +48,6 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
     private TopicAdapter mAdapter;
     private SwipeRefreshLayout mLayout;
     private TopicListLoader mLoader;
-    private FloatTopicPresenter mFloatTopic;
     private RecyclerView mRecyclerView;
 
     /**
@@ -229,29 +224,5 @@ public class TopicListFragment extends Fragment implements LoaderCallbacks<Loade
         startActivity(intent);
 
         topic.setHasRead();
-    }
-
-    @Override
-    public void onTopicStartPreview(View view, Topic topic) {
-        TrackerUtils.onTopicForceTouch();
-
-        final Vibrator vibrator = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.vibrate(20);
-
-        getFloatTopic().fillData(topic);
-        getFloatTopic().setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void onTopicStopPreview(View view, Topic topic) {
-        getFloatTopic().setVisibility(View.INVISIBLE);
-    }
-
-    private FloatTopicPresenter getFloatTopic() {
-        if (mFloatTopic == null) {
-            mFloatTopic = new FloatTopicPresenter(getContext());
-        }
-
-        return mFloatTopic;
     }
 }

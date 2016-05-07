@@ -6,7 +6,6 @@ import com.google.common.collect.TreeTraverser
 import org.jsoup.nodes.Element
 import org.jsoup.select.Evaluator
 import java.lang.reflect.Method
-import java.util.*
 
 /**
  * Jsoup use bottom-up parsing to find element, it's slow when we only used a few elements.
@@ -18,13 +17,6 @@ class JsoupObjects : Iterable<Element> {
     constructor(vararg elements: Element) {
         mResult = elements.asSequence()
     }
-
-    /**
-     * get one element and remove it.
-     * @throws NoSuchElementException result is empty
-     */
-    @Throws(NoSuchElementException::class)
-    fun getOne(): Element = first()
 
     private fun addOneQuery(evaluator: Evaluator, getElement: (Element) -> Element?) {
         mResult = mResult.mapNotNull { ele ->
