@@ -92,5 +92,5 @@
     <string name="desc_clear_query">Clear query</string>
     <string name="pref_enable_undo">Enable undo</string>
     <string name="pref_summary_enable_undo">Delay send action request, such as reply and +1</string>
-    <string name="action_update">Update</string>
+    <string name="action_update">Update App</string>
 </resources>
