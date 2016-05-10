@@ -47,6 +47,9 @@ object MiscUtils {
     }
 
     @JvmStatic
+    val appUpdateIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${BuildConfig.APPLICATION_ID}"))
+
+    @JvmStatic
     fun setClipboard(context: Context, title: String?, str: String) {
         val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         manager.primaryClip = ClipData.newPlainText(title, str)

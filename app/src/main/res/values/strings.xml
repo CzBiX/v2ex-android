@@ -55,7 +55,9 @@
     <string name="notification_thank_comment">Thank your comment</string>
     
     <string name="ntf_title_new_notifications">New notifications</string>
+    <string name="ntf_title_app_update">App update</string>
     <string name="ntf_desc_from_v2ex">From V2EX</string>
+    <string name="ntf_desc_new_version_of_app">V2EX+ released new version</string>
     <string name="drawer_about">About</string>
     <string name="toast_app_version">Version: %s</string>
     <string name="title_activity_loading">Loading</string>

@@ -107,4 +107,6 @@
     <string name="pref_summary_content_selectable">使主题内容可选择，在部分设备上会导致崩溃</string>
     <string name="pref_title_content_selectable">可选择内容</string>
     <string name="action_update">更新应用</string>
+    <string name="ntf_title_app_update">应用更新</string>
+    <string name="ntf_desc_new_version_of_app">V2EX+ 发布新版本啦</string>
 </resources>

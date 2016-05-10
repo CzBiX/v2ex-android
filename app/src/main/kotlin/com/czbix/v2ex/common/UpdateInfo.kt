@@ -11,6 +11,8 @@ object UpdateInfo {
 
     var hasNewVersion: Boolean = false
         private set
+    var isRecommend: Boolean = false
+        private set
 
     fun parseVersionData(info: VersionInfo) {
         val currentVersion = BuildConfig.VERSION_CODE
@@ -21,12 +23,14 @@ object UpdateInfo {
         }
 
         hasNewVersion = true
+        isRecommend = info.recommend
 
-        LogUtils.i(TAG, "new app version: ${info.version}")
+        LogUtils.i(TAG, "new app version: $info")
         RxBus.post(AppUpdateEvent())
     }
 
     data class VersionInfo(
-            val version: Int
+            val version: Int,
+            val recommend: Boolean
     )
 }

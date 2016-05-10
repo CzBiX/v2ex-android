@@ -36,6 +36,7 @@ import com.bumptech.glide.request.target.ViewTarget
 import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.BuildConfig
 import com.czbix.v2ex.R
+import com.czbix.v2ex.common.NotificationStatus
 import com.czbix.v2ex.common.UpdateInfo
 import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.common.exception.ConnectionException
@@ -110,7 +111,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     private fun onAppUpdateEvent() {
         mUpdateItem.isVisible = true
-        // TODO: show notification if is recommend
+        if (UpdateInfo.isRecommend) {
+            NotificationStatus.instance.showAppUpdate()
+        }
     }
 
     private fun initSearchBox() {
@@ -354,8 +357,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 true
             }
             R.id.drawer_update -> {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${BuildConfig.APPLICATION_ID}"))
-                startActivity(intent)
+                startActivity(MiscUtils.appUpdateIntent)
                 true
             }
             R.id.drawer_feedback -> {

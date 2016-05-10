@@ -80,7 +80,7 @@ class AppCtx : Application() {
             V2exDb.getInstance().init()
 
             UserState.getInstance().init()
-            NotificationStatus.getInstance().init()
+            NotificationStatus.instance.init()
 
             isInited = true
             mEventBus.post(BaseEvent.ContextInitFinishEvent())
