@@ -2,10 +2,8 @@ package com.czbix.v2ex.parser
 
 import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.common.UserState
-import com.czbix.v2ex.common.exception.FatalException
 import com.czbix.v2ex.helper.JsoupObjects
 import com.czbix.v2ex.model.*
-import com.czbix.v2ex.util.CrashlyticsUtils
 import com.google.common.base.Preconditions
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element

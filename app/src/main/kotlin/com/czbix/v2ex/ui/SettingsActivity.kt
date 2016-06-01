@@ -124,7 +124,7 @@ class SettingsActivity : BaseActivity() {
             }
         }
 
-        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
             when (requestCode) {
                 REQ_LOGIN -> if (resultCode == Activity.RESULT_OK) {
                     activity.recreate()

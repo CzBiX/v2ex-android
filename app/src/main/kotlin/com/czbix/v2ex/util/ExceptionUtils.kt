@@ -1,20 +1,12 @@
 package com.czbix.v2ex.util
 
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.widget.Toast
-
 import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.R
-import com.czbix.v2ex.common.exception.ConnectionException
-import com.czbix.v2ex.common.exception.ExIllegalStateException
-import com.czbix.v2ex.common.exception.FatalException
-import com.czbix.v2ex.common.exception.RemoteException
-import com.czbix.v2ex.common.exception.RequestException
-import com.czbix.v2ex.common.exception.UnauthorizedException
+import com.czbix.v2ex.common.exception.*
 import com.czbix.v2ex.network.HttpStatus
-
-import java.util.NoSuchElementException
+import java.util.*
 
 object ExceptionUtils {
     /**

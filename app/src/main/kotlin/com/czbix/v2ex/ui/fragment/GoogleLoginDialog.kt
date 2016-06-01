@@ -1,6 +1,7 @@
 package com.czbix.v2ex.ui.fragment
 
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
@@ -11,8 +12,23 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.czbix.v2ex.R
 
-class GoogleLoginDialog(val signIn: String, val listener: GoogleSignInListener) : DialogFragment() {
+class GoogleLoginDialog : DialogFragment() {
     private var webView: WebView? = null
+    private lateinit var signInUrl: String
+    private lateinit var listener: GoogleSignInListener
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val args = arguments;
+        signInUrl = args.getString(KEY_SIGN_IN_URL)
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        listener = context as GoogleSignInListener
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return super.onCreateDialog(savedInstanceState).apply {
@@ -43,7 +59,7 @@ class GoogleLoginDialog(val signIn: String, val listener: GoogleSignInListener) 
             it.javaScriptEnabled = true
         }
 
-        webView.loadUrl(signIn)
+        webView.loadUrl(signInUrl)
         webView.setWebViewClient(client)
     }
 
@@ -75,5 +91,18 @@ class GoogleLoginDialog(val signIn: String, val listener: GoogleSignInListener) 
 
     companion object {
         const val CALLBACK_URL = "https://www.v2ex.com/auth/google"
+
+        private const val KEY_SIGN_IN_URL = "sign_in_url";
+
+        fun newInstance(url: String): GoogleLoginDialog {
+            val instance = GoogleLoginDialog()
+            val args = Bundle().apply {
+                putString(KEY_SIGN_IN_URL, url)
+            }
+
+            instance.arguments = args
+
+            return instance
+        }
     }
 }

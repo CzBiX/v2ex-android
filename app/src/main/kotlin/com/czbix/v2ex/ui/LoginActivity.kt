@@ -27,8 +27,9 @@ import com.czbix.v2ex.helper.CustomTabsHelper
 import com.czbix.v2ex.model.LoginResult
 import com.czbix.v2ex.network.RequestHelper
 import com.czbix.v2ex.ui.fragment.GoogleLoginDialog
-import com.czbix.v2ex.util.*
-import io.fabric.sdk.android.Fabric
+import com.czbix.v2ex.util.LogUtils
+import com.czbix.v2ex.util.async
+import com.czbix.v2ex.util.await
 import java.io.IOException
 
 /**
@@ -94,7 +95,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
         async() {
             RequestHelper.getGoogleSignInUrl()
         }.await(onNext = {
-            val dialog = GoogleLoginDialog(it, this)
+            val dialog = GoogleLoginDialog.newInstance(it)
             supportFragmentManager.beginTransaction().add(dialog, null).commit()
         }, onError = {
             onGoogleSignInFailed(it)
