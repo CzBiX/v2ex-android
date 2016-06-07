@@ -30,6 +30,7 @@ import com.czbix.v2ex.ui.fragment.GoogleLoginDialog
 import com.czbix.v2ex.util.LogUtils
 import com.czbix.v2ex.util.async
 import com.czbix.v2ex.util.await
+import rx.Subscription
 import java.io.IOException
 
 /**
@@ -40,6 +41,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
      * Keep track of the login task to ensure we can cancel it if requested.
      */
     private var mAuthTask: UserLoginTask? = null
+    private var sub: Subscription? = null
 
     // UI references.
     private lateinit var mAccountView: EditText
@@ -92,7 +94,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
 
     private fun onGoogleSignIn() {
         showProgress(true)
-        async() {
+
+        sub?.unsubscribe();
+
+        sub = async() {
             RequestHelper.getGoogleSignInUrl()
         }.await(onNext = {
             val dialog = GoogleLoginDialog.newInstance(it)
@@ -114,7 +119,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
     override fun onGoogleSignedIn(url: String) {
         LogUtils.d(TAG, "result url: %s", url)
 
-        async() {
+        sub?.unsubscribe()
+
+        sub = async() {
             RequestHelper.loginViaGoogle(url)
         }.doOnNext {
             onLogin(it)
@@ -135,6 +142,12 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
 
     override fun onGoogleSignInCancelled() {
         showProgress(false)
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        sub?.unsubscribe()
     }
 
     /**
