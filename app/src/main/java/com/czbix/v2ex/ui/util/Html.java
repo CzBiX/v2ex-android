@@ -628,6 +628,10 @@ class HtmlToSpannedConverter implements ContentHandler {
     private static void startImg(SpannableStringBuilder text,
                                  Attributes attributes, Html.ImageGetter img) {
         String src = attributes.getValue("", "src");
+        if (src == null) {
+            return;
+        }
+
         Drawable d = null;
 
         if (img != null) {
