@@ -29,8 +29,8 @@ android {
         applicationId "com.czbix.v2ex"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 67
-        versionName "1.22.0"
+        versionCode 68
+        versionName "1.22.1"
 
         resValue 'bool', 'isDebuggable', 'false'
     }
@@ -73,7 +73,7 @@ android {
 
 // Android support library version
 ext.support_version = '23.4.0'
-ext.gms_version = '9.0.1'
+ext.gms_version = '9.0.2'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
