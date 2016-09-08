@@ -70,7 +70,7 @@ object TopicParser : Parser() {
         builder.setNode(node)
 
         try {
-            parseTopicReplyTime(builder, JsoupObjects.child(header, ".gray").textNodes().last())
+            parseTopicReplyTime(builder, JsoupObjects.child(header, ".gray").textNodes()[1].text())
         } catch (e: IllegalStateException) {
             // TODO: fix this exception and remove log code
             Crashlytics.log(JsoupObjects.child(header, ".gray").html())
@@ -96,14 +96,13 @@ object TopicParser : Parser() {
         return csrfToken
     }
 
-    internal fun parseTopicReplyTime(topicBuilder: Topic.Builder, textNode: TextNode) {
-        val text = textNode.text()
-        val matcher = PATTERN_TOPIC_REPLY_TIME.find(text)
-        checkNotNull(matcher) {
+    internal fun parseTopicReplyTime(topicBuilder: Topic.Builder, text: String) {
+        val matcher = checkNotNull(PATTERN_TOPIC_REPLY_TIME.find(text)) {
             "match reply time for topic failed: $text"
         }
 
-        matcher!!.groupValues[1].let { topicBuilder.setReplyTime(it) }
+        val timeStr = matcher.groupValues[1]
+        topicBuilder.setReplyTime(timeStr)
     }
 
     private fun parseTopicTitle(builder: Topic.Builder, header: Element) {
