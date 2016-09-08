@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.20.1'
+        classpath 'io.fabric.tools:gradle:1.21.7'
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -24,13 +24,13 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "com.czbix.v2ex"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 68
-        versionName "1.22.1"
+        versionCode 69
+        versionName "1.22.2"
 
         resValue 'bool', 'isDebuggable', 'false'
     }
@@ -88,7 +88,7 @@ dependencies {
     compile 'com.github.bumptech.glide:okhttp-integration:1.4.0'
     compile "com.google.android.gms:play-services-analytics:$gms_version"
     compile "com.google.android.gms:play-services-gcm:$gms_version"
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
         transitive = true;
     }
     compile "com.android.support:customtabs:$support_version"
