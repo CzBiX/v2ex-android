@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.0.2'
+    ext.kotlin_version = '1.0.3'
     repositories {
         maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
@@ -73,7 +73,7 @@ android {
 
 // Android support library version
 ext.support_version = '23.4.0'
-ext.gms_version = '9.0.2'
+ext.gms_version = '9.4.0'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])

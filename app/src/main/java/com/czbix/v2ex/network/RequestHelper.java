@@ -305,7 +305,7 @@ public class RequestHelper {
             once = getOnceToken();
         }
         final RequestBody requestBody = new FormEncodingBuilder().add("once", once)
-                .add("content", content)
+                .add("content", content.replace("\n", "\r\n"))
                 .build();
 
         final Request request = newRequest().url(topic.getUrl())
@@ -367,7 +367,7 @@ public class RequestHelper {
         final String once = getOnceToken();
         final RequestBody requestBody = new FormEncodingBuilder().add("once", once)
                 .add("title", title)
-                .add("content", content)
+                .add("content", content.replace("\n", "\r\n"))
                 .build();
 
         final Request request = newRequest().url(String.format(URL_NEW_TOPIC, nodeName))
