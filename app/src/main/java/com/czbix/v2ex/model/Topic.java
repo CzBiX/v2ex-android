@@ -82,7 +82,7 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
     public static int getIdFromUrl(String url) {
         final Matcher matcher = PATTERN.matcher(url);
         if (!matcher.find()) {
-            throw new FatalException("match id for topic failed: " + url);
+            throw new IllegalArgumentException("match id for topic failed: " + url);
         }
         final String idStr = matcher.group(1);
         return Integer.parseInt(idStr);

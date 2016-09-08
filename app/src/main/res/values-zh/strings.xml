@@ -109,4 +109,5 @@
     <string name="action_update">更新应用</string>
     <string name="ntf_title_app_update">应用更新</string>
     <string name="ntf_desc_new_version_of_app">V2EX+ 发布新版本啦</string>
+    <string name="toast_unsupported_url">不支持的链接！</string>
 </resources>
