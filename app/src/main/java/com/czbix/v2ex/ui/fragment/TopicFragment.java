@@ -3,6 +3,7 @@ package com.czbix.v2ex.ui.fragment;
 
 import android.animation.ObjectAnimator;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
@@ -620,9 +621,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     @Override
-    public void onCommentCopy(Comment comment) {
+    public void onCommentCopy(Comment comment, String content) {
         final FragmentActivity context = getActivity();
-        MiscUtils.setClipboard(context, null, comment.getContent());
+        MiscUtils.setClipboard(context, ClipData.newHtmlText(null, content, comment.getContent()));
     }
 
     @Override

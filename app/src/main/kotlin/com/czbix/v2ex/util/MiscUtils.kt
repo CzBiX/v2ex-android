@@ -50,11 +50,16 @@ object MiscUtils {
     val appUpdateIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${BuildConfig.APPLICATION_ID}"))
 
     @JvmStatic
-    fun setClipboard(context: Context, title: String?, str: String) {
+    fun setClipboard(context: Context, data: ClipData) {
         val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        manager.primaryClip = ClipData.newPlainText(title, str)
+        manager.primaryClip = data
 
         Toast.makeText(context, R.string.toast_copied, Toast.LENGTH_SHORT).show()
+    }
+
+    @JvmStatic
+    fun setClipboard(context: Context, title: String?, str: String) {
+        setClipboard(context, ClipData.newPlainText(title, str))
     }
 
     fun isEmailLink(url: String): Boolean {

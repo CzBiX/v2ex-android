@@ -76,7 +76,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener,
 
         mUsername.setText(comment.getMember().getUsername());
         mReplyTime.setText(comment.getReplyTime());
-        mFloor.setText(String.format("%d", comment.getFloor()));
+        mFloor.setText(Integer.toString(comment.getFloor()));
 
         mAvatar.setAvatar(comment.getMember().getAvatar());
     }
@@ -147,7 +147,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener,
                 mListener.onCommentIgnore(mComment);
                 return true;
             case R.id.action_copy:
-                mListener.onCommentCopy(mComment);
+                mListener.onCommentCopy(mComment, mContent.getText().toString());
                 return true;
         }
         return false;
@@ -168,7 +168,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener,
         void onCommentThank(Comment comment);
         void onCommentReply(Comment comment);
         void onCommentIgnore(Comment comment);
-        void onCommentCopy(Comment comment);
+        void onCommentCopy(Comment comment, String content);
         void onCommentUrlClick(String url, int pos);
     }
 }
