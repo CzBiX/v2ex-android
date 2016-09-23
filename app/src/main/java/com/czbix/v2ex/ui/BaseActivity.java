@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.czbix.v2ex.AppCtx;
-import com.czbix.v2ex.eventbus.BaseEvent;
+import com.czbix.v2ex.event.BaseEvent;
 import com.google.common.eventbus.Subscribe;
 
 public abstract class BaseActivity extends AppCompatActivity {

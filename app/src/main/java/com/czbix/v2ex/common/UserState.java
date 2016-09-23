@@ -5,13 +5,12 @@ import android.widget.Toast;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.dao.ConfigDao;
-import com.czbix.v2ex.eventbus.BaseEvent.DailyAwardEvent;
-import com.czbix.v2ex.eventbus.BaseEvent.NewUnreadEvent;
+import com.czbix.v2ex.event.BaseEvent.DailyAwardEvent;
+import com.czbix.v2ex.event.BaseEvent.NewUnreadEvent;
 import com.czbix.v2ex.eventbus.LoginEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.parser.MyselfParser;
-import com.czbix.v2ex.parser.Parser;
 import com.czbix.v2ex.parser.Parser.PageType;
 import com.czbix.v2ex.util.CrashlyticsUtils;
 import com.czbix.v2ex.util.ExecutorUtils;
@@ -98,7 +97,7 @@ public class UserState {
 
     @Subscribe
     public void onDailyMissionEvent(DailyAwardEvent e) {
-        mHasAward = e.mHasAward;
+        mHasAward = e.getMHasAward();
     }
 
     public boolean isLoggedIn() {

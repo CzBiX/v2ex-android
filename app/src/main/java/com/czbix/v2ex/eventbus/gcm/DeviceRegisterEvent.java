@@ -1,5 +1,6 @@
 package com.czbix.v2ex.eventbus.gcm;
 
+
 import com.czbix.v2ex.event.BaseEvent;
 
 public class DeviceRegisterEvent extends BaseEvent {

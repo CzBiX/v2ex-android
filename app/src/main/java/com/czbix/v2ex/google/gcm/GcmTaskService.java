@@ -3,7 +3,7 @@ package com.czbix.v2ex.google.gcm;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
-import com.czbix.v2ex.eventbus.BaseEvent.NewUnreadEvent;
+import com.czbix.v2ex.event.BaseEvent.NewUnreadEvent;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.android.gms.gcm.GcmNetworkManager;

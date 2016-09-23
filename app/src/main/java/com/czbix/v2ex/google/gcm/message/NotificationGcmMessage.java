@@ -5,7 +5,7 @@ import android.content.Context;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
-import com.czbix.v2ex.eventbus.BaseEvent.NewUnreadEvent;
+import com.czbix.v2ex.event.BaseEvent.NewUnreadEvent;
 import com.czbix.v2ex.google.GoogleHelper;
 import com.czbix.v2ex.google.gcm.GcmTaskService;
 import com.czbix.v2ex.network.RequestHelper;

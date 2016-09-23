@@ -2,6 +2,8 @@ package com.czbix.v2ex.eventbus;
 
 import android.support.annotation.IntDef;
 
+import com.czbix.v2ex.event.BaseEvent;
+
 public class TopicEvent extends BaseEvent {
     @EventType
     public final int mType;

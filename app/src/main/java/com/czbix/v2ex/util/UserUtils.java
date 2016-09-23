@@ -6,7 +6,7 @@ import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.dao.ConfigDao;
-import com.czbix.v2ex.eventbus.BaseEvent;
+import com.czbix.v2ex.event.BaseEvent;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Preconditions;

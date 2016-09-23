@@ -42,8 +42,8 @@ import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.common.exception.ConnectionException
 import com.czbix.v2ex.common.exception.RemoteException
 import com.czbix.v2ex.event.AppUpdateEvent
-import com.czbix.v2ex.eventbus.BaseEvent.DailyAwardEvent
-import com.czbix.v2ex.eventbus.BaseEvent.NewUnreadEvent
+import com.czbix.v2ex.event.BaseEvent.DailyAwardEvent
+import com.czbix.v2ex.event.BaseEvent.NewUnreadEvent
 import com.czbix.v2ex.eventbus.LoginEvent
 import com.czbix.v2ex.helper.RxBus
 import com.czbix.v2ex.model.Member
@@ -63,6 +63,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private var mIsTabFragment: Boolean = false
     private var mToolbar: Toolbar? = null
     private val subscriptions: MutableList<Subscription> = mutableListOf()
+    private var hasAward: Boolean = false
     private lateinit var mUsername: TextView
     private lateinit var mAppBar: AppBarLayout
     private lateinit var mDrawerLayout: DrawerLayout
@@ -223,9 +224,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     @Subscribe
     fun onDailyMissionEvent(e: DailyAwardEvent) {
-        if (!e.mHasAward) {
+        if (!e.mHasAward && hasAward) {
             Toast.makeText(this, R.string.toast_daily_award_received, Toast.LENGTH_LONG).show()
         }
+
+        hasAward = e.mHasAward
         setAwardVisibility(e.mHasAward)
         mAwardButton.isEnabled = true
     }
