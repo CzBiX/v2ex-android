@@ -1,6 +1,6 @@
 package com.czbix.v2ex.model.db;
 
-import com.czbix.v2ex.model.GsonFactory;
+import com.czbix.v2ex.util.GsonUtilsKt;
 
 public class TopicDraft {
     public final String mNodeName;
@@ -14,10 +14,10 @@ public class TopicDraft {
     }
 
     public String toJson() {
-        return GsonFactory.getInstance().toJson(this);
+        return GsonUtilsKt.getGSON().toJson(this);
     }
 
     public static TopicDraft fromJson(String str) {
-        return GsonFactory.getInstance().fromJson(str, TopicDraft.class);
+        return GsonUtilsKt.getGSON().fromJson(str, TopicDraft.class);
     }
 }

@@ -1,6 +1,7 @@
 package com.czbix.v2ex.common.exception;
 
-import com.squareup.okhttp.Response;
+
+import okhttp3.Response;
 
 public class UnauthorizedException extends RequestException {
     public UnauthorizedException(Response response) {

@@ -10,8 +10,8 @@ import android.util.LruCache;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Avatar;
-import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.Node;
+import com.czbix.v2ex.util.GsonUtilsKt;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.io.Closeables;
@@ -66,7 +66,7 @@ public class NodeDao extends DaoBase {
             is = AppCtx.getInstance().getResources().openRawResource(R.raw.all_nodes);
             isr = new InputStreamReader(is);
 
-            List<Node> list = GsonFactory.getInstance().fromJson(isr, new TypeToken<List<Node>>() {
+            List<Node> list = GsonUtilsKt.getGSON().fromJson(isr, new TypeToken<List<Node>>() {
             }.getType());
 
             for (Node node : list) {

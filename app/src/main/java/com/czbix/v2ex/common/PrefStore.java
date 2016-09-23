@@ -9,11 +9,12 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.model.Tab;
 import com.czbix.v2ex.util.LogUtils;
 
+import java.io.File;
 import java.util.List;
 
 public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = PrefStore.class.getSimpleName();
-    private static final int VERSION = 2;
+    private static final int VERSION = 3;
 
     private static PrefStore instance;
     private static final String PREF_LOAD_IMAGE_ON_MOBILE_NETWORK = "load_image_on_mobile_network";
@@ -40,23 +41,30 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
     }
 
     private void initPref() {
-        if (mPreferences.contains(PREF_LAST_PREF_VERSION)) {
-            int version = mPreferences.getInt(PREF_LAST_PREF_VERSION, 0);
+        int version = mPreferences.getInt(PREF_LAST_PREF_VERSION, 0);
 
-            // disable force touch
-            if (version == 1) {
-                //noinspection deprecation
-                mPreferences.edit().remove(PREF_ENABLE_FORCE_TOUCH)
-                        .putInt(PREF_LAST_PREF_VERSION, 2).apply();
-                version = 2;
-            }
+        if (version == VERSION) {
             return;
+        }
+
+        // disable force touch
+        if (version == 1) {
+            //noinspection deprecation
+            mPreferences.edit().remove(PREF_ENABLE_FORCE_TOUCH)
+                    .putInt(PREF_LAST_PREF_VERSION, 2).apply();
+            version = 2;
+        }
+        if (version == 2) {
+            final File path = AppCtx.getInstance().getFileStreamPath("CookiePrefsFile.xml");
+            if (path.isFile()) {
+                path.delete();
+            }
+            mPreferences.edit().putInt(PREF_LAST_PREF_VERSION, 3).apply();
+            version = 3;
         }
 
         // HACK: server data loss, force register gcm, remove this line at future
         mPreferences.edit().putBoolean(PREF_SHOULD_CLEAR_GCM_INFO, true).apply();
-
-        mPreferences.edit().putInt(PREF_LAST_PREF_VERSION, VERSION).apply();
     }
 
     public static void requestBackup() {
@@ -86,7 +94,7 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
 
     public boolean shouldReceiveNotifications() {
         if (!UserState.getInstance().isLoggedIn()) {
-            LogUtils.v(TAG, "guest can't receive notifications");
+            LogUtils.i(TAG, "Guest can't receive notifications");
             return false;
         }
 

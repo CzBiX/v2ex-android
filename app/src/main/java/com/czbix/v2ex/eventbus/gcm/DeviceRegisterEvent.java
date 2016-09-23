@@ -1,6 +1,8 @@
 package com.czbix.v2ex.eventbus.gcm;
 
-public class DeviceRegisterEvent {
+import com.czbix.v2ex.event.BaseEvent;
+
+public class DeviceRegisterEvent extends BaseEvent {
     public final boolean isRegister;
     public final boolean isSuccess;
 

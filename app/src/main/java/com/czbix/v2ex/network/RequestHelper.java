@@ -15,7 +15,6 @@ import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.common.exception.UnauthorizedException;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.Favable;
-import com.czbix.v2ex.model.GsonFactory;
 import com.czbix.v2ex.model.Ignorable;
 import com.czbix.v2ex.model.LoginResult;
 import com.czbix.v2ex.model.Node;
@@ -32,21 +31,19 @@ import com.czbix.v2ex.parser.Parser;
 import com.czbix.v2ex.parser.Parser.PageType;
 import com.czbix.v2ex.parser.TopicListParser;
 import com.czbix.v2ex.parser.TopicParser;
+import com.czbix.v2ex.util.GsonUtilsKt;
 import com.czbix.v2ex.util.IoUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.TrackerUtils;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.CookiePersistor;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import com.google.common.net.HttpHeaders;
 import com.google.gson.reflect.TypeToken;
-import com.squareup.okhttp.Cache;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.ResponseBody;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,13 +51,22 @@ import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.CookieManager;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.Triple;
 import kotlin.jvm.functions.Function1;
+import okhttp3.Cache;
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import rx.Observable;
 
 public class RequestHelper {
@@ -84,18 +90,21 @@ public class RequestHelper {
 
     private static final OkHttpClient CLIENT;
 
-    private static V2CookieStore mCookies;
+    private static PersistentCookieJar cookieJar;
 
     static {
-        CLIENT = new OkHttpClient();
-        CLIENT.setCache(buildCache());
-        CLIENT.setConnectTimeout(10, TimeUnit.SECONDS);
-        CLIENT.setWriteTimeout(10, TimeUnit.SECONDS);
-        CLIENT.setReadTimeout(30, TimeUnit.SECONDS);
-        CLIENT.setFollowRedirects(false);
+        final OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.cache(buildCache());
+        builder.connectTimeout(10, TimeUnit.SECONDS);
+        builder.writeTimeout(10, TimeUnit.SECONDS);
+        builder.readTimeout(30, TimeUnit.SECONDS);
+        builder.followRedirects(false);
 
-        mCookies = new V2CookieStore(AppCtx.getInstance());
-        CLIENT.setCookieHandler(new CookieManager(mCookies, null));
+        cookieJar = new PersistentCookieJar(new SetCookieCache(),
+                new SharedPrefsCookiePersistor(AppCtx.getInstance()));
+        builder.cookieJar(cookieJar);
+
+        CLIENT = builder.build();
     }
 
     private static Cache buildCache() {
@@ -117,7 +126,7 @@ public class RequestHelper {
     }
 
     public static void clearCookies() {
-        mCookies.removeAll();
+        cookieJar.clear();
     }
 
     public static List<Topic> getTopics(Page page) throws ConnectionException, RemoteException {
@@ -192,7 +201,7 @@ public class RequestHelper {
                     .build();
             try {
                 final Response response = sendRequest(request);
-                final List<TopicBean> list = GsonFactory.getInstance().fromJson(response.body().charStream(),
+                final List<TopicBean> list = GsonUtilsKt.getGSON().fromJson(response.body().charStream(),
                         new TypeToken<List<TopicBean>>() {
                         }.getType());
 
@@ -236,7 +245,7 @@ public class RequestHelper {
         try {
             final String json = response.body().string();
 
-            return GsonFactory.getInstance().fromJson(json, new TypeToken<List<Node>>() {
+            return GsonUtilsKt.getGSON().fromJson(json, new TypeToken<List<Node>>() {
             }.getType());
         } catch (IOException e) {
             throw new ConnectionException(e);
@@ -304,7 +313,7 @@ public class RequestHelper {
         if (Strings.isNullOrEmpty(once)) {
             once = getOnceToken();
         }
-        final RequestBody requestBody = new FormEncodingBuilder().add("once", once)
+        final RequestBody requestBody = new FormBody.Builder().add("once", once)
                 .add("content", content.replace("\n", "\r\n"))
                 .build();
 
@@ -365,7 +374,7 @@ public class RequestHelper {
         LogUtils.v(TAG, "new topic in node: %s, title: %s", nodeName, title);
 
         final String once = getOnceToken();
-        final RequestBody requestBody = new FormEncodingBuilder().add("once", once)
+        final RequestBody requestBody = new FormBody.Builder().add("once", once)
                 .add("title", title)
                 .add("content", content.replace("\n", "\r\n"))
                 .build();
@@ -410,7 +419,7 @@ public class RequestHelper {
 
         final Triple<String, String, String> signInForm = getSignInForm();
         final String nextUrl = "/mission";
-        final RequestBody requestBody = new FormEncodingBuilder().add("once", signInForm.component3())
+        final RequestBody requestBody = new FormBody.Builder().add("once", signInForm.component3())
                 .add(signInForm.component1(), account)
                 .add(signInForm.component2(), password)
                 .add("next", nextUrl)
@@ -579,7 +588,7 @@ public class RequestHelper {
         }
 
 
-        Crashlytics.log("request url: " + response.request().urlString());
+        Crashlytics.log("request url: " + response.request().url());
         if (code == 403 || code == 404) {
             try {
                 final ResponseBody body = response.body();
