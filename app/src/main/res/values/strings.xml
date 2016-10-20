@@ -26,8 +26,8 @@
     <string name="menu_action_ignore">Hide this comment</string>
     <string name="menu_action_copy">Copy text</string>
 
-    <string name="desc_open_drawer">Open navigation bar</string>
-    <string name="desc_close_drawer">Close navigation bar</string>
+    <string name="desc_open_drawer">Open navigation drawer</string>
+    <string name="desc_close_drawer">Close navigation drawer</string>
     <string name="drawer_notifications">Notifications</string>
     <string name="drawer_unread_notifications">Unread</string>
     <string name="action_thank">Thank</string>
@@ -43,7 +43,7 @@
     <string name="toast_parse_failed">Parse failed!</string>
     <string name="pref_title_load_image_on_mobile_network">Load images while using mobile network</string>
     <string name="pref_summary_load_image_on_mobile_network">Load images in topic/comment while using mobile network</string>
-    <string name="toast_has_sign_out">Signed out successfully!</string>
+    <string name="toast_has_sign_out">Signed out!</string>
     <string name="title_fragment_notifications">Notifications</string>
     <string name="toast_jump_to_last_read_pos">Return to last read position</string>
 
@@ -91,10 +91,11 @@
     <string name="toast_email_app_not_found">Can\'t found email app!</string>
     <string name="action_upload_image">Upload images</string>
     <string name="action_back">Back</string>
-    <string name="desc_clear_query">Clear queries</string>
+    <string name="desc_clear_query">Clear query</string>
     <string name="pref_enable_undo">Enable undo</string>
     <string name="pref_summary_enable_undo">Send request later, so you may cancle it later.</string>
     <string name="action_update">Update APP</string>
     
     <string name="toast_unsupported_url">Unsupported URL!</string>
 </resources>
+
