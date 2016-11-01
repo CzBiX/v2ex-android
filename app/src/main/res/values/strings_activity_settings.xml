@@ -1,6 +1,7 @@
 <resources>
     <string name="title_activity_settings">Settings</string>
     <string name="pref_category_general">General</string>
+    <string name="pref_title_user_info">User info</string>
     <string name="pref_log_out">Log out</string>
     <string name="pref_sign_in">Sign in</string>
     <string name="pref_category_user">User</string>
@@ -13,5 +14,5 @@
     <string name="pref_title_force_touch">2.5D Touch (Experimental)</string>
     <string name="pref_summary_force_touch">Quick preview topic by deeply press</string>
     <string name="pref_title_content_selectable">Content be selectable</string>
-    <string name="pref_summary_content_selectable">Let topic content be selectable, may cause crash on some devices</string>
+    <string name="pref_summary_content_selectable">May cause crash on some devices</string>
 </resources>

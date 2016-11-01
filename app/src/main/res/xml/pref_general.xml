@@ -26,7 +26,8 @@
     <PreferenceCategory
         android:key="user"
         android:title="@string/pref_category_user">
-        <Preference android:key="user_info"/>
+        <Preference android:key="user_info"
+                    android:title="@string/pref_title_user_info" />
         <SwitchPreference android:key="receive_notifications"
                     android:title="@string/pref_receive_notifications"
                     android:summary="@string/pref_summary_receive_notifications" />

@@ -24,7 +24,7 @@ apply plugin: 'io.fabric'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "25.0.0"
     defaultConfig {
         applicationId "com.czbix.v2ex"
@@ -73,12 +73,14 @@ android {
 }
 
 // Android support library version
-ext.support_version = '23.4.0'
-ext.gms_version = '9.4.0'
+ext.support_version = '24.2.1'
+ext.gms_version = '9.8.0'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "com.android.support:appcompat-v7:$support_version"
+    compile "com.android.support:support-compat:$support_version"
+    compile "com.android.support:support-core-utils:$support_version"
+    compile "com.android.support:support-fragment:$support_version"
     compile 'com.google.guava:guava:19.0'
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile 'com.google.code.gson:gson:2.7'

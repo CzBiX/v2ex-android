@@ -71,14 +71,16 @@ class SettingsActivity : BaseActivity() {
             mNotificationsPref = findPreference(PREF_KEY_RECEIVE_NOTIFICATIONS) as SwitchPreference
             val logoutPref = findPreference(PREF_KEY_LOGOUT)
 
-            infoPref.title = UserState.getInstance().username
-            infoPref.setOnPreferenceClickListener { preference ->
+            infoPref.summary = UserState.getInstance().username
+            infoPref.setOnPreferenceClickListener {
                 MiscUtils.openUrl(activity, Member.buildUrlFromName(
                         UserState.getInstance().username))
                 false
             }
 
-            mNotificationsPref!!.setOnPreferenceChangeListener { preference, newValue -> toggleReceiveNotifications(newValue as Boolean) }
+            mNotificationsPref!!.setOnPreferenceChangeListener {
+                preference, newValue -> toggleReceiveNotifications(newValue as Boolean)
+            }
             logoutPref.onPreferenceClickListener = this
         }
 
