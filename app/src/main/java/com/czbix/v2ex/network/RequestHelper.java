@@ -31,13 +31,13 @@ import com.czbix.v2ex.parser.Parser;
 import com.czbix.v2ex.parser.Parser.PageType;
 import com.czbix.v2ex.parser.TopicListParser;
 import com.czbix.v2ex.parser.TopicParser;
+import com.czbix.v2ex.ui.loader.TopicListLoader;
 import com.czbix.v2ex.util.GsonUtilsKt;
 import com.czbix.v2ex.util.IoUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.TrackerUtils;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
-import com.franmontiel.persistentcookiejar.persistence.CookiePersistor;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Stopwatch;
@@ -51,7 +51,6 @@ import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -59,8 +58,6 @@ import java.util.concurrent.TimeUnit;
 import kotlin.Triple;
 import kotlin.jvm.functions.Function1;
 import okhttp3.Cache;
-import okhttp3.Cookie;
-import okhttp3.CookieJar;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -129,7 +126,7 @@ public class RequestHelper {
         cookieJar.clear();
     }
 
-    public static List<Topic> getTopics(Page page) throws ConnectionException, RemoteException {
+    public static TopicListLoader.TopicList getTopics(Page page) throws ConnectionException, RemoteException {
         if (BuildConfig.DEBUG) {
             Log.v(TAG, "request latest topic for page: " + page.getTitle());
         }
@@ -144,7 +141,7 @@ public class RequestHelper {
         }
 
         final Document doc;
-        final List<Topic> topics;
+        final TopicListLoader.TopicList topics;
         try {
             doc = Parser.toDoc(response.body().string());
             processUserState(doc, page instanceof Tab ? PageType.Tab : PageType.Node);
@@ -337,9 +334,9 @@ public class RequestHelper {
         sendRequest(request, isComment);
     }
 
-    public static void favor(Favable obj, boolean isFavor, String csrfToken) throws ConnectionException, RemoteException {
-        final String url = isFavor ? obj.getFavUrl() : obj.getUnFavUrl();
-        final Request request = newRequest().url(url + "?t=" + csrfToken)
+    public static void favor(Favable obj, boolean isFavor, String token) throws ConnectionException, RemoteException {
+        final String url = isFavor ? obj.getFavUrl(token) : obj.getUnFavUrl(token);
+        final Request request = newRequest().url(url)
                 .build();
 
         final Response response = sendRequest(request, false);

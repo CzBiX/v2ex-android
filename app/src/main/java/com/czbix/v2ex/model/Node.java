@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Node extends Page implements Comparable<Node>,ExArrayAdapter.Filterable {
+public class Node extends Page implements Comparable<Node>, ExArrayAdapter.Filterable, Favable {
     private static final Pattern PATTERN = Pattern.compile("/go/(.+?)(?:\\W|$)");
     private static final Collator COLLATOR = Collator.getInstance(Locale.CHINA);
 
@@ -124,6 +124,16 @@ public class Node extends Page implements Comparable<Node>,ExArrayAdapter.Filter
     @Override
     public int compareTo(@NonNull Node another) {
         return COLLATOR.compare(getTitle(), another.getTitle());
+    }
+
+    @Override
+    public String getFavUrl(String token) {
+        return String.format("%s/favorite/node/%d?once=%s", RequestHelper.BASE_URL, mId, token);
+    }
+
+    @Override
+    public String getUnFavUrl(String token) {
+        return String.format("%s/unfavorite/node/%d?once=%s", RequestHelper.BASE_URL, mId, token);
     }
 
     public static class Builder {

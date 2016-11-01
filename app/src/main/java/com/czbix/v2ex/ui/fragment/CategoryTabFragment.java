@@ -98,7 +98,7 @@ public class CategoryTabFragment extends BaseTabFragment implements SharedPrefer
         }
 
         public Fragment getItem(int position) {
-            return TopicListFragment.newInstance(mTabs.get(position));
+            return TopicListFragment.Companion.newInstance(mTabs.get(position));
         }
 
         @Override

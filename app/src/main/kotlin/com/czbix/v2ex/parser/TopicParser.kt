@@ -7,7 +7,6 @@ import com.czbix.v2ex.model.*
 import com.google.common.base.Preconditions
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
-import org.jsoup.nodes.TextNode
 
 object TopicParser : Parser() {
     private val PATTERN_TOPIC_REPLY_TIME = "at (.+?),".toRegex()
@@ -48,9 +47,7 @@ object TopicParser : Parser() {
     private fun parseOnceToken(parent: Element): String? {
         return JsoupObjects(parent).child(".box:nth-child(5)")
                 .child(".cell:nth-child(2)").child("form").child("[name=once]")
-                .firstOrNull()?.let {
-            it.`val`()
-        }
+                .firstOrNull()?.let(Element::`val`)
     }
 
     private fun parseFavored(builder: Topic.Builder, box: Element): String {

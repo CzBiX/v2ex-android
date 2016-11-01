@@ -1,8 +1,10 @@
 package com.czbix.v2ex.parser
 
+import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.common.exception.FatalException
 import com.czbix.v2ex.helper.JsoupObjects
 import com.czbix.v2ex.model.*
+import com.czbix.v2ex.ui.loader.TopicListLoader
 import com.google.common.base.Preconditions
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -13,7 +15,7 @@ object TopicListParser : Parser() {
     private val PATTERN_REPLY_TIME = Pattern.compile("•\\s*(.+?)(?:\\s+•|$)")
 
     @JvmStatic
-    fun parseDoc(doc: Document, page: Page): List<Topic> {
+    fun parseDoc(doc: Document, page: Page): TopicListLoader.TopicList {
         val contentBox = JsoupObjects(doc).bfs("body").child("#Wrapper").child(".content").child("#Main").child(".box").first()
 
         if (page is Node) {
@@ -25,18 +27,34 @@ object TopicListParser : Parser() {
         }
     }
 
-    private fun parseDocForTab(contentBox: Element): List<Topic> {
+    private fun parseDocForTab(contentBox: Element): TopicListLoader.TopicList {
         val elements = JsoupObjects(contentBox).child(".item").child("table").child("tbody").child("tr")
         return elements.map {
             parseItemForTab(it)
+        }.let {
+            TopicListLoader.TopicList(it, false)
         }
     }
 
-    private fun parseDocForNode(contentBox: Element, node: Node): List<Topic> {
+    private fun parseDocForNode(contentBox: Element, node: Node): TopicListLoader.TopicList {
+        val (favorited, once) = parseFavorited(contentBox)
         val elements = JsoupObjects(contentBox).child("#TopicsNode").child(".cell").child("table").child("tbody").child("tr")
         return elements.map {
             parseItemForNode(it, node)
+        }.let {
+            TopicListLoader.TopicList(it, favorited, once)
         }
+    }
+
+    private fun parseFavorited(contentBox: Element): Pair<Boolean, String?> {
+        if (!UserState.getInstance().isLoggedIn) {
+            return false to null
+        }
+
+        val a = JsoupObjects(contentBox).child(".header").child(".fr").child("a").first()
+        val href = a.attr("href")
+
+        return href.startsWith("/unfav") to href.substringAfterLast("?once=")
     }
 
     private fun parseItemForTab(item: Element): Topic {

@@ -78,9 +78,7 @@ class JsoupObjects : Iterable<Element> {
 
     infix fun adjacent(query: String): JsoupObjects {
         val evaluator = parseQuery(query)
-        addOneQuery(evaluator) {
-            it.nextElementSibling()
-        }
+        addOneQuery(evaluator, Element::nextElementSibling)
         return this
     }
 
@@ -116,12 +114,12 @@ class JsoupObjects : Iterable<Element> {
 
         @JvmStatic
         fun child(ele: Element, query: String): Element {
-            return JsoupObjects(ele).child(query).first();
+            return JsoupObjects(ele).child(query).first()
         }
 
         @JvmStatic
         fun parents(ele: Element, query: String): Element {
-            return JsoupObjects(ele).parents(query).first();
+            return JsoupObjects(ele).parents(query).first()
         }
 
         private fun parseQuery(query: String) = EVALUATOR_LRU_CACHE.get(query)

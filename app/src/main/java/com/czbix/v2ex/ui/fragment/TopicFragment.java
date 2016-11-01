@@ -398,11 +398,11 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mCommentAdapter.notifyDataSetChanged();
 
-        getActivity().invalidateOptionsMenu();
-
         mFavored = mTopic.isFavored();
         mCsrfToken = data.mCsrfToken;
         mOnceToken = data.mOnceToken;
+
+        getActivity().invalidateOptionsMenu();
 
         if (mReplyForm == null &&
                 UserState.getInstance().isLoggedIn() &&

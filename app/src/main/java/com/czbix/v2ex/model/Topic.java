@@ -3,7 +3,6 @@ package com.czbix.v2ex.model;
 import android.os.Parcel;
 import android.support.annotation.Nullable;
 
-import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -108,13 +107,13 @@ public class Topic extends Page implements Thankable, Ignorable, Favable {
     }
 
     @Override
-    public String getFavUrl() {
-        return String.format("%s/favorite/topic/%d", RequestHelper.BASE_URL, mId);
+    public String getFavUrl(String token) {
+        return String.format("%s/favorite/topic/%d?t=%s", RequestHelper.BASE_URL, mId, token);
     }
 
     @Override
-    public String getUnFavUrl() {
-        return String.format("%s/unfavorite/topic/%d", RequestHelper.BASE_URL, mId);
+    public String getUnFavUrl(String token) {
+        return String.format("%s/unfavorite/topic/%d?t=%s", RequestHelper.BASE_URL, mId, token);
     }
 
     public boolean isFavored() {

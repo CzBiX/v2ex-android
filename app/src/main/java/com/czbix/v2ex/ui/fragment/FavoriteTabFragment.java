@@ -35,7 +35,7 @@ public class FavoriteTabFragment extends BaseTabFragment {
 
         public Fragment getItem(int position) {
             return position == 0 ? FavNodeFragment.newInstance()
-                    : TopicListFragment.newInstance(Page.PAGE_FAV_TOPIC);
+                    : TopicListFragment.Companion.newInstance(Page.PAGE_FAV_TOPIC);
         }
 
         @Override
