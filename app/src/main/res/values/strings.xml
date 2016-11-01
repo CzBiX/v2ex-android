@@ -23,8 +23,8 @@
     <string name="menu_title_comment">Comment options</string>
     <string name="menu_action_thank">Like</string>
     <string name="menu_action_reply">Reply</string>
-    <string name="menu_action_ignore">Hide this comment</string>
-    <string name="menu_action_copy">Copy text</string>
+    <string name="menu_action_ignore">Ignore</string>
+    <string name="menu_action_copy">Copy</string>
 
     <string name="desc_open_drawer">Open navigation drawer</string>
     <string name="desc_close_drawer">Close navigation drawer</string>
@@ -65,8 +65,8 @@
     <string name="drawer_favorite" translatable="false">@string/title_fragment_favorite</string>
     <string name="title_fragment_favorite">Favorites</string>
     <string name="title_postscript">Postscripts %d</string>
-    <string name="toast_topic_ignored">Successfully hid the topic!</string>
-    <string name="action_fav">Favorites</string>
+    <string name="toast_topic_ignored">Topic Ignored!</string>
+    <string name="action_fav">Favorite</string>
     <string name="toast_can_not_found_comments_of_the_author">Can\'t found comments of %s!</string>
     <string name="toast_register_device_failed">Device registration failed!</string>
     <string name="toast_unregister_device_failed">Failed to unregister the device!</string>
