@@ -16,7 +16,7 @@ public class GlideConfig implements GlideModule {
 
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
-        int DEFAULT_DISK_CACHE_SIZE = 64 * 1024 * 1024;
+        int DEFAULT_DISK_CACHE_SIZE = 32 * 1024 * 1024;
 
         builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888)
                 .setDiskCache(new InternalCacheDiskCacheFactory(context, DEFAULT_DISK_CACHE_SIZE));

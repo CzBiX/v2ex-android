@@ -106,7 +106,7 @@ public class RequestHelper {
 
     private static Cache buildCache() {
         final File cacheDir = IoUtils.getWebCachePath();
-        final int cacheSize = 64 * 1024 * 1024;
+        final int cacheSize = 16 * 1024 * 1024;
 
         return new Cache(cacheDir, cacheSize);
     }
