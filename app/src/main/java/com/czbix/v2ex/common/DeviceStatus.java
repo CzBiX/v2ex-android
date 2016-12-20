@@ -31,21 +31,25 @@ public class DeviceStatus {
         context.registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                updateNetworkStatus();
+                updateNetworkStatus(intent);
             }
         }, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-        updateNetworkStatus();
+        updateNetworkStatus(null);
     }
 
-    private void updateNetworkStatus() {
+    private void updateNetworkStatus(Intent intent) {
         mIsNetworkMetered = ConnectivityManagerCompat.isActiveNetworkMetered(mConnectivityManager);
 
-        final NetworkInfo activeNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
-        if (activeNetworkInfo == null) {
-            mIsNetworkConnected = false;
+        if (intent == null) {
+            final NetworkInfo activeNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+            if (activeNetworkInfo == null) {
+                mIsNetworkConnected = false;
+            } else {
+                mIsNetworkConnected = activeNetworkInfo.isConnected();
+            }
         } else {
-            mIsNetworkConnected = activeNetworkInfo.isConnected();
+            mIsNetworkConnected = !intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
         }
     }
 

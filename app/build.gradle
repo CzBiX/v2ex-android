@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.0.4'
+    ext.kotlin_version = '1.0.5-2'
     repositories {
         maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
@@ -28,7 +28,7 @@ android {
     buildToolsVersion "25.0.0"
     defaultConfig {
         applicationId "com.czbix.v2ex"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 23
         versionCode 71
         versionName "1.23.0"
