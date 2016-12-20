@@ -315,11 +315,13 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                         String.format("%s\n%s", mTopic.getTitle(), mTopic.getUrl()));
                 return true;
             case R.id.action_copy:
-                String titleWithNewLine = mTopic.getTitle() + '\n';
                 MiscUtils.setClipboard(getActivity(),
                         ClipData.newHtmlText(mTopic.getTitle(),
-                                titleWithNewLine + Html.fromHtml(mTopic.getContent()).toString(),
-                                titleWithNewLine+ mTopic.getContent()));
+                                String.format("%s\n%s", mTopic.getTitle(),
+                                        Html.fromHtml(mTopic.getContent()).toString()),
+                                String.format("<p>%s</p>%s", mTopic.getTitle(),
+                                        mTopic.getContent())));
+                return true;
             case R.id.action_refresh:
                 setIsLoading(true);
                 onRefresh();
