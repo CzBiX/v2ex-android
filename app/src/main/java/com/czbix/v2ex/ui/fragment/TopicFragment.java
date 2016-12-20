@@ -60,6 +60,7 @@ import com.czbix.v2ex.ui.adapter.CommentAdapter;
 import com.czbix.v2ex.ui.helper.ReplyFormHelper;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.ui.loader.TopicLoader;
+import com.czbix.v2ex.ui.util.Html;
 import com.czbix.v2ex.ui.widget.AvatarView;
 import com.czbix.v2ex.ui.widget.CommentView;
 import com.czbix.v2ex.ui.widget.DividerItemDecoration;
@@ -311,8 +312,14 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         switch (item.getItemId()) {
             case R.id.action_copy_link:
                 MiscUtils.setClipboard(getActivity(), getString(R.string.desc_topic_link),
-                        mTopic.getUrl());
+                        String.format("%s\n%s", mTopic.getTitle(), mTopic.getUrl()));
                 return true;
+            case R.id.action_copy:
+                String titleWithNewLine = mTopic.getTitle() + '\n';
+                MiscUtils.setClipboard(getActivity(),
+                        ClipData.newHtmlText(mTopic.getTitle(),
+                                titleWithNewLine + Html.fromHtml(mTopic.getContent()).toString(),
+                                titleWithNewLine+ mTopic.getContent()));
             case R.id.action_refresh:
                 setIsLoading(true);
                 onRefresh();
