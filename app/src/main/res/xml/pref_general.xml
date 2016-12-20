@@ -37,4 +37,10 @@
         <Preference android:key="logout"
                     android:title="@string/pref_log_out"/>
     </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/drawer_about">
+        <Preference android:key="version"
+                    android:title="@string/pref_version"
+                    android:enabled="false" />
+    </PreferenceCategory>
 </PreferenceScreen>

@@ -373,13 +373,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 try {
                     startActivity(intent)
                 } catch (e: ActivityNotFoundException) {
-                    Toast.makeText(this, R.string.toast_email_app_not_found, Toast.LENGTH_SHORT)
+                    Toast.makeText(this, R.string.toast_email_app_not_found, Toast.LENGTH_SHORT).show()
                 }
-                true
-            }
-            R.id.drawer_about -> {
-                Toast.makeText(this, getString(R.string.toast_app_version, BuildConfig.VERSION_NAME),
-                        Toast.LENGTH_SHORT).show()
                 true
             }
             else -> false

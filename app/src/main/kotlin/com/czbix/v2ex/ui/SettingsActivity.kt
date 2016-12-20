@@ -124,6 +124,9 @@ class SettingsActivity : BaseActivity() {
             } else {
                 loginPref.onPreferenceClickListener = this
             }
+
+            findPreference(PREF_KEY_VERSION).summary =
+                    "%s(%d) by CzBiX".format(BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
         }
 
         override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -193,6 +196,7 @@ class SettingsActivity : BaseActivity() {
             private const val PREF_KEY_DEBUG = "debug"
             private const val PREF_KEY_LOGOUT = "logout"
             private const val PREF_KEY_ENABLE_FORCE_TOUCH = "enable_force_touch"
+            private const val PREF_KEY_VERSION = "version"
 
             private const val REQ_LOGIN = 0
         }
