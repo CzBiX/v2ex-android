@@ -22,6 +22,10 @@ fun <T> Observable<T>.await(onNext: (T) -> Unit, onError: (Throwable) -> Unit): 
     return this.observeOn(AndroidSchedulers.mainThread()).subscribe(onNext, onError)
 }
 
+fun <T> Observable<T>.await(onNext: (T) -> Unit, onError: (Throwable) -> Unit, onComplete: () -> Unit): Subscription {
+    return this.observeOn(AndroidSchedulers.mainThread()).subscribe(onNext, onError, onComplete)
+}
+
 fun MutableList<Subscription>.unsubscribe() {
     this.forEach { it.unsubscribe() }
     this.clear()

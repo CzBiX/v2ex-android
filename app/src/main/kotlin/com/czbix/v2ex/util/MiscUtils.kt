@@ -83,7 +83,8 @@ object MiscUtils {
     }
 
     @JvmStatic
-    fun openUrl(activity: Activity, url: String) {
+    @JvmOverloads
+    fun openUrl(activity: Activity, url: String, findMyself: Boolean = true) {
         if (isEmailLink(url)) {
             val emailIntent = getEmailIntent(url)
             activity.startActivity(emailIntent)
@@ -95,19 +96,18 @@ object MiscUtils {
         val packageManager = activity.packageManager
         val resolveInfos = packageManager.queryIntentActivities(intent, 0)
 
-        var findMyself = false
-        for (resolveInfo in resolveInfos) {
-            if (resolveInfo.activityInfo.packageName == BuildConfig.APPLICATION_ID) {
-                findMyself = true
-                break
+        if (findMyself) {
+            val foundMyself = resolveInfos.any {
+                it.activityInfo.packageName == BuildConfig.APPLICATION_ID
+            }
+
+            if (foundMyself) {
+                intent.`package` = BuildConfig.APPLICATION_ID
+                activity.startActivity(intent)
+                return
             }
         }
 
-        if (findMyself) {
-            intent.`package` = BuildConfig.APPLICATION_ID
-            activity.startActivity(intent)
-            return
-        }
 
         val builder = CustomTabsHelper.getBuilder(activity, null)
         builder.build().launchUrl(activity, uri)

@@ -14,7 +14,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.PrefStore
 import com.czbix.v2ex.common.UserState
@@ -26,17 +25,13 @@ import com.czbix.v2ex.google.GoogleHelper
 import com.czbix.v2ex.helper.CustomTabsHelper
 import com.czbix.v2ex.model.LoginResult
 import com.czbix.v2ex.network.RequestHelper
-import com.czbix.v2ex.ui.fragment.GoogleLoginDialog
 import com.czbix.v2ex.util.LogUtils
-import com.czbix.v2ex.util.async
-import com.czbix.v2ex.util.await
 import rx.Subscription
-import java.io.IOException
 
 /**
  * A login screen that offers login via account/password.
  */
-class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.GoogleSignInListener {
+class LoginActivity : BaseActivity(), View.OnClickListener {
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -72,12 +67,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
         val mSignIn = findViewById(R.id.sign_in) as Button
         mSignIn.setOnClickListener(this)
 
-        findViewById(R.id.sign_up)!!.setOnClickListener(this)
+        findViewById(R.id.sign_up).setOnClickListener(this)
 
-        findViewById(R.id.google_sign_in)!!.setOnClickListener(this)
-
-        mLoginFormView = findViewById(R.id.login_form)!!
-        mProgressView = findViewById(R.id.login_progress)!!
+        mLoginFormView = findViewById(R.id.login_form)
+        mProgressView = findViewById(R.id.login_progress)
     }
 
     override fun onClick(v: View) {
@@ -88,49 +81,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
                 val builder = CustomTabsHelper.getBuilder(this, null)
                 builder.build().launchUrl(this, uri)
             }
-            R.id.google_sign_in -> onGoogleSignIn()
         }
-    }
-
-    private fun onGoogleSignIn() {
-        showProgress(true)
-
-        sub?.unsubscribe();
-
-        sub = async() {
-            RequestHelper.getGoogleSignInUrl()
-        }.await(onNext = {
-            val dialog = GoogleLoginDialog.newInstance(it)
-            supportFragmentManager.beginTransaction().add(dialog, null).commit()
-        }, onError = {
-            onGoogleSignInFailed(it)
-        })
-    }
-
-    private fun onGoogleSignInFailed(throwable: Throwable) {
-        LogUtils.w(TAG, "google login failed", throwable)
-        if (throwable !is IOException) {
-            Crashlytics.logException(throwable)
-        }
-        Toast.makeText(this, R.string.toast_sign_in_failed, Toast.LENGTH_LONG).show()
-        onGoogleSignInCancelled()
-    }
-
-    override fun onGoogleSignedIn(url: String) {
-        LogUtils.d(TAG, "result url: %s", url)
-
-        sub?.unsubscribe()
-
-        sub = async() {
-            RequestHelper.loginViaGoogle(url)
-        }.doOnNext {
-            onLogin(it)
-        }.await(onNext = {
-            onLoginSuccess(it.mUsername)
-            showProgress(false)
-        }, onError = {
-            onGoogleSignInFailed(it)
-        })
     }
 
     private fun onLogin(result: LoginResult) {
@@ -138,10 +89,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener, GoogleLoginDialog.Go
         if (PrefStore.getInstance().shouldReceiveNotifications()) {
             startService(GoogleHelper.getRegistrationIntentToStartService(this, true))
         }
-    }
-
-    override fun onGoogleSignInCancelled() {
-        showProgress(false)
     }
 
     override fun onStop() {
