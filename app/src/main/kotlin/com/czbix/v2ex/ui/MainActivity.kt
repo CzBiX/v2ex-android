@@ -365,7 +365,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }
             R.id.drawer_feedback -> {
                 val intent = Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:")).apply {
-                    putExtra(Intent.EXTRA_EMAIL, arrayOf("gliuwr+gp@gmail.com"))
+                    putExtra(Intent.EXTRA_EMAIL, arrayOf("googleplay@czbix.com"))
                     putExtra(Intent.EXTRA_SUBJECT, String.format("V2EX(%s) feedback",
                             BuildConfig.VERSION_NAME))
                 }
