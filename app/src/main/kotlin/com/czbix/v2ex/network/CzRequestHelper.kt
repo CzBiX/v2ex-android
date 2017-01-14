@@ -72,7 +72,8 @@ object CzRequestHelper {
 
         val body = FormBody.Builder().add("action", "del_gcm_token").add("token", token).build()
         val request = newRequest().apply {
-            url(API_SETTINGS.format(body))
+            url(API_SETTINGS.format(username))
+            post(body)
         }.build()
 
         RequestHelper.sendRequest(request)
@@ -88,7 +89,7 @@ object CzRequestHelper {
             add("token", token)
         }.build()
         val request = newRequest().apply {
-            url(String.format(API_SETTINGS, username))
+            url(API_SETTINGS.format(username))
             post(body)
         }.build()
 
