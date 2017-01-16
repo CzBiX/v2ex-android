@@ -31,6 +31,21 @@ fun MutableList<Subscription>.unsubscribe() {
     this.clear()
 }
 
+/**
+ * @see rx.exceptions.Exceptions.propagate
+ */
 fun <T> Observable<T>.result(): T {
-    return this.toBlocking().last()
+    try {
+        return this.toBlocking().last()
+    } catch (e: RuntimeException) {
+        // unwarp RuntimeException for Exceptions.propagate
+        val cause = e.cause
+        if (cause == null) {
+            throw e
+        } else if (cause === e) {
+            throw e
+        } else {
+            throw cause
+        }
+    }
 }
