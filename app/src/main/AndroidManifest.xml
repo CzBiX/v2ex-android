@@ -180,7 +180,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".google.gcm.RegistrationIntentService"
+            android:name=".service.RegistrationIntentService"
             android:exported="false" >
         </service>
         <service android:name=".google.gcm.GcmTaskService"

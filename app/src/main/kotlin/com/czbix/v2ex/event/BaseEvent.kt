@@ -12,5 +12,5 @@ abstract class BaseEvent {
 
     class ContextInitFinishEvent : BaseEvent()
 
-    class NodeEvent(): BaseEvent()
+    class NodeEvent : BaseEvent()
 }

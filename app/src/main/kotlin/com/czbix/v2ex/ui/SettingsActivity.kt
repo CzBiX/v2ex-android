@@ -13,12 +13,13 @@ import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.BuildConfig
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.UserState
-import com.czbix.v2ex.eventbus.gcm.DeviceRegisterEvent
+import com.czbix.v2ex.event.DeviceRegisterEvent
 import com.czbix.v2ex.google.GoogleHelper
+import com.czbix.v2ex.helper.RxBus
 import com.czbix.v2ex.model.Member
 import com.czbix.v2ex.util.MiscUtils
 import com.google.common.base.Strings
-import com.google.common.eventbus.Subscribe
+import rx.Subscription
 
 class SettingsActivity : BaseActivity() {
     private val mFragment = PrefsFragment()
@@ -47,7 +48,9 @@ class SettingsActivity : BaseActivity() {
     }
 
     class PrefsFragment : PreferenceFragment(), Preference.OnPreferenceClickListener {
-        private var mNotificationsPref: SwitchPreference? = null
+        private var isLogin: Boolean = false
+        private lateinit var mNotificationsPref: SwitchPreference
+        private var task: Subscription? = null
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -60,9 +63,9 @@ class SettingsActivity : BaseActivity() {
         }
 
         private fun initUser() {
+            isLogin = UserState.getInstance().isLoggedIn
             val user = findPreference(PREF_KEY_CATEGORY_USER) as PreferenceCategory
-            if (!UserState.getInstance().isLoggedIn) {
-                mNotificationsPref = null
+            if (!isLogin) {
                 preferenceScreen.removePreference(user)
                 return
             }
@@ -78,7 +81,7 @@ class SettingsActivity : BaseActivity() {
                 false
             }
 
-            mNotificationsPref!!.setOnPreferenceChangeListener {
+            mNotificationsPref.setOnPreferenceChangeListener {
                 preference, newValue -> toggleReceiveNotifications(newValue as Boolean)
             }
             logoutPref.onPreferenceClickListener = this
@@ -87,18 +90,25 @@ class SettingsActivity : BaseActivity() {
         override fun onStart() {
             super.onStart()
 
-            if (mNotificationsPref == null) {
+            if (!isLogin) {
                 // user not login yet
                 return
             }
 
             val errMsg = GoogleHelper.checkPlayServices(activity)
             if (Strings.isNullOrEmpty(errMsg)) {
-                mNotificationsPref!!.isEnabled = true
+                mNotificationsPref.isEnabled = true
                 return
             }
             showPlayServicesErrorToast(errMsg)
-            mNotificationsPref!!.isEnabled = false
+            mNotificationsPref.isEnabled = false
+        }
+
+        override fun onStop() {
+            super.onStop()
+
+            task?.unsubscribe()
+            task = null
         }
 
         private fun showPlayServicesErrorToast(errMsg: String) {
@@ -141,20 +151,19 @@ class SettingsActivity : BaseActivity() {
 
         private fun toggleReceiveNotifications(turnOn: Boolean): Boolean {
             check(UserState.getInstance().isLoggedIn) { "guest can't toggle notifications" }
+            task?.unsubscribe()
 
-            mNotificationsPref!!.isEnabled = false
-            AppCtx.eventBus.register(this)
+            mNotificationsPref.isEnabled = false
+            task = RxBus.subscribe<DeviceRegisterEvent> {
+                onDeviceRegisterEvent(it)
+            }
             activity.startService(GoogleHelper.getRegistrationIntentToStartService(activity, turnOn))
             return false
         }
 
-        @Subscribe
         fun onDeviceRegisterEvent(e: DeviceRegisterEvent) {
-            AppCtx.eventBus.unregister(this)
-
-            val pref = mNotificationsPref!!
             if (e.isSuccess) {
-                pref.isChecked = e.isRegister
+                mNotificationsPref.isChecked = e.isRegister
             } else {
                 val resId =if (e.isRegister) {
                     R.string.toast_register_device_failed
@@ -162,9 +171,9 @@ class SettingsActivity : BaseActivity() {
                     R.string.toast_unregister_device_failed
                 }
                 Toast.makeText(AppCtx.instance, resId, Toast.LENGTH_LONG).show()
-                pref.isChecked = !e.isRegister
+                mNotificationsPref.isChecked = !e.isRegister
             }
-            pref.isEnabled = true
+            mNotificationsPref.isEnabled = true
         }
 
         override fun onPreferenceClick(preference: Preference): Boolean {

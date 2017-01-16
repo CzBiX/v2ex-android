@@ -6,7 +6,7 @@ import android.content.Intent;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
-import com.czbix.v2ex.google.gcm.RegistrationIntentService;
+import com.czbix.v2ex.service.RegistrationIntentService;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
