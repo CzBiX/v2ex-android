@@ -41,7 +41,7 @@
     <string name="toast_topic_not_found">Topic not found!</string>
     <string name="toast_access_denied">Access denied, please try again later!</string>
     <string name="toast_parse_failed">Parse failed!</string>
-    <string name="pref_title_load_image_on_mobile_network">Load images while using mobile network</string>
+    <string name="pref_title_always_load_image">Always load images</string>
     <string name="pref_summary_load_image_on_mobile_network">Load images in topic/comment while using mobile network</string>
     <string name="toast_has_sign_out">Signed out!</string>
     <string name="title_fragment_notifications">Notifications</string>

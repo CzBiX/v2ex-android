@@ -43,7 +43,7 @@
     <string name="toast_connection_exception">网络连接失败…</string>
     <string name="toast_need_sign_in">请先登录！</string>
     <string name="toast_remote_exception">服务器错误，请稍候再试！</string>
-    <string name="pref_title_load_image_on_mobile_network">使用移动网络时载入图片</string>
+    <string name="pref_title_always_load_image">总是显示图片</string>
     <string name="pref_summary_load_image_on_mobile_network">在使用移动网络时，载入主题或回复中的图片</string>
     <string name="toast_has_sign_out">账户已登出！</string>
     <string name="notification_fav_topic">收藏了你的主题</string>

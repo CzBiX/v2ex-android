@@ -17,7 +17,7 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
     private static final int VERSION = 3;
 
     private static PrefStore instance;
-    private static final String PREF_LOAD_IMAGE_ON_MOBILE_NETWORK = "load_image_on_mobile_network";
+    private static final String PREF_ALWAYS_LOAD_IMAGE = "load_image_on_mobile_network";
     public static final String PREF_TABS_TO_SHOW = "tabs_to_show";
     public static final String PREF_RECEIVE_NOTIFICATIONS = "receive_notifications";
     private static final String PREF_ALWAYS_SHOW_REPLY_FORM = "always_show_reply_form";
@@ -76,12 +76,12 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
         return instance;
     }
 
-    public boolean isLoadImageOnMobileNetwork() {
-        return mPreferences.getBoolean(PREF_LOAD_IMAGE_ON_MOBILE_NETWORK, false);
+    public boolean alwaysLoadImage() {
+        return mPreferences.getBoolean(PREF_ALWAYS_LOAD_IMAGE, false);
     }
 
     public boolean shouldLoadImage() {
-        return isLoadImageOnMobileNetwork() || !DeviceStatus.getInstance().isNetworkMetered();
+        return alwaysLoadImage() || !DeviceStatus.getInstance().isNetworkMetered();
     }
 
     /**

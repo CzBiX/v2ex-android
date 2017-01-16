@@ -6,8 +6,8 @@
                     android:title="Debug"/>
         <Preference android:key="login"
                     android:title="@string/pref_sign_in"/>
-        <SwitchPreference android:key="load_image_on_mobile_network"
-                          android:title="@string/pref_title_load_image_on_mobile_network"
+        <SwitchPreference android:key="always_load_image"
+                          android:title="@string/pref_title_always_load_image"
                           android:summary="@string/pref_summary_load_image_on_mobile_network"/>
         <SwitchPreference android:key="always_show_reply_form"
                           android:title="@string/pref_title_always_show_reply_form" />
