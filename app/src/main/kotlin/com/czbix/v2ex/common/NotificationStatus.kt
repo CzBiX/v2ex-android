@@ -9,26 +9,35 @@ import android.support.v4.app.NotificationManagerCompat
 import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.R
 import com.czbix.v2ex.event.BaseEvent.NewUnreadEvent
+import com.czbix.v2ex.helper.RxBus
 import com.czbix.v2ex.ui.MainActivity
 import com.czbix.v2ex.util.MiscUtils
 import com.google.common.eventbus.Subscribe
 
-class NotificationStatus internal constructor(private val mContext: Context) {
-
+object NotificationStatus {
+    private val context: Context
     private val mNtfManager: NotificationManagerCompat
 
-    init {
-        mNtfManager = NotificationManagerCompat.from(mContext)
-    }
+    @Retention(AnnotationRetention.SOURCE)
+    @IntDef(ID_NOTIFICATIONS.toLong(), ID_APP_UPDATE.toLong())
+    annotation class NotificationId
 
-    fun init() {
-        AppCtx.eventBus.register(this)
+    const val ID_NOTIFICATIONS = 0
+    const val ID_APP_UPDATE = 1
+
+    init {
+        context = AppCtx.instance
+        mNtfManager = NotificationManagerCompat.from(context)
+
+        RxBus.subscribe<NewUnreadEvent> {
+            onNewUnread(it)
+        }
     }
 
     fun showAppUpdate() {
-        val pendingIntent = PendingIntent.getActivity(mContext, 0, MiscUtils.appUpdateIntent, 0)
+        val pendingIntent = PendingIntent.getActivity(context, 0, MiscUtils.appUpdateIntent, 0)
 
-        val builder = NotificationCompat.Builder(mContext).apply {
+        val notification = NotificationCompat.Builder(context).apply {
             setSmallIcon(R.drawable.ic_update_black_24dp)
             setTicker(mContext.getString(R.string.ntf_title_app_update))
             setContentTitle(mContext.getString(R.string.ntf_title_app_update))
@@ -39,26 +48,25 @@ class NotificationStatus internal constructor(private val mContext: Context) {
             setLocalOnly(true)
 
             setContentIntent(pendingIntent)
-        }
+        }.build()
 
-        mNtfManager.notify(ID_APP_UPDATE, builder.build())
+        mNtfManager.notify(ID_APP_UPDATE, notification)
     }
 
-    @Subscribe
     fun onNewUnread(e: NewUnreadEvent) {
         if (!e.hasNew()) {
             cancelNotification(ID_NOTIFICATIONS)
             return
         }
 
-        val intent = Intent(mContext, MainActivity::class.java).apply {
+        val intent = Intent(context, MainActivity::class.java).apply {
             putExtra(MainActivity.BUNDLE_GOTO, MainActivity.GOTO_NOTIFICATIONS)
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
 
-        val pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
 
-        val builder = NotificationCompat.Builder(mContext).apply {
+        val notification = NotificationCompat.Builder(context).apply {
             setSmallIcon(R.drawable.ic_notifications_white_24dp)
             setTicker(mContext.getString(R.string.ntf_title_new_notifications))
             setContentTitle(mContext.getString(R.string.ntf_title_new_notifications))
@@ -69,28 +77,12 @@ class NotificationStatus internal constructor(private val mContext: Context) {
             setAutoCancel(true)
             setOnlyAlertOnce(true)
             setContentIntent(pendingIntent)
-        }
+        }.build()
 
-        mNtfManager.notify(ID_NOTIFICATIONS, builder.build())
+        mNtfManager.notify(ID_NOTIFICATIONS, notification)
     }
 
     fun cancelNotification(@NotificationId id: Int) {
         mNtfManager.cancel(id)
-    }
-
-    @Retention(AnnotationRetention.SOURCE)
-    @IntDef(ID_NOTIFICATIONS.toLong())
-    annotation class NotificationId
-
-    companion object {
-        @JvmStatic
-        val instance: NotificationStatus
-
-        const val ID_NOTIFICATIONS = 0
-        const val ID_APP_UPDATE = 1
-
-        init {
-            instance = NotificationStatus(AppCtx.instance)
-        }
     }
 }

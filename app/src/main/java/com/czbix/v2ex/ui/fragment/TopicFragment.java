@@ -264,7 +264,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         inflater.inflate(R.menu.menu_topic, menu);
 
-        if (UserState.getInstance().isLoggedIn()) {
+        if (UserState.INSTANCE.isLoggedIn()) {
             mFavIcon = menu.findItem(R.id.action_fav);
             updateFavIcon();
 
@@ -414,7 +414,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         getActivity().invalidateOptionsMenu();
 
         if (mReplyForm == null &&
-                UserState.getInstance().isLoggedIn() &&
+                UserState.INSTANCE.isLoggedIn() &&
                 PrefStore.getInstance().isAlwaysShowReplyForm()) {
             toggleReplyForm();
         }

@@ -4,6 +4,7 @@ import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.event.BaseEvent.NewUnreadEvent;
+import com.czbix.v2ex.helper.RxBus;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.android.gms.gcm.GcmNetworkManager;
@@ -38,7 +39,7 @@ public class GcmTaskService extends com.google.android.gms.gcm.GcmTaskService {
             return GcmNetworkManager.RESULT_RESCHEDULE;
         }
 
-        AppCtx.getEventBus().post(new NewUnreadEvent(unreadCount));
+        RxBus.INSTANCE.post(new NewUnreadEvent(unreadCount));
         if (unreadCount == 0) {
             GcmNetworkManager.getInstance(this)
                     .cancelTask(TASK_NOTIFICATION_CHECK, GcmTaskService.class);

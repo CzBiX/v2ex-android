@@ -150,12 +150,12 @@ object RequestHelper {
     }
 
     private fun processUserState(doc: Document, pageType: PageType) {
-        if (!UserState.getInstance().isLoggedIn) {
+        if (!UserState.isLoggedIn()) {
             return
         }
 
         val info = MyselfParser.parseDoc(doc, pageType)
-        UserState.getInstance().handleInfo(info, pageType)
+        UserState.handleInfo(info, pageType)
     }
 
     @Throws(ConnectionException::class, RemoteException::class)
@@ -185,7 +185,7 @@ object RequestHelper {
     }
 
     fun getFavNodes(): List<Node> {
-        Preconditions.checkState(UserState.getInstance().isLoggedIn, "guest can't check notifications")
+        Preconditions.checkState(UserState.isLoggedIn(), "guest can't check notifications")
         LogUtils.v(TAG, "get favorite nodes")
 
         val request = newRequest().url(URL_FAVORITE_NODES).build()
@@ -203,7 +203,7 @@ object RequestHelper {
 
     @Throws(ConnectionException::class, RemoteException::class)
     fun getUnreadNum(): Int {
-        Preconditions.checkState(UserState.getInstance().isLoggedIn, "guest can't check notifications")
+        Preconditions.checkState(UserState.isLoggedIn(), "guest can't check notifications")
         LogUtils.v(TAG, "get unread num")
 
         val request = newRequest()
@@ -222,7 +222,7 @@ object RequestHelper {
     }
 
     fun getNotifications(): List<Notification> {
-        Preconditions.checkState(UserState.getInstance().isLoggedIn, "guest can't check notifications")
+        Preconditions.checkState(UserState.isLoggedIn(), "guest can't check notifications")
         LogUtils.v(TAG, "get notifications")
 
         val request = newRequest().url(URL_NOTIFICATIONS)

@@ -9,6 +9,8 @@ import com.czbix.v2ex.event.BaseEvent;
 import com.google.common.eventbus.Subscribe;
 
 public abstract class BaseActivity extends AppCompatActivity {
+    private static final int REQ_CODE_LOADING = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +23,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             return;
         }
 
-        startActivityForResult(new Intent(this, LoadingActivity.class), 0);
+        startActivityForResult(new Intent(this, LoadingActivity.class), REQ_CODE_LOADING);
     }
 
     private class Wrapper {
@@ -29,7 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         public void onContextInitFinishEvent(BaseEvent.ContextInitFinishEvent e) {
             AppCtx.getEventBus().unregister(this);
 
-            finishActivity(0);
+            finishActivity(REQ_CODE_LOADING);
         }
     }
 }

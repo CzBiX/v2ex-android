@@ -103,12 +103,12 @@ public class CommentView extends FrameLayout implements View.OnClickListener,
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (!UserState.getInstance().isLoggedIn()) {
+        if (!UserState.INSTANCE.isLoggedIn()) {
             // anonymous can't do anything
             return;
         }
 
-        final String username = UserState.getInstance().getUsername();
+        final String username = UserState.INSTANCE.getUsername();
         if (mComment.getMember().getUsername().equals(username)) {
             // can't do action on comment by myself
             return;

@@ -33,7 +33,7 @@ object RxBus {
     }
 
     inline fun <reified T : BaseEvent> subscribe(scheduler: Scheduler = AndroidSchedulers.mainThread(),
-                                                                      noinline action: (T) -> Unit): Subscription {
+                                                 noinline action: (T) -> Unit): Subscription {
         return toObservable()
                 .filter { it is T }
                 .cast<T>()

@@ -113,7 +113,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private fun onAppUpdateEvent() {
         mUpdateItem.isVisible = true
         if (UpdateInfo.isRecommend) {
-            NotificationStatus.instance.showAppUpdate()
+            NotificationStatus.showAppUpdate()
         }
     }
 
@@ -181,18 +181,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         updateNavBackground()
         updateNotifications()
         updateFavItem()
-        setAwardVisibility(UserState.getInstance().hasAward())
+        setAwardVisibility(UserState.hasAward())
     }
 
     private fun updateNotifications() {
         val isEnable: Boolean
         val iconId: Int
         val titleId: Int
-        if (!UserState.getInstance().isLoggedIn) {
+        if (!UserState.isLoggedIn()) {
             isEnable = false
             iconId = R.drawable.ic_notifications_none_black_24dp
             titleId = R.string.drawer_notifications
-        } else if (UserState.getInstance().hasUnread()) {
+        } else if (UserState.hasUnread()) {
             isEnable = true
             iconId = R.drawable.ic_notifications_black_24dp
             titleId = R.string.drawer_unread_notifications
@@ -208,7 +208,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun updateFavItem() {
-        mFavItem.isEnabled = UserState.getInstance().isLoggedIn
+        mFavItem.isEnabled = UserState.isLoggedIn()
     }
 
     private fun updateNavBackground() {
@@ -222,7 +222,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         })
     }
 
-    @Subscribe
     fun onDailyMissionEvent(e: DailyAwardEvent) {
         if (!e.mHasAward && hasAward) {
             Toast.makeText(this, R.string.toast_daily_award_received, Toast.LENGTH_LONG).show()
@@ -270,7 +269,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                     LogUtils.w(TAG, "daily mission failed", e)
                 }
 
-                AppCtx.eventBus.post(DailyAwardEvent(!success))
+                RxBus.post(DailyAwardEvent(!success))
             }
         }
 
@@ -279,9 +278,8 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         mDrawerLayout.addDrawerListener(mDrawerToggle)
 
         mNavBg.setOnClickListener { v ->
-            val user = UserState.getInstance()
-            if (user.isLoggedIn) {
-                MiscUtils.openUrl(this@MainActivity, Member.buildUrlFromName(user.username))
+            if (UserState.isLoggedIn()) {
+                MiscUtils.openUrl(this@MainActivity, Member.buildUrlFromName(UserState.username))
             } else {
                 startActivity(Intent(this@MainActivity, LoginActivity::class.java))
             }
@@ -300,6 +298,18 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             }.let {
                 subscriptions += it
             }
+        }
+
+        RxBus.subscribe<NewUnreadEvent> {
+            updateNotifications()
+        }.let {
+            subscriptions += it
+        }
+
+        RxBus.subscribe<DailyAwardEvent> {
+            onDailyMissionEvent(it)
+        }.let {
+            subscriptions += it
         }
     }
 
@@ -406,7 +416,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun updateUsername() {
-        if (!UserState.getInstance().isLoggedIn) {
+        if (!UserState.isLoggedIn()) {
             mAvatar.visibility = View.INVISIBLE
             mUsername.setText(R.string.action_sign_in)
             return
@@ -427,7 +437,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
                 }
             })
         }
-        mUsername.text = UserState.getInstance().username
+        mUsername.text = UserState.username
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -451,7 +461,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun enableLoginMenu(menu: Menu) {
-        if (UserState.getInstance().isLoggedIn) {
+        if (UserState.isLoggedIn()) {
             return
         }
 
@@ -469,11 +479,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         updateUsername()
         updateNotifications()
         updateFavItem()
-    }
-
-    @Subscribe
-    fun onNewUnreadEvent(e: NewUnreadEvent) {
-        updateNotifications()
     }
 
     override fun onStop() {

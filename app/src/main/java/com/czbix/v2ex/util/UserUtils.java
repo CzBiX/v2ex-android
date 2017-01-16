@@ -7,6 +7,7 @@ import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.dao.ConfigDao;
 import com.czbix.v2ex.event.BaseEvent;
+import com.czbix.v2ex.helper.RxBus;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Preconditions;
@@ -15,7 +16,7 @@ public class UserUtils {
     private static final String TAG = UserUtils.class.getSimpleName();
 
     public static Avatar getAvatar() {
-        Preconditions.checkState(UserState.getInstance().isLoggedIn());
+        Preconditions.checkState(UserState.INSTANCE.isLoggedIn());
 
         final String url = ConfigDao.get(ConfigDao.KEY_AVATAR, null);
         Preconditions.checkNotNull(url);
@@ -24,7 +25,7 @@ public class UserUtils {
     }
 
     public static void checkDailyAward() {
-        if (!UserState.getInstance().isLoggedIn()) {
+        if (!UserState.INSTANCE.isLoggedIn()) {
             return;
         }
 
@@ -37,7 +38,7 @@ public class UserUtils {
         }
 
         if (hasAward) {
-            AppCtx.getEventBus().post(new BaseEvent.DailyAwardEvent(true));
+            RxBus.INSTANCE.post(new BaseEvent.DailyAwardEvent(true));
         }
     }
 }

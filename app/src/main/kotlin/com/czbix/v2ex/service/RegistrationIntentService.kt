@@ -27,7 +27,7 @@ class RegistrationIntentService : IntentService(TAG) {
 
     override fun onHandleIntent(intent: Intent?) {
         val isRegister: Boolean
-        if (!UserState.getInstance().isLoggedIn) {
+        if (!UserState.isLoggedIn()) {
             // unregister if user logout
             isRegister = false
         } else {
@@ -112,7 +112,7 @@ class RegistrationIntentService : IntentService(TAG) {
             return false
         }
 
-        val username = UserState.getInstance().username
+        val username = UserState.username!!
         if (!mPreferences.getBoolean(PREF_IS_USER_REGISTERED, false)) {
             CzRequestHelper.registerUser(username)
             mPreferences.edit().putBoolean(PREF_IS_USER_REGISTERED, true).apply()
@@ -131,7 +131,7 @@ class RegistrationIntentService : IntentService(TAG) {
 
     @Throws(ConnectionException::class, RemoteException::class)
     private fun deleteRegistrationOnServer(token: String): Boolean {
-        val username = UserState.getInstance().username
+        val username = UserState.username!!
         if (Strings.isNullOrEmpty(username)) {
             LogUtils.w(TAG, "username is null, can't delete gcm token")
             return false

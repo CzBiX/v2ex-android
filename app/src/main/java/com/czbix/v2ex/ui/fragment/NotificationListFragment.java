@@ -77,7 +77,7 @@ public class NotificationListFragment extends Fragment implements LoaderManager.
     public void onStart() {
         super.onStart();
 
-        UserState.getInstance().clearUnread();
+        UserState.INSTANCE.clearUnread();
     }
 
     @Override

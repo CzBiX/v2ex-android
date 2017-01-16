@@ -85,7 +85,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun onLogin(result: LoginResult) {
-        UserState.getInstance().login(result.mUsername, result.mAvatar)
+        UserState.login(result.mUsername, result.mAvatar)
         if (PrefStore.getInstance().shouldReceiveNotifications()) {
             startService(GoogleHelper.getRegistrationIntentToStartService(this, true))
         }

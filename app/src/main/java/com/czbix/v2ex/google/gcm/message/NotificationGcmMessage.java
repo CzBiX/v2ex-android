@@ -8,6 +8,7 @@ import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.event.BaseEvent.NewUnreadEvent;
 import com.czbix.v2ex.google.GoogleHelper;
 import com.czbix.v2ex.google.gcm.GcmTaskService;
+import com.czbix.v2ex.helper.RxBus;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.android.gms.gcm.GcmNetworkManager;
@@ -31,7 +32,7 @@ public class NotificationGcmMessage extends GcmMessage {
         }
 
         if (unreadCount > 0) {
-            AppCtx.getEventBus().post(new NewUnreadEvent(unreadCount));
+            RxBus.INSTANCE.post(new NewUnreadEvent(unreadCount));
             scheduleNextCheck(context);
         } else {
             LogUtils.d(TAG, "not found new unread notifications");

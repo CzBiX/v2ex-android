@@ -63,7 +63,7 @@ class SettingsActivity : BaseActivity() {
         }
 
         private fun initUser() {
-            isLogin = UserState.getInstance().isLoggedIn
+            isLogin = UserState.isLoggedIn()
             val user = findPreference(PREF_KEY_CATEGORY_USER) as PreferenceCategory
             if (!isLogin) {
                 preferenceScreen.removePreference(user)
@@ -74,10 +74,10 @@ class SettingsActivity : BaseActivity() {
             mNotificationsPref = findPreference(PREF_KEY_RECEIVE_NOTIFICATIONS) as SwitchPreference
             val logoutPref = findPreference(PREF_KEY_LOGOUT)
 
-            infoPref.summary = UserState.getInstance().username
+            infoPref.summary = UserState.username
             infoPref.setOnPreferenceClickListener {
                 MiscUtils.openUrl(activity, Member.buildUrlFromName(
-                        UserState.getInstance().username))
+                        UserState.username))
                 false
             }
 
@@ -129,7 +129,7 @@ class SettingsActivity : BaseActivity() {
                 general.removePreference(findPreference(PREF_KEY_ENABLE_FORCE_TOUCH))
             }
 
-            if (UserState.getInstance().isLoggedIn) {
+            if (UserState.isLoggedIn()) {
                 general.removePreference(loginPref)
             } else {
                 loginPref.onPreferenceClickListener = this
@@ -150,7 +150,7 @@ class SettingsActivity : BaseActivity() {
         }
 
         private fun toggleReceiveNotifications(turnOn: Boolean): Boolean {
-            check(UserState.getInstance().isLoggedIn) { "guest can't toggle notifications" }
+            check(UserState.isLoggedIn()) { "guest can't toggle notifications" }
             task?.unsubscribe()
 
             mNotificationsPref.isEnabled = false
@@ -183,7 +183,7 @@ class SettingsActivity : BaseActivity() {
                     return true
                 }
                 PREF_KEY_LOGOUT -> {
-                    UserState.getInstance().logout()
+                    UserState.logout()
                     activity.recreate()
                     return true
                 }

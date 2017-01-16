@@ -47,7 +47,7 @@ object TopicListParser : Parser() {
     }
 
     private fun parseFavorited(contentBox: Element): Pair<Boolean, String?> {
-        if (!UserState.getInstance().isLoggedIn) {
+        if (!UserState.isLoggedIn()) {
             return false to null
         }
 

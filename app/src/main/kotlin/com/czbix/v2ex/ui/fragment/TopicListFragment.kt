@@ -166,7 +166,7 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_topic_list, menu)
 
-        if (UserState.getInstance().isLoggedIn) {
+        if (UserState.isLoggedIn()) {
             mFavIcon = menu.findItem(R.id.action_fav)
 
             updateFavIcon()

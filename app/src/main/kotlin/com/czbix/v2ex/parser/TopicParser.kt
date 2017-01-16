@@ -22,7 +22,7 @@ object TopicParser : Parser() {
         val comments = parseComments(contentEle)
         val pageNum = getMaxPage(contentEle)
 
-        val onceToken = if (UserState.getInstance().isLoggedIn) {
+        val onceToken = if (UserState.isLoggedIn()) {
             parseOnceToken(doc)
         } else {
             null
@@ -84,7 +84,7 @@ object TopicParser : Parser() {
             TopicListParser.parseMember(builder, JsoupObjects.child(header, ".fr"))
         }
 
-        val csrfToken = if (UserState.getInstance().isLoggedIn) {
+        val csrfToken = if (UserState.isLoggedIn()) {
             parseFavored(builder, topicBox)
         } else {
             null

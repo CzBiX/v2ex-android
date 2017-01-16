@@ -79,8 +79,7 @@ class AppCtx : Application() {
         override fun run() {
             V2exDb.getInstance().init()
 
-            UserState.getInstance().init()
-            NotificationStatus.instance.init()
+            UserState.init()
 
             isInited = true
             mEventBus.post(BaseEvent.ContextInitFinishEvent())
