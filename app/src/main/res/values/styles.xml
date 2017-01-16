@@ -53,10 +53,11 @@
 
     <style name="AppTheme.Topic.Content" parent="TextAppearance.AppCompat.Body1">
         <item name="android:lineSpacingMultiplier">1.2</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="AppTheme.Topic.Count" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">13sp</item>
         <item name="android:background">@drawable/count_background</item>
         <item name="android:textColor">#fff</item>
     </style>
