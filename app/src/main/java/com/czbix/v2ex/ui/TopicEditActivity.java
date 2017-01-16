@@ -133,7 +133,7 @@ public class TopicEditActivity extends AppCompatActivity {
             public void run() {
                 final int id;
                 try {
-                    id = RequestHelper.newTopic(mNode.getName(), title, content);
+                    id = RequestHelper.INSTANCE.newTopic(mNode.getName(), title, content);
                 } catch (ConnectionException | RemoteException e) {
                     throw new FatalException(e);
                 } catch (RequestException e) {

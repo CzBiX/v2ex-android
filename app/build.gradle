@@ -82,11 +82,11 @@ dependencies {
     compile "com.android.support:support-core-utils:$support_version"
     compile "com.android.support:support-fragment:$support_version"
     compile 'com.google.guava:guava:19.0'
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    compile 'com.squareup.okhttp3:okhttp:3.5.0'
     compile 'com.google.code.gson:gson:2.7'
     compile "com.android.support:recyclerview-v7:$support_version"
     compile "com.android.support:cardview-v7:$support_version"
-    compile 'org.jsoup:jsoup:1.9.2'
+    compile 'org.jsoup:jsoup:1.10.2'
     compile "com.android.support:design:$support_version"
     compile 'com.github.franmontiel:PersistentCookieJar:v1.0.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
@@ -104,11 +104,11 @@ dependencies {
     compile "com.android.support:customtabs:$support_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile 'io.reactivex:rxandroid:1.1.0'
+    compile 'io.reactivex:rxandroid:1.2.1'
     // Because RxAndroid releases are few and far between, explicitly depend on RxJava's latest
     // version for bug fixes and new features.
-    compile 'io.reactivex:rxjava:1.1.0'
-    compile 'io.reactivex:rxkotlin:0.55.0'
+    compile 'io.reactivex:rxjava:1.2.5'
+    compile 'io.reactivex:rxkotlin:0.60.0'
 
     testCompile 'org.mockito:mockito-core:1.10.19'
     provided 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'

@@ -78,7 +78,7 @@ public class UserState {
 
     public void logout() {
         mUsername = null;
-        RequestHelper.clearCookies();
+        RequestHelper.INSTANCE.clearCookies();
 
         ConfigDao.remove(ConfigDao.KEY_USERNAME);
         ConfigDao.remove(ConfigDao.KEY_AVATAR);

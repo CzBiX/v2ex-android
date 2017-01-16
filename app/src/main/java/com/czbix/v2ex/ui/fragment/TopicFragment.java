@@ -502,7 +502,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         doActionRequest(() -> {
             try {
-                RequestHelper.reply(mTopic, content.toString(), mOnceToken);
+                RequestHelper.INSTANCE.reply(mTopic, content.toString(), mOnceToken);
             } catch (ConnectionException | RemoteException e) {
                 ExecutorUtils.runInUiThread(() -> doActionException(e));
                 return;
@@ -573,7 +573,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private void onIgnore(final Ignorable obj, final boolean isTopic) {
         doActionRequest(() -> {
             try {
-                RequestHelper.ignore(obj, mOnceToken);
+                RequestHelper.INSTANCE.ignore(obj, mOnceToken);
             } catch (ConnectionException | RemoteException e) {
                 ExecutorUtils.runInUiThread(() -> doActionException(e));
                 return;
@@ -606,7 +606,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private void onThank(final Thankable obj) {
         doActionRequest(() -> {
             try {
-                RequestHelper.thank(obj, mCsrfToken);
+                RequestHelper.INSTANCE.thank(obj, mCsrfToken);
             } catch (ConnectionException | RemoteException e) {
                 ExecutorUtils.runInUiThread(() -> doActionException(e));
                 return;
@@ -709,7 +709,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         ExecutorUtils.execute(() -> {
             try {
-                RequestHelper.favor(mTopic, mFavored, mCsrfToken);
+                RequestHelper.INSTANCE.favor(mTopic, mFavored, mCsrfToken);
             } catch (ConnectionException | RemoteException e) {
                 LogUtils.w(TAG, "favorite topic failed", e);
                 mFavored = !mFavored;

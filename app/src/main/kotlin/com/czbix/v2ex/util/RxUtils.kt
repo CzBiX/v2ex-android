@@ -31,3 +31,6 @@ fun MutableList<Subscription>.unsubscribe() {
     this.clear()
 }
 
+fun <T> Observable<T>.result(): T {
+    return this.toBlocking().last()
+}

@@ -14,6 +14,6 @@ public class NotificationLoader extends AsyncTaskLoader<List<Notification>> {
 
     @Override
     public List<Notification> loadInBackgroundWithException() throws Exception {
-        return RequestHelper.getNotifications();
+        return RequestHelper.INSTANCE.getNotifications();
     }
 }

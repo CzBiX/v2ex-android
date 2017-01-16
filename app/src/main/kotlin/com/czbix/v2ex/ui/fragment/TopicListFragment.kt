@@ -229,7 +229,7 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
         ExecutorUtils.execute {
             try {
                 val node = mPage as Node
-                RequestHelper.favor(node, mFavored, mOnceToken)
+                RequestHelper.favor(node, mFavored, mOnceToken!!)
             } catch (e: Exception) {
                 when (e) {
                     is ConnectionException, is RemoteException -> {

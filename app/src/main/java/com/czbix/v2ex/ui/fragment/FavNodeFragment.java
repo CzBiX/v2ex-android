@@ -125,7 +125,7 @@ public class FavNodeFragment extends Fragment implements LoaderCallbacks<LoaderR
 
         @Override
         public List<Node> loadInBackgroundWithException() throws ConnectionException, RemoteException {
-            return RequestHelper.getFavNodes();
+            return RequestHelper.INSTANCE.getFavNodes();
         }
     }
 }

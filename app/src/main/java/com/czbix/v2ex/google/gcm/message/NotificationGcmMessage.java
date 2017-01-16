@@ -24,7 +24,7 @@ public class NotificationGcmMessage extends GcmMessage {
     protected void handleMessage(Context context) {
         int unreadCount;
         try {
-            unreadCount = RequestHelper.getUnreadNum();
+            unreadCount = RequestHelper.INSTANCE.getUnreadNum();
         } catch (ConnectionException | RemoteException e) {
             LogUtils.i(TAG, "check notifications count failed", e);
             return;

@@ -32,7 +32,7 @@ public class GcmTaskService extends com.google.android.gms.gcm.GcmTaskService {
     private int checkNotifications() {
         int unreadCount;
         try {
-            unreadCount = RequestHelper.getUnreadNum();
+            unreadCount = RequestHelper.INSTANCE.getUnreadNum();
         } catch (ConnectionException | RemoteException e) {
             LogUtils.i(GcmTaskService.class, "check notifications count failed", e);
             return GcmNetworkManager.RESULT_RESCHEDULE;

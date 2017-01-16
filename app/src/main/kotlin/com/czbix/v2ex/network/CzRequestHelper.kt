@@ -6,15 +6,13 @@ import com.czbix.v2ex.common.exception.RequestException
 import com.czbix.v2ex.model.ServerConfig
 import com.czbix.v2ex.network.RequestHelper.newRequest
 import com.czbix.v2ex.util.LogUtils
-import com.czbix.v2ex.util.async
 import com.czbix.v2ex.util.fromJson
+import com.czbix.v2ex.util.result
 import okhttp3.CookieJar
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import rx.Observable
-import rx.schedulers.Schedulers
-import java.io.IOException
 
 object CzRequestHelper {
     private val BASE_URL = "https://v2ex.czbix.com"
@@ -28,10 +26,9 @@ object CzRequestHelper {
     private val CLIENT: OkHttpClient
 
     init {
-        CLIENT = RequestHelper.getClient().newBuilder().let {
-            it.cookieJar(CookieJar.NO_COOKIES)
-            it.build()
-        }
+        CLIENT = RequestHelper.client.newBuilder().apply {
+            cookieJar(CookieJar.NO_COOKIES)
+        }.build()
     }
 
     @JvmStatic
@@ -40,12 +37,12 @@ object CzRequestHelper {
         LogUtils.v(TAG, "register user, username: %s", username)
 
         val request = newRequest().url(String.format(API_USER, username)).put(RequestBody.create(null, ByteArray(0))).build()
-        val response = RequestHelper.sendRequest(request)
-
-        val code = response.code()
-        if (code != HttpStatus.SC_NOT_MODIFIED && code != HttpStatus.SC_CREATED) {
-            throw RequestException("register user failed", response)
-        }
+        RequestHelper.sendRequest(request) { response ->
+            val code = response.code()
+            if (code != HttpStatus.SC_NOT_MODIFIED && code != HttpStatus.SC_CREATED) {
+                throw RequestException("register user failed", response)
+            }
+        }.result()
     }
 
     @JvmStatic
@@ -62,7 +59,7 @@ object CzRequestHelper {
             post(body)
         }.build()
 
-        RequestHelper.sendRequest(request)
+        RequestHelper.sendRequest(request).result()
     }
 
     @JvmStatic
@@ -76,7 +73,7 @@ object CzRequestHelper {
             post(body)
         }.build()
 
-        RequestHelper.sendRequest(request)
+        RequestHelper.sendRequest(request).result()
     }
 
     @JvmStatic
@@ -93,28 +90,16 @@ object CzRequestHelper {
             post(body)
         }.build()
 
-        RequestHelper.sendRequest(request)
+        RequestHelper.sendRequest(request).result()
     }
 
     fun getServerConfig(): Observable<ServerConfig> {
         LogUtils.v(TAG, "get server config")
 
-        return async(Schedulers.io()) {
-            val request = newRequest().url(API_SERVER_CONFIG).build()
+        val request = newRequest().url(API_SERVER_CONFIG).build()
 
-            try {
-                RequestHelper.sendRequest(request).body().use {
-                    it.charStream().use {
-                        it.fromJson<ServerConfig>()
-                    }
-                }
-            } catch (e: Exception) {
-                throw if (e is IOException) {
-                    ConnectionException(e)
-                } else {
-                    e
-                }
-            }
+        return RequestHelper.sendRequest(request) {
+            it.body().charStream().fromJson<ServerConfig>()
         }
     }
 }

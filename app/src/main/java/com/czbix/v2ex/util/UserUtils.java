@@ -30,7 +30,7 @@ public class UserUtils {
 
         boolean hasAward;
         try {
-            hasAward = RequestHelper.hasDailyAward();
+            hasAward = RequestHelper.INSTANCE.hasDailyAward();
         } catch (ConnectionException | RemoteException | RequestException e) {
             LogUtils.v(TAG, "check daily award failed", e);
             return;
