@@ -4,25 +4,20 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-
-import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.common.PrefStore
 import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.common.exception.ConnectionException
 import com.czbix.v2ex.common.exception.RemoteException
 import com.czbix.v2ex.common.exception.UnauthorizedException
 import com.czbix.v2ex.event.DeviceRegisterEvent
-import com.czbix.v2ex.google.GoogleHelper
 import com.czbix.v2ex.helper.RxBus
 import com.czbix.v2ex.network.CzRequestHelper
 import com.czbix.v2ex.network.RequestHelper
 import com.czbix.v2ex.util.LogUtils
-import com.google.android.gms.gcm.GoogleCloudMessaging
-import com.google.android.gms.iid.InstanceID
 import com.google.common.base.Strings
+import com.google.firebase.iid.FirebaseInstanceId
 
 class RegistrationIntentService : IntentService(TAG) {
-
     private lateinit var mPreferences: SharedPreferences
 
     override fun onHandleIntent(intent: Intent?) {
@@ -53,19 +48,15 @@ class RegistrationIntentService : IntentService(TAG) {
         synchronized(TAG) {
             var token: String? = null
             try {
-                // In the (unlikely) event that multiple refresh operations occur simultaneously,
-                // ensure that they are processed sequentially.
-                val instanceID = InstanceID.getInstance(this)
-                token = instanceID.getToken(GoogleHelper.GCM_SENDER_ID,
-                        GoogleCloudMessaging.INSTANCE_ID_SCOPE)
-                LogUtils.d(TAG, "GCM Registration Token: %s", token)
+                token = FirebaseInstanceId.getInstance().token
+                LogUtils.d(TAG, "FCM Registration Token: %s", token)
             } catch (e: Exception) {
                 LogUtils.w(TAG, "Failed to complete token refresh", e)
             }
 
             if (Strings.isNullOrEmpty(token)) {
                 return false
-            } else if (token == mPreferences.getString(PREF_LAST_GCM_TOKEN, null)) {
+            } else if (token == mPreferences.getString(PREF_LAST_FCM_TOKEN, null)) {
                 LogUtils.v(TAG, "token already sent to server")
                 return true
             }
@@ -85,7 +76,7 @@ class RegistrationIntentService : IntentService(TAG) {
 
     private fun unregister(): Boolean {
         synchronized(TAG) {
-            val oldToken = mPreferences.getString(PREF_LAST_GCM_TOKEN, null)
+            val oldToken = mPreferences.getString(PREF_LAST_FCM_TOKEN, null)
             if (Strings.isNullOrEmpty(oldToken)) {
                 LogUtils.d(TAG, "not register on server yet")
                 return true
@@ -124,7 +115,7 @@ class RegistrationIntentService : IntentService(TAG) {
         }
 
         CzRequestHelper.registerDevice(username, gcmToken)
-        mPreferences.edit().putString(PREF_LAST_GCM_TOKEN, gcmToken).apply()
+        mPreferences.edit().putString(PREF_LAST_FCM_TOKEN, gcmToken).apply()
 
         return true
     }
@@ -138,7 +129,7 @@ class RegistrationIntentService : IntentService(TAG) {
         }
 
         CzRequestHelper.unregisterDevice(username, token)
-        mPreferences.edit().remove(PREF_LAST_NTF_TOKEN).remove(PREF_LAST_GCM_TOKEN).apply()
+        mPreferences.edit().remove(PREF_LAST_NTF_TOKEN).remove(PREF_LAST_FCM_TOKEN).apply()
 
         return true
     }
@@ -147,9 +138,9 @@ class RegistrationIntentService : IntentService(TAG) {
         private val TAG = RegistrationIntentService::class.java.simpleName
         const val KEY_UNREGISTER = "unregister"
 
-        private val PREF_NAME = "gcm"
+        private val PREF_NAME = "fcm"
         private val PREF_IS_USER_REGISTERED = "is_user_registered"
-        private val PREF_LAST_GCM_TOKEN = "last_gcm_token"
+        private val PREF_LAST_FCM_TOKEN = "last_fcm_token"
         private val PREF_LAST_NTF_TOKEN = "last_ntf_token"
     }
 }
