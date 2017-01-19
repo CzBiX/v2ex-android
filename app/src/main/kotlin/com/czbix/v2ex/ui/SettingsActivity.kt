@@ -77,7 +77,7 @@ class SettingsActivity : BaseActivity() {
             infoPref.summary = UserState.username
             infoPref.setOnPreferenceClickListener {
                 MiscUtils.openUrl(activity, Member.buildUrlFromName(
-                        UserState.username))
+                        UserState.username!!))
                 false
             }
 

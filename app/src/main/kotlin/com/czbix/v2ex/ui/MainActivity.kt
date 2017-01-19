@@ -279,7 +279,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         mNavBg.setOnClickListener { v ->
             if (UserState.isLoggedIn()) {
-                MiscUtils.openUrl(this@MainActivity, Member.buildUrlFromName(UserState.username))
+                MiscUtils.openUrl(this@MainActivity, Member.buildUrlFromName(UserState.username!!))
             } else {
                 startActivity(Intent(this@MainActivity, LoginActivity::class.java))
             }
