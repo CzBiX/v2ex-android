@@ -474,7 +474,7 @@ object RequestHelper {
 
         call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                throw ConnectionException(e)
+                subject.onError(ConnectionException(e))
             }
 
             override fun onResponse(call: Call, response: Response) {

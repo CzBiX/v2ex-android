@@ -9,8 +9,6 @@ import com.czbix.v2ex.service.fcm.message.NotificationFcmMessage
 import com.czbix.v2ex.util.ExecutorUtils
 import com.czbix.v2ex.util.LogUtils
 import com.czbix.v2ex.util.getLogTag
-import com.firebase.jobdispatcher.FirebaseJobDispatcher
-import com.firebase.jobdispatcher.GooglePlayDriver
 import com.firebase.jobdispatcher.JobParameters
 import com.firebase.jobdispatcher.JobService
 
