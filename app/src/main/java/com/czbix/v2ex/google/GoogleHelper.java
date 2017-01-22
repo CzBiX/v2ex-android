@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
-import com.czbix.v2ex.AppCtx;
-import com.czbix.v2ex.R;
 import com.czbix.v2ex.service.RegistrationIntentService;
 import com.czbix.v2ex.util.LogUtils;
 import com.google.android.gms.common.ConnectionResult;
@@ -13,7 +11,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 
 public class GoogleHelper {
     private static final String TAG = GoogleHelper.class.getSimpleName();
-    public static final String GCM_SENDER_ID = AppCtx.getInstance().getString(R.string.google_gcm_sender_id);
 
     public static boolean isPlayServicesAvailable(Context context) {
         final int errCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context);

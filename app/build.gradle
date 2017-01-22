@@ -9,6 +9,7 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.21.7'
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:3.0.0'
     }
 }
 
@@ -99,7 +100,7 @@ dependencies {
     compile "com.google.android.gms:play-services-analytics:$gms_version"
     compile 'com.google.firebase:firebase-messaging:10.0.1'
     compile 'com.firebase:firebase-jobdispatcher:0.5.2'
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
         transitive = true;
     }
     compile "com.android.support:customtabs:$support_version"
@@ -114,3 +115,5 @@ dependencies {
     testCompile 'org.mockito:mockito-core:1.10.19'
     provided 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'
 }
+
+apply plugin: 'com.google.gms.google-services'

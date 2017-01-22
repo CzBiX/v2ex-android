@@ -6,7 +6,9 @@
 /build
 /captures
 /.navigation/
+
 fabric.properties
+google-services.json
 
 # IDEA/Android Studio project files, because
 # the project can be imported from settings.gradle

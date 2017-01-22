@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="google_backup_api_key" translatable="false">AEdPqrEAAAAIDaR8KoBcaS0tYIoivJfM0RmqKr_lg1j-cAUtOg</string>
-    <string name="google_gcm_sender_id" translatable="false">112590404969</string>
 </resources>
