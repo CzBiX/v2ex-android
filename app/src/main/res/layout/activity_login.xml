@@ -73,17 +73,25 @@
                 app:layout_constraintTop_toBottomOf="@+id/password"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/sign_up" />
+                app:layout_constraintRight_toRightOf="parent"/>
 
             <Button
                 android:id="@+id/sign_up"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:text="@string/action_sign_up"
+                app:layout_constraintTop_toBottomOf="@+id/sign_in"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/guideline1" />
+
+            <Button
+                android:id="@+id/reset_password"
+                android:text="@string/action_reset_password"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/password"
-                android:layout_marginTop="8dp"
-                app:layout_constraintLeft_toLeftOf="@+id/guideline1"/>
+                app:layout_constraintTop_toBottomOf="@+id/sign_in"
+                app:layout_constraintLeft_toRightOf="@+id/guideline1"/>
 
             <android.support.constraint.Guideline
                 android:layout_width="wrap_content"
@@ -91,7 +99,7 @@
                 android:id="@+id/guideline1"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.5"
-                tools:layout_editor_absoluteX="176dp"
+                tools:layout_editor_absoluteX="0dp"
                 tools:layout_editor_absoluteY="0dp"/>
         </android.support.constraint.ConstraintLayout>
     </ScrollView>

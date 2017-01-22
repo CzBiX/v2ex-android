@@ -68,6 +68,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         mSignIn.setOnClickListener(this)
 
         findViewById(R.id.sign_up).setOnClickListener(this)
+        findViewById(R.id.reset_password).setOnClickListener(this)
 
         mLoginFormView = findViewById(R.id.login_form)
         mProgressView = findViewById(R.id.login_progress)
@@ -78,8 +79,11 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             R.id.sign_in -> attemptLogin()
             R.id.sign_up -> {
                 val uri = Uri.parse("https://www.v2ex.com/signup?r=aliuwr")
-                val builder = CustomTabsHelper.getBuilder(this, null)
-                builder.build().launchUrl(this, uri)
+                CustomTabsHelper.getBuilder(this, null).build().launchUrl(this, uri)
+            }
+            R.id.reset_password -> {
+                val uri = Uri.parse("https://www.v2ex.com/forgot")
+                CustomTabsHelper.getBuilder(this, null).build().launchUrl(this, uri)
             }
         }
     }
