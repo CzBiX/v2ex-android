@@ -194,14 +194,20 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private void initJumpBackButton(View rootView) {
         mJumpBack = ((ImageButton) rootView.findViewById(R.id.btn_jump_back));
-        mJumpBack.setOnClickListener(v -> {
-            Preconditions.checkState(mLastFocusPos != NO_POSITION, "why jump button show without dest");
+        mJumpBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Preconditions.checkState(mLastFocusPos != NO_POSITION, "why jump button show without dest");
 
-            scrollToPos(NO_POSITION, mLastFocusPos);
+                TopicFragment.this.scrollToPos(NO_POSITION, mLastFocusPos);
+            }
         });
-        mJumpBack.setOnLongClickListener(v -> {
-            Toast.makeText(getActivity(), R.string.toast_jump_to_last_read_pos, Toast.LENGTH_SHORT).show();
-            return true;
+        mJumpBack.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(TopicFragment.this.getActivity(), R.string.toast_jump_to_last_read_pos, Toast.LENGTH_SHORT).show();
+                return true;
+            }
         });
     }
 
@@ -296,9 +302,12 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 String.format("%s\n%s", mTopic.getTitle(), mTopic.getUrl()));
 
         if (MiscUtils.HAS_L) {
-            itemShare.setOnMenuItemClickListener(item -> {
-                startActivity(Intent.createChooser(shareIntent, null));
-                return true;
+            itemShare.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem item) {
+                    TopicFragment.this.startActivity(Intent.createChooser(shareIntent, null));
+                    return true;
+                }
             });
         } else {
             final ShareActionProvider actionProvider = new ShareActionProvider(getContext());
@@ -500,23 +509,34 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onReply(final CharSequence content) {
         TrackerUtils.onTopicReply();
 
-        doActionRequest(() -> {
-            try {
-                RequestHelper.INSTANCE.reply(mTopic, content.toString(), mOnceToken);
-            } catch (ConnectionException | RemoteException e) {
-                ExecutorUtils.runInUiThread(() -> doActionException(e));
-                return;
-            }
-
-            AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_REPLY));
-        }, future -> {
-            if (cancelRequest(future)) {
-                mReplyForm.setContent(content);
-                if (!mReplyForm.getVisibility()) {
-                    mReplyForm.toggle();
+        doActionRequest(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    RequestHelper.INSTANCE.reply(mTopic, content.toString(), mOnceToken);
+                } catch (ConnectionException | RemoteException e) {
+                    ExecutorUtils.runInUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TopicFragment.this.doActionException(e);
+                        }
+                    });
+                    return;
                 }
+
+                AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_REPLY));
             }
-            return null;
+        }, new Function<Future<?>, Void>() {
+            @Override
+            public Void apply(Future<?> future) {
+                if (TopicFragment.this.cancelRequest(future)) {
+                    mReplyForm.setContent(content);
+                    if (!mReplyForm.getVisibility()) {
+                        mReplyForm.toggle();
+                    }
+                }
+                return null;
+            }
         });
 
         mReplyForm.setVisibility(false);
@@ -555,11 +575,24 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         final Snackbar snackbar = Snackbar.make(mLayout, R.string.toast_sending, Snackbar.LENGTH_LONG);
         if (PrefStore.getInstance().isUndoEnabled()) {
             final ScheduledFuture<?> future = ExecutorUtils.schedule(sendAction, 3, TimeUnit.SECONDS);
-            snackbar.setAction(R.string.action_cancel, v -> cancelCallback.apply(future));
+            snackbar.setAction(R.string.action_cancel, new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    cancelCallback.apply(future);
+                }
+            });
         } else {
-            ExecutorUtils.execute(() -> {
-                sendAction.run();
-                ExecutorUtils.runInUiThread(snackbar::dismiss);
+            ExecutorUtils.execute(new Runnable() {
+                @Override
+                public void run() {
+                    sendAction.run();
+                    ExecutorUtils.runInUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            snackbar.dismiss();
+                        }
+                    });
+                }
             });
         }
         snackbar.show();
@@ -571,19 +604,30 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void onIgnore(final Ignorable obj, final boolean isTopic) {
-        doActionRequest(() -> {
-            try {
-                RequestHelper.INSTANCE.ignore(obj, mOnceToken);
-            } catch (ConnectionException | RemoteException e) {
-                ExecutorUtils.runInUiThread(() -> doActionException(e));
-                return;
-            }
+        doActionRequest(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    RequestHelper.INSTANCE.ignore(obj, mOnceToken);
+                } catch (ConnectionException | RemoteException e) {
+                    ExecutorUtils.runInUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TopicFragment.this.doActionException(e);
+                        }
+                    });
+                    return;
+                }
 
-            AppCtx.getEventBus().post(new TopicEvent(isTopic ? TopicEvent.TYPE_IGNORE_TOPIC
-                    : TopicEvent.TYPE_IGNORE_COMMENT));
-        }, future -> {
-            cancelRequest(future);
-            return null;
+                AppCtx.getEventBus().post(new TopicEvent(isTopic ? TopicEvent.TYPE_IGNORE_TOPIC
+                        : TopicEvent.TYPE_IGNORE_COMMENT));
+            }
+        }, new Function<Future<?>, Void>() {
+            @Override
+            public Void apply(Future<?> future) {
+                TopicFragment.this.cancelRequest(future);
+                return null;
+            }
         });
     }
 
@@ -604,18 +648,29 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void onThank(final Thankable obj) {
-        doActionRequest(() -> {
-            try {
-                RequestHelper.INSTANCE.thank(obj, mCsrfToken);
-            } catch (ConnectionException | RemoteException e) {
-                ExecutorUtils.runInUiThread(() -> doActionException(e));
-                return;
-            }
+        doActionRequest(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    RequestHelper.INSTANCE.thank(obj, mCsrfToken);
+                } catch (ConnectionException | RemoteException e) {
+                    ExecutorUtils.runInUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TopicFragment.this.doActionException(e);
+                        }
+                    });
+                    return;
+                }
 
-            AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_THANK));
-        }, future -> {
-            cancelRequest(future);
-            return null;
+                AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_THANK));
+            }
+        }, new Function<Future<?>, Void>() {
+            @Override
+            public Void apply(Future<?> future) {
+                TopicFragment.this.cancelRequest(future);
+                return null;
+            }
         });
     }
 
@@ -663,14 +718,17 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 member), Toast.LENGTH_SHORT).show();
     }
 
-    private void scrollToPos(int curPos, int destPos) {
+    private void scrollToPos(int curPos, final int destPos) {
         mLastFocusPos = curPos;
         updateJumpBackButton();
 
         mCommentsView.scrollToPosition(destPos);
-        mCommentsView.postDelayed(() -> {
-            View view = mCommentsLayoutManager.findViewByPosition(destPos);
-            highlightRow(view);
+        mCommentsView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                View view = mCommentsLayoutManager.findViewByPosition(destPos);
+                TopicFragment.this.highlightRow(view);
+            }
         }, 100);
     }
 
@@ -707,15 +765,18 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mFavored = !mFavored;
         updateFavIcon();
 
-        ExecutorUtils.execute(() -> {
-            try {
-                RequestHelper.INSTANCE.favor(mTopic, mFavored, mCsrfToken);
-            } catch (ConnectionException | RemoteException e) {
-                LogUtils.w(TAG, "favorite topic failed", e);
-                mFavored = !mFavored;
-            }
+        ExecutorUtils.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    RequestHelper.INSTANCE.favor(mTopic, mFavored, mCsrfToken);
+                } catch (ConnectionException | RemoteException e) {
+                    LogUtils.w(TAG, "favorite topic failed", e);
+                    mFavored = !mFavored;
+                }
 
-            AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_FAV_TOPIC));
+                AppCtx.getEventBus().post(new TopicEvent(TopicEvent.TYPE_FAV_TOPIC));
+            }
         });
     }
 

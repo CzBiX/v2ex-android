@@ -7,7 +7,6 @@ buildscript {
 
     dependencies {
         classpath 'io.fabric.tools:gradle:1.21.7'
-        classpath 'me.tatarka:gradle-retrolambda:3.2.5'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.google.gms:google-services:3.0.0'
     }
@@ -22,7 +21,6 @@ repositories {
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
-apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 25
@@ -56,10 +54,6 @@ android {
     }
     lintOptions {
         abortOnError false
-    }
-    compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.6
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
