@@ -187,6 +187,7 @@ class Node : Page, Comparable<Node>, ExArrayAdapter.Filterable, Favable {
             return matcher.group(1)
         }
 
+        @JvmField
         val CREATOR: Parcelable.Creator<Node> = object : Parcelable.Creator<Node> {
             override fun createFromParcel(source: Parcel): Node {
                 return Node(source)

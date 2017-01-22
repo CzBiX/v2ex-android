@@ -60,6 +60,7 @@ class Member : Page {
             return "/member/" + username
         }
 
+        @JvmField
         val CREATOR: Parcelable.Creator<Member> = object : Parcelable.Creator<Member> {
             override fun createFromParcel(source: Parcel): Member {
                 return Member(source)
