@@ -1,6 +1,7 @@
 package com.czbix.v2ex.util
 
 import rx.Observable
+import rx.Observer
 import rx.Scheduler
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
@@ -22,8 +23,8 @@ fun <T> Observable<T>.await(onNext: (T) -> Unit, onError: (Throwable) -> Unit): 
     return this.observeOn(AndroidSchedulers.mainThread()).subscribe(onNext, onError)
 }
 
-fun <T> Observable<T>.await(onNext: (T) -> Unit, onError: (Throwable) -> Unit, onComplete: () -> Unit): Subscription {
-    return this.observeOn(AndroidSchedulers.mainThread()).subscribe(onNext, onError, onComplete)
+fun <T> Observable<T>.await(observer: Observer<T>): Subscription {
+    return this.observeOn(AndroidSchedulers.mainThread()).subscribe(observer)
 }
 
 fun MutableList<Subscription>.unsubscribe() {

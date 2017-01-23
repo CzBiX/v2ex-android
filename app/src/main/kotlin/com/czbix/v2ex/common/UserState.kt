@@ -68,7 +68,7 @@ object UserState {
 
     fun logout() {
         username = null
-        RequestHelper.clearCookies()
+        RequestHelper.cleanCookies()
 
         ConfigDao.remove(ConfigDao.KEY_USERNAME)
         ConfigDao.remove(ConfigDao.KEY_AVATAR)

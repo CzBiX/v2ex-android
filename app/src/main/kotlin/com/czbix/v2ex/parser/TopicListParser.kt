@@ -102,6 +102,7 @@ object TopicListParser : Parser() {
 
     private fun parseInfo(topicBuilder: Topic.Builder, ele: Element, node: Node?) {
         var fade = ele
+        @Suppress("NAME_SHADOWING")
         var node = node
         fade = JsoupObjects.child(fade, ".fade")
 

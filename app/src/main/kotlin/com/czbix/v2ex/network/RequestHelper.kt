@@ -43,9 +43,8 @@ object RequestHelper {
     private val URL_NOTIFICATIONS = BASE_URL + "/notifications"
     private val URL_FAVORITE_NODES = BASE_URL + "/my/nodes"
     private val URL_UNREAD_NOTIFICATIONS = BASE_URL + "/mission"
+    private val URL_TWO_FACTOR_AUTH = BASE_URL + "/2fa"
     private val URL_NEW_TOPIC = BASE_URL + "/new/%s"
-
-    private val SERVER_ERROR_CODE = 500
 
     val client: OkHttpClient
 
@@ -72,13 +71,21 @@ object RequestHelper {
         return Cache(cacheDir, cacheSize.toLong())
     }
 
-    internal fun newRequest(): Request.Builder {
+    internal fun newRequest(useMobile: Boolean = false): Request.Builder {
+        val ua = if (useMobile) {
+            USER_AGENT_ANDROID
+        } else {
+            USER_AGENT
+        }
+
         return Request.Builder().apply {
-            header(HttpHeaders.USER_AGENT, USER_AGENT)
+            header(HttpHeaders.USER_AGENT, ua)
         }
     }
 
-    fun clearCookies() {
+    fun cleanCookies() {
+        LogUtils.d(TAG, "clean cookies")
+
         cookieJar.clear()
     }
 
@@ -121,8 +128,7 @@ object RequestHelper {
 
         LogUtils.v(TAG, "request topic with comments, id: %d, title: %s", topic.id, topic.title)
 
-        val request = newRequest()
-                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+        val request = newRequest(useMobile = true)
                 .url(topic.url + "?p=" + page)
                 .build()
         return sendRequest(request) { response ->
@@ -206,8 +212,7 @@ object RequestHelper {
         Preconditions.checkState(UserState.isLoggedIn(), "guest can't check notifications")
         LogUtils.v(TAG, "get unread num")
 
-        val request = newRequest()
-                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+        val request = newRequest(useMobile = true)
                 .url(URL_UNREAD_NOTIFICATIONS).build()
         return sendRequest(request) { response ->
             try {
@@ -225,8 +230,8 @@ object RequestHelper {
         Preconditions.checkState(UserState.isLoggedIn(), "guest can't check notifications")
         LogUtils.v(TAG, "get notifications")
 
-        val request = newRequest().url(URL_NOTIFICATIONS)
-                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+        val request = newRequest(useMobile = true)
+                .url(URL_NOTIFICATIONS)
                 .build()
         return sendRequest(request) { response ->
             try {
@@ -246,7 +251,7 @@ object RequestHelper {
 
         @Suppress("NAME_SHADOWING")
         val once = if (Strings.isNullOrEmpty(once)) {
-            getOnceToken()
+            getOnceToken().result()
         } else {
             once!!
         }
@@ -254,8 +259,8 @@ object RequestHelper {
                 .add("content", content.replace("\n", "\r\n"))
                 .build()
 
-        val request = newRequest().url(topic.url)
-                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+        val request = newRequest(useMobile = true)
+                .url(topic.url)
                 .post(requestBody).build()
         return sendRequest(request, false) { response ->
             // v2ex will redirect if reply success
@@ -316,7 +321,7 @@ object RequestHelper {
     fun newTopic(nodeName: String, title: String, content: String): Int {
         LogUtils.v(TAG, "new topic in node: %s, title: %s", nodeName, title)
 
-        val once = getOnceToken()
+        val once = getOnceToken().result()
         val requestBody = FormBody.Builder().add("once", once)
                 .add("title", title)
                 .add("content", content.replace("\n", "\r\n"))
@@ -344,8 +349,7 @@ object RequestHelper {
 
     @Throws(ConnectionException::class, RemoteException::class)
     fun hasDailyAward(): Boolean {
-        val request = newRequest()
-                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+        val request = newRequest(useMobile = true)
                 .url(URL_MISSION_DAILY).build()
 
         return sendRequest(request) { response ->
@@ -360,21 +364,41 @@ object RequestHelper {
         }.result()
     }
 
-    @Throws(ConnectionException::class, RemoteException::class)
-    fun login(account: String, password: String): LoginResult {
+    fun login(account: String, password: String): Observable<LoginResult> {
         LogUtils.v(TAG, "login user: " + account)
 
-        val signInForm = getSignInForm()
-        val nextUrl = "/mission"
-        val requestBody = FormBody.Builder().add("once", signInForm.component3())
-                .add(signInForm.component1(), account)
-                .add(signInForm.component2(), password)
-                .add("next", nextUrl)
-                .build()
-        val request = newRequest().url(URL_SIGN_IN)
-                .header(HttpHeaders.REFERER, URL_SIGN_IN)
-                .post(requestBody).build()
+        return getSignInForm().flatMap { signInForm ->
+            val nextUrl = "/mission"
+            val requestBody = FormBody.Builder().add("once", signInForm.component3())
+                    .add(signInForm.component1(), account)
+                    .add(signInForm.component2(), password)
+                    .add("next", nextUrl)
+                    .build()
+            val request = newRequest().url(URL_SIGN_IN)
+                    .header(HttpHeaders.REFERER, URL_SIGN_IN)
+                    .post(requestBody).build()
 
+            innerLogin(request, nextUrl)
+        }
+    }
+
+    fun twoFactorAuth(code: String): Observable<LoginResult> {
+        LogUtils.v(TAG, "two factor auth")
+
+        val body = FormBody.Builder().apply {
+            add("code", code)
+        }.build()
+
+        val request = newRequest(useMobile = true).apply {
+            url(URL_TWO_FACTOR_AUTH)
+            header(HttpHeaders.REFERER, URL_TWO_FACTOR_AUTH)
+            post(body)
+        }.build()
+
+        return innerLogin(request, "/")
+    }
+
+    private fun innerLogin(request: Request, nextUrl: String): Observable<LoginResult> {
         return sendRequest(request, false) { response ->
             // v2ex will redirect if login success
             if (response.code() != HttpStatus.SC_MOVED_TEMPORARILY) {
@@ -388,13 +412,13 @@ object RequestHelper {
 
             location
         }.flatMap {
-            innerLogin(it)
-        }.result()
+            parseLoginResult(it)
+        }
     }
 
-    @Throws(ConnectionException::class, RemoteException::class)
-    private fun innerLogin(location: String): Observable<LoginResult> {
+    private fun parseLoginResult(location: String): Observable<LoginResult> {
         val request = newRequest().url(BASE_URL + location).build()
+
         return sendRequest(request) { response ->
             try {
                 val html = response.body().string()
@@ -406,11 +430,10 @@ object RequestHelper {
         }
     }
 
-    fun getOnceToken(): String {
+    fun getOnceToken(): Observable<String> {
         LogUtils.v(TAG, "get once token")
 
-        val request = newRequest()
-                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+        val request = newRequest(useMobile = true)
                 .url(URL_ONCE_TOKEN).build()
         return sendRequest(request) { response ->
             try {
@@ -419,14 +442,13 @@ object RequestHelper {
             } catch (e: IOException) {
                 throw ConnectionException(e)
             }
-        }.result()
+        }
     }
 
-    fun getSignInForm(): Triple<String, String, String> {
+    fun getSignInForm(): Observable<Triple<String, String, String>> {
         LogUtils.v(TAG, "get sign in form")
 
-        val request = newRequest()
-                .header(HttpHeaders.USER_AGENT, USER_AGENT_ANDROID)
+        val request = newRequest(useMobile = true)
                 .url(URL_ONCE_TOKEN).build()
         return sendRequest(request) { response ->
             try {
@@ -435,7 +457,7 @@ object RequestHelper {
             } catch (e: IOException) {
                 throw ConnectionException(e)
             }
-        }.result()
+        }
     }
 
     fun getNotificationsToken(): String {
@@ -507,14 +529,16 @@ object RequestHelper {
         }
 
         val code = response.code()
-        if (code >= HttpStatus.SC_MULTIPLE_CHOICES && code < HttpStatus.SC_BAD_REQUEST) {
-            if (response.isRedirect && response.header(HttpHeaders.LOCATION).startsWith("/signin")) {
-                throw UnauthorizedException(response)
+        if (response.isRedirect) {
+            val location = response.header(HttpHeaders.LOCATION)
+            when {
+                location.startsWith("/signin") -> throw UnauthorizedException(response)
+                location.startsWith("/2fa") -> throw TwoFactorAuthException(response)
+                else -> throw RequestException("unknown response", response)
             }
-            return
         }
 
-        if (code >= SERVER_ERROR_CODE) {
+        if (code >= HttpStatus.SC_INTERNAL_SERVER_ERROR) {
             throw RemoteException(response)
         }
 

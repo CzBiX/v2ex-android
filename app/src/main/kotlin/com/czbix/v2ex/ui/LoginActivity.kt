@@ -4,39 +4,38 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.PrefStore
 import com.czbix.v2ex.common.UserState
-import com.czbix.v2ex.common.exception.ConnectionException
-import com.czbix.v2ex.common.exception.FatalException
-import com.czbix.v2ex.common.exception.RemoteException
-import com.czbix.v2ex.common.exception.RequestException
+import com.czbix.v2ex.common.exception.*
 import com.czbix.v2ex.google.GoogleHelper
 import com.czbix.v2ex.helper.CustomTabsHelper
+import com.czbix.v2ex.helper.RxBus
 import com.czbix.v2ex.model.LoginResult
 import com.czbix.v2ex.network.RequestHelper
+import com.czbix.v2ex.ui.fragment.TwoFactorAuthDialog
 import com.czbix.v2ex.util.LogUtils
+import com.czbix.v2ex.util.await
+import rx.Observable
+import rx.Observer
 import rx.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.lang.kotlin.emptyObservable
+import rx.lang.kotlin.toObservable
 
 /**
  * A login screen that offers login via account/password.
  */
 class LoginActivity : BaseActivity(), View.OnClickListener {
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-    private var mAuthTask: UserLoginTask? = null
-    private var sub: Subscription? = null
+    private var mAuthTask: Subscription? = null
 
     // UI references.
     private lateinit var mAccountView: EditText
@@ -48,9 +47,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        // Set up the login form.
         mAccountView = findViewById(R.id.account) as EditText
-
         mPwdView = findViewById(R.id.password) as EditText
         mPwdView.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             private val mActionIdSignIn = resources.getInteger(R.integer.id_action_sign)
@@ -64,14 +61,19 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             }
         })
 
-        val mSignIn = findViewById(R.id.sign_in) as Button
-        mSignIn.setOnClickListener(this)
-
-        findViewById(R.id.sign_up).setOnClickListener(this)
-        findViewById(R.id.reset_password).setOnClickListener(this)
+        arrayOf(R.id.sign_in, R.id.sign_up, R.id.reset_password).forEach {
+            findViewById(it).setOnClickListener(this)
+        }
 
         mLoginFormView = findViewById(R.id.login_form)
         mProgressView = findViewById(R.id.login_progress)
+
+        // remove left auth code dialog
+        supportFragmentManager.findFragmentByTag(TAG_AUTH_CODE).let {
+            if (it != null) {
+                (it as TwoFactorAuthDialog).dismiss()
+            }
+        }
     }
 
     override fun onClick(v: View) {
@@ -88,17 +90,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    private fun onLogin(result: LoginResult) {
-        UserState.login(result.mUsername, result.mAvatar)
-        if (PrefStore.getInstance().shouldReceiveNotifications()) {
-            startService(GoogleHelper.getRegistrationIntentToStartService(this, true))
-        }
-    }
+    override fun onDestroy() {
+        super.onDestroy()
 
-    override fun onStop() {
-        super.onStop()
-
-        sub?.unsubscribe()
+        mAuthTask?.unsubscribe()
     }
 
     /**
@@ -144,8 +139,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true)
-            mAuthTask = UserLoginTask(email, password)
-            mAuthTask!!.execute(null)
+            mAuthTask = loginUser(email, password)
         }
     }
 
@@ -172,66 +166,83 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         })
     }
 
-    private fun onLoginSuccess(username: String) {
-        Toast.makeText(this, getString(R.string.toast_login_success, username),
+    private fun onLoginSuccess(result: LoginResult) {
+        UserState.login(result.mUsername, result.mAvatar)
+        if (PrefStore.getInstance().shouldReceiveNotifications()) {
+            startService(GoogleHelper.getRegistrationIntentToStartService(this, true))
+        }
+
+        Toast.makeText(this, getString(R.string.toast_login_success, result.mUsername),
                 Toast.LENGTH_LONG).show()
         setResult(Activity.RESULT_OK)
         finish()
     }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    inner class UserLoginTask internal constructor(private val mAccount: String, private val mPassword: String) : AsyncTask<Void, Void, Boolean>() {
-        private val TAG = UserLoginTask::class.java.simpleName
-        private lateinit var mException: Exception
+    private fun onLoginFailed(error: Throwable) {
+        LogUtils.w(TAG, "login failed", error)
 
-        override fun doInBackground(vararg params: Void): Boolean {
-            try {
-                val result = RequestHelper.login(mAccount, mPassword)
-                onLogin(result)
-                return true
-            } catch (e: ConnectionException) {
-                mException = e
-            } catch (e: RemoteException) {
-                mException = e
-            } catch (e: RequestException) {
-                mException = e
-            }
-
-            return false
+        val resId = when (error) {
+            is ConnectionException -> R.string.toast_connection_exception
+            is RemoteException -> R.string.toast_remote_exception
+            is RequestException -> R.string.toast_sign_in_failed
+            else -> throw FatalException(error)
         }
 
-        override fun onPostExecute(success: Boolean) {
-            mAuthTask = null
-            showProgress(false)
+        Toast.makeText(this, resId, Toast.LENGTH_LONG).show()
+    }
 
-            if (success) {
-                onLoginSuccess(mAccount)
-                return
+    private fun onLoginCancel() {
+        mAuthTask = null
+        showProgress(false)
+
+        if (!UserState.isLoggedIn()) {
+            // force clean login state to avoid 2fa page
+            RequestHelper.cleanCookies()
+        }
+    }
+
+    private fun loginUser(account: String, password:String): Subscription {
+        return RequestHelper.login(account, password).onErrorResumeNext { error ->
+            if (error is TwoFactorAuthException) {
+                showTwoFactorAuthDialog()
+            } else {
+                error.toObservable()
+            }
+        }.observeOn(AndroidSchedulers.mainThread()).doOnUnsubscribe {
+            onLoginCancel()
+        }.await(object : Observer<LoginResult> {
+            override fun onCompleted() {
             }
 
-            LogUtils.w(TAG, "login failed", mException)
-
-            val resId = when (mException) {
-                is ConnectionException -> R.string.toast_connection_exception
-                is RemoteException -> R.string.toast_remote_exception
-                is RequestException -> R.string.toast_sign_in_failed
-                else -> throw FatalException(mException)
+            override fun onError(error: Throwable) {
+                onLoginFailed(error)
             }
 
-            Toast.makeText(this@LoginActivity, resId, Toast.LENGTH_LONG).show()
+            override fun onNext(result: LoginResult) {
+                onLoginSuccess(result)
+            }
+        })
+    }
+
+    private fun showTwoFactorAuthDialog(): Observable<LoginResult> {
+        val fragment = TwoFactorAuthDialog()
+        fragment.show(supportFragmentManager, TAG_AUTH_CODE)
+
+        val task = RxBus.toObservable<TwoFactorAuthDialog.TwoFactorAuthEvent>().first().flatMap { event ->
+            if (event.code == null) {
+                emptyObservable<LoginResult>()
+            } else {
+                RequestHelper.twoFactorAuth(event.code)
+            }
         }
 
-        override fun onCancelled() {
-            mAuthTask = null
-            showProgress(false)
-        }
+        return task
     }
 
     companion object {
         private val TAG = LoginActivity::class.java.simpleName
+
+        private val TAG_AUTH_CODE = "auth_code"
     }
 }
 

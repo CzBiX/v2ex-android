@@ -113,4 +113,6 @@
     <string name="action_reset_password">重置密码</string>
     <string name="pref_title_user_info">用户信息</string>
     <string name="pref_version">版本</string>
+    <string name="error_invalid_auth_code">验证码无效</string>
+    <string name="title_two_factor_auth">二次认证</string>
 </resources>
