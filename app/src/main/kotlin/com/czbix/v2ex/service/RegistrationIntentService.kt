@@ -4,15 +4,18 @@ import android.app.IntentService
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.common.PrefStore
 import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.common.exception.ConnectionException
 import com.czbix.v2ex.common.exception.RemoteException
+import com.czbix.v2ex.common.exception.RequestException
 import com.czbix.v2ex.common.exception.UnauthorizedException
 import com.czbix.v2ex.event.DeviceRegisterEvent
 import com.czbix.v2ex.helper.RxBus
 import com.czbix.v2ex.network.CzRequestHelper
 import com.czbix.v2ex.network.RequestHelper
+import com.czbix.v2ex.util.CrashlyticsUtils
 import com.czbix.v2ex.util.LogUtils
 import com.google.common.base.Strings
 import com.google.firebase.iid.FirebaseInstanceId
@@ -98,8 +101,20 @@ class RegistrationIntentService : IntentService(TAG) {
         val notificationsToken: String
         try {
             notificationsToken = RequestHelper.getNotificationsToken()
-        } catch (e: UnauthorizedException) {
-            LogUtils.w(TAG, "user signed out, can't send gcm token")
+        } catch (e: Exception) {
+            when (e) {
+                is UnauthorizedException -> {
+                    LogUtils.w(TAG, "user signed out, can't send gcm token")
+                }
+                is RequestException -> {
+                    if (e.isShouldLogged) {
+                        Crashlytics.logException(e)
+                    }
+                }
+                is RemoteException -> {}
+                else -> throw e
+            }
+
             return false
         }
 
