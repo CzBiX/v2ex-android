@@ -29,8 +29,8 @@ android {
         applicationId "com.czbix.v2ex"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 80
-        versionName "1.24.5"
+        versionCode 81
+        versionName "1.24.6"
 
         resValue 'bool', 'isDebuggable', 'false'
     }
