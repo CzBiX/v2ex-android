@@ -304,15 +304,18 @@ object RequestHelper {
 
     @Throws(ConnectionException::class, RemoteException::class)
     fun dailyMission() {
-        val onceCode = getOnceToken()
-        val request = newRequest().url(String.format("%s/redeem?once=%s",
-                URL_MISSION_DAILY, onceCode))
-                .header(HttpHeaders.REFERER, URL_MISSION_DAILY)
-                .build()
+        LogUtils.v(TAG, "daily mission")
 
-        sendRequest(request, false) { response ->
-            if (response.code() != HttpStatus.SC_MOVED_TEMPORARILY) {
-                throw RequestException(response)
+        return getOnceToken().flatMap { onceCode ->
+            val request = newRequest().apply {
+                url("%s/redeem?once=%s".format(URL_MISSION_DAILY, onceCode))
+                header(HttpHeaders.REFERER, URL_MISSION_DAILY)
+            }.build()
+
+            sendRequest(request, false) { response ->
+                if (response.code() != HttpStatus.SC_MOVED_TEMPORARILY) {
+                    throw RequestException(response)
+                }
             }
         }.result()
     }
