@@ -491,7 +491,7 @@ object RequestHelper {
         }
 
         if (BuildConfig.DEBUG && Random().nextInt(100) > 95) {
-            return ConnectionException("debug network test").toObservable()
+            return ConnectionException("network exception test").toObservable()
         }
 
         val subject = AsyncSubject<T>()
@@ -547,7 +547,7 @@ object RequestHelper {
 
 
         Crashlytics.log("request url: " + response.request().url())
-        if (code == 403 || code == 404) {
+        if (code == HttpStatus.SC_FORBIDDEN || code == HttpStatus.SC_NOT_FOUND) {
             try {
                 val body = response.body()
 
