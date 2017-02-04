@@ -12,23 +12,21 @@ abstract class FcmMessage {
      */
     protected abstract fun handleMessage(context: Context)
 
-    private class UnsupportedFcmMessage(private val mType: String) : FcmMessage() {
+    private class UnsupportedFcmMessage(private val type: String?) : FcmMessage() {
 
         override fun handleMessage(context: Context) {
             LogUtils.d(UnsupportedFcmMessage::class.java, "unsupported FCM message type: %s, do nothing",
-                    mType)
+                    type)
         }
     }
 
     companion object {
         fun from(data: Map<String, String>): FcmMessage {
-            val type = requireNotNull(data["type"]) {
-                "FCM message type can't be null/empty"
-            }
+            val type = data["type"]
 
-            when (type) {
-                NotificationFcmMessage.MSG_TYPE -> return NotificationFcmMessage()
-                else -> return UnsupportedFcmMessage(type)
+            return when (type) {
+                NotificationFcmMessage.MSG_TYPE -> NotificationFcmMessage()
+                else -> UnsupportedFcmMessage(type)
             }
         }
 

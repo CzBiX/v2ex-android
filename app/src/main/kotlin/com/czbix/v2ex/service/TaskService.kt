@@ -1,10 +1,5 @@
 package com.czbix.v2ex.service
 
-import com.czbix.v2ex.common.exception.ConnectionException
-import com.czbix.v2ex.common.exception.RemoteException
-import com.czbix.v2ex.event.BaseEvent.NewUnreadEvent
-import com.czbix.v2ex.helper.RxBus
-import com.czbix.v2ex.network.RequestHelper
 import com.czbix.v2ex.service.fcm.message.NotificationFcmMessage
 import com.czbix.v2ex.util.ExecutorUtils
 import com.czbix.v2ex.util.LogUtils
@@ -29,31 +24,11 @@ class TaskService : JobService() {
     fun runTask(params: JobParameters): Boolean {
         val taskTag = params.tag
         when (taskTag) {
-            TASK_NOTIFICATION_CHECK -> return checkNotifications()
+            TASK_NOTIFICATION_CHECK -> return NotificationFcmMessage.checkNotification(this)
         }
 
         LogUtils.w(TAG, "unknown task tag: " + taskTag)
         return false
-    }
-
-    private fun checkNotifications(): Boolean {
-        val unreadCount: Int
-        try {
-            unreadCount = RequestHelper.getUnreadNum()
-        } catch (e: ConnectionException) {
-            LogUtils.i(TAG, "check notifications count failed", e)
-            return false
-        } catch (e: RemoteException) {
-            LogUtils.i(TAG, "check notifications count failed", e)
-            return false
-        }
-
-        RxBus.post(NewUnreadEvent(unreadCount))
-        if (unreadCount != 0) {
-            NotificationFcmMessage.scheduleNextCheck(this)
-        }
-
-        return true
     }
 
     companion object {

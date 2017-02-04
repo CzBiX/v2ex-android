@@ -32,7 +32,7 @@ object RxBus {
 
     @JvmName("subscribeAny")
     fun subscribe(scheduler: Scheduler = AndroidSchedulers.mainThread(),
-                                           action: (BaseEvent) -> Unit): Subscription {
+                  action: (BaseEvent) -> Unit): Subscription {
         return toObservable()
                 .observeOn(scheduler)
                 .subscribe(action)

@@ -15,7 +15,7 @@ class MessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(msg: RemoteMessage) {
         val from = msg.from
         val data = msg.data
-        LogUtils.v(TAG, "GCM message received, from: %s, data: %s", from, data)
+        LogUtils.v(TAG, "GCM message received, id: %s, from: %s, data: %s", msg.messageId, from, data)
 
         // the method not run in ui thread, wait context finish init.
         AppCtx.instance.waitUntilInited()

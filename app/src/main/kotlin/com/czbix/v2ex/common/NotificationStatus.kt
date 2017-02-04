@@ -34,6 +34,10 @@ object NotificationStatus {
         }
     }
 
+    fun init() {
+        // empty for init
+    }
+
     fun showAppUpdate() {
         val pendingIntent = PendingIntent.getActivity(context, 0, MiscUtils.appUpdateIntent, 0)
 

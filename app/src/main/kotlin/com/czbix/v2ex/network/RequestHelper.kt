@@ -208,7 +208,7 @@ object RequestHelper {
     }
 
     @Throws(ConnectionException::class, RemoteException::class)
-    fun getUnreadNum(): Int {
+    fun getUnreadNum(): Observable<Int> {
         Preconditions.checkState(UserState.isLoggedIn(), "guest can't check notifications")
         LogUtils.v(TAG, "get unread num")
 
@@ -223,7 +223,7 @@ object RequestHelper {
             } catch (e: IOException) {
                 throw ConnectionException(e)
             }
-        }.result()
+        }
     }
 
     fun getNotifications(): List<Notification> {
