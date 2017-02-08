@@ -552,7 +552,7 @@ object RequestHelper {
                 val body = response.body()
 
                 if (body.contentLength() == 0L) {
-                    // it's blocked for new user
+                    // it's blocked for guest
                 } else {
                     // topic deleted, record logs for debug
                     val bodyStr = body.string()

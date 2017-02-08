@@ -146,7 +146,7 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
         result.mResult.let {
             mFavored = it.isFavorited
             mOnceToken = it.onceToken
-            mAdapter.setDataSource(result.mResult)
+            mAdapter.setDataSource(it)
         }
 
         activity.invalidateOptionsMenu()

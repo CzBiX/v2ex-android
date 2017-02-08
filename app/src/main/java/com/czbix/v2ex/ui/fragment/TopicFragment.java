@@ -73,6 +73,7 @@ import com.czbix.v2ex.util.TrackerUtils;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
+import com.google.common.net.HttpHeaders;
 
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
@@ -444,30 +445,38 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mLastIsFailed = true;
         setIsLoading(false);
         mCurPage = Math.max(mComments.listSize(), 1);
-        boolean finishActivity;
-        try {
-            finishActivity = ExceptionUtils.handleExceptionNoCatch(this, result.mException);
-        } catch (FatalException e) {
-            if (e.getCause() instanceof RequestException) {
-                final RequestException ex = (RequestException) e.getCause();
+        boolean finishActivity = false;
+        boolean handled = false;
 
-                @StringRes
-                int strId;
-                switch (ex.getCode()) {
-                    case HttpStatus.SC_NOT_FOUND:
+        if (result.mException instanceof RequestException) {
+            final RequestException ex = (RequestException) result.mException;
+
+            @StringRes
+            int strId = 0;
+            switch (ex.getCode()) {
+                case HttpStatus.SC_NOT_FOUND:
+                    strId = R.string.toast_topic_not_found;
+                    break;
+                case HttpStatus.SC_MOVED_TEMPORARILY:
+                    final String location = ex.getResponse().header(HttpHeaders.LOCATION);
+                    if (location.equals("/")) {
+                        // it's blocked for new user
                         strId = R.string.toast_topic_not_found;
-                        break;
-                    default:
-                        throw e;
-                }
+                    }
+                    break;
+            }
 
+            if (strId != 0) {
                 if (getUserVisibleHint()) {
                     Toast.makeText(getActivity(), strId, Toast.LENGTH_SHORT).show();
                 }
                 finishActivity = true;
-            } else {
-                throw e;
+                handled = true;
             }
+        }
+
+        if (!handled) {
+            finishActivity = ExceptionUtils.handleExceptionNoCatch(this, result.mException);
         }
 
         if (finishActivity) {
