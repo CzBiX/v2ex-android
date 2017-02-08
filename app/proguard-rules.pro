@@ -28,6 +28,7 @@
 # for stacktrace
 -renamesourcefileattribute SourceFile
 -keepattributes SourceFile,LineNumberTable
+-keepnames class * extends java.lang.Exception
 
 # for Crashlytics
 -keepattributes *Annotation*
