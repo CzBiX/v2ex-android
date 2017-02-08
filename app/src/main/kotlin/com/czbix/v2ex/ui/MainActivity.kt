@@ -74,7 +74,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private lateinit var mNotificationsItem: MenuItem
     private lateinit var mUpdateItem: MenuItem
     private lateinit var mAwardButton: View
-    private lateinit var mSearchBox: SearchBoxLayout
     private lateinit var mSearchPresenter: TopicSearchPresenter
     private lateinit var mSearchMenuItem: MenuItem
     private lateinit var mFavItem: MenuItem
@@ -88,17 +87,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         mDrawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
 
         mNav = findViewById(R.id.nav) as NavigationView
-        mSearchBox = findViewById(R.id.search_box) as SearchBoxLayout
 
         val headerView = mNav.getHeaderView(0)
         mNavBg = headerView.findViewById(R.id.nav_layout)
         mAvatar = headerView.findViewById(R.id.avatar_img) as ImageView
         mUsername = headerView.findViewById(R.id.username_tv) as TextView
         mAwardButton = headerView.findViewById(R.id.award)
+        val searchBox = findViewById(R.id.search_box) as SearchBoxLayout
+        mSearchPresenter = TopicSearchPresenter(this, searchBox)
 
         mToolbar = ViewUtils.initToolbar(this)
         initNavDrawer()
-        initSearchBox()
 
         supportFragmentManager.addOnBackStackChangedListener(this)
         switchFragment(getFragmentToShow(intent), false)
@@ -115,28 +114,6 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (UpdateInfo.isRecommend) {
             NotificationStatus.showAppUpdate()
         }
-    }
-
-    private fun initSearchBox() {
-        mSearchPresenter = TopicSearchPresenter(this)
-        mSearchBox.setOnActionListener(object : SearchBoxLayout.Listener {
-            override fun onQueryTextChange(newText: String) {
-                mSearchPresenter.changeQuery(newText)
-            }
-
-            override fun onQueryTextSubmit(query: String): Boolean {
-                val result = mSearchPresenter.submitQuery(query)
-                return result
-            }
-
-            override fun start() {
-                mSearchPresenter.start()
-            }
-
-            override fun end() {
-                mSearchPresenter.end()
-            }
-        })
     }
 
     private fun getFragmentToShow(intent: Intent): Fragment {
@@ -453,7 +430,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item === mSearchMenuItem) {
             TrackerUtils.onSearch()
-            mSearchBox.show()
+            mSearchPresenter.show()
             return true
         }
 
@@ -484,9 +461,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onStop() {
         super.onStop()
 
-        if (mSearchBox.visibility == View.VISIBLE) {
-            mSearchBox.hide(false)
-        }
+        mSearchPresenter.hide(false)
 
         AppCtx.eventBus.unregister(this)
     }
@@ -496,10 +471,12 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             mDrawerLayout.closeDrawer(mNav)
             return
         }
-        if (mSearchBox.visibility == View.VISIBLE) {
-            mSearchBox.hide()
+
+        if (mSearchPresenter.isVisible()) {
+            mSearchPresenter.hide()
             return
         }
+
         super.onBackPressed()
     }
 
