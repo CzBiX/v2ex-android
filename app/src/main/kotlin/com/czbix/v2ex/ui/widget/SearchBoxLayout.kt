@@ -148,7 +148,7 @@ class SearchBoxLayout : FrameLayout, View.OnClickListener, TextWatcher, TextView
         mListener.onQueryTextChange(newText)
     }
 
-    override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent): Boolean {
+    override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
         if (actionId != EditorInfo.IME_ACTION_SEARCH) {
             return false
         }
