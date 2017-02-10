@@ -39,6 +39,7 @@
     <string name="toast_connection_exception">Cannot connect to server…</string>
     <string name="toast_remote_exception">Server returned an error, please try again later!</string>
     <string name="toast_topic_not_found">Topic not found!</string>
+    <string name="toast_node_not_found">Node not found!</string>
     <string name="toast_access_denied">Access denied, please try again later!</string>
     <string name="toast_parse_failed">Parse failed!</string>
     <string name="pref_title_always_load_image">Always load images</string>

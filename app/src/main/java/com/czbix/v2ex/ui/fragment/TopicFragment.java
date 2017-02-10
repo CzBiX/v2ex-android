@@ -384,7 +384,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     @Override
     public void onLoadFinished(Loader<LoaderResult<TopicWithComments>> loader, LoaderResult<TopicWithComments> result) {
         if (result.hasException()) {
-            handleLoadException(result);
+            handleLoadException(result.mException);
             return;
         }
 
@@ -441,15 +441,15 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         setIsLoading(false);
     }
 
-    private void handleLoadException(LoaderResult<TopicWithComments> result) {
+    private void handleLoadException(Exception exception) {
         mLastIsFailed = true;
         setIsLoading(false);
         mCurPage = Math.max(mComments.listSize(), 1);
         boolean finishActivity = false;
         boolean handled = false;
 
-        if (result.mException instanceof RequestException) {
-            final RequestException ex = (RequestException) result.mException;
+        if (exception instanceof RequestException) {
+            final RequestException ex = (RequestException) exception;
 
             @StringRes
             int strId = 0;
@@ -476,7 +476,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         }
 
         if (!handled) {
-            finishActivity = ExceptionUtils.handleExceptionNoCatch(this, result.mException);
+            finishActivity = ExceptionUtils.handleExceptionNoCatch(this, exception);
         }
 
         if (finishActivity) {

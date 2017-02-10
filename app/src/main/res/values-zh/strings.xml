@@ -115,4 +115,5 @@
     <string name="pref_version">版本</string>
     <string name="error_invalid_auth_code">验证码无效</string>
     <string name="title_two_factor_auth">两步验证</string>
+    <string name="toast_node_not_found">节点未找到！</string>
 </resources>

@@ -2,6 +2,7 @@ package com.czbix.v2ex.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
 import android.support.v4.app.LoaderManager.LoaderCallbacks
 import android.support.v4.content.Loader
@@ -9,6 +10,7 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
+import android.widget.Toast
 import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.R
@@ -16,12 +18,14 @@ import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.common.exception.ConnectionException
 import com.czbix.v2ex.common.exception.FatalException
 import com.czbix.v2ex.common.exception.RemoteException
+import com.czbix.v2ex.common.exception.RequestException
 import com.czbix.v2ex.dao.NodeDao
 import com.czbix.v2ex.event.BaseEvent
 import com.czbix.v2ex.helper.RxBus
 import com.czbix.v2ex.model.Node
 import com.czbix.v2ex.model.Page
 import com.czbix.v2ex.model.Topic
+import com.czbix.v2ex.network.HttpStatus
 import com.czbix.v2ex.network.RequestHelper
 import com.czbix.v2ex.ui.MainActivity
 import com.czbix.v2ex.ui.TopicActivity
@@ -32,6 +36,7 @@ import com.czbix.v2ex.ui.loader.TopicListLoader
 import com.czbix.v2ex.ui.widget.DividerItemDecoration
 import com.czbix.v2ex.ui.widget.TopicView.OnTopicActionListener
 import com.czbix.v2ex.util.*
+import com.google.common.net.HttpHeaders
 import rx.Observable
 import rx.Subscription
 
@@ -139,7 +144,7 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
     override fun onLoadFinished(loader: Loader<LoaderResult<TopicListLoader.TopicList>>, result: LoaderResult<TopicListLoader.TopicList>) {
         mLayout.isRefreshing = false
         if (result.hasException()) {
-            ExceptionUtils.handleExceptionNoCatch(this, result.mException)
+            handleLoadException(result.mException)
             return
         }
 
@@ -150,6 +155,42 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
         }
 
         activity.invalidateOptionsMenu()
+    }
+
+    private fun handleLoadException(ex: Exception) {
+        var finishActivity = false
+        var handled = false
+
+        if (ex is RequestException) {
+            @StringRes
+            var strId = 0
+            when (ex.code) {
+                HttpStatus.SC_MOVED_TEMPORARILY -> {
+                    val location = ex.response.header(HttpHeaders.LOCATION)
+                    if (location == "/") {
+                        // it's blocked for new user
+                        strId = R.string.toast_node_not_found
+                    }
+                }
+            }
+
+            if (strId != 0) {
+                if (userVisibleHint) {
+                    Toast.makeText(activity, strId, Toast.LENGTH_SHORT).show()
+                }
+                finishActivity = true
+                handled = true
+            }
+        }
+
+        if (!handled) {
+            finishActivity = ExceptionUtils.handleExceptionNoCatch(this, ex)
+        }
+
+        if (finishActivity) {
+            activity.finish()
+        }
+
     }
 
     override fun onLoaderReset(loader: Loader<LoaderResult<TopicListLoader.TopicList>>) {
