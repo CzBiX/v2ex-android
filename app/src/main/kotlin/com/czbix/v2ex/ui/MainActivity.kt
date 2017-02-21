@@ -189,7 +189,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     }
 
     private fun updateNavBackground() {
-        val url = GoogleImg.ALL_LOCATION[GoogleImg.getLocationIndex()][GoogleImg.getTimeIndex()]
+        val url = GoogleImg.ALL_LOCATION[GoogleImg.getRandomLocationIndex()][GoogleImg.getCurrentTimeIndex()]
         Glide.with(this).using(GooglePhotoUrlLoader.getInstance()).load(url).crossFade().centerCrop().into(object : ViewTarget<View, GlideDrawable>(mNavBg) {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             override fun onResourceReady(resource: GlideDrawable, glideAnimation: GlideAnimation<in GlideDrawable>) {
