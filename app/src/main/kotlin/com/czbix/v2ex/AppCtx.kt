@@ -93,7 +93,7 @@ class AppCtx : Application() {
         }
 
         private fun loadAllNodes() {
-            val etagStr = ConfigDao.get(ConfigDao.KEY_NODE_ETAG, null)
+            val etagStr = ConfigDao.get(ConfigDao.KEY_NODE_ETAG, getString(R.string.all_nodes_etag))
 
             val etag = Etag(etagStr)
             val result: List<Node>?

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="google_backup_api_key" translatable="false">AEdPqrEAAAAIA-7Ap1EsED8jjzKblgxW7060iEU8t2tCiviIRA</string>
+    <string name="all_nodes_etag" translatable="false">W/"a57d2379cb65e3aee54669369f755513fac12400"</string>
 </resources>

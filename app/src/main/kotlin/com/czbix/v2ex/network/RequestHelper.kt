@@ -174,7 +174,6 @@ object RequestHelper {
 
         val request = newRequest().url(API_GET_ALL_NODES).build()
         return sendRequest(request) { response ->
-
             val newEtag = response.header(HttpHeaders.ETAG)
             if (!etag.setNewEtag(newEtag)) {
                 return@sendRequest null
