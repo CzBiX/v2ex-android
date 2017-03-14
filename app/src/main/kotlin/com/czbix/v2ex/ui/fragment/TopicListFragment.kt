@@ -92,23 +92,24 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
 
         val activity = activity as MainActivity
 
-        val shouldSetTitle: Boolean
-        if (mPage is Node) {
+        val shouldSetTitle = if (mPage is Node) {
             val node = mPage as Node
-            if (!node.hasInfo()) {
-                NodeDao.get(node.name).let {
-                    if (it == null) {
-                        return
-                    }
-                    mPage = node
+            if (node.hasInfo()) {
+                true
+            } else {
+                val dbNode = NodeDao.get(node.name)
+                if (dbNode == null) {
+                    false
+                } else {
+                    mPage = dbNode
+                    true
                 }
             }
-            shouldSetTitle = true
         } else if (mPage === Page.PAGE_FAV_TOPIC) {
             activity.setNavSelected(R.id.drawer_favorite)
-            shouldSetTitle = true
+            true
         } else {
-            shouldSetTitle = false
+            false
         }
 
         if (shouldSetTitle) {
