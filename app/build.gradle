@@ -97,7 +97,7 @@ dependencies {
     compile "com.google.android.gms:play-services-analytics:$gms_version"
     compile 'com.google.firebase:firebase-messaging:10.0.1'
     compile 'com.firebase:firebase-jobdispatcher:0.5.2'
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
         transitive = true;
     }
     compile "com.android.support:customtabs:$support_version"
