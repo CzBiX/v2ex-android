@@ -322,12 +322,13 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         switch (item.getItemId()) {
             case R.id.action_copy_link:
                 MiscUtils.setClipboard(getActivity(), getString(R.string.desc_topic_link),
-                        String.format("%s\n%s", mTopic.getTitle(), mTopic.getUrl()));
+                        String.format("%s\n%s", Html.fromHtml(mTopic.getTitle()).toString(), mTopic.getUrl()));
                 return true;
             case R.id.action_copy:
+                final String title = Html.fromHtml(mTopic.getTitle()).toString();
                 MiscUtils.setClipboard(getActivity(),
-                        ClipData.newHtmlText(mTopic.getTitle(),
-                                String.format("%s\n%s", mTopic.getTitle(),
+                        ClipData.newHtmlText(title,
+                                String.format("%s\n%s", title,
                                         Html.fromHtml(mTopic.getContent()).toString()),
                                 String.format("<p>%s</p>%s", mTopic.getTitle(),
                                         mTopic.getContent())));
