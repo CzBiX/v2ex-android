@@ -28,7 +28,6 @@ import rx.Observable
 import rx.Observer
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
-import rx.lang.kotlin.emptyObservable
 import rx.lang.kotlin.toObservable
 
 /**
@@ -230,7 +229,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
 
         val task = RxBus.toObservable<TwoFactorAuthDialog.TwoFactorAuthEvent>().first().flatMap { event ->
             if (event.code == null) {
-                emptyObservable<LoginResult>()
+                Observable.empty<LoginResult>()
             } else {
                 RequestHelper.twoFactorAuth(event.code)
             }

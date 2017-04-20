@@ -39,7 +39,10 @@ object CzRequestHelper {
         val request = newRequest().url(String.format(API_USER, username)).put(RequestBody.create(null, ByteArray(0))).build()
         RequestHelper.sendRequest(request, false) { response ->
             val code = response.code()
-            if (code != HttpStatus.SC_NOT_MODIFIED && code != HttpStatus.SC_CREATED) {
+
+            if (code >= 500) {
+                throw RemoteException(response)
+            } else if (code != HttpStatus.SC_NOT_MODIFIED && code != HttpStatus.SC_CREATED) {
                 throw RequestException("register user failed", response)
             }
         }.result()

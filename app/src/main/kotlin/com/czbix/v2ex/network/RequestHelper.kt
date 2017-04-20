@@ -23,9 +23,9 @@ import com.google.common.net.HttpHeaders
 import okhttp3.*
 import org.jsoup.nodes.Document
 import rx.Observable
-import rx.lang.kotlin.AsyncSubject
 import rx.lang.kotlin.toObservable
 import rx.schedulers.Schedulers
+import rx.subjects.AsyncSubject
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -493,7 +493,7 @@ object RequestHelper {
             return ConnectionException("network exception test").toObservable()
         }
 
-        val subject = AsyncSubject<T>()
+        val subject = AsyncSubject.create<T>()
         val call = client.newCall(request)
 
         call.enqueue(object : Callback {

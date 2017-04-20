@@ -5,11 +5,10 @@ import rx.Observer
 import rx.Scheduler
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
-import rx.lang.kotlin.observable
 import rx.schedulers.Schedulers
 
 inline fun <T> async(scheduler: Scheduler = Schedulers.computation(), crossinline runnable: () -> T): Observable<T> {
-    return observable<T> { subscriber ->
+    return Observable.create<T> { subscriber ->
         subscriber.onNext(runnable())
         subscriber.onCompleted()
     }.subscribeOn(scheduler)

@@ -6,15 +6,15 @@ import rx.Observer
 import rx.Scheduler
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
-import rx.lang.kotlin.PublishSubject
 import rx.lang.kotlin.cast
+import rx.subjects.PublishSubject
 import rx.subjects.Subject
 
 object RxBus {
     private val subject: Subject<BaseEvent, BaseEvent>
 
     init {
-        subject = PublishSubject<BaseEvent>().toSerialized()
+        subject = PublishSubject.create<BaseEvent>().toSerialized()
     }
 
     fun post(event: BaseEvent) {
