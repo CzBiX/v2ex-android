@@ -37,7 +37,6 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.PrefStore;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
-import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
 import com.czbix.v2ex.dao.DraftDao;
@@ -737,9 +736,12 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             @Override
             public void run() {
                 View view = mCommentsLayoutManager.findViewByPosition(destPos);
+                if (view == null) {
+                    return;
+                }
                 TopicFragment.this.highlightRow(view);
             }
-        }, 100);
+        }, 200);
     }
 
     @Override
@@ -811,8 +813,6 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void highlightRow(View view) {
-        Preconditions.checkNotNull(view, "view shouldn't be null");
-
         float width = view.getWidth() / 20;
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX", 0, -width, width, 0);
         animator.setInterpolator(null);

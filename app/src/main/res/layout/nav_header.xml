@@ -32,7 +32,7 @@
         android:drawablePadding="4dp"
         android:paddingBottom="8dp"
         android:paddingTop="8dp"
-        android:text="@string/tv_daily_award"
+        android:text="@string/tv_daily_bonus"
         android:textColor="#fff"
         android:textStyle="bold|italic"
         android:gravity="center_vertical"

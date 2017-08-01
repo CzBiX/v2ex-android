@@ -39,7 +39,7 @@
     <string name="action_ignore">忽略</string>
     <string name="action_share">分享</string>
     <string name="toast_daily_award_received">每日登录奖励已领取</string>
-    <string name="tv_daily_award">每日奖励</string>
+    <string name="tv_daily_bonus">每日奖励</string>
     <string name="toast_connection_exception">网络连接失败…</string>
     <string name="toast_need_sign_in">请先登录！</string>
     <string name="toast_remote_exception">服务器错误，请稍候再试！</string>

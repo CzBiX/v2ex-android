@@ -285,12 +285,13 @@ object RequestHelper {
         val request = newRequest().url(url)
                 .build()
 
-        sendRequest(request, false) { response ->
-            if (!response.isRedirect) {
-                throw RequestException(String.format("favor %s failed, is fav: %b", obj,
-                        isFavor), response)
+        sendRequest<Unit>(request) {
+            error("Shouldn't go to here")
+        }.onErrorReturn {
+            checkIsRedirectException(it) {
+                String.format("favor %s failed, is fav: %b", obj, isFavor)
             }
-        }.result()
+        }
     }
 
     @Throws(ConnectionException::class, RemoteException::class)
@@ -301,20 +302,37 @@ object RequestHelper {
         sendRequest(request).result()
     }
 
-    @Throws(ConnectionException::class, RemoteException::class)
-    fun dailyMission() {
-        LogUtils.v(TAG, "daily mission")
+    private fun checkIsRedirectException(e: Throwable, messageExp: (() -> String)? = null) {
+        if (e is RequestException) {
+            if (e is UrlRedirectException) {
+                return
+            }
 
-        return getOnceToken().flatMap { onceCode ->
+            val message = if (messageExp == null) {
+                e.message
+            } else {
+                messageExp()
+            }
+            throw RequestException(message, e.response, e.cause)
+        }
+
+        throw e
+    }
+
+    @Throws(ConnectionException::class, RemoteException::class)
+    fun dailyBonus() {
+        LogUtils.v(TAG, "daily bonus")
+
+        getOnceToken().flatMap { onceCode ->
             val request = newRequest().apply {
                 url("%s/redeem?once=%s".format(URL_MISSION_DAILY, onceCode))
                 header(HttpHeaders.REFERER, URL_MISSION_DAILY)
             }.build()
 
-            sendRequest(request, false) { response ->
-                if (response.code() != HttpStatus.SC_MOVED_TEMPORARILY) {
-                    throw RequestException(response)
-                }
+            sendRequest<Unit>(request) {
+                error("Shouldn't go to here")
+            }.onErrorReturn {
+                checkIsRedirectException(it)
             }
         }.result()
     }
@@ -536,7 +554,7 @@ object RequestHelper {
             when {
                 location.startsWith("/signin") -> throw UnauthorizedException(response)
                 location.startsWith("/2fa") -> throw TwoFactorAuthException(response)
-                else -> throw RequestException("unknown response", response)
+                else -> throw UrlRedirectException(location, "unknown response", response)
             }
         }
 

@@ -238,7 +238,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             ExecutorUtils.execute {
                 var success = false
                 try {
-                    RequestHelper.dailyMission()
+                    RequestHelper.dailyBonus()
                     success = true
                 } catch (e: ConnectionException) {
                     LogUtils.w(TAG, "daily mission failed", e)
