@@ -1,6 +1,7 @@
 package com.czbix.v2ex.ui.widget;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -9,7 +10,7 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.czbix.v2ex.R;
@@ -18,7 +19,7 @@ import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.util.ViewUtils;
 
-public class CommentView extends FrameLayout implements View.OnClickListener,
+public class CommentView extends ConstraintLayout implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener, HtmlMovementMethod.OnHtmlActionListener {
     private static final int COMMENT_PICTURE_OTHER_WIDTH =
             ViewUtils.getDimensionPixelSize(R.dimen.comment_picture_other_width);
@@ -43,6 +44,7 @@ public class CommentView extends FrameLayout implements View.OnClickListener,
 
     public CommentView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
         inflate(context, R.layout.view_comment, this);
 
         mAvatar = (AvatarView) findViewById(R.id.avatar_img);

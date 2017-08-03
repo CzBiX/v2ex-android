@@ -1,15 +1,15 @@
 package com.czbix.v2ex.ui.widget;
 
 import android.content.Context;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Member;
 
-public class AvatarView extends ImageView {
+public class AvatarView extends AppCompatImageView {
     private int mRealSize;
     private boolean mHasRealSize;
 

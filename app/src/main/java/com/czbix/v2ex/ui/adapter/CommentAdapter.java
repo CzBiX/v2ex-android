@@ -1,6 +1,7 @@
 package com.czbix.v2ex.ui.adapter;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,7 +71,13 @@ public class CommentAdapter extends RecyclerView.Adapter<ViewHolder> {
                 viewHolder = TopicViewHolder.makeHolder(parent, mContentListener, mNodeListener, mAvatarListener);
                 break;
             case TYPE_COMMENT:
-                viewHolder = new CommentViewHolder(new CommentView(context), mCommentListener);
+                final CommentView view = new CommentView(context);
+
+                view.setLayoutParams(
+                        new ConstraintLayout.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT));
+                viewHolder = new CommentViewHolder(view, mCommentListener);
         }
 
         return viewHolder;
