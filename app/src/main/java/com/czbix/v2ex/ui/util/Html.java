@@ -63,6 +63,9 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import kotlin.collections.ArraysKt;
+import kotlin.text.StringsKt;
+
 
 /**
  * This class processes HTML strings into displayable styled text.
@@ -544,7 +547,7 @@ class HtmlToSpannedConverter implements ContentHandler {
             end(mSpannableStringBuilder, Monospace.class,
                     new TypefaceSpan("monospace"));
         } else if (tag.equalsIgnoreCase("a")) {
-            endA(mSpannableStringBuilder);
+            endA(mSpannableStringBuilder, mImageGetter);
         } else if (tag.equalsIgnoreCase("u")) {
             end(mSpannableStringBuilder, Underline.class, new UnderlineSpan());
         } else if (tag.equalsIgnoreCase("sup")) {
@@ -782,7 +785,25 @@ class HtmlToSpannedConverter implements ContentHandler {
         text.setSpan(new Href(href), len, len, Spannable.SPAN_MARK_MARK);
     }
 
-    private static void endA(SpannableStringBuilder text) {
+    private static final String[] SM_MS_URLS = new String[]{"https://ooo.0o0.ooo/", "https://i.loli.net/"};
+    private static final String[] IMG_EXTS = new String[]{"jpg","jpeg","png","gif"};
+    private static boolean isAllowedImgUrl(String url) {
+        boolean hostMatch = false;
+        for (String s : SM_MS_URLS) {
+            if (url.startsWith(s)) {
+                hostMatch = true;
+                break;
+            }
+        }
+        if (!hostMatch) {
+            return false;
+        }
+
+        final String ext = StringsKt.substringAfterLast(url, '.', "");
+        return ArraysKt.contains(IMG_EXTS, ext);
+    }
+
+    private static void endA(SpannableStringBuilder text, Html.ImageGetter imageGetter) {
         int len = text.length();
         Object obj = getLast(text, Href.class);
         int where = text.getSpanStart(obj);
@@ -791,10 +812,27 @@ class HtmlToSpannedConverter implements ContentHandler {
 
         if (where != len) {
             Href h = (Href) obj;
+            final String href = h.mHref;
 
-            if (h.mHref != null) {
-                text.setSpan(new URLSpan(h.mHref), where, len,
+            if (href != null) {
+                text.setSpan(new URLSpan(href), where, len,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+                if (isAllowedImgUrl(href) && href.contentEquals(text.subSequence(where, len))) {
+                    Drawable d = null;
+
+                    if (imageGetter != null) {
+                        d = imageGetter.getDrawable(href);
+                    }
+
+                    if (d == null) {
+                        d = new ColorDrawable(Color.CYAN);
+                        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+                    }
+
+                    text.setSpan(new ImageSpan(d, href), where, len,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
             }
         }
     }
