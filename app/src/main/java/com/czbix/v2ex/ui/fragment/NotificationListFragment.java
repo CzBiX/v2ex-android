@@ -51,6 +51,7 @@ public class NotificationListFragment extends Fragment implements LoaderManager.
         mLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_notification_list, container, false);
         final RecyclerView recyclerView = (RecyclerView) mLayout.findViewById(R.id.recycle_view);
 
+        mLayout.setColorSchemeResources(R.color.material_blue_grey_500, R.color.material_blue_grey_700, R.color.material_blue_grey_900);
         mLayout.setOnRefreshListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));

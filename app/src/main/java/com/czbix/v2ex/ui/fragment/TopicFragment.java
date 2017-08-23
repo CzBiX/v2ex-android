@@ -159,6 +159,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         initJumpBackButton(rootView);
 
         mLayout = ((SwipeRefreshLayout) rootView.findViewById(R.id.comments_layout));
+        mLayout.setColorSchemeResources(R.color.material_blue_grey_500, R.color.material_blue_grey_700, R.color.material_blue_grey_900);
         mLayout.setOnRefreshListener(this);
 
         mCommentsView = (RecyclerView) mLayout.findViewById(R.id.comments);
@@ -488,7 +489,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     public void onLoaderReset(Loader<LoaderResult<TopicWithComments>> loader) {
         mCommentAdapter.setDataSource(null);
         mComments.clear();
-        
+
         mCsrfToken = null;
         mOnceToken = null;
     }
