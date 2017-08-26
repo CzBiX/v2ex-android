@@ -35,9 +35,11 @@ import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult
 import com.czbix.v2ex.ui.loader.TopicListLoader
 import com.czbix.v2ex.ui.widget.DividerItemDecoration
 import com.czbix.v2ex.ui.widget.TopicView.OnTopicActionListener
-import com.czbix.v2ex.util.*
+import com.czbix.v2ex.util.ExceptionUtils
+import com.czbix.v2ex.util.ExecutorUtils
+import com.czbix.v2ex.util.LogUtils
+import com.czbix.v2ex.util.unsubscribe
 import com.google.common.net.HttpHeaders
-import rx.Observable
 import rx.Subscription
 
 class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoader.TopicList>>, SwipeRefreshLayout.OnRefreshListener, OnTopicActionListener {
@@ -75,6 +77,7 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
                 container, false) as SwipeRefreshLayout
         mRecyclerView = mLayout.findViewById(R.id.recycle_view) as RecyclerView
 
+        mLayout.setColorSchemeResources(R.color.material_blue_grey_500, R.color.material_blue_grey_700, R.color.material_blue_grey_900)
         mLayout.setOnRefreshListener(this)
         val layoutManager = LinearLayoutManager(mLayout.context)
         mRecyclerView.layoutManager = layoutManager
