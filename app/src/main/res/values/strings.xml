@@ -34,7 +34,7 @@
     <string name="action_ignore">Ignore</string>
     <string name="action_share">Share</string>
     <string name="tv_daily_bonus">Daily Bonus</string>
-    <string name="toast_daily_award_received">Received daily award</string>
+    <string name="toast_daily_award_received">Received daily bonus.</string>
     <string name="toast_need_sign_in">Please sign in!</string>
     <string name="toast_connection_exception">Cannot connect to server…</string>
     <string name="toast_remote_exception">Server returned an error, please try again later!</string>
