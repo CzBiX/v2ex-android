@@ -4,6 +4,7 @@
     <!-- Strings related to login -->
     <string name="prompt_account">Account</string>
     <string name="prompt_password">Password</string>
+    <string name="prompt_captcha">Captcha</string>
     <string name="action_sign_in">Sign in</string>
     <string name="action_sign_up"><u>Sign up</u></string>
     <string name="action_reset_password">Reset password</string>

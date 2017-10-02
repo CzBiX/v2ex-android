@@ -31,17 +31,20 @@ abstract class Parser {
         }
 
         @JvmStatic
-        fun parseSignInForm(html: String): Triple<String, String, String> {
+        fun parseSignInForm(html: String): SignInFormData {
             val doc = toDoc(html)
             val form = JsoupObjects(doc).body().child("#Wrapper").child(".content").child(".box")
                     .child(".cell").dfs("form").first()
             val name = JsoupObjects(form).dfs("input[type=text]").first()
             val once = JsoupObjects(form).dfs("input[name=once]").first()
             val password = once.nextElementSibling()
+            val captcha = JsoupObjects(form).dfs("input.sl").last()
 
             check(password.tagName() == "input")
 
-            return Triple(name.attr("name"), password.attr("name"), once.`val`())
+            return SignInFormData(
+                    name.attr("name"), password.attr("name"), once.`val`(), captcha.attr("name")
+            )
         }
 
         @JvmStatic
@@ -83,4 +86,8 @@ abstract class Parser {
          */
         Topic,
     }
+
+    data class SignInFormData(val username: String, val password: String,
+                              val once: String, val captcha: String)
+
 }

@@ -6,12 +6,15 @@ import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.PrefStore
 import com.czbix.v2ex.common.UserState
@@ -21,6 +24,7 @@ import com.czbix.v2ex.helper.CustomTabsHelper
 import com.czbix.v2ex.helper.RxBus
 import com.czbix.v2ex.model.LoginResult
 import com.czbix.v2ex.network.RequestHelper
+import com.czbix.v2ex.parser.Parser
 import com.czbix.v2ex.ui.fragment.TwoFactorAuthDialog
 import com.czbix.v2ex.util.LogUtils
 import com.czbix.v2ex.util.await
@@ -35,12 +39,17 @@ import rx.lang.kotlin.toObservable
  */
 class LoginActivity : BaseActivity(), View.OnClickListener {
     private var mAuthTask: Subscription? = null
+    private var mCaptchaTask: Subscription? = null
 
     // UI references.
     private lateinit var mAccountView: EditText
     private lateinit var mPwdView: EditText
+    private lateinit var mCaptchaImageView: ImageView
+    private lateinit var mCaptchaView: EditText
     private lateinit var mProgressView: View
     private lateinit var mLoginFormView: View
+
+    private var mSignInFormData: Parser.SignInFormData? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,8 +68,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                 return false
             }
         })
+        mCaptchaImageView = findViewById(R.id.image_captcha) as ImageView
+        mCaptchaView = findViewById(R.id.captcha) as EditText
 
-        arrayOf(R.id.sign_in, R.id.sign_up, R.id.reset_password).forEach {
+        arrayOf(R.id.sign_in, R.id.sign_up, R.id.reset_password, R.id.image_captcha).forEach {
             findViewById(it).setOnClickListener(this)
         }
 
@@ -73,6 +84,21 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                 (it as TwoFactorAuthDialog).dismiss()
             }
         }
+
+        loadCaptcha()
+    }
+
+    private fun loadCaptcha() {
+        mCaptchaTask = RequestHelper.getSignInForm()
+                .await({ signInFormData ->
+                    mSignInFormData = signInFormData
+                    mCaptchaView.visibility = View.VISIBLE
+                    Glide.with(this).load(RequestHelper.getCaptchaImageUrl(signInFormData.once))
+                            .asBitmap()
+                            .into(mCaptchaImageView)
+                }, {
+                    Log.e(TAG, "${it.message}", it)
+                })
     }
 
     override fun onClick(v: View) {
@@ -86,6 +112,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                 val uri = Uri.parse("https://www.v2ex.com/forgot")
                 CustomTabsHelper.getBuilder(this, null).build().launchUrl(this, uri)
             }
+            R.id.image_captcha -> loadCaptcha()
         }
     }
 
@@ -93,6 +120,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         super.onDestroy()
 
         mAuthTask?.unsubscribe()
+        mCaptchaTask?.unsubscribe()
     }
 
     /**
@@ -112,6 +140,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         // Store values at the time of the login attempt.
         val email = mAccountView.text.toString()
         val password = mPwdView.text.toString()
+        val captcha = mCaptchaView.text.toString()
 
         var cancel = false
         var focusView: View? = null
@@ -138,7 +167,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true)
-            mAuthTask = loginUser(email, password)
+            mAuthTask = loginUser(email, password, captcha)
         }
     }
 
@@ -188,6 +217,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         }
 
         Toast.makeText(this, resId, Toast.LENGTH_LONG).show()
+
+        loadCaptcha()
     }
 
     private fun onLoginCancel() {
@@ -200,8 +231,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    private fun loginUser(account: String, password:String): Subscription {
-        return RequestHelper.login(account, password).onErrorResumeNext { error ->
+    private fun loginUser(account: String, password: String, captcha: String): Subscription? {
+        mSignInFormData ?: return null
+        return RequestHelper.login(account, password, captcha, mSignInFormData!!).onErrorResumeNext { error ->
             if (error is TwoFactorAuthException) {
                 showTwoFactorAuthDialog()
             } else {

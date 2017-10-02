@@ -45,6 +45,7 @@ object RequestHelper {
     private val URL_UNREAD_NOTIFICATIONS = BASE_URL + "/mission"
     private val URL_TWO_FACTOR_AUTH = BASE_URL + "/2fa"
     private val URL_NEW_TOPIC = BASE_URL + "/new/%s"
+    private val URL_CAPTCHA = BASE_URL + "/_captcha"
 
     val client: OkHttpClient
 
@@ -384,14 +385,16 @@ object RequestHelper {
         }.result()
     }
 
-    fun login(account: String, password: String): Observable<LoginResult> {
+    fun login(account: String, password: String,
+              captcha: String, signInFormData: Parser.SignInFormData): Observable<LoginResult> {
         LogUtils.v(TAG, "login user: " + account)
 
-        return getSignInForm().flatMap { signInForm ->
+        return Observable.just(signInFormData).flatMap { signInForm ->
             val nextUrl = "/mission"
-            val requestBody = FormBody.Builder().add("once", signInForm.component3())
-                    .add(signInForm.component1(), account)
-                    .add(signInForm.component2(), password)
+            val requestBody = FormBody.Builder().add("once", signInForm.once)
+                    .add(signInForm.username, account)
+                    .add(signInForm.password, password)
+                    .add(signInForm.captcha, captcha)
                     .add("next", nextUrl)
                     .build()
             val request = newRequest().url(URL_SIGN_IN)
@@ -465,7 +468,7 @@ object RequestHelper {
         }
     }
 
-    fun getSignInForm(): Observable<Triple<String, String, String>> {
+    fun getSignInForm(): Observable<Parser.SignInFormData> {
         LogUtils.v(TAG, "get sign in form")
 
         val request = newRequest(useMobile = true)
@@ -588,4 +591,7 @@ object RequestHelper {
 
         throw RequestException(response)
     }
+
+    fun getCaptchaImageUrl(once: String): String = "$URL_CAPTCHA?once=$once"
+
 }

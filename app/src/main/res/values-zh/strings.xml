@@ -24,6 +24,7 @@
     <string name="pref_log_out">登出</string>
     <string name="pref_sign_in">登录</string>
     <string name="prompt_account">账户</string>
+    <string name="prompt_captcha">验证码</string>
     <string name="prompt_password">密码</string>
     <string name="title_activity_login">登录</string>
     <string name="title_activity_settings">设置</string>

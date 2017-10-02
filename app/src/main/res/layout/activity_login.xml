@@ -30,11 +30,11 @@
             android:orientation="vertical">
 
             <TextView
-                android:text="@string/desc_v2ex"
-                android:textAppearance="?android:textAppearanceMedium"
+                android:id="@+id/textView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView"
+                android:text="@string/desc_v2ex"
+                android:textAppearance="?android:textAppearanceMedium"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -43,13 +43,13 @@
                 android:id="@+id/account"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:hint="@string/prompt_account"
                 android:inputType="textNoSuggestions"
                 android:maxLines="1"
-                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginTop="16dp"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@+id/textView"/>
 
             <EditText
                 android:id="@+id/password"
@@ -61,43 +61,63 @@
                 android:imeOptions="actionDone"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                app:layout_constraintTop_toBottomOf="@+id/account"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@+id/account"/>
 
+            <ImageView
+                android:id="@+id/image_captcha"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/prompt_captcha"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/password"/>
+
+            <EditText
+                android:id="@+id/captcha"
+                android:layout_width="0dp"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:hint="@string/prompt_captcha"
+                android:inputType="textNoSuggestions"
+                android:maxLines="1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_captcha"/>
 
             <Button
                 android:id="@+id/sign_in"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/action_sign_in"
-                app:layout_constraintTop_toBottomOf="@+id/password"
                 android:layout_marginTop="8dp"
+                android:text="@string/action_sign_in"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"/>
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/captcha"/>
 
             <Button
                 android:id="@+id/sign_up"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/action_sign_up"
-                app:layout_constraintTop_toBottomOf="@+id/sign_in"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/guideline1" />
+                app:layout_constraintRight_toLeftOf="@+id/guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/sign_in"/>
 
             <Button
                 android:id="@+id/reset_password"
-                android:text="@string/action_reset_password"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:text="@string/action_reset_password"
+                app:layout_constraintLeft_toLeftOf="@+id/guideline1"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sign_in"
-                app:layout_constraintLeft_toLeftOf="@+id/guideline1"/>
+                app:layout_constraintTop_toBottomOf="@+id/sign_in"/>
 
             <android.support.constraint.Guideline
+                android:id="@+id/guideline1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/guideline1"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.5"
                 tools:layout_editor_absoluteX="0dp"
