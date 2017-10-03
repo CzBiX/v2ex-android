@@ -6,7 +6,6 @@ import android.app.Activity
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -79,10 +78,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         mProgressView = findViewById(R.id.login_progress)
 
         // remove left auth code dialog
-        supportFragmentManager.findFragmentByTag(TAG_AUTH_CODE).let {
-            if (it != null) {
-                (it as TwoFactorAuthDialog).dismiss()
-            }
+        supportFragmentManager.findFragmentByTag(TAG_AUTH_CODE)?.let {
+            (it as TwoFactorAuthDialog).dismiss()
         }
 
         loadCaptcha()
@@ -97,7 +94,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                             .asBitmap()
                             .into(mCaptchaImageView)
                 }, {
-                    Log.e(TAG, "${it.message}", it)
+                    LogUtils.e(TAG, "Get signn in form failed.", it)
                 })
     }
 
@@ -159,6 +156,12 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             cancel = true
         }
 
+        if (TextUtils.isEmpty(captcha)) {
+            mCaptchaView.error = getString(R.string.error_field_required)
+            focusView = mCaptchaView
+            cancel = true
+        }
+
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -174,7 +177,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     /**
      * Shows the progress UI and hides the login form.
      */
-    fun showProgress(show: Boolean) {
+    private fun showProgress(show: Boolean) {
         val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime)
 
         mLoginFormView.visibility = if (show) View.GONE else View.VISIBLE
@@ -216,6 +219,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             else -> throw FatalException(error)
         }
 
+        mCaptchaView.text.clear()
         Toast.makeText(this, resId, Toast.LENGTH_LONG).show()
 
         loadCaptcha()
@@ -259,15 +263,13 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         val fragment = TwoFactorAuthDialog()
         fragment.show(supportFragmentManager, TAG_AUTH_CODE)
 
-        val task = RxBus.toObservable<TwoFactorAuthDialog.TwoFactorAuthEvent>().first().flatMap { event ->
+        return RxBus.toObservable<TwoFactorAuthDialog.TwoFactorAuthEvent>().first().flatMap { event ->
             if (event.code == null) {
                 Observable.empty<LoginResult>()
             } else {
                 RequestHelper.twoFactorAuth(event.code)
             }
         }
-
-        return task
     }
 
     companion object {
