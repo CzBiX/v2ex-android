@@ -9,10 +9,7 @@ import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.bumptech.glide.Glide
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.PrefStore
@@ -45,6 +42,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mPwdView: EditText
     private lateinit var mCaptchaImageView: ImageView
     private lateinit var mCaptchaView: EditText
+    private lateinit var mLoadCaptchaView: Button
     private lateinit var mProgressView: View
     private lateinit var mLoginFormView: View
 
@@ -67,10 +65,17 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                 return false
             }
         })
+        mLoadCaptchaView = findViewById(R.id.load_captcha) as Button
         mCaptchaImageView = findViewById(R.id.image_captcha) as ImageView
         mCaptchaView = findViewById(R.id.captcha) as EditText
 
-        arrayOf(R.id.sign_in, R.id.sign_up, R.id.reset_password, R.id.image_captcha).forEach {
+        arrayOf(
+                R.id.sign_in,
+                R.id.sign_up,
+                R.id.reset_password,
+                R.id.image_captcha,
+                R.id.load_captcha
+        ).forEach {
             findViewById(it).setOnClickListener(this)
         }
 
@@ -86,13 +91,18 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun loadCaptcha() {
+        if (mCaptchaTask != null && !mCaptchaTask!!.isUnsubscribed) {
+            return
+        }
+
+        mSignInFormData = null
         mCaptchaTask = RequestHelper.getSignInForm()
                 .await({ signInFormData ->
                     mSignInFormData = signInFormData
-                    mCaptchaView.visibility = View.VISIBLE
+                    mCaptchaImageView.visibility = View.VISIBLE
+                    mLoadCaptchaView.visibility = View.GONE
                     Glide.with(this).load(RequestHelper.getCaptchaImageUrl(signInFormData.once))
-                            .asBitmap()
-                            .into(mCaptchaImageView)
+                            .asBitmap().into(mCaptchaImageView)
                 }, {
                     LogUtils.e(TAG, "Get signn in form failed.", it)
                 })
@@ -109,7 +119,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                 val uri = Uri.parse("https://www.v2ex.com/forgot")
                 CustomTabsHelper.getBuilder(this, null).build().launchUrl(this, uri)
             }
-            R.id.image_captcha -> loadCaptcha()
+            R.id.load_captcha, R.id.image_captcha -> loadCaptcha()
         }
     }
 
@@ -219,10 +229,13 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             else -> throw FatalException(error)
         }
 
+        mSignInFormData = null
         mCaptchaView.text.clear()
-        Toast.makeText(this, resId, Toast.LENGTH_LONG).show()
 
-        loadCaptcha()
+        mCaptchaImageView.visibility = View.GONE
+        mLoadCaptchaView.visibility = View.VISIBLE
+
+        Toast.makeText(this, resId, Toast.LENGTH_LONG).show()
     }
 
     private fun onLoginCancel() {

@@ -7,6 +7,7 @@
     <string name="action_settings">设置</string>
     <string name="action_sign_in">登录</string>
     <string name="action_sign_up"><u>注册</u></string>
+    <string name="action_load_captcha">载入验证码</string>
     <string name="desc_add_reply">添加回复</string>
     <string name="desc_avatar">头像</string>
     <string name="desc_close_drawer">关闭导航栏</string>
