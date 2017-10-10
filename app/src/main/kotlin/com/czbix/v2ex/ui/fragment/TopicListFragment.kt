@@ -38,9 +38,9 @@ import com.czbix.v2ex.ui.widget.TopicView.OnTopicActionListener
 import com.czbix.v2ex.util.ExceptionUtils
 import com.czbix.v2ex.util.ExecutorUtils
 import com.czbix.v2ex.util.LogUtils
-import com.czbix.v2ex.util.unsubscribe
+import com.czbix.v2ex.util.dispose
 import com.google.common.net.HttpHeaders
-import rx.Subscription
+import io.reactivex.disposables.Disposable
 
 class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoader.TopicList>>, SwipeRefreshLayout.OnRefreshListener, OnTopicActionListener {
     private lateinit var mPage: Page
@@ -50,7 +50,7 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mFavIcon: MenuItem
 
-    private val subscriptions: MutableList<Subscription> = mutableListOf()
+    private val disposables: MutableList<Disposable> = mutableListOf()
     private var mFavored: Boolean = false
     private var mOnceToken: String? = null
 
@@ -182,19 +182,13 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
                 if (userVisibleHint) {
                     Toast.makeText(activity, strId, Toast.LENGTH_SHORT).show()
                 }
-                finishActivity = true
                 handled = true
             }
         }
 
         if (!handled) {
-            finishActivity = ExceptionUtils.handleExceptionNoCatch(this, ex)
+            ExceptionUtils.handleExceptionNoCatch(this, ex)
         }
-
-        if (finishActivity) {
-            activity.finish()
-        }
-
     }
 
     override fun onLoaderReset(loader: Loader<LoaderResult<TopicListLoader.TopicList>>) {
@@ -268,7 +262,7 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
         RxBus.subscribe<BaseEvent.NodeEvent> {
             updateFavIcon()
         }.let {
-            subscriptions += it
+            disposables += it
         }
 
         ExecutorUtils.execute {
@@ -301,7 +295,7 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
     override fun onDestroy() {
         super.onDestroy()
 
-        subscriptions.unsubscribe()
+        disposables.dispose()
     }
 
     companion object {

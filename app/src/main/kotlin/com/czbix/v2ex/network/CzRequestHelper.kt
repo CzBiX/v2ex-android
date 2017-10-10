@@ -8,11 +8,11 @@ import com.czbix.v2ex.network.RequestHelper.newRequest
 import com.czbix.v2ex.util.LogUtils
 import com.czbix.v2ex.util.fromJson
 import com.czbix.v2ex.util.result
+import io.reactivex.Single
 import okhttp3.CookieJar
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
-import rx.Observable
 
 object CzRequestHelper {
     private val BASE_URL = "https://v2ex.czbix.com"
@@ -96,13 +96,13 @@ object CzRequestHelper {
         RequestHelper.sendRequest(request).result()
     }
 
-    fun getServerConfig(): Observable<ServerConfig> {
+    fun getServerConfig(): Single<ServerConfig> {
         LogUtils.v(TAG, "get server config")
 
         val request = newRequest().url(API_SERVER_CONFIG).build()
 
         return RequestHelper.sendRequest(request) {
-            it.body().charStream().fromJson<ServerConfig>()
+            it.body()!!.charStream().fromJson<ServerConfig>()
         }
     }
 }

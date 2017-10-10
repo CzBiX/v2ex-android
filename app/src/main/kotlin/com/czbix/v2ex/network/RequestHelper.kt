@@ -20,12 +20,11 @@ import com.google.common.base.Preconditions
 import com.google.common.base.Stopwatch
 import com.google.common.base.Strings
 import com.google.common.net.HttpHeaders
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.SingleSubject
 import okhttp3.*
 import org.jsoup.nodes.Document
-import rx.Observable
-import rx.lang.kotlin.toObservable
-import rx.schedulers.Schedulers
-import rx.subjects.AsyncSubject
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -34,6 +33,8 @@ object RequestHelper {
     const val BASE_URL = "https://www.v2ex.com"
     private val USER_AGENT = "V2EX+/" + BuildConfig.VERSION_NAME
     private val USER_AGENT_ANDROID = String.format("%s (Android %s)", USER_AGENT, Build.VERSION.RELEASE)
+
+    private val DEBUG_NETWORK_FAIL_PROBABILITY = 95
 
     private val TAG = RequestHelper::class.java.simpleName
     private val API_GET_ALL_NODES = BASE_URL + "/api/nodes/all.json"
@@ -108,7 +109,7 @@ object RequestHelper {
             val doc: Document
             val topics: TopicListLoader.TopicList
             try {
-                doc = Parser.toDoc(response.body().string())
+                doc = Parser.toDoc(response.body()!!.string())
                 processUserState(doc, if (page is Tab) PageType.Tab else PageType.Node)
                 topics = TopicListParser.parseDoc(doc, page)
             } catch (e: IOException) {
@@ -141,7 +142,7 @@ object RequestHelper {
             val result: TopicWithComments
 
             try {
-                doc = Parser.toDoc(response.body().string())
+                doc = Parser.toDoc(response.body()!!.string())
                 processUserState(doc, PageType.Topic)
 
                 val stopwatch = Stopwatch.createStarted()
@@ -166,7 +167,7 @@ object RequestHelper {
     }
 
     @Throws(ConnectionException::class, RemoteException::class)
-    fun getAllNodes(etag: Etag): List<Node>? {
+    fun getAllNodes(etag: Etag): Single<List<Node>> {
         Preconditions.checkNotNull(etag)
 
         if (BuildConfig.DEBUG) {
@@ -177,17 +178,17 @@ object RequestHelper {
         return sendRequest(request) { response ->
             val newEtag = response.header(HttpHeaders.ETAG)
             if (!etag.setNewEtag(newEtag)) {
-                return@sendRequest null
+                return@sendRequest listOf<Node>()
             }
 
             try {
-                val json = response.body().string()
+                val json = response.body()!!.string()
 
                 json.fromJson<List<Node>>(true)
             } catch (e: IOException) {
                 throw ConnectionException(e)
             }
-        }.result()
+        }
     }
 
     fun getFavNodes(): List<Node> {
@@ -197,7 +198,7 @@ object RequestHelper {
         val request = newRequest().url(URL_FAVORITE_NODES).build()
         return sendRequest(request) { response ->
             try {
-                val html = response.body().string()
+                val html = response.body()!!.string()
 
                 val doc = Parser.toDoc(html)
                 MyselfParser.parseFavNodes(doc)
@@ -208,7 +209,7 @@ object RequestHelper {
     }
 
     @Throws(ConnectionException::class, RemoteException::class)
-    fun getUnreadNum(): Observable<Int> {
+    fun getUnreadNum(): Single<Int> {
         Preconditions.checkState(UserState.isLoggedIn(), "guest can't check notifications")
         LogUtils.v(TAG, "get unread num")
 
@@ -216,7 +217,7 @@ object RequestHelper {
                 .url(URL_UNREAD_NOTIFICATIONS).build()
         return sendRequest(request) { response ->
             try {
-                val html = response.body().string()
+                val html = response.body()!!.string()
 
                 val doc = Parser.toDoc(html)
                 NotificationParser.parseUnreadCount(doc)
@@ -235,7 +236,7 @@ object RequestHelper {
                 .build()
         return sendRequest(request) { response ->
             try {
-                val html = response.body().string()
+                val html = response.body()!!.string()
 
                 val doc = Parser.toDoc(html)
                 NotificationParser.parseDoc(doc)
@@ -359,7 +360,7 @@ object RequestHelper {
 
             val exception = RequestException("post new topic failed", response)
             try {
-                exception.errorHtml = TopicParser.parseProblemInfo(response.body().string())
+                exception.errorHtml = TopicParser.parseProblemInfo(response.body()!!.string())
             } catch (e: IOException) {
                 throw ConnectionException(e)
             }
@@ -376,7 +377,7 @@ object RequestHelper {
         return sendRequest(request) { response ->
             val html: String
             try {
-                html = response.body().string()
+                html = response.body()!!.string()
             } catch (e: IOException) {
                 throw ConnectionException(e)
             }
@@ -386,10 +387,10 @@ object RequestHelper {
     }
 
     fun login(account: String, password: String,
-              captcha: String, signInFormData: Parser.SignInFormData): Observable<LoginResult> {
+              captcha: String, signInFormData: Parser.SignInFormData): Single<LoginResult> {
         LogUtils.v(TAG, "login user: " + account)
 
-        return Observable.just(signInFormData).flatMap { signInForm ->
+        return Single.just(signInFormData).flatMap { signInForm ->
             val nextUrl = "/mission"
             val requestBody = FormBody.Builder().add("once", signInForm.once)
                     .add(signInForm.username, account)
@@ -405,7 +406,7 @@ object RequestHelper {
         }
     }
 
-    fun twoFactorAuth(code: String): Observable<LoginResult> {
+    fun twoFactorAuth(code: String): Single<LoginResult> {
         LogUtils.v(TAG, "two factor auth")
 
         val body = FormBody.Builder().apply {
@@ -421,14 +422,16 @@ object RequestHelper {
         return innerLogin(request, "/")
     }
 
-    private fun innerLogin(request: Request, nextUrl: String): Observable<LoginResult> {
+    private fun innerLogin(request: Request, nextUrl: String): Single<LoginResult> {
         return sendRequest(request, false) { response ->
             // v2ex will redirect if login success
             if (response.code() != HttpStatus.SC_MOVED_TEMPORARILY) {
                 throw RequestException("code should not be " + response.code(), response)
             }
 
-            val location = response.header(HttpHeaders.LOCATION)
+            val location = checkNotNull(response.header(HttpHeaders.LOCATION)) {
+                "Redirect response missing location"
+            }
             if (location != nextUrl) {
                 throw RequestException("location should not be " + location, response)
             }
@@ -439,12 +442,12 @@ object RequestHelper {
         }
     }
 
-    private fun parseLoginResult(location: String): Observable<LoginResult> {
+    private fun parseLoginResult(location: String): Single<LoginResult> {
         val request = newRequest().url(BASE_URL + location).build()
 
         return sendRequest(request) { response ->
             try {
-                val html = response.body().string()
+                val html = response.body()!!.string()
                 val document = Parser.toDoc(html)
                 MyselfParser.parseLoginResult(document)
             } catch (e: IOException) {
@@ -453,14 +456,14 @@ object RequestHelper {
         }
     }
 
-    fun getOnceToken(): Observable<String> {
+    private fun getOnceToken(): Single<String> {
         LogUtils.v(TAG, "get once token")
 
         val request = newRequest(useMobile = true)
                 .url(URL_ONCE_TOKEN).build()
         return sendRequest(request) { response ->
             try {
-                val html = response.body().string()
+                val html = response.body()!!.string()
                 Parser.parseOnceCode(html)
             } catch (e: IOException) {
                 throw ConnectionException(e)
@@ -468,14 +471,14 @@ object RequestHelper {
         }
     }
 
-    fun getSignInForm(): Observable<Parser.SignInFormData> {
+    fun getSignInForm(): Single<Parser.SignInFormData> {
         LogUtils.v(TAG, "get sign in form")
 
         val request = newRequest(useMobile = true)
                 .url(URL_ONCE_TOKEN).build()
         return sendRequest(request) { response ->
             try {
-                val html = response.body().string()
+                val html = response.body()!!.string()
                 Parser.parseSignInForm(html)
             } catch (e: IOException) {
                 throw ConnectionException(e)
@@ -490,7 +493,7 @@ object RequestHelper {
                 .url(URL_NOTIFICATIONS).build()
         return sendRequest(request) { response ->
             try {
-                val html = response.body().string()
+                val html = response.body()!!.string()
                 NotificationParser.parseToken(html)
             } catch (e: IOException) {
                 throw ConnectionException(e)
@@ -498,23 +501,19 @@ object RequestHelper {
         }.result()
     }
 
-    @Throws(ConnectionException::class, RemoteException::class)
-    internal fun sendRequest(request: Request, checkResponse: Boolean = true): Observable<Unit> {
-        return sendRequest(request, checkResponse) {}
-    }
-
-    @Throws(ConnectionException::class, RemoteException::class)
-    internal fun <T> sendRequest(request: Request, checkResponse: Boolean = true,
-                                 callback: (Response) -> T): Observable<T> {
+    /**
+     * You take the responsibility to close response body
+     */
+    internal fun sendRequest(request: Request, checkResponse: Boolean = true): Single<Response> {
         if (!DeviceStatus.getInstance().isNetworkConnected) {
-            return ConnectionException("network not connected").toObservable()
+            return Single.error(ConnectionException("Network not connected"))
         }
 
-        if (BuildConfig.DEBUG && Random().nextInt(100) > 95) {
-            return ConnectionException("network exception test").toObservable()
+        if (BuildConfig.DEBUG && Random().nextInt(100) > DEBUG_NETWORK_FAIL_PROBABILITY) {
+            return Single.error(ConnectionException("Network exception test"))
         }
 
-        val subject = AsyncSubject.create<T>()
+        val subject = SingleSubject.create<Response>()
         val call = client.newCall(request)
 
         call.enqueue(object : Callback {
@@ -524,25 +523,28 @@ object RequestHelper {
 
             override fun onResponse(call: Call, response: Response) {
                 try {
-                    response.use {
-                        if (checkResponse) {
-                            checkResponse(it)
-                        }
-
-                        subject.onNext(callback(response))
+                    if (checkResponse) {
+                        checkResponse(response)
                     }
-                    subject.onCompleted()
+
+                    subject.onSuccess(response)
                 } catch (e: Throwable) {
                     subject.onError(e)
                 }
             }
         })
 
-        subject.doOnUnsubscribe {
+        return subject.doOnDispose {
             call.cancel()
-        }
+        }.subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+    }
 
-        return subject.subscribeOn(Schedulers.io())
+    internal inline fun <T : Any> sendRequest(request: Request, checkResponse: Boolean = true,
+                                              crossinline callback: (Response) -> T): Single<T> {
+        return sendRequest(request, checkResponse).map {
+            it.use(callback)
+        }
     }
 
     @Throws(RemoteException::class, RequestException::class, ConnectionException::class)
@@ -553,7 +555,9 @@ object RequestHelper {
 
         val code = response.code()
         if (response.isRedirect) {
-            val location = response.header(HttpHeaders.LOCATION)
+            val location = checkNotNull(response.header(HttpHeaders.LOCATION)) {
+                "Redirect response missing location header."
+            }
             when {
                 location.startsWith("/signin") -> throw UnauthorizedException(response)
                 location.startsWith("/2fa") -> throw TwoFactorAuthException(response)
@@ -569,7 +573,7 @@ object RequestHelper {
         Crashlytics.log("request url: " + response.request().url())
         if (code == HttpStatus.SC_FORBIDDEN || code == HttpStatus.SC_NOT_FOUND) {
             try {
-                val body = response.body()
+                val body = response.body()!!
 
                 if (body.contentLength() == 0L) {
                     // it's blocked for guest

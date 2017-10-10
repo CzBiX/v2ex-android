@@ -19,7 +19,7 @@ import com.czbix.v2ex.helper.RxBus
 import com.czbix.v2ex.model.Member
 import com.czbix.v2ex.util.MiscUtils
 import com.google.common.base.Strings
-import rx.Subscription
+import io.reactivex.disposables.Disposable
 
 class SettingsActivity : BaseActivity() {
     private val mFragment = PrefsFragment()
@@ -50,7 +50,7 @@ class SettingsActivity : BaseActivity() {
     class PrefsFragment : PreferenceFragment(), Preference.OnPreferenceClickListener {
         private var isLogin: Boolean = false
         private lateinit var mNotificationsPref: SwitchPreference
-        private var task: Subscription? = null
+        private var task: Disposable? = null
 
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
@@ -107,7 +107,7 @@ class SettingsActivity : BaseActivity() {
         override fun onStop() {
             super.onStop()
 
-            task?.unsubscribe()
+            task?.dispose()
             task = null
         }
 
@@ -151,7 +151,7 @@ class SettingsActivity : BaseActivity() {
 
         private fun toggleReceiveNotifications(turnOn: Boolean): Boolean {
             check(UserState.isLoggedIn()) { "guest can't toggle notifications" }
-            task?.unsubscribe()
+            task?.dispose()
 
             mNotificationsPref.isEnabled = false
             task = RxBus.subscribe<DeviceRegisterEvent> {

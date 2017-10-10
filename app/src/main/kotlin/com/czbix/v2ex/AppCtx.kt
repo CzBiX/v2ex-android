@@ -1,7 +1,6 @@
 package com.czbix.v2ex
 
 import android.app.Application
-
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.czbix.v2ex.common.NotificationStatus
@@ -17,7 +16,6 @@ import com.czbix.v2ex.dao.V2exDb
 import com.czbix.v2ex.event.BaseEvent
 import com.czbix.v2ex.eventbus.executor.HandlerExecutor
 import com.czbix.v2ex.google.GoogleHelper
-import com.czbix.v2ex.model.Node
 import com.czbix.v2ex.network.CzRequestHelper
 import com.czbix.v2ex.network.Etag
 import com.czbix.v2ex.network.RequestHelper
@@ -26,9 +24,8 @@ import com.google.common.eventbus.AsyncEventBus
 import com.google.common.eventbus.DeadEvent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
-
 import io.fabric.sdk.android.Fabric
-import rx.schedulers.Schedulers
+import io.reactivex.schedulers.Schedulers
 
 class AppCtx : Application() {
     private lateinit var mEventBus: EventBus
@@ -96,25 +93,22 @@ class AppCtx : Application() {
             val etagStr = ConfigDao.get(ConfigDao.KEY_NODE_ETAG, getString(R.string.all_nodes_etag))
 
             val etag = Etag(etagStr)
-            val result: List<Node>?
-            try {
-                result = RequestHelper.getAllNodes(etag)
-            } catch (e: ConnectionException) {
-                // just ignore it
-                LogUtils.w(TAG, "fetch all nodes failed")
-                return
-            } catch (e: RemoteException) {
-                LogUtils.w(TAG, "fetch all nodes failed")
-                return
-            }
-
-            if (etag.isModified) {
-                NodeDao.putAll(result)
-                ConfigDao.put(ConfigDao.KEY_NODE_ETAG, etag.newEtag)
-            } else {
-                LogUtils.d(TAG, "nodes not modified")
-            }
-            LogUtils.d(TAG, "load nodes finish!")
+            RequestHelper.getAllNodes(etag).subscribe({ result ->
+                if (etag.isModified) {
+                    NodeDao.putAll(result)
+                    ConfigDao.put(ConfigDao.KEY_NODE_ETAG, etag.newEtag)
+                } else {
+                    LogUtils.d(TAG, "nodes not modified")
+                }
+                LogUtils.d(TAG, "load nodes finish!")
+            }, { error ->
+                when (error) {
+                    is ConnectionException, is RemoteException -> {
+                        LogUtils.w(TAG, "fetch all nodes failed", error)
+                    }
+                    else -> throw error
+                }
+            })
         }
 
         private fun updateServerConfig() {

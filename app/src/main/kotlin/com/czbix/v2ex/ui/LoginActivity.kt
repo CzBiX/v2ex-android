@@ -3,6 +3,7 @@ package com.czbix.v2ex.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -11,6 +12,8 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.PrefStore
 import com.czbix.v2ex.common.UserState
@@ -24,18 +27,18 @@ import com.czbix.v2ex.parser.Parser
 import com.czbix.v2ex.ui.fragment.TwoFactorAuthDialog
 import com.czbix.v2ex.util.LogUtils
 import com.czbix.v2ex.util.await
-import rx.Observable
-import rx.Observer
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.lang.kotlin.toObservable
+import com.czbix.v2ex.util.getLogTag
+import io.reactivex.Maybe
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import java.lang.Exception
 
 /**
  * A login screen that offers login via account/password.
  */
 class LoginActivity : BaseActivity(), View.OnClickListener {
-    private var mAuthTask: Subscription? = null
-    private var mCaptchaTask: Subscription? = null
+    private var mAuthTask: Disposable? = null
+    private var mCaptchaTask: Disposable? = null
 
     // UI references.
     private lateinit var mAccountView: EditText
@@ -91,7 +94,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun loadCaptcha() {
-        if (mCaptchaTask != null && !mCaptchaTask!!.isUnsubscribed) {
+        if (mCaptchaTask != null && !mCaptchaTask!!.isDisposed) {
             return
         }
 
@@ -101,8 +104,20 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                     mSignInFormData = signInFormData
                     mCaptchaImageView.visibility = View.VISIBLE
                     mLoadCaptchaView.visibility = View.GONE
-                    Glide.with(this).load(RequestHelper.getCaptchaImageUrl(signInFormData.once))
-                            .asBitmap().into(mCaptchaImageView)
+
+                    val captchaUrl = RequestHelper.getCaptchaImageUrl(signInFormData.once)
+                    Glide.with(this).load(captchaUrl).asBitmap().listener(object : RequestListener<String, Bitmap> {
+                        override fun onException(e: Exception?, model: String?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                            LogUtils.d(TAG, "Load captcha image failed, url: $model.", e)
+                            Toast.makeText(this@LoginActivity, R.string.toast_load_captcha_failed,
+                                    Toast.LENGTH_SHORT).show()
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Bitmap?, model: String?, target: Target<Bitmap>?, isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
+                            return false
+                        }
+                    }).into(mCaptchaImageView)
                 }, {
                     LogUtils.e(TAG, "Get signn in form failed.", it)
                 })
@@ -126,8 +141,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     override fun onDestroy() {
         super.onDestroy()
 
-        mAuthTask?.unsubscribe()
-        mCaptchaTask?.unsubscribe()
+        onLoginFinish()
+
+        mAuthTask?.dispose()
+        mCaptchaTask?.dispose()
     }
 
     /**
@@ -236,9 +253,11 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         mLoadCaptchaView.visibility = View.VISIBLE
 
         Toast.makeText(this, resId, Toast.LENGTH_LONG).show()
+
+        onLoginFinish()
     }
 
-    private fun onLoginCancel() {
+    private fun onLoginFinish() {
         mAuthTask = null
         showProgress(false)
 
@@ -248,45 +267,39 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    private fun loginUser(account: String, password: String, captcha: String): Subscription? {
+    private fun loginUser(account: String, password: String, captcha: String): Disposable? {
         mSignInFormData ?: return null
-        return RequestHelper.login(account, password, captcha, mSignInFormData!!).onErrorResumeNext { error ->
+        val maybe = Maybe.fromSingle(RequestHelper.login(account, password, captcha, mSignInFormData!!))
+        return maybe.onErrorResumeNext { error: Throwable ->
             if (error is TwoFactorAuthException) {
                 showTwoFactorAuthDialog()
             } else {
-                error.toObservable()
+                Maybe.error(error)
             }
-        }.observeOn(AndroidSchedulers.mainThread()).doOnUnsubscribe {
-            onLoginCancel()
-        }.await(object : Observer<LoginResult> {
-            override fun onCompleted() {
-            }
-
-            override fun onError(error: Throwable) {
-                onLoginFailed(error)
-            }
-
-            override fun onNext(result: LoginResult) {
-                onLoginSuccess(result)
-            }
+        }.observeOn(AndroidSchedulers.mainThread()).doOnDispose {
+            onLoginFinish()
+        }.subscribe({ result ->
+            onLoginSuccess(result)
+        }, { error ->
+            onLoginFailed(error)
         })
     }
 
-    private fun showTwoFactorAuthDialog(): Observable<LoginResult> {
+    private fun showTwoFactorAuthDialog(): Maybe<LoginResult> {
         val fragment = TwoFactorAuthDialog()
         fragment.show(supportFragmentManager, TAG_AUTH_CODE)
 
-        return RxBus.toObservable<TwoFactorAuthDialog.TwoFactorAuthEvent>().first().flatMap { event ->
+        return RxBus.toObservable<TwoFactorAuthDialog.TwoFactorAuthEvent>().firstOrError().flatMapMaybe { event ->
             if (event.code == null) {
-                Observable.empty<LoginResult>()
+                Maybe.empty<LoginResult>()
             } else {
-                RequestHelper.twoFactorAuth(event.code)
+                RequestHelper.twoFactorAuth(event.code).toMaybe()
             }
         }
     }
 
     companion object {
-        private val TAG = LoginActivity::class.java.simpleName
+        private val TAG = getLogTag<LoginActivity>()
 
         private val TAG_AUTH_CODE = "auth_code"
     }

@@ -56,13 +56,13 @@ import com.czbix.v2ex.ui.fragment.*
 import com.czbix.v2ex.ui.widget.SearchBoxLayout
 import com.czbix.v2ex.util.*
 import com.google.common.eventbus.Subscribe
-import rx.Subscription
+import io.reactivex.disposables.Disposable
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
         NodeListFragment.OnNodeActionListener, FragmentManager.OnBackStackChangedListener {
     private var mIsTabFragment: Boolean = false
     private var mToolbar: Toolbar? = null
-    private val subscriptions: MutableList<Subscription> = mutableListOf()
+    private val disposables: MutableList<Disposable> = mutableListOf()
     private var hasAward: Boolean = false
     private lateinit var mUsername: TextView
     private lateinit var mAppBar: AppBarLayout
@@ -106,7 +106,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onDestroy() {
         super.onDestroy()
 
-        subscriptions.unsubscribe()
+        disposables.dispose()
     }
 
     private fun onAppUpdateEvent() {
@@ -273,20 +273,20 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
             RxBus.subscribe<AppUpdateEvent> {
                 onAppUpdateEvent()
             }.let {
-                subscriptions += it
+                disposables += it
             }
         }
 
         RxBus.subscribe<NewUnreadEvent> {
             updateNotifications()
         }.let {
-            subscriptions += it
+            disposables += it
         }
 
         RxBus.subscribe<DailyAwardEvent> {
             onDailyMissionEvent(it)
         }.let {
-            subscriptions += it
+            disposables += it
         }
     }
 
@@ -443,7 +443,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
 
         val loginMenu = menu.add(R.string.action_sign_in)
-        loginMenu.setOnMenuItemClickListener { item ->
+        loginMenu.setOnMenuItemClickListener {
             startActivity(Intent(this@MainActivity, LoginActivity::class.java))
             true
         }

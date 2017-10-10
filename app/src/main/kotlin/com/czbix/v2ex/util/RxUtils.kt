@@ -1,51 +1,36 @@
 package com.czbix.v2ex.util
 
-import rx.Observable
-import rx.Observer
-import rx.Scheduler
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.internal.observers.ConsumerSingleObserver
 
-inline fun <T> async(scheduler: Scheduler = Schedulers.computation(), crossinline runnable: () -> T): Observable<T> {
-    return Observable.create<T> { subscriber ->
-        subscriber.onNext(runnable())
-        subscriber.onCompleted()
-    }.subscribeOn(scheduler)
+fun <T : Any> Single<T>.await(onSuccess: (T) -> Unit): Disposable {
+    return this.observeOn(AndroidSchedulers.mainThread()).subscribe(onSuccess)
 }
 
-fun <T : Any> Observable<T>.await(callable: (T) -> Unit): Subscription {
-    return this.observeOn(AndroidSchedulers.mainThread()).subscribe(callable)
+fun <T> Single<T>.await(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit): Disposable {
+    return this.observeOn(AndroidSchedulers.mainThread()).subscribe(onSuccess, onError)
 }
 
-fun <T> Observable<T>.await(onNext: (T) -> Unit, onError: (Throwable) -> Unit): Subscription {
-    return this.observeOn(AndroidSchedulers.mainThread()).subscribe(onNext, onError)
-}
-
-fun <T> Observable<T>.await(observer: Observer<T>): Subscription {
-    return this.observeOn(AndroidSchedulers.mainThread()).subscribe(observer)
-}
-
-fun MutableList<Subscription>.unsubscribe() {
-    this.forEach { it.unsubscribe() }
+fun MutableList<Disposable>.dispose() {
+    this.forEach { it.dispose() }
     this.clear()
 }
 
 /**
- * @see rx.exceptions.Exceptions.propagate
+ * @see io.reactivex.exceptions.Exceptions.propagate
  */
-fun <T> Observable<T>.result(): T {
+fun <T> Single<T>.result(): T {
     try {
-        return this.toBlocking().last()
+        return this.blockingGet()
     } catch (e: RuntimeException) {
         // unwarp RuntimeException for Exceptions.propagate
         val cause = e.cause
-        if (cause == null) {
-            throw e
-        } else if (cause === e) {
-            throw e
-        } else {
-            throw cause
+        when {
+            cause == null -> throw e
+            cause === e -> throw e
+            else -> throw cause
         }
     }
 }

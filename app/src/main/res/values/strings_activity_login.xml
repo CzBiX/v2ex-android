@@ -15,6 +15,7 @@
     <string name="title_two_factor_auth">Two factor auth</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_invalid_auth_code">Invalid auth code</string>
+    <string name="toast_load_captcha_failed">Load Captcha failed!</string>
     <string name="toast_sign_in_failed">Sign in failed!</string>
     <string name="desc_google_sign_in">Google Sign In</string>
 </resources>
