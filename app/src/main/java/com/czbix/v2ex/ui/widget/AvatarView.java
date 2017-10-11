@@ -38,7 +38,7 @@ public class AvatarView extends AppCompatImageView {
         final int size = getRealSize();
         final String url = avatar.getUrlByPx(size);
         Glide.with(getContext()).load(url).placeholder(R.drawable.avatar_default)
-                .override(size, size).crossFade().fitCenter().into(this);
+                .override(size, size).fitCenter().crossFade().into(this);
     }
 
     public interface OnAvatarActionListener {

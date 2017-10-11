@@ -3,7 +3,7 @@ package com.czbix.v2ex.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
-import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -12,6 +12,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.GlideDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.czbix.v2ex.R
@@ -50,6 +51,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mLoginFormView: View
 
     private var mSignInFormData: Parser.SignInFormData? = null
+    private lateinit var captchaListener: RequestListener<String, GlideDrawable>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +92,19 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             (it as TwoFactorAuthDialog).dismiss()
         }
 
+        captchaListener = object : RequestListener<String, GlideDrawable> {
+            override fun onException(e: Exception?, model: String?, target: Target<GlideDrawable>?, isFirstResource: Boolean): Boolean {
+                LogUtils.d(TAG, "Load captcha image failed, url: $model.", e)
+                Toast.makeText(this@LoginActivity, R.string.toast_load_captcha_failed,
+                        Toast.LENGTH_SHORT).show()
+                return false
+            }
+
+            override fun onResourceReady(resource: GlideDrawable?, model: String?, target: Target<GlideDrawable>?, isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
+                return false
+            }
+        }
+
         loadCaptcha()
     }
 
@@ -97,6 +112,12 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         if (mCaptchaTask != null && !mCaptchaTask!!.isDisposed) {
             return
         }
+
+        val placeholder = getDrawable(R.drawable.ic_sync_white_24dp).apply {
+            setTint(Color.BLACK)
+        }
+
+        mCaptchaImageView.setImageDrawable(placeholder)
 
         mSignInFormData = null
         mCaptchaTask = RequestHelper.getSignInForm()
@@ -106,20 +127,20 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                     mLoadCaptchaView.visibility = View.GONE
 
                     val captchaUrl = RequestHelper.getCaptchaImageUrl(signInFormData.once)
-                    Glide.with(this).load(captchaUrl).asBitmap().listener(object : RequestListener<String, Bitmap> {
-                        override fun onException(e: Exception?, model: String?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                            LogUtils.d(TAG, "Load captcha image failed, url: $model.", e)
-                            Toast.makeText(this@LoginActivity, R.string.toast_load_captcha_failed,
-                                    Toast.LENGTH_SHORT).show()
-                            return false
-                        }
-
-                        override fun onResourceReady(resource: Bitmap?, model: String?, target: Target<Bitmap>?, isFromMemoryCache: Boolean, isFirstResource: Boolean): Boolean {
-                            return false
-                        }
-                    }).into(mCaptchaImageView)
+                    val fallback = getDrawable(R.drawable.ic_sync_problem_white_24dp).apply {
+                        setTint(Color.BLACK)
+                    }
+                    Glide.with(this).load(captchaUrl).listener(captchaListener)
+                            .placeholder(placeholder).error(fallback).dontAnimate()
+                            .into(mCaptchaImageView)
                 }, {
-                    LogUtils.e(TAG, "Get signn in form failed.", it)
+                    LogUtils.e(TAG, "Get sign in form failed.", it)
+
+                    Toast.makeText(this@LoginActivity, R.string.toast_load_captcha_failed,
+                            Toast.LENGTH_SHORT).show()
+
+                    mCaptchaImageView.visibility = View.GONE
+                    mLoadCaptchaView.visibility = View.VISIBLE
                 })
     }
 
