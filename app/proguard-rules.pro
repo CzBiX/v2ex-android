@@ -84,7 +84,9 @@
 
 # unresolve class in library
 -dontwarn com.google.**
+-dontwarn okhttp3.**
 -dontwarn okio.**
+-dontwarn javax.annotation.**
 
 -keep class com.google.android.gms.** { *; }
 -keep class com.google.firebase.** { *; }
