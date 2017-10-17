@@ -9,6 +9,7 @@ import com.czbix.v2ex.common.UpdateInfo
 import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.common.exception.ConnectionException
 import com.czbix.v2ex.common.exception.RemoteException
+import com.czbix.v2ex.common.exception.RequestException
 import com.czbix.v2ex.dao.ConfigDao
 import com.czbix.v2ex.dao.DraftDao
 import com.czbix.v2ex.dao.NodeDao
@@ -103,7 +104,7 @@ class AppCtx : Application() {
                 LogUtils.d(TAG, "load nodes finish!")
             }, { error ->
                 when (error) {
-                    is ConnectionException, is RemoteException -> {
+                    is ConnectionException, is RemoteException, is RequestException -> {
                         LogUtils.w(TAG, "fetch all nodes failed", error)
                     }
                     else -> throw error

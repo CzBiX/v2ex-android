@@ -113,7 +113,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             return
         }
 
-        val placeholder = getDrawable(R.drawable.ic_sync_white_24dp).apply {
+        val placeholder = resources.getDrawable(R.drawable.ic_sync_white_24dp, theme).apply {
             setTint(Color.BLACK)
         }
 
@@ -127,7 +127,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                     mLoadCaptchaView.visibility = View.GONE
 
                     val captchaUrl = RequestHelper.getCaptchaImageUrl(signInFormData.once)
-                    val fallback = getDrawable(R.drawable.ic_sync_problem_white_24dp).apply {
+                    val fallback = resources.getDrawable(R.drawable.ic_sync_problem_white_24dp, theme).apply {
                         setTint(Color.BLACK)
                     }
                     Glide.with(this).load(captchaUrl).listener(captchaListener)
