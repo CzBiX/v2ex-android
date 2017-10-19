@@ -119,4 +119,5 @@
     <string name="error_invalid_auth_code">验证码无效</string>
     <string name="title_two_factor_auth">两步验证</string>
     <string name="toast_node_not_found">节点未找到！</string>
+    <string name="toast_access_restricted">访问受限！请在网页版验证手机号。</string>
 </resources>

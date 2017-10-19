@@ -36,6 +36,7 @@
     <string name="tv_daily_bonus">Daily Bonus</string>
     <string name="toast_daily_award_received">Received daily bonus.</string>
     <string name="toast_need_sign_in">Please sign in!</string>
+    <string name="toast_access_restricted">Access restricted! Please verify your phone on website.</string>
     <string name="toast_connection_exception">Cannot connect to server…</string>
     <string name="toast_remote_exception">Server returned an error, please try again later!</string>
     <string name="toast_topic_not_found">Topic not found!</string>

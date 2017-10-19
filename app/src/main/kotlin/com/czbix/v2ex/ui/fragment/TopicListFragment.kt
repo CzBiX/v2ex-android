@@ -162,7 +162,6 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
     }
 
     private fun handleLoadException(ex: Exception) {
-        var finishActivity = false
         var handled = false
 
         if (ex is RequestException) {

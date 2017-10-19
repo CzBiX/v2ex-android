@@ -561,6 +561,7 @@ object RequestHelper {
             when {
                 location.startsWith("/signin") -> throw UnauthorizedException(response)
                 location.startsWith("/2fa") -> throw TwoFactorAuthException(response)
+                location.startsWith("/restricted") -> throw RestrictedException(response)
                 else -> throw UrlRedirectException(location, "unknown response", response)
             }
         }

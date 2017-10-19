@@ -30,6 +30,10 @@ object ExceptionUtils {
         val stringId: Int
 
         when (e) {
+            is RestrictedException -> {
+                needFinishActivity = true
+                stringId = R.string.toast_access_restricted
+            }
             is UnauthorizedException -> {
                 needFinishActivity = true
                 stringId = R.string.toast_need_sign_in
