@@ -6,6 +6,7 @@ import android.app.Activity
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View
@@ -27,6 +28,7 @@ import com.czbix.v2ex.network.RequestHelper
 import com.czbix.v2ex.parser.Parser
 import com.czbix.v2ex.ui.fragment.TwoFactorAuthDialog
 import com.czbix.v2ex.util.LogUtils
+import com.czbix.v2ex.util.ViewUtils
 import com.czbix.v2ex.util.await
 import com.czbix.v2ex.util.getLogTag
 import io.reactivex.Maybe
@@ -113,8 +115,11 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             return
         }
 
-        val placeholder = resources.getDrawable(R.drawable.ic_sync_white_24dp).apply {
-            setTint(Color.BLACK)
+        val placeholder = ViewUtils.getDrawable(this, R.drawable.ic_sync_white_24dp).let {
+            ViewUtils.setDrawableTint(it, Color.BLACK)
+        }
+        val fallback = ViewUtils.getDrawable(this, R.drawable.ic_sync_problem_white_24dp).let {
+            ViewUtils.setDrawableTint(it, Color.BLACK)
         }
 
         mCaptchaImageView.setImageDrawable(placeholder)
@@ -127,9 +132,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                     mLoadCaptchaView.visibility = View.GONE
 
                     val captchaUrl = RequestHelper.getCaptchaImageUrl(signInFormData.once)
-                    val fallback = resources.getDrawable(R.drawable.ic_sync_problem_white_24dp).apply {
-                        setTint(Color.BLACK)
-                    }
                     Glide.with(this).load(captchaUrl).listener(captchaListener)
                             .placeholder(placeholder).error(fallback).dontAnimate()
                             .into(mCaptchaImageView)
