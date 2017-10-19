@@ -322,10 +322,10 @@ object RequestHelper {
     }
 
     @Throws(ConnectionException::class, RemoteException::class)
-    fun dailyBonus() {
+    fun dailyBonus(): Single<Unit> {
         LogUtils.v(TAG, "daily bonus")
 
-        getOnceToken().flatMap { onceCode ->
+        return getOnceToken().flatMap { onceCode ->
             val request = newRequest().apply {
                 url("%s/redeem?once=%s".format(URL_MISSION_DAILY, onceCode))
                 header(HttpHeaders.REFERER, URL_MISSION_DAILY)
@@ -336,7 +336,7 @@ object RequestHelper {
             }.onErrorReturn {
                 checkIsRedirectException(it)
             }
-        }.result()
+        }
     }
 
     @Throws(ConnectionException::class, RemoteException::class)

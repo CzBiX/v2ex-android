@@ -233,28 +233,23 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         updateNotifications()
         updateFavItem()
 
-        mAwardButton.setOnClickListener { v ->
+        mAwardButton.setOnClickListener {
             mAwardButton.isEnabled = false
-            ExecutorUtils.execute {
-                var success = false
-                try {
-                    RequestHelper.dailyBonus()
-                    success = true
-                } catch (e: ConnectionException) {
-                    LogUtils.w(TAG, "daily mission failed", e)
-                } catch (e: RemoteException) {
-                    LogUtils.w(TAG, "daily mission failed", e)
-                }
 
-                RxBus.post(DailyAwardEvent(!success))
-            }
+            RequestHelper.dailyBonus().await({
+                RxBus.post(DailyAwardEvent(false))
+            }, { e ->
+                LogUtils.w(TAG, "Get daily bonus failed", e)
+
+                RxBus.post(DailyAwardEvent(true))
+            })
         }
 
         mDrawerToggle = ActionBarDrawerToggle(this, mDrawerLayout, mToolbar,
                 R.string.desc_open_drawer, R.string.desc_close_drawer)
         mDrawerLayout.addDrawerListener(mDrawerToggle)
 
-        mNavBg.setOnClickListener { v ->
+        mNavBg.setOnClickListener {
             if (UserState.isLoggedIn()) {
                 MiscUtils.openUrl(this@MainActivity, Member.buildUrlFromName(UserState.username!!))
             } else {
@@ -270,23 +265,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         if (UpdateInfo.hasNewVersion) {
             onAppUpdateEvent()
         } else {
-            RxBus.subscribe<AppUpdateEvent> {
+            disposables += RxBus.subscribe<AppUpdateEvent> {
                 onAppUpdateEvent()
-            }.let {
-                disposables += it
             }
         }
 
-        RxBus.subscribe<NewUnreadEvent> {
+        disposables += RxBus.subscribe<NewUnreadEvent> {
             updateNotifications()
-        }.let {
-            disposables += it
         }
 
-        RxBus.subscribe<DailyAwardEvent> {
+        disposables += RxBus.subscribe<DailyAwardEvent> {
             onDailyMissionEvent(it)
-        }.let {
-            disposables += it
         }
     }
 
