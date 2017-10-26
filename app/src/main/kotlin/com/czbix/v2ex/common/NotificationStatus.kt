@@ -15,7 +15,6 @@ import com.czbix.v2ex.util.MiscUtils
 import com.google.common.eventbus.Subscribe
 
 object NotificationStatus {
-    private val context: Context
     private val mNtfManager: NotificationManagerCompat
 
     @Retention(AnnotationRetention.SOURCE)
@@ -25,8 +24,10 @@ object NotificationStatus {
     const val ID_NOTIFICATIONS = 0
     const val ID_APP_UPDATE = 1
 
+    private val context: Context
+        get() = AppCtx.instance
+
     init {
-        context = AppCtx.instance
         mNtfManager = NotificationManagerCompat.from(context)
 
         RxBus.subscribe<NewUnreadEvent> {

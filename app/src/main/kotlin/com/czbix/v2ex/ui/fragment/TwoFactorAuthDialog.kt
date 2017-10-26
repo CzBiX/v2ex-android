@@ -16,7 +16,7 @@ class TwoFactorAuthDialog : DialogFragment(), DialogInterface.OnClickListener {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val inflater = activity.layoutInflater
         val layout = inflater.inflate(R.layout.view_edittext, null)
-        editText = layout.findViewById(R.id.edit_text) as EditText
+        editText = layout.findViewById(R.id.edit_text)
 
         return AlertDialog.Builder(context).apply {
             setTitle(R.string.title_two_factor_auth)

@@ -158,11 +158,11 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         final View rootView = inflater.inflate(R.layout.fragment_topic, container, false);
         initJumpBackButton(rootView);
 
-        mLayout = ((SwipeRefreshLayout) rootView.findViewById(R.id.comments_layout));
+        mLayout = rootView.findViewById(R.id.comments_layout);
         mLayout.setColorSchemeResources(R.color.material_blue_grey_500, R.color.material_blue_grey_700, R.color.material_blue_grey_900);
         mLayout.setOnRefreshListener(this);
 
-        mCommentsView = (RecyclerView) mLayout.findViewById(R.id.comments);
+        mCommentsView = mLayout.findViewById(R.id.comments);
 
         if (!mTopic.hasInfo()) {
             mCommentsView.setVisibility(View.INVISIBLE);

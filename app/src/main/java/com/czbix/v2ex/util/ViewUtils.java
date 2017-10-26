@@ -152,7 +152,7 @@ public class ViewUtils {
 
     @Nullable
     public static Toolbar initToolbar(AppCompatActivity activity) {
-        Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
+        Toolbar toolbar = activity.findViewById(R.id.toolbar);
         if (toolbar == null) {
             return null;
         }

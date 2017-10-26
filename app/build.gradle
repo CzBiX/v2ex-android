@@ -1,17 +1,18 @@
 buildscript {
     ext {
-        kotlin_version = '1.2.31'
-        coroutinesVersion = '0.22.3'
+        kotlin_version = '1.3.31'
+        coroutinesVersion = '1.3.0-M1'
     }
     repositories {
         maven { url 'https://maven.fabric.io/public' }
         jcenter()
+        google()
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.24.3'
+        classpath 'io.fabric.tools:gradle:1.26.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:3.1.1'
+        classpath 'com.google.gms:google-services:4.2.0'
     }
 }
 
@@ -25,11 +26,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
+
     defaultConfig {
         applicationId "com.czbix.v2ex"
-        minSdkVersion 16
-        targetSdkVersion 26
+        minSdkVersion 21
+        targetSdkVersion 28
         versionCode 96
         versionName "1.25.5"
 
@@ -70,8 +72,8 @@ kotlin {
 
 
 // Android support library version
-ext.support_version = '26.1.0'
-ext.gms_version = '15.0.0'
+ext.support_version = '28.0.0'
+ext.gms_version = '16.0.8'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -79,17 +81,17 @@ dependencies {
     implementation "com.android.support:support-core-utils:$support_version"
     implementation "com.android.support:support-fragment:$support_version"
     implementation 'com.google.guava:guava:23.4-android'
-    implementation 'com.squareup.okhttp3:okhttp:3.8.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.2'
     implementation 'com.google.code.gson:gson:2.7'
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation "com.android.support:cardview-v7:$support_version"
     implementation 'org.jsoup:jsoup:1.11.3'
     implementation "com.android.support:design:$support_version"
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
-    implementation 'com.github.bumptech.glide:glide:3.7.0'
-    implementation ('com.github.bumptech.glide:okhttp3-integration:1.4.0') {
+    implementation 'com.github.bumptech.glide:glide:3.8.0'
+    implementation ('com.github.bumptech.glide:okhttp3-integration:1.5.0') {
         exclude group: 'glide-parent'
     }
 
@@ -102,9 +104,9 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
     implementation "com.google.android.gms:play-services-analytics:$gms_version"
-    implementation "com.google.firebase:firebase-messaging:$gms_version"
+    implementation "com.google.firebase:firebase-messaging:18.0.0"
     implementation 'com.firebase:firebase-jobdispatcher:0.5.2'
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.9@aar') {
         transitive = true
     }
     implementation "com.android.support:customtabs:$support_version"

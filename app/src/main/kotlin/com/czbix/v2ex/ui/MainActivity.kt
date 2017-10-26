@@ -39,8 +39,6 @@ import com.czbix.v2ex.R
 import com.czbix.v2ex.common.NotificationStatus
 import com.czbix.v2ex.common.UpdateInfo
 import com.czbix.v2ex.common.UserState
-import com.czbix.v2ex.common.exception.ConnectionException
-import com.czbix.v2ex.common.exception.RemoteException
 import com.czbix.v2ex.event.AppUpdateEvent
 import com.czbix.v2ex.event.BaseEvent.DailyAwardEvent
 import com.czbix.v2ex.event.BaseEvent.NewUnreadEvent
@@ -83,17 +81,17 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mAppBar = findViewById(R.id.appbar) as AppBarLayout
-        mDrawerLayout = findViewById(R.id.drawer_layout) as DrawerLayout
+        mAppBar = findViewById(R.id.appbar)
+        mDrawerLayout = findViewById(R.id.drawer_layout)
 
-        mNav = findViewById(R.id.nav) as NavigationView
+        mNav = findViewById(R.id.nav)
 
         val headerView = mNav.getHeaderView(0)
         mNavBg = headerView.findViewById(R.id.nav_layout)
-        mAvatar = headerView.findViewById(R.id.avatar_img) as ImageView
-        mUsername = headerView.findViewById(R.id.username_tv) as TextView
+        mAvatar = headerView.findViewById(R.id.avatar_img)
+        mUsername = headerView.findViewById(R.id.username_tv)
         mAwardButton = headerView.findViewById(R.id.award)
-        val searchBox = findViewById(R.id.search_box) as SearchBoxLayout
+        val searchBox = findViewById<SearchBoxLayout>(R.id.search_box)
         mSearchPresenter = TopicSearchPresenter(this, searchBox)
 
         mToolbar = ViewUtils.initToolbar(this)
@@ -153,7 +151,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         AppCtx.eventBus.register(this)
 
-        supportInvalidateOptionsMenu()
+        invalidateOptionsMenu()
         updateUsername()
         updateNavBackground()
         updateNotifications()
@@ -440,7 +438,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     @Subscribe
     fun onLoginEvent(e: LoginEvent) {
-        supportInvalidateOptionsMenu()
+        invalidateOptionsMenu()
 
         updateUsername()
         updateNotifications()
