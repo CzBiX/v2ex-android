@@ -28,7 +28,7 @@ public class TopicActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic);
         ViewUtils.initToolbar(this);
-        mAppBarLayout = ((AppBarLayout) findViewById(R.id.appbar));
+        mAppBarLayout = findViewById(R.id.appbar);
 
         if (savedInstanceState == null) {
             Topic topic = getTopicFromIntent();

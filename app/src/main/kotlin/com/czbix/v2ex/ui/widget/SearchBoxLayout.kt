@@ -2,6 +2,7 @@ package com.czbix.v2ex.ui.widget
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
@@ -43,15 +44,15 @@ class SearchBoxLayout : FrameLayout, View.OnClickListener, TextWatcher, TextView
 
         setBackgroundResource(R.color.transparent_background)
 
-        mBox = findViewById(R.id.box) as RelativeLayout
+        mBox = findViewById(R.id.box)
         if (!MiscUtils.HAS_L) {
             ViewCompat.setElevation(mBox, ViewUtils.getDimensionPixelSize(R.dimen.appbar_elevation).toFloat())
         }
 
         setOnClickListener(this)
-        mBtnBack = findViewById(R.id.action_back) as ImageButton
-        mBtnClear = findViewById(R.id.action_clear) as ImageButton
-        mQuery = findViewById(R.id.query) as EditText
+        mBtnBack = findViewById(R.id.action_back)
+        mBtnClear = findViewById(R.id.action_clear)
+        mQuery = findViewById(R.id.query)
 
         mBtnBack.setOnClickListener(this)
         mBtnClear.setOnClickListener(this)
@@ -88,6 +89,7 @@ class SearchBoxLayout : FrameLayout, View.OnClickListener, TextWatcher, TextView
         }
     }
 
+    @SuppressLint("NewApi")
     @JvmOverloads
     fun hide(withAnimation: Boolean = true) {
         if (visibility != View.VISIBLE) {

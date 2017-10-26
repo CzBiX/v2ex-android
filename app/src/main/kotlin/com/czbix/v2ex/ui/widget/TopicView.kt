@@ -29,13 +29,13 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     init {
         View.inflate(context, R.layout.view_topic, this)
 
-        mAvatar = findViewById(R.id.avatar_img) as AvatarView
-        mTitle = findViewById(R.id.title_tv) as TextView
-        mUsername = findViewById(R.id.username_tv) as TextView
-        mNode = findViewById(R.id.node_tv) as TextView
-        mTime = findViewById(R.id.time_tv) as TextView
-        mReplyCount = findViewById(R.id.reply_count_tv) as TextView
-        mContent = findViewById(R.id.content) as TextView
+        mAvatar = findViewById(R.id.avatar_img)
+        mTitle = findViewById(R.id.title_tv)
+        mUsername = findViewById(R.id.username_tv)
+        mNode = findViewById(R.id.node_tv)
+        mTime = findViewById(R.id.time_tv)
+        mReplyCount = findViewById(R.id.reply_count_tv)
+        mContent = findViewById(R.id.content)
 
         if (PrefStore.getInstance().isContentSelectable) {
             mContent.setTextIsSelectable(true)

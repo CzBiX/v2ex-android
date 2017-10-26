@@ -58,8 +58,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        mAccountView = findViewById(R.id.account) as EditText
-        mPwdView = findViewById(R.id.password) as EditText
+        mAccountView = findViewById(R.id.account)
+        mPwdView = findViewById(R.id.password)
         mPwdView.setOnEditorActionListener(object : TextView.OnEditorActionListener {
             private val mActionIdSignIn = resources.getInteger(R.integer.id_action_sign)
 
@@ -71,9 +71,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                 return false
             }
         })
-        mLoadCaptchaView = findViewById(R.id.load_captcha) as Button
-        mCaptchaImageView = findViewById(R.id.image_captcha) as ImageView
-        mCaptchaView = findViewById(R.id.captcha) as EditText
+        mLoadCaptchaView = findViewById(R.id.load_captcha)
+        mCaptchaImageView = findViewById(R.id.image_captcha)
+        mCaptchaView = findViewById(R.id.captcha)
 
         arrayOf(
                 R.id.sign_in,
@@ -188,38 +188,35 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
         val password = mPwdView.text.toString()
         val captcha = mCaptchaView.text.toString()
 
-        var cancel = false
         var focusView: View? = null
 
         // Check for a valid password, if the user entered one.
         if (TextUtils.isEmpty(password)) {
             mPwdView.error = getString(R.string.error_field_required)
             focusView = mPwdView
-            cancel = true
         }
 
         // Check for a valid email address.
         if (TextUtils.isEmpty(email)) {
             mAccountView.error = getString(R.string.error_field_required)
             focusView = mAccountView
-            cancel = true
         }
 
         if (TextUtils.isEmpty(captcha)) {
             mCaptchaView.error = getString(R.string.error_field_required)
             focusView = mCaptchaView
-            cancel = true
         }
 
-        if (cancel) {
+        if (focusView != null) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
-            focusView!!.requestFocus()
+            focusView.requestFocus()
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true)
             mAuthTask = loginUser(email, password, captcha)
+            ViewUtils.hideInputMethod(mPwdView)
         }
     }
 

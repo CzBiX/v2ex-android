@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlin_version = '1.2.31'
+        kotlin_version = '1.3.11'
         coroutinesVersion = '0.22.3'
     }
     repositories {
@@ -9,9 +9,9 @@ buildscript {
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.24.3'
+        classpath 'io.fabric.tools:gradle:1.25.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:3.1.1'
+        classpath 'com.google.gms:google-services:4.2.0'
     }
 }
 
@@ -25,10 +25,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
+
     defaultConfig {
         applicationId "com.czbix.v2ex"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 96
         versionName "1.25.5"

@@ -75,7 +75,7 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_topic_list,
                 container, false) as SwipeRefreshLayout
-        mRecyclerView = mLayout.findViewById(R.id.recycle_view) as RecyclerView
+        mRecyclerView = mLayout.findViewById(R.id.recycle_view)
 
         mLayout.setColorSchemeResources(R.color.material_blue_grey_500, R.color.material_blue_grey_700, R.color.material_blue_grey_900)
         mLayout.setOnRefreshListener(this)
