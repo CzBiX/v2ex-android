@@ -68,6 +68,7 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             visibility = View.INVISIBLE
             return
         }
+
         visibility = View.VISIBLE
         mTopic = topic
 

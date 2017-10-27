@@ -1,20 +1,19 @@
 package com.czbix.v2ex.helper
 
 import android.util.LruCache
-import com.czbix.v2ex.common.exception.FatalException
-import com.google.common.collect.TreeTraverser
+import com.google.common.graph.Traverser
 import org.jsoup.nodes.Element
 import org.jsoup.select.Evaluator
-import java.lang.reflect.Method
+import org.jsoup.select.QueryParser
 
 /**
  * Jsoup use bottom-up parsing to find element, it's slow when we only used a few elements.
  * This class provided a more direct way to find elements.
  */
-class JsoupObjects : Iterable<Element> {
+class JsoupObjects(vararg elements: Element) : Iterable<Element> {
     private var mResult: Sequence<Element>
 
-    constructor(vararg elements: Element) {
+    init {
         mResult = elements.asSequence()
     }
 
@@ -54,7 +53,7 @@ class JsoupObjects : Iterable<Element> {
     infix fun dfs(query: String): JsoupObjects {
         val evaluator = parseQuery(query)
         addQuery(evaluator) {
-            TREE_TRAVERSER.preOrderTraversal(it).asSequence()
+            TREE_TRAVERSER.depthFirstPreOrder(it).asSequence()
         }
         return this
     }
@@ -70,7 +69,7 @@ class JsoupObjects : Iterable<Element> {
     infix fun bfs(query: String): JsoupObjects {
         val evaluator = parseQuery(query)
         addQuery(evaluator) {
-            TREE_TRAVERSER.breadthFirstTraversal(it).asSequence()
+            TREE_TRAVERSER.breadthFirst(it).asSequence()
         }
         return this
     }
@@ -78,7 +77,7 @@ class JsoupObjects : Iterable<Element> {
     infix fun parents(query: String): JsoupObjects {
         val evaluator = parseQuery(query)
         addQuery(evaluator) {
-            PARENT_TRAVERSER.breadthFirstTraversal(it).asSequence()
+            PARENT_TRAVERSER.breadthFirst(it).asSequence()
         }
         return this
     }
@@ -94,29 +93,19 @@ class JsoupObjects : Iterable<Element> {
     private operator fun Evaluator.invoke(e: Element) = this.matches(e, e)
 
     companion object {
-        private val PARSE_METHOD: Method
         private val EVALUATOR_LRU_CACHE: LruCache<String, Evaluator>
 
         init {
-            try {
-                // this class isn't public.
-                val queryParserCls = Class.forName("org.jsoup.select.QueryParser")
-                val parseMethod = queryParserCls.getDeclaredMethod("parse", String::class.java)
-                parseMethod.isAccessible = true
-                PARSE_METHOD = parseMethod
-            } catch (e: Exception) {
-                throw FatalException("get QueryParser.parse failed", e)
-            }
-
             EVALUATOR_LRU_CACHE = object : LruCache<String, Evaluator>(64) {
                 override fun create(key: String): Evaluator {
-                    try {
-                        return PARSE_METHOD.invoke(null, key) as Evaluator
-                    } catch (e: Exception) {
-                        throw FatalException("invoke QueryParser.parse failed", e)
-                    }
+                    return QueryParser.parse(key)
                 }
             }
+        }
+
+        @JvmStatic
+        fun Element.query(): JsoupObjects {
+            return JsoupObjects(this)
         }
 
         @JvmStatic
@@ -131,16 +120,12 @@ class JsoupObjects : Iterable<Element> {
 
         private fun parseQuery(query: String) = EVALUATOR_LRU_CACHE.get(query)
 
-        private val TREE_TRAVERSER = object : TreeTraverser<Element>() {
-            override fun children(root: Element): Iterable<Element> {
-                return root.children()
-            }
+        private val TREE_TRAVERSER = Traverser.forTree<Element> {
+            it.children()
         }
 
-        private val PARENT_TRAVERSER = object : TreeTraverser<Element>() {
-            override fun children(root: Element): Iterable<Element> {
-                return listOf(root.parent())
-            }
+        private val PARENT_TRAVERSER = Traverser.forTree<Element> {
+            listOf(it.parent())
         }
     }
 }

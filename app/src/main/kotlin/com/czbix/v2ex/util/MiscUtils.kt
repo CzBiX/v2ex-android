@@ -46,7 +46,6 @@ object MiscUtils {
         HAS_M = sdkInt >= VERSION_CODES.M
     }
 
-    @JvmStatic
     val appUpdateIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${BuildConfig.APPLICATION_ID}"))
 
     @JvmStatic

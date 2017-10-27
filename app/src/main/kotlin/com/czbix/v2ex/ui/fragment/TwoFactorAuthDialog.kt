@@ -14,11 +14,11 @@ class TwoFactorAuthDialog : DialogFragment(), DialogInterface.OnClickListener {
     private lateinit var editText: EditText
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val inflater = activity.layoutInflater
+        val inflater = activity!!.layoutInflater
         val layout = inflater.inflate(R.layout.view_edittext, null)
         editText = layout.findViewById(R.id.edit_text)
 
-        return AlertDialog.Builder(context).apply {
+        return AlertDialog.Builder(context!!).apply {
             setTitle(R.string.title_two_factor_auth)
             setView(layout)
             setNegativeButton(R.string.action_cancel, this@TwoFactorAuthDialog)

@@ -21,19 +21,19 @@ class TaskService : JobService() {
         return true
     }
 
-    fun runTask(params: JobParameters): Boolean {
+    private fun runTask(params: JobParameters): Boolean {
         val taskTag = params.tag
         when (taskTag) {
             TASK_NOTIFICATION_CHECK -> return NotificationFcmMessage.checkNotification(this)
         }
 
-        LogUtils.w(TAG, "unknown task tag: " + taskTag)
+        LogUtils.w(TAG, "Unknown task tag: $taskTag")
         return false
     }
 
     companion object {
         val TAG = getLogTag<TaskService>()
 
-        val TASK_NOTIFICATION_CHECK = "notification_check"
+        const val TASK_NOTIFICATION_CHECK = "notification_check"
     }
 }

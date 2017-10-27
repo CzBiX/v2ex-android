@@ -18,7 +18,7 @@ object NotificationStatus {
     private val mNtfManager: NotificationManagerCompat
 
     @Retention(AnnotationRetention.SOURCE)
-    @IntDef(ID_NOTIFICATIONS.toLong(), ID_APP_UPDATE.toLong())
+    @IntDef(ID_NOTIFICATIONS, ID_APP_UPDATE)
     annotation class NotificationId
 
     const val ID_NOTIFICATIONS = 0

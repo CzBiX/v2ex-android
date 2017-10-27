@@ -10,6 +10,4 @@ abstract class BaseEvent {
     class DailyAwardEvent(val mHasAward: Boolean) : BaseEvent()
 
     class ContextInitFinishEvent : BaseEvent()
-
-    class NodeEvent : BaseEvent()
 }

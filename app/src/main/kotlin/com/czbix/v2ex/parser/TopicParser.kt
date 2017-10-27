@@ -84,13 +84,11 @@ object TopicParser : Parser() {
             TopicListParser.parseMember(builder, JsoupObjects.child(header, ".fr"))
         }
 
-        val csrfToken = if (UserState.isLoggedIn()) {
+        return if (UserState.isLoggedIn()) {
             parseFavored(builder, topicBox)
         } else {
             null
         }
-
-        return csrfToken
     }
 
     internal fun parseTopicReplyTime(topicBuilder: Topic.Builder, text: String) {

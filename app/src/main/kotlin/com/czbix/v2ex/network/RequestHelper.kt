@@ -11,7 +11,6 @@ import com.czbix.v2ex.common.exception.*
 import com.czbix.v2ex.model.*
 import com.czbix.v2ex.parser.*
 import com.czbix.v2ex.parser.Parser.PageType
-import com.czbix.v2ex.ui.loader.TopicListLoader
 import com.czbix.v2ex.util.*
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
@@ -92,13 +91,25 @@ object RequestHelper {
     }
 
     @Throws(ConnectionException::class, RemoteException::class)
-    fun getTopics(page: Page): TopicListLoader.TopicList {
+    fun getTopics(page: Page, pageNum: Int? = null): Single<TopicListParser.TopicList> {
         if (BuildConfig.DEBUG) {
-            Log.v(TAG, "request latest topic for page: " + page.title)
+            Log.v(TAG, "Request latest topic for page: " + page.title)
+        }
+
+        val url = if (pageNum == null) {
+            HttpUrl.parse(page.url)!!
+        } else {
+            require(page is Node) {
+                "Only node support page."
+            }
+
+            HttpUrl.parse(page.url)!!.newBuilder().apply {
+                setQueryParameter("p", pageNum.toString())
+            }.build()
         }
 
         val request = newRequest()
-                .url(page.url)
+                .url(url)
                 .build()
 
         return sendRequest(request) { response ->
@@ -106,22 +117,20 @@ object RequestHelper {
                 throw ExIllegalStateException("topics page should not redirect")
             }
 
-            val doc: Document
-            val topics: TopicListLoader.TopicList
-            try {
-                doc = Parser.toDoc(response.body()!!.string())
+            val topics = try {
+                val doc = Parser.toDoc(response.body()!!.string())
                 processUserState(doc, if (page is Tab) PageType.Tab else PageType.Node)
-                topics = TopicListParser.parseDoc(doc, page)
+                TopicListParser.parseDoc(doc, page)
             } catch (e: IOException) {
                 throw ConnectionException(e)
             }
 
             if (BuildConfig.DEBUG) {
-                Log.v(TAG, "received topics, count: " + topics.size)
+                Log.v(TAG, "Received topics, count: " + topics.size)
             }
 
             topics
-        }.result()
+        }
     }
 
     @Throws(ConnectionException::class, RemoteException::class)
@@ -282,12 +291,12 @@ object RequestHelper {
     }
 
     @Throws(ConnectionException::class, RemoteException::class)
-    fun favor(obj: Favable, isFavor: Boolean, token: String) {
+    fun favor(obj: Favable, isFavor: Boolean, token: String): Single<Unit> {
         val url = if (isFavor) obj.getFavUrl(token) else obj.getUnFavUrl(token)
         val request = newRequest().url(url)
                 .build()
 
-        sendRequest<Unit>(request) {
+        return sendRequest<Unit>(request) {
             error("Shouldn't go to here")
         }.onErrorReturn {
             checkIsRedirectException(it) {

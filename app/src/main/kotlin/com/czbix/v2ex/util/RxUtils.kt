@@ -15,7 +15,6 @@ fun <T> Single<T>.await(onSuccess: (T) -> Unit, onError: (Throwable) -> Unit): D
 
 fun MutableList<Disposable>.dispose() {
     this.forEach { it.dispose() }
-    this.clear()
 }
 
 /**
