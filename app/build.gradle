@@ -1,7 +1,7 @@
 buildscript {
     ext {
-        kotlin_version = '1.1.51'
-        coroutinesVersion = '0.19.1'
+        kotlin_version = '1.2.30'
+        coroutinesVersion = '0.22.3'
     }
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -11,14 +11,16 @@ buildscript {
     dependencies {
         classpath 'io.fabric.tools:gradle:1.24.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:3.0.0'
+        classpath 'com.google.gms:google-services:3.1.1'
     }
 }
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
-    maven { url "https://jitpack.io" }
     jcenter()
+
+    maven { url "https://jitpack.io" }
+    maven { url 'https://maven.google.com' }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 apply plugin: 'com.android.application'
@@ -54,8 +56,6 @@ android {
             versionNameSuffix '.debug'
             resValue 'bool', 'isDebuggable', 'true'
             ext.enableCrashlytics = false
-
-            multiDexEnabled true
         }
     }
     lintOptions {
@@ -63,13 +63,6 @@ android {
     }
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
-    }
-    productFlavors {
-        prod {
-        }
-        dev {
-            minSdkVersion 21
-        }
     }
 }
 
@@ -82,7 +75,7 @@ kotlin {
 
 // Android support library version
 ext.support_version = '25.3.1'
-ext.gms_version = '11.0.4'
+ext.gms_version = '11.8.0'
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -116,7 +109,7 @@ dependencies {
     compile "com.google.firebase:firebase-messaging:$gms_version"
     compile 'com.firebase:firebase-jobdispatcher:0.5.2'
     compile('com.crashlytics.sdk.android:crashlytics:2.7.0@aar') {
-        transitive = true;
+        transitive = true
     }
     compile "com.android.support:customtabs:$support_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"

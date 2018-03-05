@@ -51,7 +51,8 @@ object TopicListParser : Parser() {
             return false to null
         }
 
-        val a = JsoupObjects(contentBox).child(".header").child(".fr").child("a").first()
+        val a = JsoupObjects(contentBox).child(".node_header", ".node_info", ".fr",
+                "a.node_header_link").first()
         val href = a.attr("href")
 
         return href.startsWith("/unfav") to href.substringAfterLast("?once=")

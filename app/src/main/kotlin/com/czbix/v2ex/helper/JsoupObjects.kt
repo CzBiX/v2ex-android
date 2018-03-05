@@ -40,6 +40,13 @@ class JsoupObjects : Iterable<Element> {
         return this
     }
 
+
+    fun child(vararg queries: String): JsoupObjects {
+        return queries.fold(this) { thiz, query ->
+            thiz.child(query)
+        }
+    }
+
     /**
      * find elements by pre-order depth-first-search
      * @see .bfs
