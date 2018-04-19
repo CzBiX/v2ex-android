@@ -6,7 +6,6 @@ import android.app.Activity
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.graphics.drawable.DrawableCompat
 import android.text.TextUtils
 import android.view.KeyEvent
 import android.view.View
@@ -83,7 +82,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                 R.id.image_captcha,
                 R.id.load_captcha
         ).forEach {
-            findViewById(it).setOnClickListener(this)
+            findViewById<View>(it).setOnClickListener(this)
         }
 
         mLoginFormView = findViewById(R.id.login_form)
