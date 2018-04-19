@@ -102,23 +102,22 @@ object TopicListParser : Parser() {
     }
 
     private fun parseInfo(topicBuilder: Topic.Builder, ele: Element, node: Node?) {
-        var fade = ele
         @Suppress("NAME_SHADOWING")
         var node = node
-        fade = JsoupObjects.child(fade, ".fade")
+        val topicInfoEle = JsoupObjects.child(ele, ".topic_info, .fade")
 
         val hasNode: Boolean
         if (node == null) {
             hasNode = false
-            node = Parser.parseNode(JsoupObjects.child(fade, ".node"))
+            node = Parser.parseNode(JsoupObjects.child(topicInfoEle, ".node"))
         } else {
             hasNode = true
         }
         topicBuilder.setNode(node)
 
         val index = if (hasNode) 0 else 1
-        if (fade.textNodes().size > index) {
-            parseReplyTime(topicBuilder, fade.textNodes()[index])
+        if (topicInfoEle.textNodes().size > index) {
+            parseReplyTime(topicBuilder, topicInfoEle.textNodes()[index])
         } else {
             // reply time may not exists
             topicBuilder.setReplyTime("")
