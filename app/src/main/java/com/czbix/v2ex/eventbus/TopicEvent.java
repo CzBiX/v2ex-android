@@ -1,6 +1,6 @@
 package com.czbix.v2ex.eventbus;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import com.czbix.v2ex.event.BaseEvent;
 

@@ -1,7 +1,7 @@
 package com.czbix.v2ex.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.czbix.v2ex.R;

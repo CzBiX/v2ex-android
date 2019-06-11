@@ -2,7 +2,7 @@ package com.czbix.v2ex.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.common.exception.FatalException;

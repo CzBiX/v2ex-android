@@ -4,11 +4,11 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.customtabs.CustomTabsClient;
-import android.support.customtabs.CustomTabsIntent;
-import android.support.customtabs.CustomTabsServiceConnection;
-import android.support.customtabs.CustomTabsSession;
+import androidx.annotation.Nullable;
+import androidx.browser.customtabs.CustomTabsClient;
+import androidx.browser.customtabs.CustomTabsIntent;
+import androidx.browser.customtabs.CustomTabsServiceConnection;
+import androidx.browser.customtabs.CustomTabsSession;
 
 import com.czbix.v2ex.util.ViewUtils;
 
@@ -82,7 +82,7 @@ public class CustomTabsHelper {
 
     public static CustomTabsIntent.Builder getBuilder(Activity activity, @Nullable CustomTabsSession session) {
         final int color = ViewUtils.getAttrColor(activity.getTheme(),
-                android.support.v7.appcompat.R.attr.colorPrimary);
+                androidx.appcompat.appcompat.R.attr.colorPrimary);
 
         final CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder(session);
 

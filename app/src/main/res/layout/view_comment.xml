@@ -4,7 +4,7 @@
        xmlns:tools="http://schemas.android.com/tools"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       tools:parentTag="android.support.constraint.ConstraintLayout"
+       tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"
        tools:layout_editor_absoluteY="81dp"
        tools:layout_editor_absoluteX="0dp">
 
@@ -100,7 +100,7 @@
         android:layout_marginEnd="8dp"
         />
 
-    <android.support.constraint.Guideline
+    <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/guideline"

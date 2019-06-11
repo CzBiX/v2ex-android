@@ -11,17 +11,17 @@ import android.graphics.Outline
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.IdRes
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.NavigationView
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
-import android.support.v4.view.ViewCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.widget.Toolbar
+import androidx.annotation.IdRes
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.navigation.NavigationView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.core.view.ViewCompat
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -57,14 +57,14 @@ import com.google.common.eventbus.Subscribe
 import io.reactivex.disposables.Disposable
 
 class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
-        NodeListFragment.OnNodeActionListener, FragmentManager.OnBackStackChangedListener {
+        NodeListFragment.OnNodeActionListener, androidx.fragment.app.FragmentManager.OnBackStackChangedListener {
     private var mIsTabFragment: Boolean = false
     private var mToolbar: Toolbar? = null
     private val disposables: MutableList<Disposable> = mutableListOf()
     private var hasAward: Boolean = false
     private lateinit var mUsername: TextView
     private lateinit var mAppBar: AppBarLayout
-    private lateinit var mDrawerLayout: DrawerLayout
+    private lateinit var mDrawerLayout: androidx.drawerlayout.widget.DrawerLayout
     private lateinit var mNav: NavigationView
     private lateinit var mAvatar: ImageView
     private lateinit var mDrawerToggle: ActionBarDrawerToggle
@@ -114,7 +114,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
-    private fun getFragmentToShow(intent: Intent): Fragment {
+    private fun getFragmentToShow(intent: Intent): androidx.fragment.app.Fragment {
         var node: Node? = null
         if (Intent.ACTION_VIEW == intent.action) {
             val url = intent.dataString
@@ -365,7 +365,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         mNav.setCheckedItem(menuId)
     }
 
-    private fun switchFragment(fragment: Fragment, addToBackStack: Boolean = true) {
+    private fun switchFragment(fragment: androidx.fragment.app.Fragment, addToBackStack: Boolean = true) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.setCustomAnimations(0, 0, R.anim.abc_fade_in, R.anim.abc_fade_out).replace(R.id.fragment, fragment)
@@ -470,7 +470,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     override fun onNodeOpen(node: Node) {
         val topicListFragment = TopicListFragment.newInstance(node)
 
-        supportFragmentManager.beginTransaction().replace(R.id.fragment, topicListFragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.fragment, topicListFragment).setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit()
     }
 
     override fun onBackStackChanged() {
@@ -487,7 +487,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         const val BUNDLE_NODE = "node"
         const val BUNDLE_GOTO = "goto"
 
-        private fun isTabFragment(fragment: Fragment): Boolean {
+        private fun isTabFragment(fragment: androidx.fragment.app.Fragment): Boolean {
             return fragment is BaseTabFragment
         }
     }

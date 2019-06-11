@@ -2,8 +2,8 @@ package com.czbix.v2ex.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -12,7 +12,6 @@ import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.fragment.TopicFragment;
-import com.czbix.v2ex.util.CrashlyticsUtils;
 import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Strings;
 

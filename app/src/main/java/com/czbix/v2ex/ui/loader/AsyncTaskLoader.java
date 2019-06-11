@@ -6,7 +6,7 @@ import com.czbix.v2ex.util.LogUtils;
 
 import java.util.concurrent.TimeUnit;
 
-public abstract class AsyncTaskLoader<T> extends android.support.v4.content.AsyncTaskLoader<AsyncTaskLoader.LoaderResult<T>> {
+public abstract class AsyncTaskLoader<T> extends androidx.loader.content.AsyncTaskLoader<AsyncTaskLoader.LoaderResult<T>> {
     private static final String TAG = AsyncTaskLoader.class.getSimpleName();
 
     private static final long DEFAULT_UPDATE_THROTTLE = TimeUnit.SECONDS.toMillis(3);

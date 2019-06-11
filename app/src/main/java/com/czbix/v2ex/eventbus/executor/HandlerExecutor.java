@@ -1,6 +1,6 @@
 package com.czbix.v2ex.eventbus.executor;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.czbix.v2ex.util.ExecutorUtils;
 

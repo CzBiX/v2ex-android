@@ -2,13 +2,13 @@ package com.czbix.v2ex.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.annotation.StringRes
-import android.support.v4.app.Fragment
-import android.support.v4.app.LoaderManager.LoaderCallbacks
-import android.support.v4.content.Loader
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.StringRes
+import androidx.fragment.app.Fragment
+import androidx.loader.app.LoaderManager.LoaderCallbacks
+import androidx.loader.content.Loader
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import android.widget.Toast
 import com.crashlytics.android.Crashlytics
@@ -42,12 +42,12 @@ import com.czbix.v2ex.util.dispose
 import com.google.common.net.HttpHeaders
 import io.reactivex.disposables.Disposable
 
-class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoader.TopicList>>, SwipeRefreshLayout.OnRefreshListener, OnTopicActionListener {
+class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<LoaderResult<TopicListLoader.TopicList>>, androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener, OnTopicActionListener {
     private lateinit var mPage: Page
 
     private lateinit var mAdapter: TopicAdapter
-    private lateinit var mLayout: SwipeRefreshLayout
-    private lateinit var mRecyclerView: RecyclerView
+    private lateinit var mLayout: androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    private lateinit var mRecyclerView: androidx.recyclerview.widget.RecyclerView
     private lateinit var mFavIcon: MenuItem
 
     private val disposables: MutableList<Disposable> = mutableListOf()
@@ -74,12 +74,12 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_topic_list,
-                container, false) as SwipeRefreshLayout
+                container, false) as androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         mRecyclerView = mLayout.findViewById(R.id.recycle_view)
 
         mLayout.setColorSchemeResources(R.color.material_blue_grey_500, R.color.material_blue_grey_700, R.color.material_blue_grey_900)
         mLayout.setOnRefreshListener(this)
-        val layoutManager = LinearLayoutManager(mLayout.context)
+        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(mLayout.context)
         mRecyclerView.layoutManager = layoutManager
         mRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL_LIST))
 
@@ -137,7 +137,7 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
         AppCtx.eventBus.unregister(this)
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): Loader<LoaderResult<TopicListLoader.TopicList>> {
+    override fun onCreateLoader(id: Int, args: Bundle?): androidx.loader.content.Loader<LoaderResult<TopicListLoader.TopicList>> {
         val log = String.format("load list: %s", mPage.title)
         Crashlytics.log(log)
         LogUtils.d(TAG, log)
@@ -145,7 +145,7 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
         return TopicListLoader(activity, mPage)
     }
 
-    override fun onLoadFinished(loader: Loader<LoaderResult<TopicListLoader.TopicList>>, result: LoaderResult<TopicListLoader.TopicList>) {
+    override fun onLoadFinished(loader: androidx.loader.content.Loader<LoaderResult<TopicListLoader.TopicList>>, result: LoaderResult<TopicListLoader.TopicList>) {
         mLayout.isRefreshing = false
         if (result.hasException()) {
             handleLoadException(result.mException)
@@ -190,7 +190,7 @@ class TopicListFragment : Fragment(), LoaderCallbacks<LoaderResult<TopicListLoad
         }
     }
 
-    override fun onLoaderReset(loader: Loader<LoaderResult<TopicListLoader.TopicList>>) {
+    override fun onLoaderReset(loader: androidx.loader.content.Loader<LoaderResult<TopicListLoader.TopicList>>) {
         mAdapter.setDataSource(null)
     }
 

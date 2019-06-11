@@ -1,6 +1,6 @@
 package com.czbix.v2ex.util
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.widget.Toast
 import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.R
@@ -13,7 +13,7 @@ object ExceptionUtils {
      * warp exception in [.handleException] with [FatalException]
      */
     @JvmStatic
-    fun handleExceptionNoCatch(fragment: Fragment, ex: Exception): Boolean {
+    fun handleExceptionNoCatch(fragment: androidx.fragment.app.Fragment, ex: Exception): Boolean {
         try {
             return handleException(fragment, ex)
         } catch (e: Exception) {
@@ -24,7 +24,7 @@ object ExceptionUtils {
 
     @JvmStatic
     @Throws(Exception::class)
-    fun handleException(fragment: Fragment, e: Exception): Boolean {
+    fun handleException(fragment: androidx.fragment.app.Fragment, e: Exception): Boolean {
         val activity = fragment.activity
         var needFinishActivity = false
         val stringId: Int

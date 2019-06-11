@@ -1,6 +1,6 @@
 package com.czbix.v2ex.ui.widget;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.Layout;
 import android.text.NoCopySpan;
 import android.text.Selection;

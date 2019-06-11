@@ -2,13 +2,13 @@ package com.czbix.v2ex.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager.LoaderCallbacks;
-import android.support.v4.content.Loader;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.LayoutManager;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager.LoaderCallbacks;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.LayoutManager;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,7 +23,6 @@ import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.adapter.NodeAdapter;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
-import com.google.common.base.Preconditions;
 
 import java.util.Collections;
 import java.util.List;

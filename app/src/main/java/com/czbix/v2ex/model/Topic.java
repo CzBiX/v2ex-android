@@ -1,7 +1,7 @@
 package com.czbix.v2ex.model;
 
 import android.os.Parcel;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.czbix.v2ex.network.RequestHelper;
 import com.google.common.base.Objects;

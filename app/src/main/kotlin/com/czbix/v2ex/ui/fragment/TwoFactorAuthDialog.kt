@@ -3,14 +3,14 @@ package com.czbix.v2ex.ui.fragment
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
-import android.support.v7.app.AlertDialog
+import androidx.fragment.app.DialogFragment
+import androidx.appcompat.app.AlertDialog
 import android.widget.EditText
 import com.czbix.v2ex.R
 import com.czbix.v2ex.event.BaseEvent
 import com.czbix.v2ex.helper.RxBus
 
-class TwoFactorAuthDialog : DialogFragment(), DialogInterface.OnClickListener {
+class TwoFactorAuthDialog : androidx.fragment.app.DialogFragment(), DialogInterface.OnClickListener {
     private lateinit var editText: EditText
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

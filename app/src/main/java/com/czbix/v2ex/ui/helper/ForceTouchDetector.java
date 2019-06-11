@@ -1,9 +1,7 @@
 package com.czbix.v2ex.ui.helper;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.MotionEvent;
-
-import com.czbix.v2ex.util.LogUtils;
 
 public class ForceTouchDetector {
     private boolean mInForceTouch;
