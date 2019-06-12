@@ -137,15 +137,15 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
         AppCtx.eventBus.unregister(this)
     }
 
-    override fun onCreateLoader(id: Int, args: Bundle?): androidx.loader.content.Loader<LoaderResult<TopicListLoader.TopicList>> {
+    override fun onCreateLoader(id: Int, args: Bundle?): Loader<LoaderResult<TopicListLoader.TopicList>> {
         val log = String.format("load list: %s", mPage.title)
         Crashlytics.log(log)
         LogUtils.d(TAG, log)
 
-        return TopicListLoader(activity, mPage)
+        return TopicListLoader(activity!!, mPage)
     }
 
-    override fun onLoadFinished(loader: androidx.loader.content.Loader<LoaderResult<TopicListLoader.TopicList>>, result: LoaderResult<TopicListLoader.TopicList>) {
+    override fun onLoadFinished(loader: Loader<LoaderResult<TopicListLoader.TopicList>>, result: LoaderResult<TopicListLoader.TopicList>) {
         mLayout.isRefreshing = false
         if (result.hasException()) {
             handleLoadException(result.mException)
@@ -158,7 +158,7 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
             mAdapter.setDataSource(it)
         }
 
-        activity.invalidateOptionsMenu()
+        activity!!.invalidateOptionsMenu()
     }
 
     private fun handleLoadException(ex: Exception) {

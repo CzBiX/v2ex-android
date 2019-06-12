@@ -114,7 +114,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
     }
 
-    private fun getFragmentToShow(intent: Intent): androidx.fragment.app.Fragment {
+    private fun getFragmentToShow(intent: Intent): Fragment {
         var node: Node? = null
         if (Intent.ACTION_VIEW == intent.action) {
             val url = intent.dataString
@@ -365,7 +365,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         mNav.setCheckedItem(menuId)
     }
 
-    private fun switchFragment(fragment: androidx.fragment.app.Fragment, addToBackStack: Boolean = true) {
+    private fun switchFragment(fragment: Fragment, addToBackStack: Boolean = true) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.setCustomAnimations(0, 0, R.anim.abc_fade_in, R.anim.abc_fade_out).replace(R.id.fragment, fragment)
@@ -487,7 +487,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         const val BUNDLE_NODE = "node"
         const val BUNDLE_GOTO = "goto"
 
-        private fun isTabFragment(fragment: androidx.fragment.app.Fragment): Boolean {
+        private fun isTabFragment(fragment: Fragment?): Boolean {
             return fragment is BaseTabFragment
         }
     }

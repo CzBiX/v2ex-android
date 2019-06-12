@@ -22,12 +22,17 @@ class MessagingService : FirebaseMessagingService() {
 
         if (!PrefStore.getInstance().shouldReceiveNotifications()) {
             LogUtils.d(TAG, "should not receive GCM message, unregister it")
-            startService(GoogleHelper.getRegistrationIntentToStartService(this, false))
+            startService(GoogleHelper.getRegistrationIntentToStartService(this, false, null))
             return
         }
 
         FcmMessage.from(data).let {
             FcmMessage.handleMessage(this, it)
         }
+    }
+
+    override fun onNewToken(token: String?) {
+        startService(GoogleHelper.getRegistrationIntentToStartService(this,
+                PrefStore.getInstance().shouldReceiveNotifications(), token))
     }
 }

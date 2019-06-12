@@ -82,7 +82,7 @@ public class CustomTabsHelper {
 
     public static CustomTabsIntent.Builder getBuilder(Activity activity, @Nullable CustomTabsSession session) {
         final int color = ViewUtils.getAttrColor(activity.getTheme(),
-                androidx.appcompat.appcompat.R.attr.colorPrimary);
+                androidx.appcompat.R.attr.colorPrimary);
 
         final CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder(session);
 

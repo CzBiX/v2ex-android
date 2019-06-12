@@ -42,7 +42,7 @@ class SettingsActivity : BaseActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         mFragment.onActivityResult(requestCode, resultCode, data)
     }
@@ -71,7 +71,7 @@ class SettingsActivity : BaseActivity() {
             }
 
             val infoPref = findPreference(PREF_KEY_USER_INFO)
-            mNotificationsPref = findPreference(PREF_KEY_RECEIVE_NOTIFICATIONS) as SwitchPreference
+//            mNotificationsPref = findPreference(PREF_KEY_RECEIVE_NOTIFICATIONS) as SwitchPreference
             val logoutPref = findPreference(PREF_KEY_LOGOUT)
 
             infoPref.summary = UserState.username
@@ -81,9 +81,9 @@ class SettingsActivity : BaseActivity() {
                 false
             }
 
-            mNotificationsPref.setOnPreferenceChangeListener {
-                preference, newValue -> toggleReceiveNotifications(newValue as Boolean)
-            }
+//            mNotificationsPref.setOnPreferenceChangeListener {
+//                preference, newValue -> toggleReceiveNotifications(newValue as Boolean)
+//            }
             logoutPref.onPreferenceClickListener = this
         }
 
@@ -157,7 +157,7 @@ class SettingsActivity : BaseActivity() {
             task = RxBus.subscribe<DeviceRegisterEvent> {
                 onDeviceRegisterEvent(it)
             }
-            activity.startService(GoogleHelper.getRegistrationIntentToStartService(activity, turnOn))
+//            activity.startService(GoogleHelper.getRegistrationIntentToStartService(activity, turnOn))
             return false
         }
 

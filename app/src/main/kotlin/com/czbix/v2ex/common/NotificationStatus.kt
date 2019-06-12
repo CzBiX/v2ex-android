@@ -18,7 +18,7 @@ object NotificationStatus {
     private val mNtfManager: NotificationManagerCompat
 
     @Retention(AnnotationRetention.SOURCE)
-    @IntDef(ID_NOTIFICATIONS.toLong(), ID_APP_UPDATE.toLong())
+    @IntDef(ID_NOTIFICATIONS, ID_APP_UPDATE)
     annotation class NotificationId
 
     const val ID_NOTIFICATIONS = 0
@@ -44,9 +44,9 @@ object NotificationStatus {
 
         val notification = NotificationCompat.Builder(context).apply {
             setSmallIcon(R.drawable.ic_update_black_24dp)
-            setTicker(mContext.getString(R.string.ntf_title_app_update))
-            setContentTitle(mContext.getString(R.string.ntf_title_app_update))
-            setContentText(mContext.getString(R.string.ntf_desc_new_version_of_app))
+            setTicker(context.getString(R.string.ntf_title_app_update))
+            setContentTitle(context.getString(R.string.ntf_title_app_update))
+            setContentText(context.getString(R.string.ntf_desc_new_version_of_app))
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             setAutoCancel(true)
             setOnlyAlertOnce(true)
@@ -73,9 +73,9 @@ object NotificationStatus {
 
         val notification = NotificationCompat.Builder(context).apply {
             setSmallIcon(R.drawable.ic_notifications_white_24dp)
-            setTicker(mContext.getString(R.string.ntf_title_new_notifications))
-            setContentTitle(mContext.getString(R.string.ntf_title_new_notifications))
-            setContentText(mContext.getString(R.string.ntf_desc_from_v2ex))
+            setTicker(context.getString(R.string.ntf_title_new_notifications))
+            setContentTitle(context.getString(R.string.ntf_title_new_notifications))
+            setContentText(context.getString(R.string.ntf_desc_from_v2ex))
             setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             setDefaults(NotificationCompat.DEFAULT_ALL)
             setNumber(e.mCount)

@@ -145,20 +145,14 @@
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
 
         <!-- start Google FCM -->
-        <service android:name=".service.fcm.MessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
-            </intent-filter>
-        </service>
-        <service
-            android:name=".service.fcm.InstanceIdService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
-            </intent-filter>
-        </service>
-        <service
-            android:name=".service.RegistrationIntentService">
-        </service>
+        <!--<service android:name=".service.fcm.MessagingService">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="com.google.firebase.MESSAGING_EVENT"/>-->
+            <!--</intent-filter>-->
+        <!--</service>-->
+        <!--<service-->
+            <!--android:name=".service.RegistrationIntentService">-->
+        <!--</service>-->
 
         <service
             android:exported="false"

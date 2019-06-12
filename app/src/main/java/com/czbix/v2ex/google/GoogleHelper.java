@@ -33,9 +33,12 @@ public class GoogleHelper {
         return GoogleApiAvailability.getInstance().getErrorString(errCode);
     }
 
-    public static Intent getRegistrationIntentToStartService(Context context, boolean isRegister) {
+    public static Intent getRegistrationIntentToStartService(Context context, boolean isRegister,
+                                                             String token) {
         final Intent intent = new Intent(context, RegistrationIntentService.class);
-        if (!isRegister) {
+        if (isRegister) {
+            intent.putExtra(RegistrationIntentService.KEY_TOKEN, token);
+        } else {
             intent.putExtra(RegistrationIntentService.KEY_UNREGISTER, true);
         }
 

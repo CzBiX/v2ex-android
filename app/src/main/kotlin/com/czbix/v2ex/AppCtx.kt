@@ -121,8 +121,8 @@ class AppCtx : Application() {
         }
 
         private fun updateGCMToken() {
-            startService(GoogleHelper.getRegistrationIntentToStartService(this@AppCtx,
-                    PrefStore.getInstance().shouldReceiveNotifications()))
+//            startService(GoogleHelper.getRegistrationIntentToStartService(this@AppCtx,
+//                    PrefStore.getInstance().shouldReceiveNotifications()))
         }
     }
 

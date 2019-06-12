@@ -152,6 +152,7 @@ class RegistrationIntentService : IntentService(TAG) {
     companion object {
         private val TAG = RegistrationIntentService::class.java.simpleName
         const val KEY_UNREGISTER = "unregister"
+        const val KEY_TOKEN = "token"
 
         private val PREF_NAME = "fcm"
         private val PREF_IS_USER_REGISTERED = "is_user_registered"

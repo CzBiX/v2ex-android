@@ -246,7 +246,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
     private fun onLoginSuccess(result: LoginResult) {
         UserState.login(result.mUsername, result.mAvatar)
         if (PrefStore.getInstance().shouldReceiveNotifications()) {
-            startService(GoogleHelper.getRegistrationIntentToStartService(this, true))
+//            startService(GoogleHelper.getRegistrationIntentToStartService(this, true))
         }
 
         Toast.makeText(this, getString(R.string.toast_login_success, result.mUsername),
