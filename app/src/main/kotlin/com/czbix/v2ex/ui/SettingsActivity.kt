@@ -97,11 +97,11 @@ class SettingsActivity : BaseActivity() {
 
             val errMsg = GoogleHelper.checkPlayServices(activity)
             if (Strings.isNullOrEmpty(errMsg)) {
-                mNotificationsPref.isEnabled = true
+//                mNotificationsPref.isEnabled = true
                 return
             }
             showPlayServicesErrorToast(errMsg)
-            mNotificationsPref.isEnabled = false
+//            mNotificationsPref.isEnabled = false
         }
 
         override fun onStop() {
@@ -153,7 +153,7 @@ class SettingsActivity : BaseActivity() {
             check(UserState.isLoggedIn()) { "guest can't toggle notifications" }
             task?.dispose()
 
-            mNotificationsPref.isEnabled = false
+//            mNotificationsPref.isEnabled = false
             task = RxBus.subscribe<DeviceRegisterEvent> {
                 onDeviceRegisterEvent(it)
             }
@@ -163,7 +163,7 @@ class SettingsActivity : BaseActivity() {
 
         fun onDeviceRegisterEvent(e: DeviceRegisterEvent) {
             if (e.isSuccess) {
-                mNotificationsPref.isChecked = e.isRegister
+//                mNotificationsPref.isChecked = e.isRegister
             } else {
                 val resId =if (e.isRegister) {
                     R.string.toast_register_device_failed
@@ -171,9 +171,9 @@ class SettingsActivity : BaseActivity() {
                     R.string.toast_unregister_device_failed
                 }
                 Toast.makeText(AppCtx.instance, resId, Toast.LENGTH_LONG).show()
-                mNotificationsPref.isChecked = !e.isRegister
+//                mNotificationsPref.isChecked = !e.isRegister
             }
-            mNotificationsPref.isEnabled = true
+//            mNotificationsPref.isEnabled = true
         }
 
         override fun onPreferenceClick(preference: Preference): Boolean {

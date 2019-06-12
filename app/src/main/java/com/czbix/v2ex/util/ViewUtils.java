@@ -38,6 +38,7 @@ import kotlin.text.Regex;
 public class ViewUtils {
     public static final float density;
     public static final Regex tagRegex = new Regex("<(/\\w{1,6}>|img)");
+    public static final Regex entityRegex = new Regex("&(\\w{1,10}|#\\d{1,4});");
 
     static {
         final AppCtx context = AppCtx.getInstance();
@@ -73,7 +74,7 @@ public class ViewUtils {
     }
 
     public static void setHtmlIntoTextView(TextView view, String html, int maxWidthPixels, boolean isTopic) {
-        if (!isTopic && !tagRegex.containsMatchIn(html)) {
+        if (!isTopic && !tagRegex.containsMatchIn(html) && !entityRegex.containsMatchIn(html)) {
             // Quick reject non-html
             view.setText(html.replace("<br>", ""));
             return;

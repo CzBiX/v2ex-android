@@ -178,7 +178,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mCommentAdapter = new CommentAdapter(this, this, this, this);
         mCommentAdapter.setTopic(mTopic);
-        mCommentAdapter.setDataSource(mTopic.getMember(), mComments);
+        mCommentAdapter.setDataSource(null, mComments);
         mCommentsView.setAdapter(mCommentAdapter);
         mCommentsView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
@@ -416,7 +416,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             mComments.setList(mCurPage - 1, data.mComments);
         }
 
-        mCommentAdapter.notifyDataSetChanged();
+        mCommentAdapter.setDataSource(mTopic.getMember(), mComments);
 
         mFavored = mTopic.isFavored();
         mCsrfToken = data.mCsrfToken;

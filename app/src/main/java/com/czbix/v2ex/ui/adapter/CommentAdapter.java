@@ -80,7 +80,7 @@ public class CommentAdapter extends RecyclerView.Adapter<ViewHolder> {
                         new ConstraintLayout.LayoutParams(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT));
-                viewHolder = new CommentViewHolder(view, mAuthor, mCommentListener);
+                viewHolder = new CommentViewHolder(view, mCommentListener);
         }
 
         return viewHolder;
@@ -93,7 +93,7 @@ public class CommentAdapter extends RecyclerView.Adapter<ViewHolder> {
             ((TopicViewHolder) holder).fillData(mTopic);
         } else {
             Comment comment = mCommentList.get(position);
-            ((CommentViewHolder) holder).fillData(comment);
+            ((CommentViewHolder) holder).fillData(comment, comment.getMember().isSameUser(mAuthor));
         }
     }
 
@@ -118,16 +118,14 @@ public class CommentAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     static class CommentViewHolder extends ViewHolder {
-        private Member author;
 
-        public CommentViewHolder(CommentView view, Member author, OnCommentActionListener listener) {
+        public CommentViewHolder(CommentView view, OnCommentActionListener listener) {
             super(view);
-            this.author = author;
             view.setListener(listener);
         }
 
-        public void fillData(Comment comment) {
-            ((CommentView) itemView).fillData(comment, comment.getMember().isSameUser(this.author), getAdapterPosition());
+        public void fillData(Comment comment, boolean isAuthor) {
+            ((CommentView) itemView).fillData(comment, isAuthor, getAdapterPosition());
         }
     }
 

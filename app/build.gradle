@@ -68,12 +68,6 @@ android {
     }
 }
 
-kotlin {
-    experimental {
-        coroutines 'enable'
-    }
-}
-
 
 // Android support library version
 ext.androidx_version = '1.0.0'
