@@ -74,7 +74,7 @@ class TopicSearchPresenter(private val mActivity: Activity, val searchBox: Searc
     private fun getSearchUri(query: String): Uri {
         val queryToSearch = query + " site:https://www.v2ex.com"
 
-        return Uri.Builder().scheme("https").authority("www.google.com").path("/search")
+        return Uri.Builder().scheme("https").authority("duckduckgo.com")
                 .appendQueryParameter("q", queryToSearch).build()
     }
 

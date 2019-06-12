@@ -107,6 +107,10 @@
                     android:host="@string/www_host"
                     android:pathPrefix="@string/topic_url_prefix"
                     android:scheme="@string/scheme_https" />
+                <data
+                    android:host="@string/www_host"
+                    android:pathPrefix="/amp/t/"
+                    android:scheme="@string/scheme_https" />
             </intent-filter>
         </activity>
         <activity
