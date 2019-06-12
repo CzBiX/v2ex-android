@@ -19,6 +19,7 @@
     <string name="action_cancel">Cancel</string>
     <string name="toast_cancel_failed">Cancellation failed!</string>
     <string name="action_search">Search</string>
+    <string name="desc_author">Author</string>
     
     <string name="menu_title_comment">Comment options</string>
     <string name="menu_action_thank">Like</string>

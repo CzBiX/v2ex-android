@@ -38,6 +38,10 @@ class Member : Page {
         dest.writeParcelable(this.avatar, 0)
     }
 
+    fun isSameUser(member: Member): Boolean {
+        return this.username == member.username
+    }
+
     private constructor(`in`: Parcel) {
         this.username = `in`.readString()
         this.tagLine = `in`.readString()

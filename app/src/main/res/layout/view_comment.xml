@@ -50,16 +50,17 @@
 
     <TextView
         android:id="@+id/thanks"
-        tools:text="+1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:textColor="#888"
         android:textSize="12sp"
         android:textStyle="bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:ignore="RelativeOverlap"
         app:layout_constraintBaseline_toBaselineOf="@+id/username_tv"
         app:layout_constraintLeft_toRightOf="@+id/username_tv"
-        android:layout_marginStart="8dp"/>
+        app:layout_constraintStart_toEndOf="@+id/username_tv"
+        tools:ignore="RelativeOverlap"
+        tools:text="+1" />
 
     <TextView
         android:id="@+id/content"
@@ -101,4 +102,15 @@
         android:orientation="horizontal"
         tools:layout_editor_absoluteY="63dp"
         tools:layout_editor_absoluteX="0dp"/>
+
+    <TextView
+        android:id="@+id/tv_author"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/desc_author"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/floor"
+        app:layout_constraintEnd_toStartOf="@+id/floor"
+        app:layout_constraintTop_toTopOf="@+id/floor" />
 </merge>

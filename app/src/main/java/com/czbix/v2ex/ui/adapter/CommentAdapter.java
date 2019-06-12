@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Comment;
+import com.czbix.v2ex.model.Member;
 import com.czbix.v2ex.model.Postscript;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.fragment.NodeListFragment.OnNodeActionListener;
@@ -35,6 +36,7 @@ public class CommentAdapter extends RecyclerView.Adapter<ViewHolder> {
     private final OnNodeActionListener mNodeListener;
     private final OnAvatarActionListener mAvatarListener;
     private Topic mTopic;
+    private Member mAuthor;
     private List<Comment> mCommentList;
 
     public CommentAdapter(OnCommentActionListener commentListener,
@@ -57,7 +59,8 @@ public class CommentAdapter extends RecyclerView.Adapter<ViewHolder> {
         mTopic = topic;
     }
 
-    public void setDataSource(List<Comment> comments) {
+    public void setDataSource(Member author, List<Comment> comments) {
+        mAuthor = author;
         mCommentList = comments;
         notifyDataSetChanged();
     }
@@ -77,7 +80,7 @@ public class CommentAdapter extends RecyclerView.Adapter<ViewHolder> {
                         new ConstraintLayout.LayoutParams(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT));
-                viewHolder = new CommentViewHolder(view, mCommentListener);
+                viewHolder = new CommentViewHolder(view, mAuthor, mCommentListener);
         }
 
         return viewHolder;
@@ -115,14 +118,16 @@ public class CommentAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     static class CommentViewHolder extends ViewHolder {
+        private Member author;
 
-        public CommentViewHolder(CommentView view, OnCommentActionListener listener) {
+        public CommentViewHolder(CommentView view, Member author, OnCommentActionListener listener) {
             super(view);
+            this.author = author;
             view.setListener(listener);
         }
 
         public void fillData(Comment comment) {
-            ((CommentView) itemView).fillData(comment, getAdapterPosition());
+            ((CommentView) itemView).fillData(comment, comment.getMember().isSameUser(this.author), getAdapterPosition());
         }
     }
 
@@ -147,7 +152,7 @@ public class CommentAdapter extends RecyclerView.Adapter<ViewHolder> {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
             LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.view_comment_topic, parent, false);
-            TopicView view = (TopicView) layout.findViewById(R.id.topic);
+            TopicView view = layout.findViewById(R.id.topic);
 
             view.setContentListener(contentListener);
             view.setNodeListener(nodeListener);

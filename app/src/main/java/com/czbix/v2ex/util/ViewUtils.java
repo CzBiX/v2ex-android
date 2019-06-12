@@ -75,7 +75,7 @@ public class ViewUtils {
     public static void setHtmlIntoTextView(TextView view, String html, int maxWidthPixels, boolean isTopic) {
         if (!isTopic && !tagRegex.containsMatchIn(html)) {
             // Quick reject non-html
-            view.setText(html.replace("<br>", "\n"));
+            view.setText(html.replace("<br>", ""));
             return;
         }
         setHtmlIntoTextView(view, html, new AsyncImageGetter(view, maxWidthPixels), isTopic);

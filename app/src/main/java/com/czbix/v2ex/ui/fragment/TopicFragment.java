@@ -178,7 +178,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mCommentAdapter = new CommentAdapter(this, this, this, this);
         mCommentAdapter.setTopic(mTopic);
-        mCommentAdapter.setDataSource(mComments);
+        mCommentAdapter.setDataSource(mTopic.getMember(), mComments);
         mCommentsView.setAdapter(mCommentAdapter);
         mCommentsView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
@@ -487,7 +487,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onLoaderReset(Loader<LoaderResult<TopicWithComments>> loader) {
-        mCommentAdapter.setDataSource(null);
+        mCommentAdapter.setDataSource(null, null);
         mComments.clear();
 
         mCsrfToken = null;

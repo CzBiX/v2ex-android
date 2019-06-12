@@ -1,5 +1,6 @@
 package com.czbix.v2ex.ui.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
@@ -29,6 +30,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
     private final TextView mReplyTime;
     private final TextView mFloor;
     private final TextView mThanks;
+    private final TextView mAuthor;
     private OnCommentActionListener mListener;
     private Comment mComment;
     private int mPos;
@@ -46,12 +48,13 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
 
         inflate(context, R.layout.view_comment, this);
 
-        mAvatar = (AvatarView) findViewById(R.id.avatar_img);
-        mContent = (TextView) findViewById(R.id.content);
-        mUsername = (TextView) findViewById(R.id.username_tv);
-        mReplyTime = (TextView) findViewById(R.id.time_tv);
-        mFloor = (TextView) findViewById(R.id.floor);
-        mThanks = (TextView) findViewById(R.id.thanks);
+        mAvatar = findViewById(R.id.avatar_img);
+        mContent = findViewById(R.id.content);
+        mUsername = findViewById(R.id.username_tv);
+        mReplyTime = findViewById(R.id.time_tv);
+        mFloor = findViewById(R.id.floor);
+        mThanks = findViewById(R.id.thanks);
+        mAuthor = findViewById(R.id.tv_author);
 
         mAvatar.setOnClickListener(this);
         mUsername.setOnClickListener(this);
@@ -64,7 +67,8 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
         mListener = listener;
     }
 
-    public void fillData(Comment comment, int position) {
+    @SuppressLint({"DefaultLocale", "SetTextI18n"})
+    public void fillData(Comment comment, boolean isAuthor, int position) {
         if (comment.equals(mComment)) {
             return;
         }
@@ -77,7 +81,10 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
 
         mUsername.setText(comment.getMember().getUsername());
         mReplyTime.setText(comment.getReplyTime());
+
         mFloor.setText(Integer.toString(comment.getFloor()));
+
+        mAuthor.setVisibility(isAuthor ? View.VISIBLE : View.GONE);
 
         mAvatar.setAvatar(comment.getMember().getAvatar());
     }
@@ -88,7 +95,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
             return;
         }
 
-        final String text = "+" + Integer.toString(comment.getThanks());
+        final String text = "+" + comment.getThanks();
         if (comment.isThanked()) {
             final ForegroundColorSpan span = new ForegroundColorSpan(
                     ContextCompat.getColor(mThanks.getContext(), R.color.highlight_green));
