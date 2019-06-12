@@ -13,7 +13,6 @@
         android:layout_width="@dimen/comment_avatar_size"
         android:layout_height="@dimen/comment_avatar_size"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/desc_avatar"
@@ -34,7 +33,6 @@
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
         app:layout_constraintLeft_toRightOf="@+id/avatar_img"
-        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         app:layout_constraintVertical_bias="0.0"/>
 
@@ -47,7 +45,6 @@
         app:layout_constraintLeft_toRightOf="@+id/avatar_img"
         app:layout_constraintTop_toBottomOf="@+id/username_tv"
         android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         tools:layout_editor_absoluteY="33dp"/>
 
@@ -62,7 +59,6 @@
         tools:ignore="RelativeOverlap"
         app:layout_constraintBaseline_toBaselineOf="@+id/username_tv"
         app:layout_constraintLeft_toRightOf="@+id/username_tv"
-        android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"/>
 
     <TextView
@@ -71,34 +67,31 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         app:layout_constraintVertical_bias="0.0"
         tools:text="Content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="16dp"
         tools:layout_constraintRight_creator="1"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toRightOf="@+id/avatar_img"/>
 
     <TextView
+        android:id="@+id/floor"
+        style="@style/AppTheme.Topic.Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/AppTheme.Topic.Secondary"
-        tools:text="23L"
-        android:id="@+id/floor"
-        tools:ignore="RelativeOverlap"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
-        android:layout_marginEnd="8dp"
-        />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RelativeOverlap"
+        tools:text="23L" />
 
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"

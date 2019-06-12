@@ -43,7 +43,7 @@ public class AsyncImageGetter implements Html.ImageGetter {
         if (shouldLoadImage) {
             final int width = ViewUtils.getExactlyWidth(mTextView, mPixel);
             final NetworkDrawableTarget target = new NetworkDrawableTarget(mTextView, drawable, width);
-            Glide.with(mTextView.getContext()).load(source).asBitmap().fitCenter().into(target);
+            Glide.with(mTextView.getContext()).load(source).asBitmap().into(target);
         }
         return drawable;
     }
@@ -143,6 +143,7 @@ public class AsyncImageGetter implements Html.ImageGetter {
 
             bitmapDrawable.setBounds(0, 0, width, height);
             mDrawable.setDrawable(bitmapDrawable);
+
             mTextView.setText(mTextView.getText());
         }
 
