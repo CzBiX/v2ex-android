@@ -32,8 +32,8 @@ android {
         applicationId "com.czbix.v2ex"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 96
-        versionName "1.25.5"
+        versionCode 97
+        versionName "1.25.6"
 
         resValue 'bool', 'isDebuggable', 'false'
     }
@@ -65,6 +65,10 @@ android {
     compileOptions {
         sourceCompatibility 1.8
         targetCompatibility 1.8
+    }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
     }
 }
 
