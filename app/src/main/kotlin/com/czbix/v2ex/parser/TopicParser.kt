@@ -23,7 +23,7 @@ object TopicParser : Parser() {
         val pageNum = getMaxPage(contentEle)
 
         val onceToken = if (UserState.isLoggedIn()) {
-            parseOnceToken(doc)
+            parseOnceToken(contentEle)
         } else {
             null
         }
@@ -45,9 +45,8 @@ object TopicParser : Parser() {
     }
 
     private fun parseOnceToken(parent: Element): String? {
-        return JsoupObjects(parent).child(".box:nth-child(5)")
-                .child(".cell:nth-child(2)").child("form").child("[name=once]")
-                .firstOrNull()?.let(Element::`val`)
+        return JsoupObjects(parent).child(".box:nth-child(5)", ".cell:nth-child(2)",
+                "form", "[name=once]").firstOrNull()?.let(Element::`val`)
     }
 
     private fun parseFavored(builder: Topic.Builder, box: Element): String {
@@ -201,7 +200,7 @@ object TopicParser : Parser() {
 
     @JvmStatic
     fun parseProblemInfo(html: String): String {
-        val doc = Parser.toDoc(html)
+        val doc = toDoc(html)
         val elements = doc.select(".problem ul:first-child")
         Preconditions.checkState(elements.size == 1, "problem size isn't one")
 

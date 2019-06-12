@@ -84,12 +84,12 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.0.2'
     implementation "androidx.legacy:legacy-support-core-utils:$androidx_version"
     implementation 'androidx.fragment:fragment-ktx:1.0.0'
-    implementation 'com.google.guava:guava:23.4-android'
+    api 'com.google.guava:guava:28.0-android'
     implementation 'com.squareup.okhttp3:okhttp:3.14.2'
     implementation 'com.google.code.gson:gson:2.7'
     implementation "androidx.recyclerview:recyclerview:$androidx_version"
     implementation "androidx.cardview:cardview:$androidx_version"
-    implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'org.jsoup:jsoup:1.12.1'
     implementation "com.google.android.material:material:$androidx_version"
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
