@@ -31,8 +31,13 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.parser.AsyncImageGetter;
 import com.czbix.v2ex.ui.util.Html;
 
+import java.util.regex.Pattern;
+
+import kotlin.text.Regex;
+
 public class ViewUtils {
     public static final float density;
+    public static final Regex tagRegex = new Regex("<(/\\w{1,6}>|img)");
 
     static {
         final AppCtx context = AppCtx.getInstance();
@@ -68,6 +73,11 @@ public class ViewUtils {
     }
 
     public static void setHtmlIntoTextView(TextView view, String html, int maxWidthPixels, boolean isTopic) {
+        if (!isTopic && !tagRegex.containsMatchIn(html)) {
+            // Quick reject non-html
+            view.setText(html.replace("<br>", "\n"));
+            return;
+        }
         setHtmlIntoTextView(view, html, new AsyncImageGetter(view, maxWidthPixels), isTopic);
     }
 
