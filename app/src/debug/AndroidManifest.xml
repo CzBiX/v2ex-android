@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.czbix.v2ex" >
+
+    <application
+        android:name=".AppCtx"
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".ui.DebugActivity"
+            android:exported="true"
+            android:label="Debug" >
+        </activity>
+    </application>
+
+</manifest>

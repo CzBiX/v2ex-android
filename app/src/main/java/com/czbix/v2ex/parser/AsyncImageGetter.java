@@ -135,8 +135,8 @@ public class AsyncImageGetter implements Html.ImageGetter {
 
             int width = bitmap.getWidth();
             int height = bitmap.getHeight();
-            if (width < mMaxWidth) {
-                float fitWidth = Math.min(ViewUtils.dp2Pixel(width), mMaxWidth);
+            if (width != mMaxWidth) {
+                float fitWidth = width > mMaxWidth ? mMaxWidth : Math.min(ViewUtils.dp2Pixel(width), mMaxWidth);
                 height *= fitWidth / width;
                 width = (int) fitWidth;
             }

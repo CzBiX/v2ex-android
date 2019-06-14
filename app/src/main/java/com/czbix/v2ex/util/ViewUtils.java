@@ -83,19 +83,21 @@ public class ViewUtils {
     }
 
     private static void setHtmlIntoTextView(TextView view, String html, AsyncImageGetter imageGetter, boolean isTopic) {
-        final Spanned spanned = Html.fromHtml(html, imageGetter);
-        final SpannableStringBuilder builder = (SpannableStringBuilder) spanned;
+        Spanned spanned = Html.fromHtml(html, imageGetter);
 
         if (isTopic) {
+            final SpannableStringBuilder builder = (SpannableStringBuilder) spanned;
             final int length = builder.length();
             if (length > 2) {
                 final CharSequence subSequence = builder.subSequence(length - 2, length);
                 if (TextUtils.equals(subSequence, "\n\n")) {
                     builder.delete(length - 2, length);
+
+                    spanned = builder;
                 }
             }
         }
-        view.setText(builder);
+        view.setText(spanned);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

@@ -104,8 +104,8 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             mContent.visibility = View.GONE
             return
         }
-        mContent.visibility = View.VISIBLE
         ViewUtils.setHtmlIntoTextView(mContent, content, ViewUtils.getWidthPixels() - TOPIC_PICTURE_OTHER_WIDTH, true)
+        mContent.visibility = View.VISIBLE
     }
 
     override fun onClick(v: View) {
