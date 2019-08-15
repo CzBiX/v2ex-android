@@ -184,12 +184,13 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private fun updateNavBackground() {
         val url = GoogleImg.ALL_LOCATION[GoogleImg.getRandomLocationIndex()][GoogleImg.getCurrentTimeIndex()]
         Glide.with(this).load(url).transition(DrawableTransitionOptions.withCrossFade())
-                .centerCrop().into(object : CustomViewTarget<View, Drawable>(mNavBg) {
+                .into(object : CustomViewTarget<View, Drawable>(mNavBg) {
                     override fun onLoadFailed(errorDrawable: Drawable?) {
+                        mNavBg.setBackgroundColor(ViewUtils.getAttrColor(theme, R.attr.colorPrimary))
                     }
 
                     override fun onResourceCleared(placeholder: Drawable?) {
-                        mNavBg.background = null
+                        mNavBg.setBackgroundColor(ViewUtils.getAttrColor(theme, R.attr.colorPrimary))
                     }
 
                     override fun onResourceReady(resource: Drawable, transition: Transition<in Drawable>?) {

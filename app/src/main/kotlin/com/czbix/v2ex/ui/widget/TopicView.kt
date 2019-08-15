@@ -3,7 +3,7 @@ package com.czbix.v2ex.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.widget.FrameLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.PrefStore
@@ -13,7 +13,7 @@ import com.czbix.v2ex.util.ViewUtils
 import com.google.common.base.Strings
 
 class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
-        FrameLayout(context, attrs, defStyleAttr), View.OnClickListener {
+        RelativeLayout(context, attrs, defStyleAttr), View.OnClickListener {
 
     val mTitle: TextView
     val mAvatar: AvatarView
@@ -27,7 +27,7 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     private var mTopic: Topic? = null
 
     init {
-        View.inflate(context, R.layout.view_topic, this)
+        View.inflate(context, R.layout.layout_topic, this)
 
         mAvatar = findViewById(R.id.avatar_img)
         mTitle = findViewById(R.id.title_tv)

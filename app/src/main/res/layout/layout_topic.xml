@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:parentTag="android.widget.RelativeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.czbix.v2ex.ui.widget.AvatarView
+        android:id="@+id/avatar_img"
+        tools:src="@drawable/avatar_default"
+        android:padding="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_height="@dimen/topic_avatar_size"
+        android:layout_width="@dimen/topic_avatar_size"
+        android:contentDescription="@string/desc_avatar"/>
+
+    <TextView
+        android:id="@+id/username_tv"
+        android:layout_toEndOf="@id/avatar_img"
+        style="@style/AppTheme.Topic.Username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Username"
+        android:padding="4dp"/>
+
+    <TextView
+        android:id="@+id/node_tv"
+        style="@style/AppTheme.Topic.Node"
+        tools:text="Node"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_toEndOf="@id/username_tv"
+        android:padding="4dp"/>
+
+    <TextView
+        android:id="@+id/time_tv"
+        style="@style/AppTheme.Topic.Secondary"
+        tools:text="12m"
+        android:layout_margin="4dp"
+        android:layout_below="@+id/username_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/username_tv"/>
+
+    <TextView
+        android:id="@+id/reply_count_tv"
+        style="@style/AppTheme.Topic.Count"
+        tools:text="12"
+        android:layout_marginEnd="8dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBaseline="@+id/username_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:ignore="RelativeOverlap"/>
+
+    <TextView
+        android:id="@+id/title_tv"
+        style="@style/AppTheme.Topic.Title"
+        tools:text="Title"
+        android:layout_below="@id/time_tv"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/content"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:text="Content content"
+        style="@style/AppTheme.Topic.Content"
+        android:layout_below="@id/title_tv"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</merge>

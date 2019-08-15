@@ -68,6 +68,14 @@ android {
     dexOptions {
         javaMaxHeapSize "4g"
     }
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 
@@ -75,6 +83,7 @@ android {
 ext.androidx_version = '1.0.0'
 ext.gms_version = '16.0.8'
 ext.glide_version = '4.9.0'
+ext.epoxy_version = '3.7.0'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -113,6 +122,12 @@ dependencies {
     }
     implementation "androidx.browser:browser:$androidx_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+
+    implementation "com.airbnb.android:epoxy:$epoxy_version"
+    implementation "com.airbnb.android:epoxy-databinding:$epoxy_version"
+    kapt "com.airbnb.android:epoxy-processor:$epoxy_version"
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'
 
     testImplementation 'org.mockito:mockito-core:1.10.19'
     compileOnly 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'

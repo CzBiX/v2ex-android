@@ -2,15 +2,13 @@ package com.czbix.v2ex.ui.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.*
+import android.widget.Toast
 import androidx.annotation.StringRes
-import androidx.fragment.app.Fragment
 import androidx.loader.app.LoaderManager.LoaderCallbacks
 import androidx.loader.content.Loader
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import android.view.*
-import android.widget.Toast
+import com.airbnb.epoxy.EpoxyRecyclerView
 import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.R
@@ -30,7 +28,7 @@ import com.czbix.v2ex.network.RequestHelper
 import com.czbix.v2ex.ui.MainActivity
 import com.czbix.v2ex.ui.TopicActivity
 import com.czbix.v2ex.ui.TopicEditActivity
-import com.czbix.v2ex.ui.adapter.TopicAdapter
+import com.czbix.v2ex.ui.adapter.TopicController
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult
 import com.czbix.v2ex.ui.loader.TopicListLoader
 import com.czbix.v2ex.ui.widget.DividerItemDecoration
@@ -42,12 +40,12 @@ import com.czbix.v2ex.util.dispose
 import com.google.common.net.HttpHeaders
 import io.reactivex.disposables.Disposable
 
-class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<LoaderResult<TopicListLoader.TopicList>>, androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener, OnTopicActionListener {
+class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<LoaderResult<TopicListLoader.TopicList>>, SwipeRefreshLayout.OnRefreshListener, OnTopicActionListener {
     private lateinit var mPage: Page
 
-    private lateinit var mAdapter: TopicAdapter
-    private lateinit var mLayout: androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-    private lateinit var mRecyclerView: androidx.recyclerview.widget.RecyclerView
+    private lateinit var controller: TopicController
+    private lateinit var mLayout: SwipeRefreshLayout
+    private lateinit var mRecyclerView: EpoxyRecyclerView
     private lateinit var mFavIcon: MenuItem
 
     private val disposables: MutableList<Disposable> = mutableListOf()
@@ -74,17 +72,16 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         mLayout = inflater.inflate(R.layout.fragment_topic_list,
-                container, false) as androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                container, false) as SwipeRefreshLayout
         mRecyclerView = mLayout.findViewById(R.id.recycle_view)
 
         mLayout.setColorSchemeResources(R.color.material_blue_grey_500, R.color.material_blue_grey_700, R.color.material_blue_grey_900)
         mLayout.setOnRefreshListener(this)
-        val layoutManager = androidx.recyclerview.widget.LinearLayoutManager(mLayout.context)
-        mRecyclerView.layoutManager = layoutManager
+
         mRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL_LIST))
 
-        mAdapter = TopicAdapter(this)
-        mRecyclerView.adapter = mAdapter
+        controller = TopicController(this)
+        mRecyclerView.setController(controller)
 
         mLayout.isRefreshing = true
         return mLayout
@@ -155,7 +152,7 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
         result.mResult.let {
             mFavored = it.isFavorited
             mOnceToken = it.onceToken
-            mAdapter.setDataSource(it)
+            controller.setData(it)
         }
 
         activity!!.invalidateOptionsMenu()
@@ -190,8 +187,8 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
         }
     }
 
-    override fun onLoaderReset(loader: androidx.loader.content.Loader<LoaderResult<TopicListLoader.TopicList>>) {
-        mAdapter.setDataSource(null)
+    override fun onLoaderReset(loader: Loader<LoaderResult<TopicListLoader.TopicList>>) {
+        controller.setData(null)
     }
 
     override fun onRefresh() {
