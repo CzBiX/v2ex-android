@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Avatar;
 import com.czbix.v2ex.model.Node;
@@ -121,8 +122,8 @@ public class NodeAdapter extends RecyclerView.Adapter<NodeAdapter.ViewHolder> {
             }
 
             final float dimen = mAvatar.getResources().getDimension(R.dimen.node_avatar_size);
-            Glide.with(mAvatar.getContext()).load(avatar.getUrlByDp(dimen)).crossFade()
-                    .into(mAvatar);
+            Glide.with(mAvatar.getContext()).load(avatar.getUrlByDp(dimen))
+                    .transition(DrawableTransitionOptions.withCrossFade()).into(mAvatar);
         }
     }
 }

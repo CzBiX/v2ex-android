@@ -25,10 +25,6 @@ object MiscUtils {
     val PREFIX_MEMBER: String
 
     @JvmField
-    val HAS_JB: Boolean
-    @JvmField
-    val HAS_L: Boolean
-    @JvmField
     val HAS_M: Boolean
 
     init {
@@ -41,8 +37,6 @@ object MiscUtils {
         PREFIX_MEMBER = context.getString(R.string.member_url_prefix)
 
         val sdkInt = VERSION.SDK_INT
-        HAS_JB = sdkInt >= VERSION_CODES.JELLY_BEAN
-        HAS_L = sdkInt >= VERSION_CODES.LOLLIPOP
         HAS_M = sdkInt >= VERSION_CODES.M
     }
 

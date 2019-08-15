@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.czbix.v2ex" >
 
-    <application
-        android:name=".AppCtx"
-        tools:ignore="GoogleAppIndexingWarning">
+    <application tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".ui.DebugActivity"
             android:exported="true"

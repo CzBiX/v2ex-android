@@ -34,6 +34,6 @@ public class StableArrayAdapter<T> extends ArrayAdapter<T> {
     @Override
     public boolean hasStableIds() {
         // see http://stackoverflow.com/questions/26648991/
-        return !MiscUtils.HAS_L;
+        return false;
     }
 }

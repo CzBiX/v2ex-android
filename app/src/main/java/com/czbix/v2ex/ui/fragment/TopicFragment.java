@@ -302,19 +302,13 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         shareIntent.putExtra(Intent.EXTRA_TEXT,
                 String.format("%s\n%s", mTopic.getTitle(), mTopic.getUrl()));
 
-        if (MiscUtils.HAS_L) {
-            itemShare.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-                @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    TopicFragment.this.startActivity(Intent.createChooser(shareIntent, null));
-                    return true;
-                }
-            });
-        } else {
-            final ShareActionProvider actionProvider = new ShareActionProvider(getContext());
-            MenuItemCompat.setActionProvider(itemShare, actionProvider);
-            actionProvider.setShareIntent(shareIntent);
-        }
+        itemShare.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                TopicFragment.this.startActivity(Intent.createChooser(shareIntent, null));
+                return true;
+            }
+        });
     }
 
     @Override

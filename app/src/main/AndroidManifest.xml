@@ -17,10 +17,8 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
+        android:largeHeap="true"
         >
-        <meta-data
-            android:name="com.czbix.v2ex.network.GlideConfig"
-            android:value="GlideModule" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="23e42a0e3274b272cd08b9ea553d6858e53d05a5" />
@@ -65,11 +63,6 @@
             android:name=".ui.LoginActivity"
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
-        </activity>
-        <activity
-            android:name=".ui.DebugActivity"
-            android:enabled="@bool/isDebuggable"
-            android:label="Debug" >
         </activity>
         <activity
             android:name=".ui.SettingsActivity"

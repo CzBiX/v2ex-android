@@ -1,21 +1,11 @@
 package com.czbix.v2ex.util;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import androidx.annotation.AttrRes;
-import androidx.annotation.ColorRes;
-import androidx.annotation.DimenRes;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -26,12 +16,19 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.AttrRes;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DimenRes;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.parser.AsyncImageGetter;
 import com.czbix.v2ex.ui.util.Html;
-
-import java.util.regex.Pattern;
 
 import kotlin.text.Regex;
 
@@ -103,24 +100,7 @@ public class ViewUtils {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static void setImageTintList(ImageView view, @ColorRes int resId) {
         ColorStateList colorStateList = ContextCompat.getColorStateList(view.getContext(), resId);
-        if (MiscUtils.HAS_L) {
-            view.setImageTintList(colorStateList);
-        } else {
-            Drawable drawable = DrawableCompat.wrap(view.getDrawable());
-            DrawableCompat.setTintList(drawable, colorStateList);
-            view.setImageDrawable(drawable);
-        }
-    }
-
-    @SuppressLint("NewApi")
-    public static Drawable getDrawable(Context context, @DrawableRes int resId) {
-        if (MiscUtils.HAS_L) {
-            return context.getDrawable(resId);
-        }
-
-        final Resources res = context.getResources();
-        //noinspection deprecation
-        return res.getDrawable(resId);
+        view.setImageTintList(colorStateList);
     }
 
     public static Drawable setDrawableTint(Drawable drawable, int tint) {
@@ -142,16 +122,6 @@ public class ViewUtils {
         final InputMethodManager manager = (InputMethodManager) view.getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    public static void setBackground(View view, @Nullable Drawable drawable) {
-        if (MiscUtils.HAS_JB) {
-            view.setBackground(drawable);
-        } else {
-            //noinspection deprecation
-            view.setBackgroundDrawable(drawable);
-        }
     }
 
     public static int getAttrColor(Resources.Theme theme, @AttrRes int attrId) {

@@ -45,9 +45,6 @@ class SearchBoxLayout : FrameLayout, View.OnClickListener, TextWatcher, TextView
         setBackgroundResource(R.color.transparent_background)
 
         mBox = findViewById(R.id.box)
-        if (!MiscUtils.HAS_L) {
-            ViewCompat.setElevation(mBox, ViewUtils.getDimensionPixelSize(R.dimen.appbar_elevation).toFloat())
-        }
 
         setOnClickListener(this)
         mBtnBack = findViewById(R.id.action_back)
@@ -70,23 +67,19 @@ class SearchBoxLayout : FrameLayout, View.OnClickListener, TextWatcher, TextView
         mListener.onShow()
         visibility = View.VISIBLE
 
-        if (MiscUtils.HAS_L) {
-            val animDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
-            val boxAnimator = ViewAnimationUtils.createCircularReveal(mBox,
-                    mBox.width, mBox.height / 2, 0f, mBox.width.toFloat())
-                    .setDuration(animDuration.toLong())
+        val animDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
+        val boxAnimator = ViewAnimationUtils.createCircularReveal(mBox,
+                mBox.width, mBox.height / 2, 0f, mBox.width.toFloat())
+                .setDuration(animDuration.toLong())
 
-            boxAnimator.addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    mQuery.requestFocus()
-                    ViewUtils.showInputMethod(mQuery)
-                }
-            })
+        boxAnimator.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                mQuery.requestFocus()
+                ViewUtils.showInputMethod(mQuery)
+            }
+        })
 
-            boxAnimator.start()
-        } else {
-            mQuery.requestFocus()
-        }
+        boxAnimator.start()
     }
 
     @SuppressLint("NewApi")
@@ -99,7 +92,7 @@ class SearchBoxLayout : FrameLayout, View.OnClickListener, TextWatcher, TextView
         mListener.onHide()
         ViewUtils.hideInputMethod(this)
 
-        if (withAnimation && MiscUtils.HAS_L) {
+        if (withAnimation) {
             val animDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
             val boxAnimator = ViewAnimationUtils.createCircularReveal(mBox,
                     mBox.width, mBox.height / 2, mBox.width.toFloat(), 0f)
