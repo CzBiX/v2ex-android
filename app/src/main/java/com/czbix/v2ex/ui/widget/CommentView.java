@@ -46,7 +46,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
     public CommentView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        inflate(context, R.layout.view_comment, this);
+        inflate(context, R.layout.layout_comment, this);
 
         mAvatar = findViewById(R.id.avatar_img);
         mContent = findViewById(R.id.content);

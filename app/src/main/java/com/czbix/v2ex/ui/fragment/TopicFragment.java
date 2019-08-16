@@ -6,19 +6,6 @@ import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.StringRes;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.Loader;
-import androidx.core.view.MenuItemCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.ActionBar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.ShareActionProvider;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -31,6 +18,17 @@ import android.view.ViewStub;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.airbnb.epoxy.EpoxyRecyclerView;
 import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
@@ -55,7 +53,7 @@ import com.czbix.v2ex.network.HttpStatus;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.ui.MainActivity;
 import com.czbix.v2ex.ui.TopicActivity;
-import com.czbix.v2ex.ui.adapter.CommentAdapter;
+import com.czbix.v2ex.ui.adapter.CommentController;
 import com.czbix.v2ex.ui.helper.ReplyFormHelper;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.ui.loader.TopicLoader;
@@ -69,6 +67,8 @@ import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.MiscUtils;
 import com.czbix.v2ex.util.TrackerUtils;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
@@ -97,8 +97,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private Topic mTopic;
     private SwipeRefreshLayout mLayout;
-    private RecyclerView mCommentsView;
-    private CommentAdapter mCommentAdapter;
+    private EpoxyRecyclerView mCommentsView;
+    private CommentController mCommentController;
     private ReplyFormHelper mReplyForm;
     private String mCsrfToken;
     private String mOnceToken;
@@ -172,18 +172,17 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void initCommentsView(TopicActivity activity) {
-        mCommentsLayoutManager = new LinearLayoutManager(activity);
-        mCommentsView.setLayoutManager(mCommentsLayoutManager);
+        mCommentsLayoutManager = ((LinearLayoutManager) mCommentsView.getLayoutManager());
         mCommentsView.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.VERTICAL_LIST));
 
-        mCommentAdapter = new CommentAdapter(this, this, this, this);
-        mCommentAdapter.setTopic(mTopic);
-        mCommentAdapter.setDataSource(null, mComments);
-        mCommentsView.setAdapter(mCommentAdapter);
+        mCommentController = new CommentController(this, this, this, this);
+        mCommentController.setTopic(mTopic);
+        mCommentController.setData(null, mComments);
+        mCommentsView.setController(mCommentController);
         mCommentsView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(View view) {
-                loadNextPageIfNeed(mCommentAdapter.getItemCount(), mCommentsView.getChildAdapterPosition(view));
+                loadNextPageIfNeed(mCommentController.getAdapter().getItemCount(), mCommentsView.getChildAdapterPosition(view));
             }
 
             @Override
@@ -194,7 +193,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void initJumpBackButton(View rootView) {
-        mJumpBack = ((ImageButton) rootView.findViewById(R.id.btn_jump_back));
+        mJumpBack = rootView.findViewById(R.id.btn_jump_back);
         mJumpBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -353,7 +352,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         if (mReplyForm == null) {
             final View rootView = getView();
             Preconditions.checkNotNull(rootView);
-            final ViewStub viewStub = (ViewStub) rootView.findViewById(R.id.reply_form);
+            final ViewStub viewStub = rootView.findViewById(R.id.reply_form);
             mReplyForm = new ReplyFormHelper(getActivity(), viewStub, this);
 
             isShow = true;
@@ -397,7 +396,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mIsLoaded = true;
         mLastIsFailed = false;
 
-        mCommentAdapter.setTopic(data.mTopic);
+        mCommentController.setTopic(data.mTopic);
         mTopic = data.mTopic;
 
         mCurPage = data.mCurPage;
@@ -410,7 +409,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             mComments.setList(mCurPage - 1, data.mComments);
         }
 
-        mCommentAdapter.setDataSource(mTopic.getMember(), mComments);
+        mCommentController.setData(mTopic.getMember(), mComments);
 
         mFavored = mTopic.isFavored();
         mCsrfToken = data.mCsrfToken;
@@ -481,7 +480,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onLoaderReset(Loader<LoaderResult<TopicWithComments>> loader) {
-        mCommentAdapter.setDataSource(null, null);
+        mCommentController.setData(null, null);
         mComments.clear();
 
         mCsrfToken = null;
