@@ -22,6 +22,7 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     val mReplyCount: TextView
     val mTime: TextView
     val mContent: TextView
+    val border: View
 
     private var mListener: OnTopicActionListener? = null
     private var mTopic: Topic? = null
@@ -36,6 +37,7 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         mTime = findViewById(R.id.time_tv)
         mReplyCount = findViewById(R.id.reply_count_tv)
         mContent = findViewById(R.id.content)
+        border = findViewById(R.id.border)
 
         if (PrefStore.getInstance().isContentSelectable) {
             mContent.setTextIsSelectable(true)
@@ -102,10 +104,12 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         val content = topic.content
         if (Strings.isNullOrEmpty(content)) {
             mContent.visibility = View.GONE
+            border.visibility = View.GONE
             return
         }
         ViewUtils.setHtmlIntoTextView(mContent, content, ViewUtils.getWidthPixels() - TOPIC_PICTURE_OTHER_WIDTH, true)
         mContent.visibility = View.VISIBLE
+        border.visibility = View.VISIBLE
     }
 
     override fun onClick(v: View) {

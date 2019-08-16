@@ -60,12 +60,22 @@
         tools:text="Title"
         android:layout_below="@id/time_tv"
         android:layout_marginTop="4dp"
-        android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp"
-        android:layout_marginRight="12dp"
         android:layout_marginEnd="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <View
+        android:id="@+id/border"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_below="@id/title_tv"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:background="?android:listDivider" />
 
     <TextView
         android:id="@+id/content"
@@ -73,7 +83,7 @@
         tools:visibility="visible"
         tools:text="Content content"
         style="@style/AppTheme.Topic.Content"
-        android:layout_below="@id/title_tv"
+        android:layout_below="@id/border"
         android:layout_marginTop="8dp"
         android:layout_marginLeft="12dp"
         android:layout_marginStart="12dp"
