@@ -106,6 +106,28 @@ object MiscUtils {
         val builder = CustomTabsHelper.getBuilder(activity, null)
         builder.build().launchUrl(activity, uri)
     }
+
+    @JvmStatic
+    fun getViewImageIntent(context: Context, uri: Uri): Intent {
+        val googlePhotoPackage = "com.google.android.apps.photos"
+
+        val intent = Intent()
+        intent.action = Intent.ACTION_VIEW
+        intent.setDataAndTypeAndNormalize(uri, "image/*")
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        val packageManager = context.packageManager
+        val resolveInfos = packageManager.queryIntentActivities(intent, 0)
+        val foundMyself = resolveInfos.any {
+            it.activityInfo.packageName == googlePhotoPackage
+        }
+
+        if (foundMyself) {
+            intent.`package` = googlePhotoPackage
+        }
+
+        return intent
+    }
 }
 
 inline fun <reified T : Any> getLogTag(): String {

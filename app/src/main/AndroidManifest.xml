@@ -127,6 +127,13 @@
             </intent-filter>
         </receiver>
 
+        <provider
+            android:name="com.czbix.v2ex.ViewerProvider"
+            android:authorities="${applicationId}.viewer"
+            android:exported="false"
+            android:grantUriPermissions="true">
+        </provider>
+
         <service
             android:name="com.google.android.gms.analytics.AnalyticsService"
             android:enabled="true"

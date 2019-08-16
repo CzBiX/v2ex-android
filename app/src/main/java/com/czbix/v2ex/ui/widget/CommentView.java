@@ -2,8 +2,6 @@ package com.czbix.v2ex.ui.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.util.AttributeSet;
@@ -13,10 +11,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
+
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.ViewerProvider;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.model.Comment;
 import com.czbix.v2ex.model.Member;
+import com.czbix.v2ex.network.GlideApp;
 import com.czbix.v2ex.util.ViewUtils;
 
 public class CommentView extends ConstraintLayout implements View.OnClickListener,
@@ -168,7 +171,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
 
     @Override
     public void onImageClick(String source) {
-        mListener.onCommentUrlClick(source, mPos);
+        ViewerProvider.Companion.viewImage(getContext(), GlideApp.with(this), source);
     }
 
     public interface OnCommentActionListener {

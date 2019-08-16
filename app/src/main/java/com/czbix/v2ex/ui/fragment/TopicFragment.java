@@ -32,6 +32,7 @@ import com.airbnb.epoxy.EpoxyRecyclerView;
 import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
+import com.czbix.v2ex.ViewerProvider;
 import com.czbix.v2ex.common.PrefStore;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
@@ -49,6 +50,7 @@ import com.czbix.v2ex.model.Thankable;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.model.TopicWithComments;
 import com.czbix.v2ex.model.db.Draft;
+import com.czbix.v2ex.network.GlideApp;
 import com.czbix.v2ex.network.HttpStatus;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.ui.MainActivity;
@@ -751,7 +753,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     @Override
     public void onImageClick(String source) {
-        onUrlClick(source);
+        ViewerProvider.Companion.viewImage(getContext(), GlideApp.with(this), source);
     }
 
     @Override
