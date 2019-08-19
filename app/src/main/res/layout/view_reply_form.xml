@@ -37,6 +37,7 @@
         android:contentDescription="@string/action_upload_image"
         android:src="@drawable/ic_image_black_24dp"
         android:layout_width="@dimen/min_touch_size"
+        android:visibility="gone"
         android:layout_height="@dimen/min_touch_size"/>
 
     <ImageButton
