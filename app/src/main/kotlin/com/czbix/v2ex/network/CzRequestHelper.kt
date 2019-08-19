@@ -38,7 +38,7 @@ object CzRequestHelper {
 
         val request = newRequest().url(String.format(API_USER, username)).put(RequestBody.create(null, ByteArray(0))).build()
         RequestHelper.sendRequest(request, false) { response ->
-            val code = response.code()
+            val code = response.code
 
             if (code >= 500) {
                 throw RemoteException(response)
@@ -102,7 +102,7 @@ object CzRequestHelper {
         val request = newRequest().url(API_SERVER_CONFIG).build()
 
         return RequestHelper.sendRequest(request) {
-            it.body()!!.charStream().fromJson<ServerConfig>()
+            it.body!!.charStream().fromJson<ServerConfig>()
         }
     }
 }

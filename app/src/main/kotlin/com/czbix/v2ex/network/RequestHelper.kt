@@ -109,7 +109,7 @@ object RequestHelper {
             val doc: Document
             val topics: TopicListLoader.TopicList
             try {
-                doc = Parser.toDoc(response.body()!!.string())
+                doc = Parser.toDoc(response.body!!.string())
                 processUserState(doc, if (page is Tab) PageType.Tab else PageType.Node)
                 topics = TopicListParser.parseDoc(doc, page)
             } catch (e: IOException) {
@@ -142,7 +142,7 @@ object RequestHelper {
             val result: TopicWithComments
 
             try {
-                doc = Parser.toDoc(response.body()!!.string())
+                doc = Parser.toDoc(response.body!!.string())
                 processUserState(doc, PageType.Topic)
 
                 val stopwatch = Stopwatch.createStarted()
@@ -182,7 +182,7 @@ object RequestHelper {
             }
 
             try {
-                val json = response.body()!!.string()
+                val json = response.body!!.string()
 
                 json.fromJson<List<Node>>(true)
             } catch (e: IOException) {
@@ -198,7 +198,7 @@ object RequestHelper {
         val request = newRequest().url(URL_FAVORITE_NODES).build()
         return sendRequest(request) { response ->
             try {
-                val html = response.body()!!.string()
+                val html = response.body!!.string()
 
                 val doc = Parser.toDoc(html)
                 MyselfParser.parseFavNodes(doc)
@@ -217,7 +217,7 @@ object RequestHelper {
                 .url(URL_UNREAD_NOTIFICATIONS).build()
         return sendRequest(request) { response ->
             try {
-                val html = response.body()!!.string()
+                val html = response.body!!.string()
 
                 val doc = Parser.toDoc(html)
                 NotificationParser.parseUnreadCount(doc)
@@ -236,7 +236,7 @@ object RequestHelper {
                 .build()
         return sendRequest(request) { response ->
             try {
-                val html = response.body()!!.string()
+                val html = response.body!!.string()
 
                 val doc = Parser.toDoc(html)
                 NotificationParser.parseDoc(doc)
@@ -265,7 +265,7 @@ object RequestHelper {
                 .post(requestBody).build()
         return sendRequest(request, false) { response ->
             // v2ex will redirect if reply success
-            response.code() == HttpStatus.SC_MOVED_TEMPORARILY
+            response.code == HttpStatus.SC_MOVED_TEMPORARILY
         }.result()
     }
 
@@ -353,14 +353,14 @@ object RequestHelper {
                 .post(requestBody).build()
         return sendRequest(request) { response ->
             // v2ex will redirect if reply success
-            if (response.code() == HttpStatus.SC_MOVED_TEMPORARILY) {
+            if (response.code == HttpStatus.SC_MOVED_TEMPORARILY) {
                 val location = response.header(HttpHeaders.LOCATION)
                 return@sendRequest Topic.getIdFromUrl(location)
             }
 
             val exception = RequestException("post new topic failed", response)
             try {
-                exception.errorHtml = TopicParser.parseProblemInfo(response.body()!!.string())
+                exception.errorHtml = TopicParser.parseProblemInfo(response.body!!.string())
             } catch (e: IOException) {
                 throw ConnectionException(e)
             }
@@ -377,7 +377,7 @@ object RequestHelper {
         return sendRequest(request) { response ->
             val html: String
             try {
-                html = response.body()!!.string()
+                html = response.body!!.string()
             } catch (e: IOException) {
                 throw ConnectionException(e)
             }
@@ -425,8 +425,8 @@ object RequestHelper {
     private fun innerLogin(request: Request, nextUrl: String): Single<LoginResult> {
         return sendRequest(request, false) { response ->
             // v2ex will redirect if login success
-            if (response.code() != HttpStatus.SC_MOVED_TEMPORARILY) {
-                throw RequestException("code should not be " + response.code(), response)
+            if (response.code != HttpStatus.SC_MOVED_TEMPORARILY) {
+                throw RequestException("code should not be " + response.code, response)
             }
 
             val location = checkNotNull(response.header(HttpHeaders.LOCATION)) {
@@ -447,7 +447,7 @@ object RequestHelper {
 
         return sendRequest(request) { response ->
             try {
-                val html = response.body()!!.string()
+                val html = response.body!!.string()
                 val document = Parser.toDoc(html)
                 MyselfParser.parseLoginResult(document)
             } catch (e: IOException) {
@@ -463,7 +463,7 @@ object RequestHelper {
                 .url(URL_ONCE_TOKEN).build()
         return sendRequest(request) { response ->
             try {
-                val html = response.body()!!.string()
+                val html = response.body!!.string()
                 Parser.parseOnceCode(html)
             } catch (e: IOException) {
                 throw ConnectionException(e)
@@ -478,7 +478,7 @@ object RequestHelper {
                 .url(URL_ONCE_TOKEN).build()
         return sendRequest(request) { response ->
             try {
-                val html = response.body()!!.string()
+                val html = response.body!!.string()
                 Parser.parseSignInForm(html)
             } catch (e: IOException) {
                 throw ConnectionException(e)
@@ -493,7 +493,7 @@ object RequestHelper {
                 .url(URL_NOTIFICATIONS).build()
         return sendRequest(request) { response ->
             try {
-                val html = response.body()!!.string()
+                val html = response.body!!.string()
                 NotificationParser.parseToken(html)
             } catch (e: IOException) {
                 throw ConnectionException(e)
@@ -553,7 +553,7 @@ object RequestHelper {
             return
         }
 
-        val code = response.code()
+        val code = response.code
         if (response.isRedirect) {
             val location = checkNotNull(response.header(HttpHeaders.LOCATION)) {
                 "Redirect response missing location header."
@@ -571,10 +571,10 @@ object RequestHelper {
         }
 
 
-        Crashlytics.log("request url: " + response.request().url())
+        Crashlytics.log("request url: " + response.request.url)
         if (code == HttpStatus.SC_FORBIDDEN || code == HttpStatus.SC_NOT_FOUND) {
             try {
-                val body = response.body()!!
+                val body = response.body!!
 
                 if (body.contentLength() == 0L) {
                     // it's blocked for guest
