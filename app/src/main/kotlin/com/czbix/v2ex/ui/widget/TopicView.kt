@@ -1,6 +1,7 @@
 package com.czbix.v2ex.ui.widget
 
 import android.content.Context
+import android.text.Spannable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
@@ -38,6 +39,9 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         mReplyCount = findViewById(R.id.reply_count_tv)
         mContent = findViewById(R.id.content)
         border = findViewById(R.id.border)
+
+        ViewUtils.setSpannableFactory(mTitle);
+        ViewUtils.setSpannableFactory(mContent);
 
         if (PrefStore.getInstance().isContentSelectable) {
             mContent.setTextIsSelectable(true)
@@ -107,7 +111,7 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             border.visibility = View.GONE
             return
         }
-        ViewUtils.setHtmlIntoTextView(mContent, content, ViewUtils.getWidthPixels() - TOPIC_PICTURE_OTHER_WIDTH, true)
+        ViewUtils.setHtmlIntoTextView(mContent, content, 0, true)
         mContent.visibility = View.VISIBLE
         border.visibility = View.VISIBLE
     }
@@ -119,9 +123,5 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     interface OnTopicActionListener {
         fun onTopicOpen(view: View, topic: Topic)
-    }
-
-    companion object {
-        private val TOPIC_PICTURE_OTHER_WIDTH = ViewUtils.getDimensionPixelSize(R.dimen.topic_picture_other_width)
     }
 }

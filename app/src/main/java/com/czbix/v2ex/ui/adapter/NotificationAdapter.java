@@ -47,9 +47,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private static final int TOPIC_PICTURE_OTHER_WIDTH =
-                ViewUtils.getDimensionPixelSize(R.dimen.topic_picture_other_width);
-
         private final OnNotificationActionListener mListener;
         private final AvatarView mAvatar;
         private final TextView mTitle;
@@ -96,8 +93,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 return;
             }
             mContent.setVisibility(View.VISIBLE);
-            ViewUtils.setHtmlIntoTextView(mContent, content, ViewUtils.getWidthPixels() -
-                    TOPIC_PICTURE_OTHER_WIDTH, false);
+            ViewUtils.setHtmlIntoTextView(mContent, content, 0, false);
         }
 
         private String getTypeText(@Notification.NotificationType int type) {

@@ -84,7 +84,7 @@ class ViewerProvider : ContentProvider() {
     private fun getFileForUri(uri: Uri): File {
         val path = uri.encodedPath
 
-        if (path != "/image") {
+        if (path != "/image" || tempPath == null) {
             throw IllegalArgumentException("Invalid file path")
         }
 

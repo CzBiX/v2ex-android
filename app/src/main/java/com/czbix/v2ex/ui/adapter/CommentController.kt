@@ -134,8 +134,7 @@ class CommentController(
             binding.setTitle(context.getString(R.string.title_postscript, index + 1))
             binding.setTime(postscript.mTime)
 
-            ViewUtils.setHtmlIntoTextView(binding.content, postscript.mContent,
-                    ViewUtils.getWidthPixels() - TOPIC_PICTURE_OTHER_WIDTH, true)
+            ViewUtils.setHtmlIntoTextView(binding.content, postscript.mContent, 0, true)
             binding.content.movementMethod = HtmlMovementMethod(contentListener)
 
             DividerItemDecoration.setHasDecoration(holder.view, isLastPostscript)
@@ -148,6 +147,8 @@ class CommentController(
             override fun bindView(itemView: View) {
                 view = itemView
                 binding = ViewPostscriptBinding.bind(itemView)
+
+                ViewUtils.setSpannableFactory(binding.content)
             }
         }
     }
@@ -179,9 +180,5 @@ class CommentController(
                 view.setListener(listener)
             }
         }
-    }
-
-    companion object {
-        private val TOPIC_PICTURE_OTHER_WIDTH = ViewUtils.getDimensionPixelSize(R.dimen.topic_picture_other_width)
     }
 }

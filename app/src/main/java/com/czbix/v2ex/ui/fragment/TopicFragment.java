@@ -179,7 +179,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         mCommentController = new CommentController(this, this, this, this);
         mCommentController.setTopic(mTopic);
-        mCommentController.setData(null, mComments);
+        mCommentController.setData(mTopic == null ? null : mTopic.getMember(), mComments);
         mCommentsView.setController(mCommentController);
         mCommentsView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override

@@ -5,6 +5,7 @@ import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Avatar;
@@ -36,9 +37,15 @@ public class AvatarView extends AppCompatImageView {
     }
 
     public void setAvatar(Avatar avatar) {
+        final RequestManager glide = Glide.with(getContext());
+        if (avatar == null) {
+            glide.clear(this);
+            return;
+        }
+
         final int size = getRealSize();
         final String url = avatar.getUrlByPx(size);
-        Glide.with(getContext()).load(url).placeholder(R.drawable.avatar_default)
+        glide.load(url).placeholder(R.drawable.avatar_default)
                 .override(size, size).fitCenter().transition(DrawableTransitionOptions.withCrossFade()).into(this);
     }
 

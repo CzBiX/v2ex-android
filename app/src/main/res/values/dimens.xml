@@ -9,9 +9,6 @@
     <dimen name="comment_avatar_size">48dp</dimen>
     <dimen name="node_avatar_size">48dp</dimen>
 
-    <dimen name="topic_picture_other_width">32dp</dimen>
-    <dimen name="comment_picture_other_width">80dp</dimen>
-    
     <dimen name="content_spacing">8dp</dimen>
 
     <dimen name="btn_jump_back_size">40dp</dimen>

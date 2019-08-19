@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="id_action_sign">100</integer>
-    <bool name="id_decoration_tag" />
+    <id name="id_decoration_tag"/>
 </resources>

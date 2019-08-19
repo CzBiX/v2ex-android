@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
@@ -36,6 +37,17 @@ public class ViewUtils {
     public static final float density;
     public static final Regex tagRegex = new Regex("<(/\\w{1,6}>|img)");
     public static final Regex entityRegex = new Regex("&(\\w{1,10}|#\\d{1,4});");
+
+    private static final Spannable.Factory spannableFactory = new Spannable.Factory() {
+        @Override
+        public Spannable newSpannable(CharSequence source) {
+            if (source instanceof Spannable) {
+                return (Spannable) source;
+            }
+
+            return super.newSpannable(source);
+        }
+    };
 
     static {
         final AppCtx context = AppCtx.getInstance();
@@ -71,15 +83,19 @@ public class ViewUtils {
     }
 
     public static void setHtmlIntoTextView(TextView view, String html, int maxWidthPixels, boolean isTopic) {
-        if (!isTopic && !tagRegex.containsMatchIn(html) && !entityRegex.containsMatchIn(html)) {
-            // Quick reject non-html
-            view.setText(html.replace("<br>", ""));
-            return;
-        }
-        setHtmlIntoTextView(view, html, new AsyncImageGetter(view, maxWidthPixels), isTopic);
+        final CharSequence content = parseHtml(view, html, isTopic, maxWidthPixels);
+        view.setText(content, TextView.BufferType.SPANNABLE);
     }
 
-    private static void setHtmlIntoTextView(TextView view, String html, AsyncImageGetter imageGetter, boolean isTopic) {
+    public static CharSequence parseHtml(TextView view, String html, boolean isTopic, int maxWidthPixels) {
+        if (!isTopic && !tagRegex.containsMatchIn(html) && !entityRegex.containsMatchIn(html)) {
+            // Quick reject non-html
+            return html.replace("<br>", "");
+        }
+        return parseHtml(html, new AsyncImageGetter(view, maxWidthPixels), isTopic);
+    }
+
+    private static Spanned parseHtml(String html, AsyncImageGetter imageGetter, boolean isTopic) {
         Spanned spanned = Html.fromHtml(html, imageGetter);
 
         if (isTopic) {
@@ -94,7 +110,12 @@ public class ViewUtils {
                 }
             }
         }
-        view.setText(spanned);
+
+        return spanned;
+    }
+
+    public static void setSpannableFactory(TextView view) {
+        view.setSpannableFactory(spannableFactory);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

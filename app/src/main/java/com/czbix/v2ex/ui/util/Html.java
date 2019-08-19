@@ -44,6 +44,7 @@ import android.text.style.TypefaceSpan;
 import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 
+import com.czbix.v2ex.parser.AsyncImageGetter;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
@@ -610,6 +611,20 @@ class HtmlToSpannedConverter implements ContentHandler {
         }
     }
 
+    private static Object getSpan(Spanned text, int start, Class kind) {
+        /*
+         * This knows that the last returned object from getSpans()
+         * will be the most recently added.
+         */
+        Object[] objs = text.getSpans(start, start, kind);
+
+        if (objs.length == 0) {
+            return null;
+        } else {
+            return objs[0];
+        }
+    }
+
     private static void start(SpannableStringBuilder text, Object mark) {
         int len = text.length();
         text.setSpan(mark, len, len, Spannable.SPAN_MARK_MARK);
@@ -635,6 +650,10 @@ class HtmlToSpannedConverter implements ContentHandler {
             return;
         }
 
+        addImg(text, img, src);
+    }
+
+    private static void addImg(SpannableStringBuilder text, Html.ImageGetter img, String src) {
         Drawable d = null;
 
         if (img != null) {
@@ -646,11 +665,19 @@ class HtmlToSpannedConverter implements ContentHandler {
             d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
         }
 
-        int len = text.length();
+        final int start = text.length();
         text.append("\uFFFC");
+        final int end = text.length();
 
-        text.setSpan(new ImageSpan(d, src), len, text.length(),
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        final ImageSpan span = new ImageSpan(d, src);
+        if (d instanceof AsyncImageGetter.NetworkDrawable) {
+            ((AsyncImageGetter.NetworkDrawable) d).setUpdateCallback(() -> {
+                text.removeSpan(span);
+                text.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            });
+        }
+
+        text.setSpan(span, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
     private static void startSrc(SpannableStringBuilder text,
@@ -815,23 +842,15 @@ class HtmlToSpannedConverter implements ContentHandler {
             final String href = h.mHref;
 
             if (href != null) {
-                text.setSpan(new URLSpan(href), where, len,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
                 if (isAllowedImgUrl(href) && href.contentEquals(text.subSequence(where, len))) {
-                    Drawable d = null;
-
-                    if (imageGetter != null) {
-                        d = imageGetter.getDrawable(href);
+                    text.delete(where, len);
+                    addImg(text, imageGetter, href);
+                } else {
+                    obj = getSpan(text, where, ImageSpan.class);
+                    if (obj == null) {
+                        text.setSpan(new URLSpan(href), where, len,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
-
-                    if (d == null) {
-                        d = new ColorDrawable(Color.CYAN);
-                        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-                    }
-
-                    text.setSpan(new ImageSpan(d, href), where, len,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
         }

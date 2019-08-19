@@ -24,8 +24,6 @@ import com.czbix.v2ex.util.ViewUtils;
 
 public class CommentView extends ConstraintLayout implements View.OnClickListener,
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener, HtmlMovementMethod.OnHtmlActionListener {
-    private static final int COMMENT_PICTURE_OTHER_WIDTH =
-            ViewUtils.getDimensionPixelSize(R.dimen.comment_picture_other_width);
 
     private final TextView mContent;
     private final AvatarView mAvatar;
@@ -59,6 +57,8 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
         mThanks = findViewById(R.id.thanks);
         mAuthor = findViewById(R.id.tv_author);
 
+        ViewUtils.setSpannableFactory(mContent);
+
         mAvatar.setOnClickListener(this);
         mUsername.setOnClickListener(this);
 
@@ -78,8 +78,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
         mComment = comment;
         mPos = position;
 
-        ViewUtils.setHtmlIntoTextView(mContent, comment.getContent(), ViewUtils.getWidthPixels() -
-                COMMENT_PICTURE_OTHER_WIDTH, false);
+        ViewUtils.setHtmlIntoTextView(mContent, comment.getContent(), 0, false);
         appendThanks(comment);
 
         mUsername.setText(comment.getMember().getUsername());

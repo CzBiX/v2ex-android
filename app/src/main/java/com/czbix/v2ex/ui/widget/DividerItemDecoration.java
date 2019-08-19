@@ -117,11 +117,11 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     public static void setHasDecoration(View view, boolean value) {
-        view.setTag(R.bool.id_decoration_tag, value);
+        view.setTag(R.id.id_decoration_tag, value);
     }
 
     public boolean hasDecoration(View view) {
-        final Object tag = view.getTag(R.bool.id_decoration_tag);
+        final Object tag = view.getTag(R.id.id_decoration_tag);
         return tag == null ? true : ((Boolean) tag);
     }
 }
