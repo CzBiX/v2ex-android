@@ -33,6 +33,7 @@ import com.czbix.v2ex.network.GlideConfig;
 import com.czbix.v2ex.ui.util.Html;
 import com.czbix.v2ex.util.LogUtils;
 import com.czbix.v2ex.util.MiscUtils;
+import com.czbix.v2ex.util.ViewUtils;
 import com.google.common.base.Preconditions;
 
 import org.jetbrains.annotations.NotNull;
@@ -173,13 +174,14 @@ public class AsyncImageGetter implements Html.ImageGetter {
         }
     }
 
-    private static class NetworkDrawableTarget implements Target<Drawable> {
+    private static class NetworkDrawableTarget implements Target<Drawable>, SizeReadyCallback {
         private final NetworkDrawable mDrawable;
 
         private final SizeDeterminer sizeDeterminer;
 
         protected final View view;
         private Request request;
+        private int width;
 
         private NetworkDrawableTarget(@NonNull View view, NetworkDrawable drawable) {
             super();
@@ -187,6 +189,7 @@ public class AsyncImageGetter implements Html.ImageGetter {
             this.view = view;
             mDrawable = drawable;
             sizeDeterminer = new SizeDeterminer(view);
+            getSize(this);
         }
 
         void onResourceCleared(@Nullable Drawable placeholder) {
@@ -271,8 +274,20 @@ public class AsyncImageGetter implements Html.ImageGetter {
             int width = resource.getIntrinsicWidth();
             int height = resource.getIntrinsicHeight();
 
+            float fitWidth;
+            if (width < this.width) {
+                fitWidth = Math.min(ViewUtils.dp2Pixel(width), this.width);
+                height *= fitWidth / width;
+                width = (int) fitWidth;
+            }
+
             resource.setBounds(0, 0, width, height);
             mDrawable.setDrawable(resource);
+        }
+
+        @Override
+        public void onSizeReady(int width, int height) {
+            this.width = width;
         }
     }
 

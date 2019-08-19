@@ -41,13 +41,9 @@ class GlideConfig : AppGlideModule() {
     class AtWidthMostStrategy(private val maxWidth: Int) : DownsampleStrategy() {
         override fun getScaleFactor(sourceWidth: Int, sourceHeight: Int, requestedWidth: Int, requestedHeight: Int): Float {
             val maxWidth = if (maxWidth == 0) requestedWidth else maxWidth
-            val fitWidth = if (sourceWidth > maxWidth) {
-                maxWidth.toFloat()
-            } else {
-                min(ViewUtils.dp2Pixel(sourceWidth.toFloat()), maxWidth.toFloat())
-            }
+            val fitWidth = min(sourceWidth, maxWidth)
 
-            return fitWidth / sourceWidth
+            return fitWidth.toFloat() / sourceWidth
         }
 
         override fun getSampleSizeRounding(sourceWidth: Int, sourceHeight: Int, requestedWidth: Int, requestedHeight: Int): SampleSizeRounding {
