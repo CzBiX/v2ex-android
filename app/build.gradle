@@ -145,6 +145,7 @@ dependencies {
 
     implementation "com.airbnb.android:epoxy:$epoxy_version"
     implementation "com.airbnb.android:epoxy-databinding:$epoxy_version"
+    implementation "com.airbnb.android:epoxy-glide-preloading:$epoxy_version"
     kapt "com.airbnb.android:epoxy-processor:$epoxy_version"
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'

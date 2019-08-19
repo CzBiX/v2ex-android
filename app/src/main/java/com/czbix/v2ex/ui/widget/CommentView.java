@@ -14,6 +14,8 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.ViewerProvider;
 import com.czbix.v2ex.common.UserState;
@@ -26,7 +28,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
             View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener, HtmlMovementMethod.OnHtmlActionListener {
 
     private final TextView mContent;
-    private final AvatarView mAvatar;
+    public final AvatarView mAvatar;
     private final TextView mUsername;
     private final TextView mReplyTime;
     private final TextView mFloor;
@@ -71,7 +73,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
     }
 
     @SuppressLint({"DefaultLocale", "SetTextI18n"})
-    public void fillData(Comment comment, boolean isAuthor, int position) {
+    public void fillData(RequestManager glide, Comment comment, boolean isAuthor, int position) {
         if (comment.equals(mComment)) {
             return;
         }
@@ -88,7 +90,12 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
 
         mAuthor.setVisibility(isAuthor ? View.VISIBLE : View.GONE);
 
-        mAvatar.setAvatar(comment.getMember().getAvatar());
+        mAvatar.setAvatar(glide, comment.getMember().getAvatar());
+    }
+
+    public void clear(RequestManager glide) {
+        glide.clear(mAvatar);
+        mContent.setText(null);
     }
 
     private void appendThanks(Comment comment) {

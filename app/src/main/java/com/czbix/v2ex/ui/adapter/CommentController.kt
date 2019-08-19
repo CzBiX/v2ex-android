@@ -1,22 +1,25 @@
 package com.czbix.v2ex.ui.adapter
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.core.view.updatePaddingRelative
 import com.airbnb.epoxy.*
+import com.airbnb.epoxy.preload.Preloadable
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.RequestManager
 import com.czbix.v2ex.R
 import com.czbix.v2ex.databinding.ViewPostscriptBinding
 import com.czbix.v2ex.model.Comment
 import com.czbix.v2ex.model.Member
 import com.czbix.v2ex.model.Postscript
 import com.czbix.v2ex.model.Topic
+import com.czbix.v2ex.ui.ExHolder
 import com.czbix.v2ex.ui.fragment.NodeListFragment.OnNodeActionListener
+import com.czbix.v2ex.ui.widget.*
 import com.czbix.v2ex.ui.widget.AvatarView.OnAvatarActionListener
-import com.czbix.v2ex.ui.widget.CommentView
 import com.czbix.v2ex.ui.widget.CommentView.OnCommentActionListener
-import com.czbix.v2ex.ui.widget.DividerItemDecoration
-import com.czbix.v2ex.ui.widget.HtmlMovementMethod
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod.OnHtmlActionListener
-import com.czbix.v2ex.ui.widget.TopicView
 import com.czbix.v2ex.util.ViewUtils
 
 class CommentController(
@@ -96,15 +99,16 @@ class CommentController(
         var hasPostscript = false
 
         override fun bind(holder: Holder) {
-            holder.view.fillData(topic)
+            holder.view.fillData(holder.glide, topic)
             DividerItemDecoration.setHasDecoration(holder.view, !hasPostscript)
         }
 
-        inner class Holder : EpoxyHolder() {
-            lateinit var view: TopicView
+        override fun unbind(holder: Holder) {
+            holder.view.clear(holder.glide)
+        }
 
-            override fun bindView(itemView: View) {
-                view = itemView as TopicView
+        inner class Holder : ExHolder<TopicView>() {
+            override fun init() {
                 view.updatePaddingRelative(top = view.paddingTop * 2)
 
                 view.setContentListener(contentListener)
@@ -135,18 +139,23 @@ class CommentController(
             binding.setTime(postscript.mTime)
 
             ViewUtils.setHtmlIntoTextView(binding.content, postscript.mContent, 0, true)
-            binding.content.movementMethod = HtmlMovementMethod(contentListener)
+            holder.contentView.movementMethod = HtmlMovementMethod(contentListener)
 
             DividerItemDecoration.setHasDecoration(holder.view, isLastPostscript)
         }
 
-        inner class Holder : EpoxyHolder() {
-            lateinit var binding: ViewPostscriptBinding
-            lateinit var view: View
+        override fun unbind(holder: Holder) {
+            holder.contentView.text = null
+        }
 
-            override fun bindView(itemView: View) {
-                view = itemView
-                binding = ViewPostscriptBinding.bind(itemView)
+        inner class Holder : ExHolder<View>() {
+            lateinit var binding: ViewPostscriptBinding
+            val contentView by lazy {
+                binding.content
+            }
+
+            override fun init() {
+                binding = ViewPostscriptBinding.bind(view)
 
                 ViewUtils.setSpannableFactory(binding.content)
             }
@@ -168,17 +177,37 @@ class CommentController(
         var position = 0
 
         override fun bind(holder: Holder) {
-            holder.view.fillData(comment, isAuthor, position)
+            holder.view.fillData(holder.glide, comment, isAuthor, position)
         }
 
-        inner class Holder : EpoxyHolder() {
-            lateinit var view: CommentView
+        override fun unbind(holder: Holder) {
+            holder.view.clear(holder.glide)
+        }
 
-            override fun bindView(itemView: View) {
-                view = itemView as CommentView
+        fun getImgRequest(glide: RequestManager, avatarView: AvatarView): RequestBuilder<Drawable> {
+            return avatarView.getImgRequest(glide, comment.member.avatar!!)
+        }
 
+        inner class Holder : ExHolder<CommentView>(), Preloadable {
+            override fun init() {
                 view.setListener(listener)
             }
+
+            override val viewsToPreload by lazy {
+                listOf(view.mAvatar)
+            }
+        }
+    }
+
+    companion object {
+        fun addGlidePreloader(recyclerView: EpoxyRecyclerView, glide: RequestManager) {
+            recyclerView.addGlidePreloader(glide, 5,
+                    preloader = glidePreloader(viewMetadata = { view ->
+                        AvatarView.Metadata(view as AvatarView)
+                    }) { requestManager, epoxyModel: `CommentController$CommentModel_`, viewData ->
+                        epoxyModel.getImgRequest(requestManager, viewData.metadata.avatarView)
+                    }
+            )
         }
     }
 }

@@ -64,7 +64,6 @@ public class AsyncImageGetter implements Html.ImageGetter {
         final NetworkDrawable drawable = new NetworkDrawable(shouldLoadImage);
         if (shouldLoadImage) {
             final NetworkDrawableTarget target = new NetworkDrawableTarget(mTextView, drawable);
-            target.waitForLayout();
 
             final DownsampleStrategy strategy = GlideConfig.Companion.atWidthMost(mMaxWidth);
             Glide.with(mTextView.getContext()).asDrawable().downsample(strategy)

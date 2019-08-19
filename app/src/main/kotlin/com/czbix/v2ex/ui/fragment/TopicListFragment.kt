@@ -9,6 +9,9 @@ import androidx.loader.app.LoaderManager.LoaderCallbacks
 import androidx.loader.content.Loader
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.airbnb.epoxy.EpoxyRecyclerView
+import com.airbnb.epoxy.addGlidePreloader
+import com.airbnb.epoxy.glidePreloader
+import com.bumptech.glide.Glide
 import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.R
@@ -29,8 +32,10 @@ import com.czbix.v2ex.ui.MainActivity
 import com.czbix.v2ex.ui.TopicActivity
 import com.czbix.v2ex.ui.TopicEditActivity
 import com.czbix.v2ex.ui.adapter.TopicController
+import com.czbix.v2ex.ui.adapter.`TopicController$TopicModel_`
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult
 import com.czbix.v2ex.ui.loader.TopicListLoader
+import com.czbix.v2ex.ui.widget.AvatarView
 import com.czbix.v2ex.ui.widget.DividerItemDecoration
 import com.czbix.v2ex.ui.widget.TopicView.OnTopicActionListener
 import com.czbix.v2ex.util.ExceptionUtils
@@ -79,6 +84,13 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
         mLayout.setOnRefreshListener(this)
 
         mRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL_LIST))
+        mRecyclerView.addGlidePreloader(
+                Glide.with(this), 5,
+                preloader = glidePreloader(viewMetadata = { view ->
+                    AvatarView.Metadata(view as AvatarView)
+                }) { requestManager, epoxyModel: `TopicController$TopicModel_`, viewData ->
+                    epoxyModel.getImgRequest(requestManager, viewData.metadata.avatarView)
+                })
 
         controller = TopicController(this)
         mRecyclerView.setController(controller)

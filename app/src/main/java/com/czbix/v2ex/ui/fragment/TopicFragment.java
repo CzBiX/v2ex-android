@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.airbnb.epoxy.EpoxyRecyclerView;
+import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
@@ -165,6 +166,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mLayout.setOnRefreshListener(this);
 
         mCommentsView = mLayout.findViewById(R.id.comments);
+        CommentController.Companion.addGlidePreloader(mCommentsView, Glide.with(this));
 
         if (!mTopic.hasInfo()) {
             mCommentsView.setVisibility(View.INVISIBLE);

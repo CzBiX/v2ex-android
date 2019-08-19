@@ -1,9 +1,17 @@
 package com.czbix.v2ex.ui.adapter
 
-import android.view.View
-import com.airbnb.epoxy.*
+import android.graphics.drawable.Drawable
+import com.airbnb.epoxy.EpoxyAttribute
+import com.airbnb.epoxy.EpoxyModelClass
+import com.airbnb.epoxy.EpoxyModelWithHolder
+import com.airbnb.epoxy.TypedEpoxyController
+import com.airbnb.epoxy.preload.Preloadable
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.RequestManager
 import com.czbix.v2ex.R
 import com.czbix.v2ex.model.Topic
+import com.czbix.v2ex.ui.ExHolder
+import com.czbix.v2ex.ui.widget.AvatarView
 import com.czbix.v2ex.ui.widget.TopicView
 
 class TopicController(private val mListener: TopicView.OnTopicActionListener) : TypedEpoxyController<List<Topic>>() {
@@ -29,15 +37,23 @@ class TopicController(private val mListener: TopicView.OnTopicActionListener) : 
         lateinit var listener: TopicView.OnTopicActionListener
 
         override fun bind(holder: Holder) {
-            holder.view.fillData(topic)
+            holder.view.fillData(holder.glide, topic)
         }
 
-        inner class Holder : EpoxyHolder() {
-            lateinit var view: TopicView
+        override fun unbind(holder: Holder) {
+            holder.view.clear(holder.glide)
+        }
 
-            override fun bindView(itemView: View) {
-                view = itemView as TopicView
+        fun getImgRequest(glide: RequestManager, avatarView: AvatarView): RequestBuilder<Drawable> {
+            return avatarView.getImgRequest(glide, topic.member.avatar!!)
+        }
 
+        inner class Holder : ExHolder<TopicView>(), Preloadable {
+            override val viewsToPreload by lazy {
+                listOf(view.mAvatar)
+            }
+
+            override fun init() {
                 view.setListener(listener)
             }
         }

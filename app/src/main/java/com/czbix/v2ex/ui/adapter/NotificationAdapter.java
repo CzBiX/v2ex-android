@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Notification;
 import com.czbix.v2ex.ui.widget.AvatarView;
@@ -82,7 +83,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             mAction.setText(getTypeText(notification.mType));
             mTime.setText(notification.mTime);
 
-            mAvatar.setAvatar(mNotification.mMember.getAvatar());
+            mAvatar.setAvatar(Glide.with(mAvatar), mNotification.mMember.getAvatar());
             setContent(notification);
         }
 

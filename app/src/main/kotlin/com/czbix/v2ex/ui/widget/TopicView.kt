@@ -1,14 +1,16 @@
 package com.czbix.v2ex.ui.widget
 
 import android.content.Context
-import android.text.Spannable
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.PrefStore
 import com.czbix.v2ex.model.Topic
+import com.czbix.v2ex.network.GlideApp
 import com.czbix.v2ex.ui.fragment.NodeListFragment
 import com.czbix.v2ex.util.ViewUtils
 import com.google.common.base.Strings
@@ -69,7 +71,7 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         mUsername.setOnClickListener(tmp)
     }
 
-    fun fillData(topic: Topic) {
+    fun fillData(glide: RequestManager, topic: Topic) {
         if (!topic.hasInfo()) {
             visibility = View.INVISIBLE
             return
@@ -92,8 +94,13 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
             mReplyCount.visibility = View.INVISIBLE
         }
 
-        mAvatar.setAvatar(topic.member.avatar)
+        mAvatar.setAvatar(glide, topic.member.avatar)
         setContent(topic)
+    }
+
+    fun clear(glide: RequestManager) {
+        glide.clear(mAvatar)
+        mContent.text = null
     }
 
     fun updateForRead() {
