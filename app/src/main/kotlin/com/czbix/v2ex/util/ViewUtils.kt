@@ -121,14 +121,6 @@ object ViewUtils {
     }
 
     @JvmStatic
-    fun setDrawableTint(drawable: Drawable, tint: Int): Drawable {
-        var drawable = drawable
-        drawable = DrawableCompat.wrap(drawable)
-        DrawableCompat.setTint(drawable, tint)
-        return drawable
-    }
-
-    @JvmStatic
     fun showInputMethod(view: View) {
         val manager = view.context
                 .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

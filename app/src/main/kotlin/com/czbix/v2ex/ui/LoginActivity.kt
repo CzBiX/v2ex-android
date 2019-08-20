@@ -114,11 +114,11 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
             return
         }
 
-        val placeholder = getDrawable(R.drawable.ic_sync_white_24dp).let {
-            ViewUtils.setDrawableTint(it, Color.BLACK)
+        val placeholder = getDrawable(R.drawable.ic_sync_white_24dp)!!.apply {
+            setTint(Color.BLACK)
         }
-        val fallback = getDrawable(R.drawable.ic_sync_problem_white_24dp).let {
-            ViewUtils.setDrawableTint(it, Color.BLACK)
+        val fallback = getDrawable(R.drawable.ic_sync_problem_white_24dp)!!.apply {
+            setTint(Color.BLACK)
         }
 
         mCaptchaImageView.setImageDrawable(placeholder)

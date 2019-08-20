@@ -91,8 +91,8 @@ public class TopicEditActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_topic_edit, menu);
         final MenuItem item = menu.findItem(R.id.action_post);
         if (UserState.INSTANCE.isLoggedIn()) {
-            final Drawable icon = ViewUtils.setDrawableTint(ContextCompat.getDrawable(this,
-                    R.drawable.ic_send_black_24dp), Color.WHITE);
+            final Drawable icon = getDrawable(R.drawable.ic_send_black_24dp);
+            icon.setTint(Color.WHITE);
             item.setIcon(icon);
         } else {
             item.setVisible(false);
