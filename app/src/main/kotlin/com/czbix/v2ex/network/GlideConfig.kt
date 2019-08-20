@@ -16,7 +16,6 @@ import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import com.bumptech.glide.module.AppGlideModule
 import com.czbix.v2ex.model.loader.GooglePhotoUrlLoader
 import com.czbix.v2ex.util.LogUtils
-import com.czbix.v2ex.util.ViewUtils
 import com.czbix.v2ex.util.getLogTag
 import java.io.InputStream
 import java.security.MessageDigest

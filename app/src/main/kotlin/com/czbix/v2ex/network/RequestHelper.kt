@@ -148,7 +148,7 @@ object RequestHelper {
                 val stopwatch = Stopwatch.createStarted()
                 result = TopicParser.parseDoc(doc, topic)
                 TrackerUtils.onParseTopic(stopwatch.elapsed(TimeUnit.MILLISECONDS),
-                        Integer.toString(result.mComments.size))
+                        Integer.toString(result.comments.size))
             } catch (e: IOException) {
                 throw ConnectionException(e)
             }

@@ -24,7 +24,6 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     val mNode: TextView
     val mReplyCount: TextView
     val mTime: TextView
-    val mContent: TextView
     val border: View
 
     private var mListener: OnTopicActionListener? = null
@@ -39,25 +38,15 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         mNode = findViewById(R.id.node_tv)
         mTime = findViewById(R.id.time_tv)
         mReplyCount = findViewById(R.id.reply_count_tv)
-        mContent = findViewById(R.id.content)
         border = findViewById(R.id.border)
 
-        ViewUtils.setSpannableFactory(mTitle);
-        ViewUtils.setSpannableFactory(mContent);
-
-        if (PrefStore.getInstance().isContentSelectable) {
-            mContent.setTextIsSelectable(true)
-        }
+        ViewUtils.setSpannableFactory(mTitle)
     }
 
     fun setListener(listener: OnTopicActionListener) {
         mListener = listener
 
         setOnClickListener(this)
-    }
-
-    fun setContentListener(listener: HtmlMovementMethod.OnHtmlActionListener) {
-        mContent.movementMethod = HtmlMovementMethod(listener)
     }
 
     fun setNodeListener(listener: NodeListFragment.OnNodeActionListener) {
@@ -95,12 +84,11 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         }
 
         mAvatar.setAvatar(glide, topic.member.avatar)
-        setContent(topic)
+        border.visibility = if (topic.content.isNullOrEmpty()) View.GONE else View.VISIBLE
     }
 
     fun clear(glide: RequestManager) {
         glide.clear(mAvatar)
-        mContent.text = null
     }
 
     fun updateForRead() {
@@ -109,18 +97,6 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         } else {
             mReplyCount.alpha = 1f
         }
-    }
-
-    private fun setContent(topic: Topic) {
-        val content = topic.content
-        if (Strings.isNullOrEmpty(content)) {
-            mContent.visibility = View.GONE
-            border.visibility = View.GONE
-            return
-        }
-        ViewUtils.setHtmlIntoTextView(mContent, content, 0, true)
-        mContent.visibility = View.VISIBLE
-        border.visibility = View.VISIBLE
     }
 
     override fun onClick(v: View) {

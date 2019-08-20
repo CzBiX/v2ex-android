@@ -180,7 +180,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mCommentsView.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.VERTICAL_LIST));
 
         mCommentController = new CommentController(this, this, this, this);
-        mCommentController.setTopic(mTopic);
+        mCommentController.setTopic(mTopic, null);
         mCommentController.setData(mTopic == null ? null : mTopic.getMember(), mComments);
         mCommentsView.setController(mCommentController);
         mCommentsView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
@@ -391,33 +391,33 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             if (!mTopic.hasInfo()) {
                 mCommentsView.setVisibility(View.VISIBLE);
             }
-            if (data.mLastReadPos > 0) {
+            if (data.getLastReadPos() > 0) {
                 // add one for topic in header
-                mLastFocusPos = data.mLastReadPos + 1;
+                mLastFocusPos = data.getLastReadPos() + 1;
                 updateJumpBackButton();
             }
         }
         mIsLoaded = true;
         mLastIsFailed = false;
 
-        mCommentController.setTopic(data.mTopic);
-        mTopic = data.mTopic;
+        mCommentController.setTopic(data.getTopic(), data.getTopicBlocks());
+        mTopic = data.getTopic();
 
-        mCurPage = data.mCurPage;
-        mMaxPage = data.mMaxPage;
+        mCurPage = data.getCurPage();
+        mMaxPage = data.getMaxPage();
         final int oldSize = mComments.listSize();
         if (mCurPage > oldSize) {
             // new page
-            mComments.addList(data.mComments);
+            mComments.addList(data.getComments());
         } else {
-            mComments.setList(mCurPage - 1, data.mComments);
+            mComments.setList(mCurPage - 1, data.getComments());
         }
 
         mCommentController.setData(mTopic.getMember(), mComments);
 
         mFavored = mTopic.isFavored();
-        mCsrfToken = data.mCsrfToken;
-        mOnceToken = data.mOnceToken;
+        mCsrfToken = data.getCsrfToken();
+        mOnceToken = data.getOnceToken();
 
         getActivity().invalidateOptionsMenu();
 

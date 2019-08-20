@@ -29,13 +29,13 @@ class TopicLoader(context: Context, private val mTopic: Topic) : AsyncTaskLoader
     @Throws(ConnectionException::class, RemoteException::class)
     override fun loadInBackgroundWithException(): TopicWithComments {
         val topicWithComments = RequestHelper.getTopicWithComments(mTopic, mPage)
-        if (mPage == 1 && topicWithComments.mComments.size > 0) {
+        if (mPage == 1 && topicWithComments.comments.isNotEmpty()) {
             val lastRead = TopicDao.getLastReadReply(mTopic.id)
             if (lastRead > 7) {
-                val commentIds = topicWithComments.mComments.map { it.floor }
+                val commentIds = topicWithComments.comments.map { it.floor }
                 val index = Collections.binarySearch(commentIds, lastRead)
                 // the closest and latest comment of last read pos
-                topicWithComments.mLastReadPos = if (index >= 0) index else -index - 2
+                topicWithComments.lastReadPos = if (index >= 0) index else -index - 2
             }
         }
 

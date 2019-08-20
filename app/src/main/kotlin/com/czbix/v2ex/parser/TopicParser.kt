@@ -4,6 +4,7 @@ import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.helper.JsoupObjects
 import com.czbix.v2ex.model.*
+import com.czbix.v2ex.ui.adapter.CommentController
 import com.google.common.base.Preconditions
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -28,8 +29,11 @@ object TopicParser : Parser() {
             null
         }
 
-        return TopicWithComments(topicBuilder.createTopic(), comments, pageNum.first,
-                pageNum.second, csrfToken, onceToken)
+        val newTopic = topicBuilder.createTopic()
+        val blocks = CommentController.parseHtml2Blocks(newTopic.content)
+
+        return TopicWithComments(newTopic, comments, pageNum.first,
+                pageNum.second, csrfToken, onceToken, blocks)
     }
 
     private fun getMaxPage(parent: Element): Pair<Int, Int> {

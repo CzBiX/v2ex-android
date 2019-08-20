@@ -67,12 +67,10 @@ object MiscUtils {
 
     @JvmStatic
     fun formatUrl(url: String): String {
-        return if (url.startsWith("//")) {
-            "https:" + url
-        } else if (url.startsWith("/")) {
-            RequestHelper.BASE_URL + url
-        } else {
-            url
+        return when {
+            url.startsWith("//") -> "https:$url"
+            url.startsWith("/") -> RequestHelper.BASE_URL + url
+            else -> url
         }
     }
 

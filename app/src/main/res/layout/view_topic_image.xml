@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="4dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="4dp"
+    android:background="@android:color/white"
+    android:scaleType="fitCenter"
+    android:adjustViewBounds="true"
+    tools:src="@drawable/avatar_default">
+
+</ImageView>

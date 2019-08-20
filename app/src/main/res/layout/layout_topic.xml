@@ -76,20 +76,4 @@
         android:visibility="gone"
         tools:visibility="visible"
         android:background="?android:listDivider" />
-
-    <TextView
-        android:id="@+id/content"
-        android:visibility="gone"
-        tools:visibility="visible"
-        tools:text="Content content"
-        style="@style/AppTheme.Topic.Content"
-        android:layout_below="@id/border"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="4dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 </merge>
