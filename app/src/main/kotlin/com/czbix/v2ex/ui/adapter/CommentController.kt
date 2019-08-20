@@ -1,6 +1,7 @@
 package com.czbix.v2ex.ui.adapter
 
-import android.animation.ObjectAnimator
+import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.drawable.Drawable
 import android.text.Spanned
 import android.text.style.ImageSpan
@@ -15,6 +16,7 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.czbix.v2ex.R
@@ -179,19 +181,29 @@ class CommentController(
 
             view.setOnClickListener(this)
 
-            val anim = ObjectAnimator.ofInt(view, "ImageLevel", 0, 3)
-            anim.repeatCount = ObjectAnimator.INFINITE
-            anim.start()
+            view.apply {
+                scaleType = ImageView.ScaleType.CENTER
+                adjustViewBounds = false
+            }
 
-            view.scaleType = ImageView.ScaleType.FIT_CENTER
-            getImgRequest(holder.glide).listener(getGlideListener(view, anim)).into(view)
+            val request = getImgRequest(holder.glide)
+                    .placeholder(holder.loadingDrawable)
+                    .error(holder.errorDrawable)
+                    .listener(getGlideListener(view))
+
+            val shouldLoadImage = PrefStore.getInstance().shouldLoadImage()
+            if (!shouldLoadImage) {
+                request.load(holder.disabledDrawable)
+            } else {
+                request
+            }.into(view)
         }
 
         fun getImgRequest(glide: RequestManager): RequestBuilder<Drawable> {
             val strategy = GlideConfig.atWidthMost()
 
-            return glide.asDrawable().placeholder(R.drawable.ic_sync_white_24dp).downsample(strategy)
-                    .transform(GlideConfig.AtWidthMostTransformation(strategy)).load(source)
+            return glide.asDrawable().downsample(strategy)
+                    .optionalTransform(GlideConfig.AtWidthMostTransformation(strategy)).load(source)
         }
 
         override fun unbind(holder: Holder) {
@@ -203,20 +215,32 @@ class CommentController(
         }
 
         class Holder : ExHolder<ImageView>(), Preloadable {
+            val loadingDrawable by lazy {
+                view.context.getDrawable(R.drawable.img_topic_image_loading)!!.apply {
+                    setTint(Color.BLACK)
+                }
+            }
+            val errorDrawable by lazy {
+                view.context.getDrawable(R.drawable.ic_sync_problem_white_24dp)!!.apply {
+                    setTint(Color.BLACK)
+                }
+            }
+            val disabledDrawable by lazy {
+                view.context.getDrawable(R.drawable.ic_sync_disabled_white_24dp)!!.apply {
+                    setTint(Color.BLACK)
+                }
+            }
             override val viewsToPreload by lazy { listOf(view) }
         }
 
         companion object {
-            fun getGlideListener(view: ImageView, animator: ObjectAnimator): RequestListener<Drawable> {
+            fun getGlideListener(view: ImageView): RequestListener<Drawable> {
                 return object : RequestListener<Drawable> {
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                        animator.cancel()
                         return false
                     }
 
                     override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                        animator.cancel()
-
                         val maxWidth = runBlocking {
                             suspendCoroutine<Float> { cont ->
                                 target.getSize { width, _ ->
@@ -237,8 +261,14 @@ class CommentController(
                             1f
                         }
 
-                        view.scaleType = ImageView.ScaleType.MATRIX
-                        view.imageMatrix.setScale(scale, scale)
+                        view.apply {
+                            scaleType = ImageView.ScaleType.MATRIX
+                            adjustViewBounds = true
+                            imageMatrix = Matrix().apply {
+                                preScale(scale, scale)
+                                preTranslate((maxWidth - width * scale) / 2, 0f)
+                            }
+                        }
 
                         return false
                     }

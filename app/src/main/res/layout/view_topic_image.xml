@@ -8,8 +8,6 @@
     android:paddingEnd="16dp"
     android:paddingBottom="4dp"
     android:background="@android:color/white"
-    android:scaleType="fitCenter"
-    android:adjustViewBounds="true"
     tools:src="@drawable/avatar_default">
 
 </ImageView>
