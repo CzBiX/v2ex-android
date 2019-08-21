@@ -45,7 +45,7 @@ class TopicController(private val mListener: TopicView.OnTopicActionListener) : 
         }
 
         fun getImgRequest(glide: RequestManager, avatarView: AvatarView): RequestBuilder<Drawable> {
-            return avatarView.getImgRequest(glide, topic.member.avatar!!)
+            return avatarView.getImgRequest(glide, topic.member!!.avatar!!)
         }
 
         inner class Holder : ExHolder<TopicView>(), Preloadable {

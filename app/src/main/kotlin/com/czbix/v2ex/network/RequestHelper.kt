@@ -354,7 +354,7 @@ object RequestHelper {
         return sendRequest(request) { response ->
             // v2ex will redirect if reply success
             if (response.code == HttpStatus.SC_MOVED_TEMPORARILY) {
-                val location = response.header(HttpHeaders.LOCATION)
+                val location = response.header(HttpHeaders.LOCATION)!!
                 return@sendRequest Topic.getIdFromUrl(location)
             }
 

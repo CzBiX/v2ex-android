@@ -1,10 +1,13 @@
 package com.czbix.v2ex.parser
 
+import android.text.Spanned
+import android.text.style.ImageSpan
+import androidx.core.text.getSpans
 import com.czbix.v2ex.BuildConfig
 import com.czbix.v2ex.helper.JsoupObjects
-import com.czbix.v2ex.model.Avatar
-import com.czbix.v2ex.model.Member
-import com.czbix.v2ex.model.Node
+import com.czbix.v2ex.model.*
+import com.czbix.v2ex.util.MiscUtils
+import com.czbix.v2ex.util.ViewUtils
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -75,6 +78,49 @@ abstract class Parser {
             memberBuilder.setAvatar(avatarBuilder.createAvatar())
 
             return memberBuilder.createMember()
+        }
+
+        fun parseHtml2Blocks(html: String): List<ContentBlock> {
+            val builder = ViewUtils.parseHtml(html, null, true)
+            val simpleResult by lazy {
+                val block = TextBlock(0, builder)
+
+                listOf(block)
+            }
+
+            if (builder !is Spanned) {
+                return simpleResult
+            }
+
+            val imageSpans = builder.getSpans<ImageSpan>()
+            if (imageSpans.isEmpty()) {
+                return simpleResult
+            }
+
+            var lastEndPos = 0
+            var index = 0
+            val blocks = mutableListOf<ContentBlock>()
+            imageSpans.forEach { span ->
+                val start = builder.getSpanStart(span)
+                val text = builder.subSequence(lastEndPos, start).trim()
+                if (text.isNotEmpty()) {
+                    blocks.add(TextBlock(index++, text))
+                }
+
+                val url = MiscUtils.formatUrl(span.source!!)
+                blocks.add(ImageBlock(index++, url))
+
+                lastEndPos = builder.getSpanEnd(span)
+            }
+
+            val length = builder.length
+            if (lastEndPos != length) {
+                val text = builder.subSequence(lastEndPos, length).trim()
+
+                blocks.add(TextBlock(index, text))
+            }
+
+            return blocks
         }
     }
 

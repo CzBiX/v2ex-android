@@ -4,7 +4,6 @@ import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.helper.JsoupObjects
 import com.czbix.v2ex.model.*
-import com.czbix.v2ex.ui.adapter.CommentController
 import com.google.common.base.Preconditions
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -29,11 +28,10 @@ object TopicParser : Parser() {
             null
         }
 
-        val newTopic = topicBuilder.createTopic()
-        val blocks = CommentController.parseHtml2Blocks(newTopic.content)
+        val newTopic = topicBuilder.build()
 
         return TopicWithComments(newTopic, comments, pageNum.first,
-                pageNum.second, csrfToken, onceToken, blocks)
+                pageNum.second, csrfToken, onceToken)
     }
 
     private fun getMaxPage(parent: Element): Pair<Int, Int> {
@@ -57,7 +55,7 @@ object TopicParser : Parser() {
         val ele = JsoupObjects(box).child(".inner").child(".fr").child(".op").first()
 
         val href = ele.attr("href")
-        href.startsWith("/unfav").let { builder.isFavored(it) }
+        href.startsWith("/unfav").let { builder.isFavored = it }
 
         return href.substringAfterLast("?t=")
     }
@@ -67,7 +65,7 @@ object TopicParser : Parser() {
         val header = JsoupObjects.child(topicBox, ".header")
 
         val node = JsoupObjects(header).child(".chevron").adjacent("a").first().let { parseNode(it) }
-        builder.setNode(node)
+        builder.node = node
 
         try {
             parseTopicReplyTime(builder, JsoupObjects.child(header, ".gray").textNodes()[1].text())
@@ -83,10 +81,11 @@ object TopicParser : Parser() {
         parsePostscript(builder, topicBox)
         parseTopicReplyCount(builder, parent)
 
-        if (!builder.hasInfo()) {
+        if (!builder.hasInfo) {
             TopicListParser.parseMember(builder, JsoupObjects.child(header, ".fr"))
         }
 
+        @Suppress("UnnecessaryVariable")
         val csrfToken = if (UserState.isLoggedIn()) {
             parseFavored(builder, topicBox)
         } else {
@@ -96,31 +95,31 @@ object TopicParser : Parser() {
         return csrfToken
     }
 
-    internal fun parseTopicReplyTime(topicBuilder: Topic.Builder, text: String) {
+    private fun parseTopicReplyTime(topicBuilder: Topic.Builder, text: String) {
         val matcher = checkNotNull(PATTERN_TOPIC_REPLY_TIME.find(text)) {
             "match reply time for topic failed: $text"
         }
 
         val timeStr = matcher.groupValues[1]
-        topicBuilder.setReplyTime(timeStr)
+        topicBuilder.replyTime = timeStr
     }
 
     private fun parseTopicTitle(builder: Topic.Builder, header: Element) {
         val title = JsoupObjects.child(header, "h1").html()
 
-        builder.setTitle(title)
+        builder.title = title
     }
 
     private fun parseTopicReplyCount(topicBuilder: Topic.Builder, parent: Element) {
         val gray = JsoupObjects(parent).child(".box:nth-child(3)").child(".cell").child(".gray").firstOrNull()
         if (gray == null) {
             // empty reply
-            topicBuilder.setReplyCount(0)
+            topicBuilder.replyCount = 0
         } else {
             val text = gray.ownText()
             val matcher = checkNotNull(PATTERN_NUMBERS.find(text))
 
-            topicBuilder.setReplyCount(matcher.value.toInt())
+            topicBuilder.replyCount = matcher.value.toInt()
         }
     }
 
@@ -183,7 +182,7 @@ object TopicParser : Parser() {
 
     private fun parseTopicContent(builder: Topic.Builder, topicBox: Element) {
         JsoupObjects(topicBox).child(".cell").child(".topic_content").firstOrNull()?.let {
-            builder.setContent(it.html())
+            builder.content = parseHtml2Blocks(it.html())
         }
     }
 
@@ -196,10 +195,10 @@ object TopicParser : Parser() {
 
             val content = JsoupObjects.child(ele, ".topic_content").html()
 
-            Postscript(content, time)
+            Postscript(parseHtml2Blocks(content), time)
         }
 
-        builder.setPostscripts(subtles)
+        builder.postscripts = subtles
     }
 
     @JvmStatic

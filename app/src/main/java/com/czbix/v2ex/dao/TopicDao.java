@@ -71,7 +71,7 @@ public class TopicDao extends DaoBase {
     }
 
     public static void updateLastRead(final Topic topic) {
-        Preconditions.checkArgument(topic.hasInfo(), "topic should has info");
+        Preconditions.checkArgument(topic.getHasInfo(), "topic should has info");
 
         execute(new SqlOperation<Void>() {
             @Override
@@ -104,7 +104,10 @@ public class TopicDao extends DaoBase {
                         final String title = cursor.getString(1);
                         final long time = cursor.getLong(2);
 
-                        final Topic topic = new Topic.Builder().setId(id).setTitle(title).createTopic();
+                        final Topic.Builder builder = new Topic.Builder();
+                        builder.setId(id);
+                        builder.setTitle(title);
+                        final Topic topic = builder.build();
                         result.add(new ViewHistory(topic, time));
                     }
 

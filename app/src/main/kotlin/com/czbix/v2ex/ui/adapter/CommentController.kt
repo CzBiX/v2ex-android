@@ -3,12 +3,9 @@ package com.czbix.v2ex.ui.adapter
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.drawable.Drawable
-import android.text.Spanned
-import android.text.style.ImageSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.text.getSpans
 import androidx.core.view.updatePaddingRelative
 import com.airbnb.epoxy.*
 import com.airbnb.epoxy.preload.Preloadable
@@ -16,24 +13,19 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.PrefStore
-import com.czbix.v2ex.databinding.ViewPostscriptBinding
-import com.czbix.v2ex.model.Comment
-import com.czbix.v2ex.model.Member
-import com.czbix.v2ex.model.Postscript
-import com.czbix.v2ex.model.Topic
+import com.czbix.v2ex.model.*
 import com.czbix.v2ex.network.GlideConfig
+import com.czbix.v2ex.postscript
 import com.czbix.v2ex.ui.ExHolder
 import com.czbix.v2ex.ui.fragment.NodeListFragment.OnNodeActionListener
 import com.czbix.v2ex.ui.widget.*
 import com.czbix.v2ex.ui.widget.AvatarView.OnAvatarActionListener
 import com.czbix.v2ex.ui.widget.CommentView.OnCommentActionListener
 import com.czbix.v2ex.ui.widget.HtmlMovementMethod.OnHtmlActionListener
-import com.czbix.v2ex.util.MiscUtils
 import com.czbix.v2ex.util.ViewUtils
 import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.resume
@@ -46,13 +38,11 @@ class CommentController(
         private val mAvatarListener: OnAvatarActionListener
 ) : EpoxyController() {
     private lateinit var topic: Topic
-    private var topicBlocks: List<ContentBlock>? = null
     private var author: Member? = null
     private var commentList: List<Comment>? = null
 
-    fun setTopic(topic: Topic, topicBlocks: List<ContentBlock>?) {
+    fun setTopic(topic: Topic) {
         this.topic = topic
-        this.topicBlocks = topicBlocks
 
         requestDelayedModelBuild(100)
     }
@@ -64,7 +54,7 @@ class CommentController(
     }
 
     override fun buildModels() {
-        if (!topic.hasInfo()) {
+        if (!topic.hasInfo) {
             return
         }
 
@@ -76,41 +66,27 @@ class CommentController(
             hasContent(!topic.content.isNullOrEmpty())
         }
 
-        topicBlocks?.run {
+        topic.content?.run {
             val hasPostscript = topic.postscripts?.run { size > 0 } ?: false
 
-            forEachIndexed { index, block ->
-                when (block) {
-                    is TextBlock -> {
-                        commentControllerTextBlock {
-                            id(block.id)
-                            text(block.text)
-                            hasPostscript(hasPostscript)
-                            isTheLast(index == lastIndex)
-                            contentListener(mContentListener)
-                        }
-                    }
-                    is ImageBlock -> {
-                        commentControllerImageBlock {
-                            id(block.id)
-                            source(block.source)
-                            hasPostscript(hasPostscript)
-                            isTheLast(index == lastIndex)
-                            contentListener(mContentListener)
-                        }
-                    }
-                }
+            addBlocks(this) {index ->
+                !hasPostscript && index == lastIndex
             }
         }
 
         topic.postscripts?.run {
             forEachIndexed { index, postscript ->
-                commentControllerPostscript {
+                val lastPostscript = index == lastIndex
+                postscript {
                     id(index)
-                    index(index)
-                    postscript(postscript)
-                    contentListener(mContentListener)
-                    isLastPostscript(index == lastIndex)
+                    index(index + 1)
+                    time(postscript.time)
+                }
+
+                postscript.content.apply {
+                    addBlocks(this) {
+                        lastPostscript && it == lastIndex
+                    }
                 }
             }
         }
@@ -126,32 +102,48 @@ class CommentController(
         }
     }
 
-    abstract class ContentBlock(val id: Int)
-    class TextBlock(id: Int, val text: CharSequence) : ContentBlock(id)
-    class ImageBlock(id: Int, val source: String) : ContentBlock(id)
+    private inline fun addBlocks(blocks: List<ContentBlock>, showDivider: (index: Int) -> Boolean) {
+        blocks.forEachIndexed { index, block ->
+            when (block) {
+                is TextBlock -> {
+                    commentControllerTextBlock {
+                        id(block.id)
+                        text(block.text)
+                        showDivider(showDivider(index))
+                        contentListener(mContentListener)
+                    }
+                }
+                is ImageBlock -> {
+                    commentControllerImageBlock {
+                        id(block.id)
+                        source(block.source)
+                        showDivider(showDivider(index))
+                        contentListener(mContentListener)
+                    }
+                }
+                else -> error("Unknown block type.")
+            }
+        }
+    }
 
     abstract class ContentBlockModel<T : EpoxyHolder> : EpoxyModelWithHolder<T>() {
         @EpoxyAttribute
-        open var isTheLast = false
+        open var showDivider = false
 
         @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash)
         open lateinit var contentListener: OnHtmlActionListener
     }
 
-    abstract class TopicBlockModel<T : EpoxyHolder> : ContentBlockModel<T>() {
-        @EpoxyAttribute
-        open var hasPostscript = false
-    }
-
-    @EpoxyModelClass(layout = R.layout.view_topic_text)
-    abstract class TextBlockModel : TopicBlockModel<TextBlockModel.Holder>() {
+    @EpoxyModelClass(layout = R.layout.view_content_text)
+    abstract class TextBlockModel : ContentBlockModel<TextBlockModel.Holder>() {
         @EpoxyAttribute
         lateinit var text: CharSequence
 
         override fun bind(holder: Holder) {
             val view = holder.view
+            view.movementMethod = HtmlMovementMethod(contentListener)
+            DividerItemDecoration.setHasDivider(view, showDivider)
 
-            DividerItemDecoration.setHasDecoration(view, !hasPostscript && isTheLast)
             view.setText(text, TextView.BufferType.SPANNABLE)
         }
 
@@ -159,10 +151,8 @@ class CommentController(
             holder.view.text = null
         }
 
-        inner class Holder : ExHolder<TextView>() {
+        class Holder : ExHolder<TextView>() {
             override fun init() {
-                view.movementMethod = HtmlMovementMethod(contentListener)
-
                 if (PrefStore.getInstance().isContentSelectable) {
                     view.setTextIsSelectable(true)
                 }
@@ -170,14 +160,14 @@ class CommentController(
         }
     }
 
-    @EpoxyModelClass(layout = R.layout.view_topic_image)
-    abstract class ImageBlockModel : TopicBlockModel<ImageBlockModel.Holder>(), View.OnClickListener {
+    @EpoxyModelClass(layout = R.layout.view_content_image)
+    abstract class ImageBlockModel : ContentBlockModel<ImageBlockModel.Holder>(), View.OnClickListener {
         @EpoxyAttribute
         lateinit var source: String
 
         override fun bind(holder: Holder) {
             val view = holder.view
-            DividerItemDecoration.setHasDecoration(view, !hasPostscript && isTheLast)
+            DividerItemDecoration.setHasDivider(view, showDivider)
 
             view.setOnClickListener(this)
 
@@ -292,64 +282,21 @@ class CommentController(
         var hasContent = false
 
         override fun bind(holder: Holder) {
-            holder.view.fillData(holder.glide, topic)
-            DividerItemDecoration.setHasDecoration(holder.view, !hasContent)
+            val view = holder.view
+            view.setNodeListener(nodeListener)
+            view.setAvatarListener(avatarListener)
+
+            view.fillData(holder.glide, topic)
+            DividerItemDecoration.setHasDivider(view, !hasContent)
         }
 
         override fun unbind(holder: Holder) {
             holder.view.clear(holder.glide)
         }
 
-        inner class Holder : ExHolder<TopicView>() {
+        class Holder : ExHolder<TopicView>() {
             override fun init() {
-                view.updatePaddingRelative(top = view.paddingTop * 2)
-
-                view.setNodeListener(nodeListener)
-                view.setAvatarListener(avatarListener)
-            }
-        }
-    }
-
-    @EpoxyModelClass(layout = R.layout.view_postscript)
-    abstract class PostscriptModel : EpoxyModelWithHolder<PostscriptModel.Holder>() {
-        @EpoxyAttribute
-        lateinit var postscript: Postscript
-
-        @EpoxyAttribute(EpoxyAttribute.Option.DoNotHash)
-        lateinit var contentListener: OnHtmlActionListener
-
-        @EpoxyAttribute
-        var index = 0
-
-        @EpoxyAttribute
-        var isLastPostscript = false
-
-        override fun bind(holder: Holder) {
-            val binding = holder.binding
-            val context = holder.view.context
-            binding.setTitle(context.getString(R.string.title_postscript, index + 1))
-            binding.setTime(postscript.mTime)
-
-            ViewUtils.setHtmlIntoTextView(binding.content, postscript.mContent, 0, true)
-            holder.contentView.movementMethod = HtmlMovementMethod(contentListener)
-
-            DividerItemDecoration.setHasDecoration(holder.view, isLastPostscript)
-        }
-
-        override fun unbind(holder: Holder) {
-            holder.contentView.text = null
-        }
-
-        inner class Holder : ExHolder<View>() {
-            lateinit var binding: ViewPostscriptBinding
-            val contentView by lazy {
-                binding.content
-            }
-
-            override fun init() {
-                binding = ViewPostscriptBinding.bind(view)
-
-                ViewUtils.setSpannableFactory(binding.content)
+                view.updatePaddingRelative(top = view.paddingTop * 2, bottom = 0)
             }
         }
     }
@@ -369,7 +316,10 @@ class CommentController(
         var position = 0
 
         override fun bind(holder: Holder) {
-            holder.view.fillData(holder.glide, comment, isAuthor, position)
+            val view = holder.view
+
+            view.setListener(listener)
+            view.fillData(holder.glide, comment, isAuthor, position)
         }
 
         override fun unbind(holder: Holder) {
@@ -380,11 +330,7 @@ class CommentController(
             return avatarView.getImgRequest(glide, comment.member.avatar!!)
         }
 
-        inner class Holder : ExHolder<CommentView>(), Preloadable {
-            override fun init() {
-                view.setListener(listener)
-            }
-
+        class Holder : ExHolder<CommentView>(), Preloadable {
             override val viewsToPreload by lazy {
                 listOf(view.mAvatar)
             }
@@ -405,49 +351,6 @@ class CommentController(
                         epoxyModel.getImgRequest(requestManager, viewData.metadata.avatarView)
                     }
             )
-        }
-
-        fun parseHtml2Blocks(html: String): List<ContentBlock> {
-            val builder = ViewUtils.parseHtml(html, null, true)
-            val simpleResult by lazy {
-                val block = TextBlock(0, builder)
-
-                listOf(block)
-            }
-
-            if (builder !is Spanned) {
-                return simpleResult
-            }
-
-            val imageSpans = builder.getSpans<ImageSpan>()
-            if (imageSpans.isEmpty()) {
-                return simpleResult
-            }
-
-            var lastEndPos = 0
-            var index = 0
-            val blocks = mutableListOf<ContentBlock>()
-            imageSpans.forEach { span ->
-                val start = builder.getSpanStart(span)
-                val text = builder.subSequence(lastEndPos, start).trim()
-                if (text.isNotEmpty()) {
-                    blocks.add(TextBlock(index++, text))
-                }
-
-                val url = MiscUtils.formatUrl(span.source!!)
-                blocks.add(ImageBlock(index++, url))
-
-                lastEndPos = builder.getSpanEnd(span)
-            }
-
-            val length = builder.length
-            if (lastEndPos != length) {
-                val text = builder.subSequence(lastEndPos, length).trim()
-
-                blocks.add(TextBlock(index, text))
-            }
-
-            return blocks
         }
     }
 }

@@ -2,8 +2,6 @@ package com.czbix.v2ex.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.appbar.AppBarLayout;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -13,6 +11,7 @@ import com.czbix.v2ex.R;
 import com.czbix.v2ex.model.Topic;
 import com.czbix.v2ex.ui.fragment.TopicFragment;
 import com.czbix.v2ex.util.ViewUtils;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.common.base.Strings;
 
 public class TopicActivity extends BaseActivity {
@@ -55,7 +54,10 @@ public class TopicActivity extends BaseActivity {
         }
         if (intent.hasExtra(KEY_TOPIC_ID)) {
             final int id = intent.getIntExtra(KEY_TOPIC_ID, 0);
-            return new Topic.Builder().setId(id).createTopic();
+
+            final Topic.Builder builder = new Topic.Builder();
+            builder.setId(id);
+            return builder.build();
         }
 
         if(intent.getAction() != null && intent.getAction().equals(Intent.ACTION_VIEW)) {
@@ -70,7 +72,10 @@ public class TopicActivity extends BaseActivity {
 
                     return null;
                 }
-                return new Topic.Builder().setId(id).createTopic();
+
+                final Topic.Builder builder = new Topic.Builder();
+                builder.setId(id);
+                return builder.build();
 
             }
         }

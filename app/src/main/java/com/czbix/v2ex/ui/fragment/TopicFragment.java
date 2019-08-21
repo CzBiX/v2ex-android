@@ -168,7 +168,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mCommentsView = mLayout.findViewById(R.id.comments);
         CommentController.Companion.addGlidePreloader(mCommentsView, Glide.with(this));
 
-        if (!mTopic.hasInfo()) {
+        if (!mTopic.getHasInfo()) {
             mCommentsView.setVisibility(View.INVISIBLE);
         }
 
@@ -180,7 +180,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mCommentsView.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.VERTICAL_LIST));
 
         mCommentController = new CommentController(this, this, this, this);
-        mCommentController.setTopic(mTopic, null);
+        mCommentController.setTopic(mTopic);
         mCommentController.setData(mTopic == null ? null : mTopic.getMember(), mComments);
         mCommentsView.setController(mCommentController);
         mCommentsView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
@@ -321,15 +321,6 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 MiscUtils.setClipboard(getActivity(), getString(R.string.desc_topic_link),
                         String.format("%s\n%s", Html.fromHtml(mTopic.getTitle()).toString(), mTopic.getUrl()));
                 return true;
-            case R.id.action_copy:
-                final String title = Html.fromHtml(mTopic.getTitle()).toString();
-                MiscUtils.setClipboard(getActivity(),
-                        ClipData.newHtmlText(title,
-                                String.format("%s\n%s", title,
-                                        Html.fromHtml(mTopic.getContent()).toString()),
-                                String.format("<p>%s</p>%s", mTopic.getTitle(),
-                                        mTopic.getContent())));
-                return true;
             case R.id.action_refresh:
                 setIsLoading(true);
                 onRefresh();
@@ -388,7 +379,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
         final TopicWithComments data = result.mResult;
         if (!mIsLoaded) {
-            if (!mTopic.hasInfo()) {
+            if (!mTopic.getHasInfo()) {
                 mCommentsView.setVisibility(View.VISIBLE);
             }
             if (data.getLastReadPos() > 0) {
@@ -400,7 +391,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mIsLoaded = true;
         mLastIsFailed = false;
 
-        mCommentController.setTopic(data.getTopic(), data.getTopicBlocks());
+        mCommentController.setTopic(data.getTopic());
         mTopic = data.getTopic();
 
         mCurPage = data.getCurPage();

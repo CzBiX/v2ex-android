@@ -297,7 +297,7 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
 
         startActivity(intent)
 
-        topic.setHasRead()
+        topic.hasRead = true
     }
 
     override fun onDestroy() {

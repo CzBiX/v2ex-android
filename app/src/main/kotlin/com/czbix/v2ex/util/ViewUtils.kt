@@ -2,31 +2,22 @@ package com.czbix.v2ex.util
 
 import android.annotation.TargetApi
 import android.content.Context
-import android.content.res.ColorStateList
 import android.content.res.Resources
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.Spanned
 import android.text.TextUtils
-import android.text.style.ImageSpan
-import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
-
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
-import androidx.core.text.getSpans
-
 import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.R
 import com.czbix.v2ex.parser.AsyncImageGetter

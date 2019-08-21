@@ -22,6 +22,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+
+import androidx.databinding.BindingAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
@@ -72,7 +74,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         final int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
-            if (!hasDecoration(child)) {
+            if (!hasDivider(child)) {
                 continue;
             }
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
@@ -91,7 +93,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         final int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
             final View child = parent.getChildAt(i);
-            if (!hasDecoration(child)) {
+            if (!hasDivider(child)) {
                 continue;
             }
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
@@ -105,7 +107,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        if (!hasDecoration(view)) {
+        if (!hasDivider(view)) {
             outRect.set(0, 0, 0, 0);
             return;
         }
@@ -116,12 +118,13 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    public static void setHasDecoration(View view, boolean value) {
+    @BindingAdapter("hasDivider")
+    public static void setHasDivider(View view, boolean value) {
         view.setTag(R.id.id_decoration_tag, value);
     }
 
-    public boolean hasDecoration(View view) {
+    private boolean hasDivider(View view) {
         final Object tag = view.getTag(R.id.id_decoration_tag);
-        return tag == null ? true : ((Boolean) tag);
+        return tag == null ? true : (Boolean) tag;
     }
 }

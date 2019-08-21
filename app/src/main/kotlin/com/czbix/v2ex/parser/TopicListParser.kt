@@ -18,12 +18,10 @@ object TopicListParser : Parser() {
     fun parseDoc(doc: Document, page: Page): TopicListLoader.TopicList {
         val contentBox = JsoupObjects(doc).bfs("body").child("#Wrapper").child(".content").child("#Main").child(".box").first()
 
-        if (page is Node) {
-            return parseDocForNode(contentBox, page)
-        } else if (page is Tab || Page.PAGE_FAV_TOPIC == page) {
-            return parseDocForTab(contentBox)
-        } else {
-            throw IllegalArgumentException("unknown page type: " + page)
+        return when (page) {
+            is Node -> parseDocForNode(contentBox, page)
+            is Tab, Page.PAGE_FAV_TOPIC -> parseDocForTab(contentBox)
+            else -> throw IllegalArgumentException("Unknown page type: $page")
         }
     }
 
@@ -70,7 +68,7 @@ object TopicListParser : Parser() {
 
         parseReplyCount(topicBuilder, list[3])
 
-        return topicBuilder.createTopic()
+        return topicBuilder.build()
     }
 
     private fun parseItemForNode(item: Element, node: Node): Topic {
@@ -85,7 +83,7 @@ object TopicListParser : Parser() {
 
         parseReplyCount(topicBuilder, list[3])
 
-        return topicBuilder.createTopic()
+        return topicBuilder.build()
     }
 
     private fun parseReplyCount(topicBuilder: Topic.Builder, ele: Element) {
@@ -98,7 +96,7 @@ object TopicListParser : Parser() {
             // do not have reply yet
             count = 0
         }
-        topicBuilder.setReplyCount(count)
+        topicBuilder.replyCount = count
     }
 
     private fun parseInfo(topicBuilder: Topic.Builder, ele: Element, node: Node?) {
@@ -109,18 +107,18 @@ object TopicListParser : Parser() {
         val hasNode: Boolean
         if (node == null) {
             hasNode = false
-            node = Parser.parseNode(JsoupObjects.child(topicInfoEle, ".node"))
+            node = parseNode(JsoupObjects.child(topicInfoEle, ".node"))
         } else {
             hasNode = true
         }
-        topicBuilder.setNode(node)
+        topicBuilder.node = node
 
         val index = if (hasNode) 0 else 1
         if (topicInfoEle.textNodes().size > index) {
             parseReplyTime(topicBuilder, topicInfoEle.textNodes()[index])
         } else {
             // reply time may not exists
-            topicBuilder.setReplyTime("")
+            topicBuilder.replyTime = ""
         }
     }
 
@@ -128,18 +126,18 @@ object TopicListParser : Parser() {
         val text = textNode.text()
         val matcher = PATTERN_REPLY_TIME.matcher(text)
         if (!matcher.find()) {
-            throw FatalException("match reply time for topic failed: " + text)
+            throw FatalException("Match reply time for topic failed: $text")
         }
         val time = matcher.group(1)
-        topicBuilder.setReplyTime(time)
+        topicBuilder.replyTime = time
     }
 
     private fun parseTitle(topicBuilder: Topic.Builder, ele: Element) {
         val a = JsoupObjects(ele).child(".item_title").child("a").first()
         val url = a.attr("href")
 
-        topicBuilder.setId(Topic.getIdFromUrl(url))
-        topicBuilder.setTitle(a.html())
+        topicBuilder.id = Topic.getIdFromUrl(url)
+        topicBuilder.title = a.html()
     }
 
     internal fun parseMember(builder: Topic.Builder, ele: Element) {
@@ -159,6 +157,6 @@ object TopicListParser : Parser() {
         avatarBuilder.setUrl(e.attr("src"))
         memberBuilder.setAvatar(avatarBuilder.createAvatar())
 
-        builder.setMember(memberBuilder.createMember())
+        builder.member = memberBuilder.createMember()
     }
 }

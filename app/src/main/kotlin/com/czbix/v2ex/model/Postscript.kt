@@ -1,3 +1,10 @@
 package com.czbix.v2ex.model
 
-class Postscript(val mContent: String, val mTime: String)
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
+data class Postscript(
+        val content: List<ContentBlock>,
+        val time: String
+) : Parcelable

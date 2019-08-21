@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="action_link">链接</string>
     <string name="action_refresh">刷新</string>
     <string name="action_reply">回复</string>
     <string name="action_search">搜索</string>
@@ -121,4 +120,5 @@
     <string name="toast_node_not_found">节点未找到！</string>
     <string name="toast_access_restricted">访问受限！请在网页版验证手机号。</string>
     <string name="desc_author">楼主</string>
+    <string name="action_copy_link">复制链接</string>
 </resources>

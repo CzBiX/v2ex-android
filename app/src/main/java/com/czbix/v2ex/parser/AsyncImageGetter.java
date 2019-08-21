@@ -134,6 +134,8 @@ public class AsyncImageGetter implements Html.ImageGetter {
 
         void setFailed() {
             mIsFailed = true;
+
+            callback();
         }
 
         @Override

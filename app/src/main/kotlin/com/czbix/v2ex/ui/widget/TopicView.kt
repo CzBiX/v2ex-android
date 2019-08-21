@@ -5,15 +5,11 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.czbix.v2ex.R
-import com.czbix.v2ex.common.PrefStore
 import com.czbix.v2ex.model.Topic
-import com.czbix.v2ex.network.GlideApp
 import com.czbix.v2ex.ui.fragment.NodeListFragment
 import com.czbix.v2ex.util.ViewUtils
-import com.google.common.base.Strings
 
 class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
         RelativeLayout(context, attrs, defStyleAttr), View.OnClickListener {
@@ -27,7 +23,7 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     val border: View
 
     private var mListener: OnTopicActionListener? = null
-    private var mTopic: Topic? = null
+    private lateinit var mTopic: Topic
 
     init {
         View.inflate(context, R.layout.layout_topic, this)
@@ -50,30 +46,25 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     fun setNodeListener(listener: NodeListFragment.OnNodeActionListener) {
-        mNode.setOnClickListener { v -> listener.onNodeOpen(mTopic!!.node) }
+        mNode.setOnClickListener { listener.onNodeOpen(mTopic.node) }
     }
 
     fun setAvatarListener(listener: AvatarView.OnAvatarActionListener) {
-        val tmp = { v: View -> listener.onMemberClick(mTopic!!.member) }
+        val tmp = { _: View -> listener.onMemberClick(mTopic.member!!) }
 
         mAvatar.setOnClickListener(tmp)
         mUsername.setOnClickListener(tmp)
     }
 
     fun fillData(glide: RequestManager, topic: Topic) {
-        if (!topic.hasInfo()) {
-            visibility = View.INVISIBLE
-            return
-        }
-        visibility = View.VISIBLE
         mTopic = topic
 
         updateForRead()
 
-        ViewUtils.setHtmlIntoTextView(mTitle, topic.title,
+        ViewUtils.setHtmlIntoTextView(mTitle, topic.title!!,
                 ViewUtils.getDimensionPixelSize(R.dimen.abc_text_size_body_1_material), false)
-        mUsername.text = topic.member.username
-        mNode.text = String.format("› %s", topic.node.title)
+        mUsername.text = topic.member!!.username
+        mNode.text = String.format("› %s", topic.node!!.title)
         mTime.text = topic.replyTime
         val replyCount = topic.replyCount
         if (replyCount > 0) {
@@ -92,7 +83,7 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     fun updateForRead() {
-        if (mTopic!!.hasRead()) {
+        if (mTopic.hasRead) {
             mReplyCount.alpha = 0.3f
         } else {
             mReplyCount.alpha = 1f
@@ -100,7 +91,7 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
     }
 
     override fun onClick(v: View) {
-        mListener!!.onTopicOpen(v, mTopic!!)
+        mListener!!.onTopicOpen(v, mTopic)
         updateForRead()
     }
 

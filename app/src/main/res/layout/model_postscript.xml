@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
-            name="title"
-            type="String" />
+            name="index"
+            type="Integer" />
         <variable
             name="time"
             type="String" />
@@ -14,8 +15,8 @@
     <RelativeLayout
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:paddingBottom="4dp"
         android:background="@android:color/white"
+        app:hasDivider="@{false}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -27,14 +28,14 @@
 
         <TextView
             android:layout_below="@id/border"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             style="@style/AppTheme.Topic.Secondary"
             android:textColor="@android:color/black"
             tools:text="Postscript"
-            android:text="@{title}"
+            android:text="@{@string/title_postscript(index)}"
             android:id="@+id/title" />
 
         <TextView
@@ -46,16 +47,6 @@
             tools:text="1 day ago"
             android:text="@{time}"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="4dp"
-            android:layout_below="@+id/title"
-            tools:text="Content"
-            style="@style/AppTheme.Topic.Content"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </RelativeLayout>
 </layout>

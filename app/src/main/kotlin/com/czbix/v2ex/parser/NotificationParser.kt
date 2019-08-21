@@ -60,13 +60,15 @@ object NotificationParser : Parser() {
     }
 
     private fun parseTopic(ele: Element): Topic {
-        ele.child(1).let {
-            val url = it.attr("href")
-            val id = Topic.getIdFromUrl(url)
-            val title = it.text()
+        val child = ele.child(1)
+        val url = child.attr("href")
+        val id = Topic.getIdFromUrl(url)
+        val title = child.text()
 
-            return Topic.Builder().setId(id).setTitle(title).createTopic()
-        }
+        return Topic.Builder().also {builder ->
+            builder.id = id
+            builder.title = title
+        }.build()
     }
 
     @NotificationType

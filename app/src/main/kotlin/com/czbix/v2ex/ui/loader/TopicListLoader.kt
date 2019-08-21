@@ -14,7 +14,7 @@ class TopicListLoader(context: Context, private val mPage: Page) : AsyncTaskLoad
         for (topic in topics) {
             val lastRead = TopicDao.getLastReadReply(topic.id)
             if (lastRead >= topic.replyCount) {
-                topic.setHasRead()
+                topic.hasRead = true
             }
         }
         return topics
