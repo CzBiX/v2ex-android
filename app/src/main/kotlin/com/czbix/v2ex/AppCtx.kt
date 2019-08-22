@@ -28,7 +28,7 @@ import com.google.common.eventbus.Subscribe
 import io.fabric.sdk.android.Fabric
 import io.reactivex.schedulers.Schedulers
 
-class AppCtx : Application() {
+open class AppCtx : Application() {
     private lateinit var mEventBus: EventBus
     @Volatile var isInited: Boolean = false
         private set
@@ -46,7 +46,7 @@ class AppCtx : Application() {
         Fabric.with(this, builder.build())
     }
 
-    private fun init() {
+    protected open fun init() {
         // event bus is the first
         mEventBus = AsyncEventBus(HandlerExecutor())
         mEventBus.register(this)
