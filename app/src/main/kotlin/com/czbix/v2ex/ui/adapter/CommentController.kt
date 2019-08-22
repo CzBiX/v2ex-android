@@ -283,6 +283,11 @@ class CommentController(
 
         override fun bind(holder: Holder) {
             val view = holder.view
+
+            if (hasContent) {
+                view.updatePaddingRelative(bottom = 0)
+            }
+
             view.setNodeListener(nodeListener)
             view.setAvatarListener(avatarListener)
 
@@ -296,7 +301,10 @@ class CommentController(
 
         class Holder : ExHolder<TopicView>() {
             override fun init() {
-                view.updatePaddingRelative(top = view.paddingTop * 2, bottom = 0)
+                view.updatePaddingRelative(
+                        top = view.paddingTop * 2,
+                        bottom = view.paddingBottom * 2
+                )
             }
         }
     }
