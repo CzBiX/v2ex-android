@@ -22,6 +22,7 @@ import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.R
 import com.czbix.v2ex.parser.AsyncImageGetter
 import com.czbix.v2ex.ui.util.Html
+import kotlin.math.roundToInt
 
 object ViewUtils {
     @JvmField
@@ -45,6 +46,11 @@ object ViewUtils {
     @JvmStatic
     fun dp2Pixel(dp: Float): Float {
         return density * dp
+    }
+
+    @JvmStatic
+    fun dp2Pixel(dp: Int): Int {
+        return (density * dp).roundToInt()
     }
 
     fun getDimensionPixelSize(@DimenRes id: Int): Int {

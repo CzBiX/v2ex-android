@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.updatePaddingRelative
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.airbnb.epoxy.*
 import com.airbnb.epoxy.preload.Preloadable
 import com.bumptech.glide.RequestBuilder
@@ -14,6 +15,7 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.target.Target
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.PrefStore
@@ -171,22 +173,16 @@ class CommentController(
 
             view.setOnClickListener(this)
 
-            view.apply {
-                scaleType = ImageView.ScaleType.CENTER
-                adjustViewBounds = false
-            }
-
             val request = getImgRequest(holder.glide)
                     .placeholder(holder.loadingDrawable)
                     .error(holder.errorDrawable)
-                    .listener(getGlideListener(view))
 
             val shouldLoadImage = PrefStore.getInstance().shouldLoadImage()
             if (!shouldLoadImage) {
                 request.load(holder.disabledDrawable)
             } else {
-                request
-            }.into(view)
+                request.listener(getGlideListener(view))
+            }.into(holder.target)
         }
 
         fun getImgRequest(glide: RequestManager): RequestBuilder<Drawable> {
@@ -204,10 +200,25 @@ class CommentController(
             contentListener.onImageClick(source)
         }
 
+        class ImageTarget(view: ImageView) : DrawableImageViewTarget(view) {
+            private fun resetState() {
+                view.apply {
+                    scaleType = ImageView.ScaleType.CENTER
+                    adjustViewBounds = false
+                }
+            }
+
+            override fun onLoadStarted(placeholder: Drawable?) {
+                resetState()
+                super.onLoadStarted(placeholder)
+            }
+        }
+
         class Holder : ExHolder<ImageView>(), Preloadable {
             val loadingDrawable by lazy {
-                view.context.getDrawable(R.drawable.img_topic_image_loading)!!.apply {
-                    setTint(Color.BLACK)
+                CircularProgressDrawable(view.context).apply {
+                    centerRadius = ViewUtils.dp2Pixel(10f)
+                    strokeWidth = ViewUtils.dp2Pixel(2f)
                 }
             }
             val errorDrawable by lazy {
@@ -221,6 +232,7 @@ class CommentController(
                 }
             }
             override val viewsToPreload by lazy { listOf(view) }
+            val target by lazy { ImageTarget(view) }
         }
 
         companion object {
