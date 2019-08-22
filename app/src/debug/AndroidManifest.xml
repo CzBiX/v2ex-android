@@ -5,9 +5,8 @@
 
     <application
         android:name=".DebugAppCtx"
-        android:supportsRtl="false"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="android:supportsRtl, android:name">
+        tools:replace="android:name">
         <activity
             android:name=".ui.DebugActivity"
             android:exported="true"
