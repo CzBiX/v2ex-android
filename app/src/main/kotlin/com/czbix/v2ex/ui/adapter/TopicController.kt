@@ -37,6 +37,7 @@ class TopicController(private val mListener: TopicView.OnTopicActionListener) : 
         lateinit var listener: TopicView.OnTopicActionListener
 
         override fun bind(holder: Holder) {
+            holder.view.setListener(listener)
             holder.view.fillData(holder.glide, topic)
         }
 
@@ -51,10 +52,6 @@ class TopicController(private val mListener: TopicView.OnTopicActionListener) : 
         inner class Holder : ExHolder<TopicView>(), Preloadable {
             override val viewsToPreload by lazy {
                 listOf(view.mAvatar)
-            }
-
-            override fun init() {
-                view.setListener(listener)
             }
         }
     }

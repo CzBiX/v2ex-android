@@ -77,11 +77,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
 import com.google.common.net.HttpHeaders;
 
+import java.util.Stack;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
-import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -116,7 +115,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     private boolean mLastIsFailed;
     private boolean mFavored;
     private MenuItem mFavIcon;
-    private int mLastFocusPos;
+    private Stack<CommentPos> lastPosStack;
     private LinearLayoutManager mCommentsLayoutManager;
     private AppBarLayout mAppBarLayout;
 
@@ -149,7 +148,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         mMaxPage = 1;
         mCurPage = 1;
         mIsLoaded = false;
-        mLastFocusPos = NO_POSITION;
+        lastPosStack = new Stack<>();
 
         setHasOptionsMenu(true);
         setRetainInstance(true);
@@ -198,20 +197,14 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
 
     private void initJumpBackButton(View rootView) {
         mJumpBack = rootView.findViewById(R.id.btn_jump_back);
-        mJumpBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Preconditions.checkState(mLastFocusPos != NO_POSITION, "why jump button show without dest");
+        mJumpBack.setOnClickListener(v -> {
+            Preconditions.checkState(!lastPosStack.isEmpty(), "Why jump button showed without dest");
 
-                TopicFragment.this.scrollToPos(NO_POSITION, mLastFocusPos);
-            }
+            TopicFragment.this.scrollToPos(null, lastPosStack.pop());
         });
-        mJumpBack.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(TopicFragment.this.getActivity(), R.string.toast_jump_to_last_read_pos, Toast.LENGTH_SHORT).show();
-                return true;
-            }
+        mJumpBack.setOnLongClickListener(v -> {
+            lastPosStack.clear();
+            return true;
         });
     }
 
@@ -382,9 +375,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             if (!mTopic.getHasInfo()) {
                 mCommentsView.setVisibility(View.VISIBLE);
             }
-            if (data.getLastReadPos() > 0) {
-                // add one for topic in header
-                mLastFocusPos = data.getLastReadPos() + 1;
+            if (data.getLastReadPos() > 0 && lastPosStack.isEmpty()) {
+                lastPosStack.push(new CommentPos(false, data.getLastReadPos()));
                 updateJumpBackButton();
             }
         }
@@ -699,16 +691,18 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void findComment(String member, int pos) {
+        final CommentPos oldPos = new CommentPos(false, pos);
+
         for (int i = pos - 1; i >= 0; i--) {
             final Comment comment = mComments.get(i);
             if (comment.getMember().getUsername().equals(member)) {
-                scrollToPos(pos, i + 1);
+                scrollToPos(oldPos, new CommentPos(false, i));
                 return;
             }
         }
 
         if (mTopic.getMember().getUsername().equals(member)) {
-            scrollToPos(pos, 0);
+            scrollToPos(oldPos, new CommentPos(true, 0));
             return;
         }
 
@@ -716,20 +710,19 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
                 member), Toast.LENGTH_SHORT).show();
     }
 
-    private void scrollToPos(int curPos, final int destPos) {
-        mLastFocusPos = curPos;
+    private void scrollToPos(CommentPos curPos, final CommentPos destPos) {
+        if (curPos != null) {
+            lastPosStack.push(curPos);
+        }
         updateJumpBackButton();
 
-        mCommentsView.scrollToPosition(destPos);
-        mCommentsView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                View view = mCommentsLayoutManager.findViewByPosition(destPos);
-                if (view == null) {
-                    return;
-                }
-                TopicFragment.this.highlightRow(view);
+        mCommentsView.scrollToPosition(destPos.getPos());
+        mCommentsView.postDelayed(() -> {
+            View view = mCommentsLayoutManager.findViewByPosition(destPos.getPos());
+            if (view == null) {
+                return;
             }
+            TopicFragment.this.highlightRow(view);
         }, 200);
     }
 
@@ -809,6 +802,24 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void updateJumpBackButton() {
-        mJumpBack.setVisibility(mLastFocusPos == NO_POSITION ? View.GONE : View.VISIBLE);
+        mJumpBack.setVisibility(lastPosStack.isEmpty() ? View.GONE : View.VISIBLE);
+    }
+
+    class CommentPos {
+        public final boolean isAbsPos;
+        public final int pos;
+
+        public CommentPos(boolean isAbsPos, int pos) {
+            this.isAbsPos = isAbsPos;
+            this.pos = pos;
+        }
+
+        public int getPos() {
+            if (isAbsPos) {
+                return pos;
+            }
+
+            return mCommentController.getCommentBasePos() + pos;
+        }
     }
 }

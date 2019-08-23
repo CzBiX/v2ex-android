@@ -43,6 +43,8 @@ class CommentController(
     private lateinit var topic: Topic
     private var author: Member? = null
     private var commentList: List<Comment>? = null
+    var commentBasePos: Int = 0
+        private set
 
     fun setTopic(topic: Topic) {
         this.topic = topic
@@ -94,6 +96,7 @@ class CommentController(
             }
         }
 
+        commentBasePos = modelCountBuiltSoFar
         commentList?.forEachIndexed { index, comment ->
             commentControllerComment {
                 id(comment.id)
