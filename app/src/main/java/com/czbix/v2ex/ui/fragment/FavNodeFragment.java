@@ -3,26 +3,26 @@ package com.czbix.v2ex.ui.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager.LoaderCallbacks;
-import androidx.loader.content.Loader;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.LayoutManager;
-import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager.LoaderCallbacks;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.LayoutManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.airbnb.epoxy.EpoxyRecyclerView;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.network.RequestHelper;
 import com.czbix.v2ex.ui.MainActivity;
-import com.czbix.v2ex.ui.adapter.NodeAdapter;
+import com.czbix.v2ex.ui.adapter.NodeController;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 import com.czbix.v2ex.util.ExceptionUtils;
@@ -31,7 +31,7 @@ import java.util.List;
 
 public class FavNodeFragment extends Fragment implements LoaderCallbacks<LoaderResult<List<Node>>>,
         SwipeRefreshLayout.OnRefreshListener, NodeListFragment.OnNodeActionListener {
-    private NodeAdapter mAdapter;
+    private NodeController controller;
     private SwipeRefreshLayout mLayout;
 
     public static FavNodeFragment newInstance() {
@@ -46,15 +46,15 @@ public class FavNodeFragment extends Fragment implements LoaderCallbacks<LoaderR
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         mLayout = (SwipeRefreshLayout) inflater.inflate(R.layout.fragment_node_list, container, false);
-        final RecyclerView recyclerView = (RecyclerView) mLayout.findViewById(R.id.recycle_view);
+        final EpoxyRecyclerView recyclerView = mLayout.findViewById(R.id.recycle_view);
 
         mLayout.setOnRefreshListener(this);
 
         final LayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new NodeAdapter(this);
-        recyclerView.setAdapter(mAdapter);
+        controller = new NodeController(this);
+        recyclerView.setController(controller);
 
         mLayout.setRefreshing(true);
         return mLayout;
@@ -82,12 +82,12 @@ public class FavNodeFragment extends Fragment implements LoaderCallbacks<LoaderR
             return;
         }
 
-        mAdapter.setDataSource(result.mResult);
+        controller.setData(result.mResult);
     }
 
     @Override
     public void onLoaderReset(Loader<LoaderResult<List<Node>>> loader) {
-        mAdapter.setDataSource(null);
+        controller.setData(null);
     }
 
     @Override

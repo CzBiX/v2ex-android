@@ -4,7 +4,7 @@
                                                android:layout_width="match_parent"
                                                android:layout_height="match_parent"
                                                tools:context="com.czbix.v2ex.ui.fragment.NodeListFragment">
-    <androidx.recyclerview.widget.RecyclerView
+    <com.airbnb.epoxy.EpoxyRecyclerView
         android:id="@+id/recycle_view"
         android:padding="4dp"
         android:layout_width="match_parent"

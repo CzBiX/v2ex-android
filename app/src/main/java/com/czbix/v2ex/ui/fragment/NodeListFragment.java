@@ -2,42 +2,35 @@ package com.czbix.v2ex.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.loader.app.LoaderManager.LoaderCallbacks;
-import androidx.loader.content.Loader;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.LayoutManager;
-import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager.LoaderCallbacks;
+import androidx.loader.content.Loader;
+import androidx.recyclerview.widget.RecyclerView.LayoutManager;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import com.airbnb.epoxy.EpoxyRecyclerView;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.ui.MainActivity;
-import com.czbix.v2ex.ui.adapter.NodeAdapter;
+import com.czbix.v2ex.ui.adapter.NodeController;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader;
 import com.czbix.v2ex.ui.loader.AsyncTaskLoader.LoaderResult;
 
 import java.util.Collections;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link OnNodeActionListener} interface
- * to handle interaction events.
- * Use the {@link NodeListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class NodeListFragment extends Fragment implements LoaderCallbacks<LoaderResult<List<Node>>>, SearchView.OnQueryTextListener {
     private OnNodeActionListener mListener;
-    private NodeAdapter mAdapter;
+    private NodeController controller;
     private CharSequence mQueryText;
 
     public static NodeListFragment newInstance() {
@@ -75,13 +68,13 @@ public class NodeListFragment extends Fragment implements LoaderCallbacks<Loader
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View layout = inflater.inflate(R.layout.fragment_node_list, container, false);
-        final RecyclerView recyclerView = (RecyclerView) layout.findViewById(R.id.recycle_view);
+        final EpoxyRecyclerView recyclerView = layout.findViewById(R.id.recycle_view);
 
         final LayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new NodeAdapter(mListener);
-        recyclerView.setAdapter(mAdapter);
+        controller = new NodeController(mListener);
+        recyclerView.setController(controller);
 
         return layout;
     }
@@ -125,13 +118,12 @@ public class NodeListFragment extends Fragment implements LoaderCallbacks<Loader
             throw new FatalException(result.mException);
         }
 
-        mAdapter.setDataSource(result.mResult);
-        mAdapter.filterText(mQueryText);
+        controller.setData(result.mResult);
     }
 
     @Override
     public void onLoaderReset(Loader<LoaderResult<List<Node>>> loader) {
-        mAdapter.setDataSource(null);
+        controller.setData(null);
     }
 
     @Override
@@ -141,7 +133,7 @@ public class NodeListFragment extends Fragment implements LoaderCallbacks<Loader
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        mAdapter.filterText(newText);
+        controller.filterText(newText);
         mQueryText = newText;
         return true;
     }

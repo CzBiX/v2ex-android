@@ -65,6 +65,11 @@ object ViewUtils {
         return dp2Px(dp)
     }
 
+    @Dimension
+    fun getDimension(@DimenRes id: Int): Float {
+        return AppCtx.instance.resources.getDimension(id)
+    }
+
     @Px
     fun getDimensionPixelSize(@DimenRes id: Int): Int {
         return AppCtx.instance.resources.getDimensionPixelSize(id)
