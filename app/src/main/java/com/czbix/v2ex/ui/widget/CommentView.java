@@ -74,9 +74,6 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
 
     @SuppressLint({"DefaultLocale", "SetTextI18n"})
     public void fillData(RequestManager glide, Comment comment, boolean isAuthor, int position) {
-        if (comment.equals(mComment)) {
-            return;
-        }
         mComment = comment;
         mPos = position;
 
