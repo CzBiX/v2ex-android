@@ -12,9 +12,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.AttrRes
-import androidx.annotation.ColorRes
-import androidx.annotation.DimenRes
+import androidx.annotation.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -43,16 +41,31 @@ object ViewUtils {
         density = displayMetrics.density
     }
 
+    @Px
     @JvmStatic
-    fun dp2Pixel(dp: Float): Float {
+    fun dp2Px(dp: Float): Float {
         return density * dp
     }
 
+    @Deprecated("Use dp2Px instead.", ReplaceWith("dp2Px"))
     @JvmStatic
-    fun dp2Pixel(dp: Int): Int {
+    fun dp2Pixel(dp: Float): Float {
+        return dp2Px(dp)
+    }
+
+    @Px
+    @JvmStatic
+    fun dp2Px(dp: Int): Int {
         return (density * dp).roundToInt()
     }
 
+    @Deprecated("Use dp2Px instead.", ReplaceWith("dp2Px"))
+    @JvmStatic
+    fun dp2Pixel(dp: Int): Int {
+        return dp2Px(dp)
+    }
+
+    @Px
     fun getDimensionPixelSize(@DimenRes id: Int): Int {
         return AppCtx.instance.resources.getDimensionPixelSize(id)
     }
@@ -134,6 +147,7 @@ object ViewUtils {
         manager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
+    @ColorInt
     @JvmStatic
     fun getAttrColor(theme: Resources.Theme, @AttrRes attrId: Int): Int {
         val typedValue = TypedValue()

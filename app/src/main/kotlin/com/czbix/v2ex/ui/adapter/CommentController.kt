@@ -2,6 +2,7 @@ package com.czbix.v2ex.ui.adapter
 
 import android.graphics.Color
 import android.graphics.Matrix
+import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
@@ -205,20 +206,26 @@ class CommentController(
                 view.apply {
                     scaleType = ImageView.ScaleType.CENTER
                     adjustViewBounds = false
+                    minimumHeight = ViewUtils.dp2Px(40)
                 }
             }
 
             override fun onLoadStarted(placeholder: Drawable?) {
                 resetState()
                 super.onLoadStarted(placeholder)
+
+                if (placeholder is Animatable) {
+                    // HACK: let placeholder animated
+                    onResourceReady(placeholder, null)
+                }
             }
         }
 
         class Holder : ExHolder<ImageView>(), Preloadable {
             val loadingDrawable by lazy {
                 CircularProgressDrawable(view.context).apply {
-                    centerRadius = ViewUtils.dp2Pixel(10f)
-                    strokeWidth = ViewUtils.dp2Pixel(2f)
+                    centerRadius = ViewUtils.dp2Px(10f)
+                    strokeWidth = ViewUtils.dp2Px(2f)
                 }
             }
             val errorDrawable by lazy {
@@ -254,7 +261,7 @@ class CommentController(
                         val width = resource.intrinsicWidth
 
                         val scale = if (width < maxWidth) {
-                            if (ViewUtils.dp2Pixel(width.toFloat()) < maxWidth) {
+                            if (ViewUtils.dp2Px(width.toFloat()) < maxWidth) {
                                 ViewUtils.density
                             } else {
                                 maxWidth / width
@@ -266,6 +273,8 @@ class CommentController(
                         view.apply {
                             scaleType = ImageView.ScaleType.MATRIX
                             adjustViewBounds = true
+                            minimumHeight = 0
+
                             imageMatrix = Matrix().apply {
                                 preScale(scale, scale)
                                 preTranslate((maxWidth - width * scale) / 2, 0f)
