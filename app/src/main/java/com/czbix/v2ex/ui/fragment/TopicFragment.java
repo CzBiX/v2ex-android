@@ -220,6 +220,9 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         mAppBarLayout = activity.getAppBarLayout();
+        mAppBarLayout.findViewById(R.id.toolbar).setOnClickListener(v -> {
+                scrollToPos(null, new CommentPos(true, 0));
+        });
 
         initCommentsView(activity);
 
