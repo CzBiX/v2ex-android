@@ -74,7 +74,7 @@ class CommentController(
         topic.content?.run {
             val hasPostscript = topic.postscripts?.run { size > 0 } ?: false
 
-            addBlocks(this) {index ->
+            addBlocks("t", this) {index ->
                 !hasPostscript && index == lastIndex
             }
         }
@@ -89,7 +89,7 @@ class CommentController(
                 }
 
                 postscript.content.apply {
-                    addBlocks(this) {
+                    addBlocks("ps", this) {
                         lastPostscript && it == lastIndex
                     }
                 }
@@ -108,12 +108,12 @@ class CommentController(
         }
     }
 
-    private inline fun addBlocks(blocks: List<ContentBlock>, showDivider: (index: Int) -> Boolean) {
+    private inline fun addBlocks(tag: String, blocks: List<ContentBlock>, showDivider: (index: Int) -> Boolean) {
         blocks.forEachIndexed { index, block ->
             when (block) {
                 is TextBlock -> {
                     commentControllerTextBlock {
-                        id(block.id)
+                        id("${tag}_${block.id}")
                         text(block.text)
                         showDivider(showDivider(index))
                         contentListener(mContentListener)
@@ -121,7 +121,7 @@ class CommentController(
                 }
                 is ImageBlock -> {
                     commentControllerImageBlock {
-                        id(block.id)
+                        id("${tag}_${block.id}")
                         source(block.source)
                         showDivider(showDivider(index))
                         contentListener(mContentListener)
