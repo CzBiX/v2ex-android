@@ -63,16 +63,18 @@ class CommentController(
             return
         }
 
+        val hasPostscript = topic.postscripts?.run { size > 0 } ?: false
+
         commentControllerTopic {
             id("topic")
             nodeListener(mNodeListener)
             avatarListener(mAvatarListener)
             topic(topic)
             hasContent(!topic.content.isNullOrEmpty())
+            hasPostscript(hasPostscript)
         }
 
         topic.content?.run {
-            val hasPostscript = topic.postscripts?.run { size > 0 } ?: false
 
             addBlocks("t", this) {index ->
                 !hasPostscript && index == lastIndex
@@ -305,6 +307,9 @@ class CommentController(
         @EpoxyAttribute
         var hasContent = false
 
+        @EpoxyAttribute
+        var hasPostscript = false
+
         override fun bind(holder: Holder) {
             val view = holder.view
 
@@ -316,7 +321,7 @@ class CommentController(
             view.setAvatarListener(avatarListener)
 
             view.fillData(holder.glide, topic)
-            DividerItemDecoration.setHasDivider(view, !hasContent)
+            DividerItemDecoration.setHasDivider(view, !hasContent && !hasPostscript)
         }
 
         override fun unbind(holder: Holder) {
