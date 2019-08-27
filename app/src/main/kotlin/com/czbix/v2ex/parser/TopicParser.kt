@@ -132,7 +132,7 @@ object TopicParser : Parser() {
             val td = JsoupObjects.child(ele, "td:nth-child(3)")
 
             val memberBuilder = Member.Builder()
-            memberBuilder.setAvatar(avatarBuilder.createAvatar())
+            memberBuilder.setAvatar(avatarBuilder.build())
             parseMember(memberBuilder, td)
 
             val commentBuilder = Comment.Builder()

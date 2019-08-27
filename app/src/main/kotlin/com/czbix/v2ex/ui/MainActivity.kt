@@ -134,11 +134,11 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
     fun setAppBarShadow(isShown: Boolean) {
         val elevation = if (isShown) {
-            resources.getDimensionPixelSize(R.dimen.appbar_elevation)
+            resources.getDimension(R.dimen.appbar_elevation)
         } else {
-            0
+            0f
         }
-        ViewCompat.setElevation(mAppBar, elevation.toFloat())
+        ViewCompat.setElevation(mAppBar, elevation)
     }
 
     override fun onStart() {
@@ -389,7 +389,7 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         mAvatar.visibility = View.VISIBLE
         val avatar = UserUtils.getAvatar()
-        val request = Glide.with(this).load(avatar.getUrlByDp(resources.getDimension(R.dimen.nav_avatar_size)))
+        val request = Glide.with(this).load(avatar.getUrlByPx(resources.getDimensionPixelSize(R.dimen.nav_avatar_size)))
         request.transition(DrawableTransitionOptions.withCrossFade()).into(mAvatar)
         mUsername.text = UserState.username
     }

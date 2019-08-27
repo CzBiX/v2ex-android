@@ -75,7 +75,7 @@ abstract class Parser {
             check(ele.tagName() == "img")
             avatarBuilder.setUrl(ele.attr("src"))
 
-            memberBuilder.setAvatar(avatarBuilder.createAvatar())
+            memberBuilder.setAvatar(avatarBuilder.build())
 
             return memberBuilder.createMember()
         }

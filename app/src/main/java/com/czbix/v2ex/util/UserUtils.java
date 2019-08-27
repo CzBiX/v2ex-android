@@ -1,6 +1,5 @@
 package com.czbix.v2ex.util;
 
-import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.RemoteException;
@@ -21,7 +20,7 @@ public class UserUtils {
         final String url = ConfigDao.get(ConfigDao.KEY_AVATAR, null);
         Preconditions.checkNotNull(url);
 
-        return new Avatar.Builder().setBaseUrl(url).createAvatar();
+        return new Avatar.Builder().setBaseUrl(url).build();
     }
 
     public static void checkDailyAward() {

@@ -4,8 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
-import androidx.annotation.Nullable;
 import android.util.LruCache;
+
+import androidx.annotation.Nullable;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.R;
@@ -124,7 +125,7 @@ public class NodeDao extends DaoBase {
 
         str = cursor.getString(4);
         if (str != null) {
-            final Avatar avatar = new Avatar.Builder().setBaseUrl(str).createAvatar();
+            final Avatar avatar = new Avatar.Builder().setBaseUrl(str).build();
             builder.setAvatar(avatar);
         }
 

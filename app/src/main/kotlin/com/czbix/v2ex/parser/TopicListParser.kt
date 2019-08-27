@@ -155,7 +155,7 @@ object TopicListParser : Parser() {
         e = e.child(0)
         Preconditions.checkState(e.tagName() == "img")
         avatarBuilder.setUrl(e.attr("src"))
-        memberBuilder.setAvatar(avatarBuilder.createAvatar())
+        memberBuilder.setAvatar(avatarBuilder.build())
 
         builder.member = memberBuilder.createMember()
     }

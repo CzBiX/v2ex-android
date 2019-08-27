@@ -20,7 +20,7 @@ object MyselfParser : Parser() {
         val tr = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Rightbar").dfs("tr").first()
 
         val url = JsoupObjects(tr).dfs(".avatar").first().attr("src")
-        val avatar = Avatar.Builder().setUrl(url).createAvatar()
+        val avatar = Avatar.Builder().setUrl(url).build()
 
         val username = JsoupObjects(tr).child("td").child(".bigger").child("a").first().text()
         return LoginResult(username, avatar)
