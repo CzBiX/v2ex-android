@@ -24,6 +24,7 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.SingleSubject
 import okhttp3.*
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.jsoup.nodes.Document
 import java.io.IOException
 import java.util.*
@@ -47,8 +48,10 @@ object RequestHelper {
     private val URL_TWO_FACTOR_AUTH = BASE_URL + "/2fa"
     private val URL_NEW_TOPIC = BASE_URL + "/new/%s"
     private val URL_CAPTCHA = BASE_URL + "/_captcha"
+    private const val URL_SELECT_LANG = "$BASE_URL/select/language/%s"
 
     val client: OkHttpClient
+    val isChinese: Boolean
 
     private var cookieJar: PersistentCookieJar
 
@@ -57,6 +60,7 @@ object RequestHelper {
                 SharedPrefsCookiePersistor(AppCtx.instance))
 
         client = OkHttpClient.Builder().apply {
+            AppCtx.instance.debugHelpers.addStethoInterceptor(this)
             cache(buildCache())
             connectTimeout(10, TimeUnit.SECONDS)
             writeTimeout(10, TimeUnit.SECONDS)
@@ -64,6 +68,8 @@ object RequestHelper {
             followRedirects(false)
             cookieJar(cookieJar)
         }.build()
+
+        isChinese = MiscUtils.isChineseLang(AppCtx.instance.resources)
     }
 
     private fun buildCache(): Cache {
@@ -85,10 +91,32 @@ object RequestHelper {
         }
     }
 
+    fun setLang() {
+        val lang = if (isChinese) "zhcn" else "enus"
+
+        val baseUrl = BASE_URL.toHttpUrl()
+        val cookies = cookieJar.loadForRequest(baseUrl)
+        val currentLang = cookies.find { cookie ->
+            cookie.name == "V2EX_LANG"
+        }?.value
+
+        if (currentLang == lang) {
+            return
+        }
+
+        val request = newRequest()
+                .url(URL_SELECT_LANG.format(lang))
+                .build()
+
+        sendRequest(request).subscribe()
+    }
+
     fun cleanCookies() {
         LogUtils.d(TAG, "clean cookies")
 
         cookieJar.clear()
+
+        setLang()
     }
 
     @Throws(ConnectionException::class, RemoteException::class)

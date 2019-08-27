@@ -1,7 +1,6 @@
 package com.czbix.v2ex.common
 
 import android.widget.Toast
-
 import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.R
 import com.czbix.v2ex.dao.ConfigDao
@@ -16,8 +15,6 @@ import com.czbix.v2ex.parser.Parser.PageType
 import com.czbix.v2ex.util.CrashlyticsUtils
 import com.czbix.v2ex.util.ExecutorUtils
 import com.czbix.v2ex.util.UserUtils
-import com.google.common.eventbus.EventBus
-import com.google.common.eventbus.Subscribe
 
 object UserState {
     var username: String? = null

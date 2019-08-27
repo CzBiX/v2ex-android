@@ -4,7 +4,6 @@ import android.app.Application
 import com.crashlytics.android.Crashlytics
 import com.crashlytics.android.core.CrashlyticsCore
 import com.czbix.v2ex.common.NotificationStatus
-import com.czbix.v2ex.common.PrefStore
 import com.czbix.v2ex.common.UpdateInfo
 import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.common.exception.ConnectionException
@@ -16,7 +15,6 @@ import com.czbix.v2ex.dao.NodeDao
 import com.czbix.v2ex.dao.V2exDb
 import com.czbix.v2ex.event.BaseEvent
 import com.czbix.v2ex.eventbus.executor.HandlerExecutor
-import com.czbix.v2ex.google.GoogleHelper
 import com.czbix.v2ex.network.CzRequestHelper
 import com.czbix.v2ex.network.Etag
 import com.czbix.v2ex.network.RequestHelper
@@ -51,6 +49,7 @@ open class AppCtx : Application() {
         mEventBus = AsyncEventBus(HandlerExecutor())
         mEventBus.register(this)
 
+        RequestHelper.setLang()
         TrackerUtils.init(this)
         ExecutorUtils.execute(AsyncInitTask())
     }
@@ -72,6 +71,8 @@ open class AppCtx : Application() {
 
         }
     }
+
+    open val debugHelpers = DebugHelpers()
 
     private inner class AsyncInitTask : Runnable {
         override fun run() {

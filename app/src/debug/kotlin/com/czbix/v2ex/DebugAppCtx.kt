@@ -8,4 +8,6 @@ class DebugAppCtx : AppCtx() {
 
         Stetho.initializeWithDefaults(this)
     }
+
+    override val debugHelpers = DebugHelpersImpl()
 }

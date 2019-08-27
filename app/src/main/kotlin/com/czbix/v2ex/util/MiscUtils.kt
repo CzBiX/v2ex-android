@@ -6,10 +6,12 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.widget.Toast
+import androidx.core.os.ConfigurationCompat
 import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.BuildConfig
 import com.czbix.v2ex.R
@@ -125,6 +127,11 @@ object MiscUtils {
         }
 
         return intent
+    }
+
+    fun isChineseLang(resources: Resources): Boolean {
+        val lang = ConfigurationCompat.getLocales(resources.configuration)[0].language
+        return lang == "zh"
     }
 }
 
