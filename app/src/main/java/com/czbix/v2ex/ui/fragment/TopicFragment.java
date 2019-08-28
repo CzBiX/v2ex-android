@@ -289,8 +289,8 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
     }
 
     private void updateFavIcon() {
-        mFavIcon.setIcon(mFavored ? R.drawable.ic_favorite_white_24dp
-                : R.drawable.ic_favorite_border_white_24dp);
+        mFavIcon.setIcon(mFavored ? R.drawable.ic_star_black_24dp
+                : R.drawable.ic_star_border_black_24dp);
     }
 
     private void setupShareActionMenu(Menu menu) {
@@ -645,7 +645,7 @@ public class TopicFragment extends Fragment implements SwipeRefreshLayout.OnRefr
             @Override
             public void run() {
                 try {
-                    RequestHelper.INSTANCE.thank(obj, mCsrfToken);
+                    RequestHelper.INSTANCE.thank(obj, mOnceToken);
                 } catch (ConnectionException | RemoteException e) {
                     ExecutorUtils.runInUiThread(new Runnable() {
                         @Override

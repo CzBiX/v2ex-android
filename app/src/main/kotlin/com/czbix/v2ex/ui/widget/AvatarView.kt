@@ -3,11 +3,8 @@ package com.czbix.v2ex.ui.widget
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-
 import androidx.appcompat.widget.AppCompatImageView
-
 import com.airbnb.epoxy.preload.ViewMetadata
-import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -35,7 +32,7 @@ class AvatarView @JvmOverloads constructor(
 
     fun getImgRequest(glide: RequestManager, avatar: Avatar): RequestBuilder<Drawable> {
         val size = realSize
-        val url = avatar.getUrlByPx(size.toFloat())
+        val url = avatar.getUrlByPx(size)
 
         return glide.load(url).placeholder(R.drawable.avatar_default)
                 .override(size, size).fitCenter()

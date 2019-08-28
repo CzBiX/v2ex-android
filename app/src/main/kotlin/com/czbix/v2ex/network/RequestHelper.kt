@@ -325,8 +325,8 @@ object RequestHelper {
     }
 
     @Throws(ConnectionException::class, RemoteException::class)
-    fun thank(obj: Thankable, csrfToken: String) {
-        val request = newRequest().url(obj.thankUrl + "?t=" + csrfToken)
+    fun thank(obj: Thankable, once: String) {
+        val request = newRequest().url(obj.thankUrl + "?once=" + once)
                 .post(RequestBody.create(null, ByteArray(0))).build()
 
         sendRequest(request).result()
