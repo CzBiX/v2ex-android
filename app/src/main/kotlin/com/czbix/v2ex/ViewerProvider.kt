@@ -9,9 +9,9 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.provider.OpenableColumns
+import com.bumptech.glide.RequestManager
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.czbix.v2ex.network.GlideRequests
 import com.czbix.v2ex.util.MiscUtils
 import java.io.File
 import java.io.IOException
@@ -109,7 +109,7 @@ class ViewerProvider : ContentProvider() {
                     .authority(AUTHORITY).encodedPath("image").build()
         }
 
-        fun viewImage(context: Context, glide: GlideRequests, url: String) {
+        fun viewImage(context: Context, glide: RequestManager, url: String) {
             @Suppress("NAME_SHADOWING")
             val url = MiscUtils.formatUrl(url)
             glide.downloadOnly().load(url).into(object : CustomTarget<File>() {

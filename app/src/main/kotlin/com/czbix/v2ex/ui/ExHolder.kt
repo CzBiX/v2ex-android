@@ -3,12 +3,12 @@ package com.czbix.v2ex.ui
 import android.view.View
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
+import com.airbnb.epoxy.EpoxyHolder
 import com.bumptech.glide.Glide
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
-import com.airbnb.epoxy.EpoxyHolder as Holder
 
-abstract class ExHolder<T : View> : Holder() {
+abstract class ExHolder<T : View> : EpoxyHolder() {
     lateinit var view: T
     val glide by lazy { Glide.with(view) }
 
@@ -17,9 +17,15 @@ abstract class ExHolder<T : View> : Holder() {
         @Suppress("UNCHECKED_CAST")
         view = itemView as T
 
+        onCreated()
+    }
+
+    protected open fun onCreated() {
+        @Suppress("DEPRECATION")
         init()
     }
 
+    @Deprecated("Use onCreated instead of this", ReplaceWith("onCreated"))
     protected open fun init() {
     }
 

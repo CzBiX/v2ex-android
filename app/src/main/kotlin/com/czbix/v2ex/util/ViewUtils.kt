@@ -156,8 +156,8 @@ object ViewUtils {
     @JvmStatic
     fun getAttrColor(theme: Resources.Theme, @AttrRes attrId: Int): Int {
         val typedValue = TypedValue()
-        if (!theme.resolveAttribute(attrId, typedValue, true)) {
-            throw IllegalArgumentException("can't found attr for: " + Integer.toHexString(attrId))
+        require(theme.resolveAttribute(attrId, typedValue, true)) {
+            "Can't found attr for: " + Integer.toHexString(attrId)
         }
 
         return typedValue.data

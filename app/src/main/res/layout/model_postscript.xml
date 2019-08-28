@@ -39,7 +39,7 @@
             android:id="@+id/title" />
 
         <TextView
-            android:id="@+id/time"
+            android:id="@+id/tv_tags"
             android:layout_toEndOf="@id/title"
             android:layout_alignBaseline="@id/title"
             android:layout_marginStart="@dimen/content_spacing"
