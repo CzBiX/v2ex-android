@@ -40,10 +40,6 @@ object ExceptionUtils {
                 stringId = R.string.toast_connection_exception
             }
             is RemoteException -> {
-                if (e.code != 504 && e.code != 502) {
-                    Crashlytics.logException(e)
-                }
-
                 stringId = R.string.toast_remote_exception
             }
             is RequestException -> {
