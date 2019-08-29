@@ -110,11 +110,11 @@ object RequestHelper {
                 .url(URL_SELECT_LANG.format(lang))
                 .build()
 
-        sendRequest(request).subscribe { _, t ->
-            check(t == null || t is UrlRedirectException) {
-                throw t
-            }
-        }
+        sendRequest(request) {
+            Unit
+        }.onErrorReturn {
+            checkIsRedirectException(it)
+        }.subscribe()
     }
 
     fun cleanCookies() {
@@ -321,13 +321,13 @@ object RequestHelper {
         val request = newRequest().url(url)
                 .build()
 
-        sendRequest<Unit>(request) {
-            error("Shouldn't go to here")
+        sendRequest(request) {
+            Unit
         }.onErrorReturn {
             checkIsRedirectException(it) {
                 String.format("favor %s failed, is fav: %b", obj, isFavor)
             }
-        }
+        }.result()
     }
 
     @Throws(ConnectionException::class, RemoteException::class)
@@ -365,8 +365,7 @@ object RequestHelper {
                 header(HttpHeaders.REFERER, URL_MISSION_DAILY)
             }.build()
 
-            sendRequest<Unit>(request) {
-                error("Shouldn't go to here")
+            sendRequest(request) {
             }.onErrorReturn {
                 checkIsRedirectException(it)
             }
