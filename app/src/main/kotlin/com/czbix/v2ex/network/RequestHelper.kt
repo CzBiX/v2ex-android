@@ -114,6 +114,13 @@ object RequestHelper {
             Unit
         }.onErrorReturn {
             checkIsRedirectException(it)
+        }.onErrorReturn { t ->
+            if (t !is ConnectionException && t !is RemoteException) {
+                Crashlytics.logException(t)
+            }
+
+            // Ignore all exception
+            Unit
         }.subscribe()
     }
 
