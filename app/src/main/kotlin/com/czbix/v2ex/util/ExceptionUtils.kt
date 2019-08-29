@@ -1,12 +1,10 @@
 package com.czbix.v2ex.util
 
-import androidx.fragment.app.Fragment
 import android.widget.Toast
 import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.exception.*
 import com.czbix.v2ex.network.HttpStatus
-import java.util.*
 
 object ExceptionUtils {
     /**
@@ -70,7 +68,7 @@ object ExceptionUtils {
 
                 stringId = R.string.toast_parse_failed
             }
-            is NoSuchElementException, is NullPointerException -> {
+            is RuntimeException -> {
                 Crashlytics.logException(e)
                 stringId = R.string.toast_parse_failed
             }
