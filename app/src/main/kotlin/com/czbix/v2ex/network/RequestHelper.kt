@@ -1,5 +1,6 @@
 package com.czbix.v2ex.network
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
 import com.crashlytics.android.Crashlytics
@@ -51,7 +52,7 @@ object RequestHelper {
     private const val URL_SELECT_LANG = "$BASE_URL/select/language/%s"
 
     val client: OkHttpClient
-    val isChinese: Boolean
+    private val isChinese: Boolean
 
     private var cookieJar: PersistentCookieJar
 
@@ -91,6 +92,7 @@ object RequestHelper {
         }
     }
 
+    @SuppressLint("CheckResult")
     fun setLang() {
         val lang = if (isChinese) "zhcn" else "enus"
 
@@ -108,7 +110,11 @@ object RequestHelper {
                 .url(URL_SELECT_LANG.format(lang))
                 .build()
 
-        sendRequest(request).subscribe()
+        sendRequest(request).subscribe { _, t ->
+            check(t == null || t is UrlRedirectException) {
+                throw t
+            }
+        }
     }
 
     fun cleanCookies() {

@@ -61,6 +61,7 @@ public class RequestException extends RuntimeException {
         final String message = Strings.nullToEmpty(super.getMessage());
         final StringBuilder sb = new StringBuilder(message);
 
+        sb.append(", url: ").append(mResponse.request().url());
         sb.append(", code: ").append(mResponse.code());
 
         if (mResponse.isRedirect()) {
