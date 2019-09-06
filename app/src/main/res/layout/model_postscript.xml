@@ -15,7 +15,7 @@
     <RelativeLayout
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:background="@android:color/white"
+        android:background="?android:colorBackground"
         app:hasDivider="@{false}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             style="@style/AppTheme.Topic.Secondary"
-            android:textColor="@android:color/black"
+            android:textColor="?android:colorForeground"
             tools:text="Postscript"
             android:text="@{@string/title_postscript(index)}"
             android:id="@+id/title" />

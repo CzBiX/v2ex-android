@@ -6,7 +6,7 @@
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
     android:paddingBottom="8dp"
-    android:background="@android:color/white"
+    android:background="?android:colorBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"

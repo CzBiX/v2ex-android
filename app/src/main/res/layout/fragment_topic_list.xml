@@ -5,7 +5,7 @@
              tools:context="com.czbix.v2ex.ui.fragment.TopicListFragment">
     <com.airbnb.epoxy.EpoxyRecyclerView
         android:id="@+id/recycle_view"
-        android:background="@android:color/white"
+        android:background="?android:colorBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </com.czbix.v2ex.ui.widget.ExSwipeRefreshLayout>

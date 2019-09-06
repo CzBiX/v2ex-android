@@ -1,6 +1,6 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/material_blue_grey_700</item>
         <item name="colorPrimaryDark">@color/material_blue_grey_900</item>
     </style>
@@ -11,7 +11,7 @@
     </style>
 
     <style name="AppTheme.Launcher" parent="AppTheme.NoActionBar">
-        <item name="android:windowBackground">@drawable/window_background_statusbar_toolbar_tab</item>
+<!--        <item name="android:windowBackground">@drawable/window_background_statusbar_toolbar_tab</item>-->
     </style>
 
     <style name="AppTheme.TabLayout" parent="Widget.Design.TabLayout">
