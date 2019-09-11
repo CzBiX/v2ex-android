@@ -2,6 +2,7 @@ package com.czbix.v2ex.parser
 
 import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.common.exception.FatalException
+import com.czbix.v2ex.db.Member
 import com.czbix.v2ex.helper.JsoupObjects
 import com.czbix.v2ex.model.*
 import com.czbix.v2ex.ui.loader.TopicListLoader
@@ -148,15 +149,15 @@ object TopicListParser : Parser() {
         e = e.child(0)
         Preconditions.checkState(e.tagName() == "a")
         val url = e.attr("href")
-        memberBuilder.setUsername(Member.getNameFromUrl(url))
+        memberBuilder.username = Member.getNameFromUrl(url)
 
         // get member avatar
         val avatarBuilder = Avatar.Builder()
         e = e.child(0)
         Preconditions.checkState(e.tagName() == "img")
         avatarBuilder.setUrl(e.attr("src"))
-        memberBuilder.setAvatar(avatarBuilder.build())
+        memberBuilder.avatar = avatarBuilder.build()
 
-        builder.member = memberBuilder.createMember()
+        builder.member = memberBuilder.build()
     }
 }

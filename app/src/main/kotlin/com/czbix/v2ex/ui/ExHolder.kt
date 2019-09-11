@@ -17,16 +17,10 @@ abstract class ExHolder<T : View> : EpoxyHolder() {
         @Suppress("UNCHECKED_CAST")
         view = itemView as T
 
-        onCreated()
+        onCreate()
     }
 
-    protected open fun onCreated() {
-        @Suppress("DEPRECATION")
-        init()
-    }
-
-    @Deprecated("Use onCreated instead of this", ReplaceWith("onCreated"))
-    protected open fun init() {
+    protected open fun onCreate() {
     }
 
     protected fun <V : View> bind(@IdRes id: Int): ReadOnlyProperty<ExHolder<T>, V> {

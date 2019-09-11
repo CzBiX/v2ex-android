@@ -38,6 +38,16 @@ android {
         versionName "1.26.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        'room.schemaLocation': "$projectDir/schemas".toString(),
+                        'room.incremental': 'true',
+                        'room.expandProjection': 'true'
+                ]
+            }
+        }
     }
     packagingOptions {
         exclude '.readme'
@@ -101,17 +111,21 @@ androidExtensions {
     experimental = true
 }
 
-// Android support library version
-ext.androidx_version = '1.0.0'
-ext.gms_version = '17.0.0'
-ext.glide_version = '4.9.0'
-ext.epoxy_version = '3.7.0'
+ext {
+    androidx_version = '1.0.0'
+    gms_version = '17.0.0'
+    glide_version = '4.9.0'
+    epoxy_version = '3.7.0'
+    lifecycle_version = '2.1.0'
+    dragger_version = '2.24'
+    paging_version = '2.1.0'
+    room_version = '2.2.0-rc01'
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.core:core-ktx:1.0.2'
-    implementation "androidx.legacy:legacy-support-core-utils:$androidx_version"
-    implementation 'androidx.fragment:fragment-ktx:1.0.0'
+    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation 'androidx.fragment:fragment-ktx:1.1.0'
     api 'com.google.guava:guava:28.0-android'
     implementation 'com.squareup.okhttp3:okhttp:4.1.0'
     implementation 'com.google.code.gson:gson:2.8.5'
@@ -139,16 +153,34 @@ dependencies {
     implementation "com.google.android.gms:play-services-analytics:$gms_version"
     implementation "com.google.firebase:firebase-messaging:19.0.1"
     implementation 'com.firebase:firebase-jobdispatcher:0.5.2'
-    implementation('com.crashlytics.sdk.android:crashlytics:2.10.1@aar') {
-        transitive = true
-    }
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation "androidx.browser:browser:$androidx_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
+    implementation "com.google.dagger:dagger:$dragger_version"
+    implementation "com.google.dagger:dagger-android:$dragger_version"
+    implementation "com.google.dagger:dagger-android-support:$dragger_version"
+    kapt "com.google.dagger:dagger-compiler:$dragger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dragger_version"
 
     implementation "com.airbnb.android:epoxy:$epoxy_version"
     implementation "com.airbnb.android:epoxy-databinding:$epoxy_version"
     implementation "com.airbnb.android:epoxy-glide-preloading:$epoxy_version"
+    implementation "com.airbnb.android:epoxy-paging:$epoxy_version"
     kapt "com.airbnb.android:epoxy-processor:$epoxy_version"
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-beta-2'

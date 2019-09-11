@@ -15,8 +15,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy
 import com.bumptech.glide.module.AppGlideModule
 import com.czbix.v2ex.model.loader.GooglePhotoUrlLoader
-import com.czbix.v2ex.util.LogUtils
-import com.czbix.v2ex.util.getLogTag
+import timber.log.Timber
 import java.io.InputStream
 import java.security.MessageDigest
 import kotlin.math.min
@@ -81,19 +80,18 @@ class GlideConfig : AppGlideModule() {
         }
 
         companion object {
-            private const val ID = "com.bumptech.glide.load.resource.bitmap.FitCenter"
+            private val ID = AtWidthMostTransformation::class.java.canonicalName!!
             private val ID_BYTES = ID.toByteArray(Key.CHARSET)
         }
     }
 
     companion object {
-        private val TAG = getLogTag<GlideConfig>()
         private var lastMaxWidth = -1
         private lateinit var lastStrategy : DownsampleStrategy
 
         fun atWidthMost(maxWidth: Int = 0): DownsampleStrategy {
             if (maxWidth != lastMaxWidth) {
-                LogUtils.v(TAG, "Downsample strategy cache missed. Changed from %d to %d.", lastMaxWidth, maxWidth)
+                Timber.v("Downsample strategy cache missed. Changed from %d to %d.", lastMaxWidth, maxWidth)
 
                 lastMaxWidth = maxWidth
                 lastStrategy = AtWidthMostStrategy(maxWidth)

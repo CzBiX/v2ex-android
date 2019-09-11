@@ -3,12 +3,10 @@ package com.czbix.v2ex.model
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
-abstract class ContentBlock : Parcelable {
-    abstract val id: Int
+sealed class ContentBlock : Parcelable {
+    @Parcelize
+    data class TextBlock(val id: Int, val text: CharSequence) : ContentBlock()
+
+    @Parcelize
+    data class ImageBlock(val id: Int, val source: String) : ContentBlock()
 }
-
-@Parcelize
-class TextBlock(override val id: Int, val text: CharSequence) : ContentBlock()
-
-@Parcelize
-class ImageBlock(override val id: Int, val source: String) : ContentBlock()

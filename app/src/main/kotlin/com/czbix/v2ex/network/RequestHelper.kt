@@ -18,18 +18,19 @@ import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
 import com.google.common.base.Preconditions
-import com.google.common.base.Stopwatch
-import com.google.common.base.Strings
 import com.google.common.net.HttpHeaders
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.SingleSubject
+import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.jsoup.nodes.Document
+import timber.log.Timber
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 object RequestHelper {
     const val BASE_URL = "https://www.v2ex.com"
@@ -50,11 +51,13 @@ object RequestHelper {
     private val URL_NEW_TOPIC = BASE_URL + "/new/%s"
     private val URL_CAPTCHA = BASE_URL + "/_captcha"
     private const val URL_SELECT_LANG = "$BASE_URL/select/language/%s"
+    private val returnUnit = { _: Response -> Unit }
 
     val client: OkHttpClient
     private val isChinese: Boolean
 
     private var cookieJar: PersistentCookieJar
+    private val networkScope = CoroutineScope(Dispatchers.IO)
 
     init {
         cookieJar = PersistentCookieJar(SetCookieCache(),
@@ -93,7 +96,7 @@ object RequestHelper {
     }
 
     @SuppressLint("CheckResult")
-    fun setLang() {
+    fun setLang() = networkScope.launch {
         val lang = if (isChinese) "zhcn" else "enus"
 
         val baseUrl = BASE_URL.toHttpUrl()
@@ -103,25 +106,25 @@ object RequestHelper {
         }?.value
 
         if (currentLang == lang) {
-            return
+            return@launch
         }
 
         val request = newRequest()
                 .url(URL_SELECT_LANG.format(lang))
                 .build()
 
-        sendRequest(request) {
-            Unit
-        }.onErrorReturn {
-            checkIsRedirectException(it)
-        }.onErrorReturn { t ->
-            if (t !is ConnectionException && t !is RemoteException) {
-                Crashlytics.logException(t)
+        try {
+            sendRequestSuspend(request)
+        } catch (e: Exception) {
+            try {
+                checkIsRedirectException(e)
+            } catch (e: Exception) {
+                if (e !is ConnectionException && e !is RemoteException) {
+                    Timber.w(e, "Set lang failed.")
+                }
             }
-
             // Ignore all exception
-            Unit
-        }.subscribe()
+        }
     }
 
     fun cleanCookies() {
@@ -133,72 +136,29 @@ object RequestHelper {
     }
 
     @Throws(ConnectionException::class, RemoteException::class)
-    fun getTopics(page: Page): TopicListLoader.TopicList {
-        if (BuildConfig.DEBUG) {
-            Log.v(TAG, "request latest topic for page: " + page.title)
-        }
+    suspend fun getTopics(page: Page): TopicListLoader.TopicList {
+        Timber.v("Request latest topic for page: %s", page.title)
 
         val request = newRequest()
                 .url(page.url)
                 .build()
 
-        return sendRequest(request) { response ->
-            if (response.isRedirect) {
-                throw ExIllegalStateException("topics page should not redirect")
+        return sendRequestSuspend(request) { response ->
+            check(!response.isRedirect) {
+                "Topics page should not redirect"
             }
 
-            val doc: Document
-            val topics: TopicListLoader.TopicList
-            try {
-                doc = Parser.toDoc(response.body!!.string())
-                processUserState(doc, if (page is Tab) PageType.Tab else PageType.Node)
-                topics = TopicListParser.parseDoc(doc, page)
-            } catch (e: IOException) {
-                throw ConnectionException(e)
-            }
+            val doc = Parser.toDoc(response.body!!.string())
+            processUserState(doc, if (page is Tab) PageType.Tab else PageType.Node)
+            val topics = TopicListParser.parseDoc(doc, page)
 
-            if (BuildConfig.DEBUG) {
-                Log.v(TAG, "received topics, count: " + topics.size)
-            }
+            Timber.v("Received topics, count: %d", topics.size)
 
             topics
-        }.result()
+        }
     }
 
-    @Throws(ConnectionException::class, RemoteException::class)
-    fun getTopicWithComments(topic: Topic, page: Int): TopicWithComments {
-        Preconditions.checkArgument(page > 0, "page must greater than zero")
-
-        LogUtils.v(TAG, "request topic with comments, id: %d, title: %s", topic.id, topic.title)
-
-        val request = newRequest(useMobile = true)
-                .url(topic.url + "?p=" + page)
-                .build()
-        return sendRequest(request) { response ->
-            if (response.isRedirect) {
-                throw ExIllegalStateException("topic page shouldn't redirect")
-            }
-
-            val doc: Document
-            val result: TopicWithComments
-
-            try {
-                doc = Parser.toDoc(response.body!!.string())
-                processUserState(doc, PageType.Topic)
-
-                val stopwatch = Stopwatch.createStarted()
-                result = TopicParser.parseDoc(doc, topic)
-                TrackerUtils.onParseTopic(stopwatch.elapsed(TimeUnit.MILLISECONDS),
-                        Integer.toString(result.comments.size))
-            } catch (e: IOException) {
-                throw ConnectionException(e)
-            }
-
-            result
-        }.result()
-    }
-
-    private fun processUserState(doc: Document, pageType: PageType) {
+    fun processUserState(doc: Document, pageType: PageType) {
         if (!UserState.isLoggedIn()) {
             return
         }
@@ -287,65 +247,7 @@ object RequestHelper {
         }.result()
     }
 
-    @Throws(ConnectionException::class, RemoteException::class)
-    fun reply(topic: Topic, content: String, once: String?): Boolean {
-        LogUtils.v(TAG, "reply to topic: %s", topic.title)
-
-        @Suppress("NAME_SHADOWING")
-        val once = if (Strings.isNullOrEmpty(once)) {
-            getOnceToken().result()
-        } else {
-            once!!
-        }
-        val requestBody = FormBody.Builder().add("once", once)
-                .add("content", content.replace("\n", "\r\n"))
-                .build()
-
-        val request = newRequest(useMobile = true)
-                .url(topic.url)
-                .post(requestBody).build()
-        return sendRequest(request, false) { response ->
-            // v2ex will redirect if reply success
-            response.code == HttpStatus.SC_MOVED_TEMPORARILY
-        }.result()
-    }
-
-    @Throws(ConnectionException::class, RemoteException::class)
-    fun ignore(obj: Ignorable, onceToken: String) {
-        val builder = newRequest().url(obj.ignoreUrl + "?once=" + onceToken)
-        val isComment = obj is Comment
-        if (isComment) {
-            builder.post(RequestBody.create(null, ByteArray(0)))
-        }
-        val request = builder.build()
-
-        sendRequest(request, isComment).result()
-    }
-
-    @Throws(ConnectionException::class, RemoteException::class)
-    fun favor(obj: Favable, isFavor: Boolean, token: String) {
-        val url = if (isFavor) obj.getFavUrl(token) else obj.getUnFavUrl(token)
-        val request = newRequest().url(url)
-                .build()
-
-        sendRequest(request) {
-            Unit
-        }.onErrorReturn {
-            checkIsRedirectException(it) {
-                String.format("favor %s failed, is fav: %b", obj, isFavor)
-            }
-        }.result()
-    }
-
-    @Throws(ConnectionException::class, RemoteException::class)
-    fun thank(obj: Thankable, once: String) {
-        val request = newRequest().url(obj.thankUrl + "?once=" + once)
-                .post(RequestBody.create(null, ByteArray(0))).build()
-
-        sendRequest(request).result()
-    }
-
-    private fun checkIsRedirectException(e: Throwable, messageExp: (() -> String)? = null) {
+    fun checkIsRedirectException(e: Throwable, messageExp: (() -> String)? = null) {
         if (e is RequestException) {
             if (e is UrlRedirectException) {
                 return
@@ -496,7 +398,7 @@ object RequestHelper {
         }
     }
 
-    private fun getOnceToken(): Single<String> {
+    fun getOnceToken(): Single<String> {
         LogUtils.v(TAG, "get once token")
 
         val request = newRequest(useMobile = true)
@@ -541,50 +443,89 @@ object RequestHelper {
         }.result()
     }
 
+    internal fun sendRequest(
+            request: Request,
+            checkResponse: Boolean = true
+    ): Single<Unit> {
+        return SingleSubject.create { emitter ->
+            networkScope.launch {
+                try {
+                    sendRequestSuspend(request, checkResponse)
+                    emitter.onSuccess(Unit)
+                } catch (e: Exception) {
+                    emitter.onError(e)
+                }
+            }
+        }
+    }
+
     /**
      * You take the responsibility to close response body
      */
-    internal fun sendRequest(request: Request, checkResponse: Boolean = true): Single<Response> {
+    internal suspend inline fun <T> sendRequestSuspend(
+            request: Request,
+            checkResponse: Boolean = true,
+            crossinline process: (Response) -> T
+    ) = withContext(networkScope.coroutineContext) {
         if (!DeviceStatus.getInstance().isNetworkConnected) {
-            return Single.error(ConnectionException("Network not connected"))
+            throw ConnectionException("Network not connected")
         }
 
         if (BuildConfig.DEBUG && Random().nextInt(100) > DEBUG_NETWORK_FAIL_PROBABILITY) {
-            return Single.error(ConnectionException("Network exception test"))
+            throw ConnectionException("Network exception test")
         }
 
-        val subject = SingleSubject.create<Response>()
         val call = client.newCall(request)
 
-        call.enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                subject.onError(ConnectionException(e))
+        suspendCancellableCoroutine<T> { cont ->
+            cont.invokeOnCancellation {
+                call.cancel()
             }
 
-            override fun onResponse(call: Call, response: Response) {
-                try {
-                    if (checkResponse) {
-                        checkResponse(response)
-                    }
-
-                    subject.onSuccess(response)
-                } catch (e: Throwable) {
-                    subject.onError(e)
+            call.enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    cont.resumeWithException(ConnectionException(e))
                 }
-            }
-        })
 
-        return subject.doOnDispose {
-            call.cancel()
-        }.subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.computation())
+                override fun onResponse(call: Call, response: Response) {
+                    try {
+                        if (checkResponse) {
+                            checkResponse(response)
+                        }
+
+                        val result = process(response)
+                        cont.resume(result)
+                    } catch (e: Throwable) {
+                        cont.resumeWithException(e)
+                    } finally {
+                        response.close()
+                    }
+                }
+            })
+        }
     }
 
-    internal inline fun <T : Any> sendRequest(request: Request, checkResponse: Boolean = true,
-                                              crossinline callback: (Response) -> T): Single<T> {
-        return sendRequest(request, checkResponse).map {
-            it.use(callback)
+    internal fun <T : Any> sendRequest(
+            request: Request,
+            checkResponse: Boolean = true,
+            callback: (Response) -> T
+    ): Single<T> {
+        return SingleSubject.create<T> { emitter ->
+            networkScope.launch {
+                try {
+                    val result = sendRequestSuspend(request, checkResponse, callback)
+                    emitter.onSuccess(result)
+                } catch (e: Exception) {
+                    emitter.onError(e)
+                }
+            }
         }
+    }
+
+    internal suspend fun sendRequestSuspend(
+            request: Request, checkResponse: Boolean = true
+    ) {
+        sendRequestSuspend(request, checkResponse) {}
     }
 
     @Throws(RemoteException::class, RequestException::class, ConnectionException::class)
@@ -616,13 +557,14 @@ object RequestHelper {
             try {
                 val body = response.body!!
 
+                @Suppress("ControlFlowWithEmptyBody")
                 if (body.contentLength() == 0L) {
                     // it's blocked for guest
                 } else {
                     // topic deleted, record logs for debug
                     val bodyStr = body.string()
                     Crashlytics.log(String.format("response code %d, %s", code,
-                            bodyStr.substring(0, Math.min(4096, bodyStr.length))))
+                            bodyStr.substring(0, minOf(4096, bodyStr.length))))
                 }
 
                 val ex = RequestException(response)
@@ -638,5 +580,4 @@ object RequestHelper {
     }
 
     fun getCaptchaImageUrl(once: String): String = "$URL_CAPTCHA?once=$once"
-
 }

@@ -33,12 +33,12 @@ import com.czbix.v2ex.R
 import com.czbix.v2ex.common.NotificationStatus
 import com.czbix.v2ex.common.UpdateInfo
 import com.czbix.v2ex.common.UserState
+import com.czbix.v2ex.db.Member
 import com.czbix.v2ex.event.AppUpdateEvent
 import com.czbix.v2ex.event.BaseEvent.DailyAwardEvent
 import com.czbix.v2ex.event.BaseEvent.NewUnreadEvent
 import com.czbix.v2ex.eventbus.LoginEvent
 import com.czbix.v2ex.helper.RxBus
-import com.czbix.v2ex.model.Member
 import com.czbix.v2ex.model.Node
 import com.czbix.v2ex.network.RequestHelper
 import com.czbix.v2ex.presenter.TopicSearchPresenter
@@ -49,10 +49,19 @@ import com.czbix.v2ex.util.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.common.eventbus.Subscribe
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import io.reactivex.disposables.Disposable
+import javax.inject.Inject
 
-class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener,
-        NodeListFragment.OnNodeActionListener, androidx.fragment.app.FragmentManager.OnBackStackChangedListener {
+class MainActivity :
+        BaseActivity(),
+        NavigationView.OnNavigationItemSelectedListener,
+        NodeListFragment.OnNodeActionListener,
+        androidx.fragment.app.FragmentManager.OnBackStackChangedListener,
+        HasAndroidInjector
+{
     private var mIsTabFragment: Boolean = false
     private var mToolbar: Toolbar? = null
     private val disposables: MutableList<Disposable> = mutableListOf()
@@ -70,6 +79,9 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
     private lateinit var mSearchPresenter: TopicSearchPresenter
     private lateinit var mSearchMenuItem: MenuItem
     private lateinit var mFavItem: MenuItem
+
+    @Inject
+    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
@@ -94,6 +106,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
 
         supportFragmentManager.addOnBackStackChangedListener(this)
         switchFragment(getFragmentToShow(intent), false)
+    }
+
+    override fun androidInjector(): AndroidInjector<Any> {
+        return dispatchingAndroidInjector
     }
 
     override fun onDestroy() {

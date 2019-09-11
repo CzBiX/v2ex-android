@@ -2,8 +2,14 @@ package com.czbix.v2ex.parser
 
 import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.common.UserState
+import com.czbix.v2ex.db.Comment
+import com.czbix.v2ex.db.CommentAndMember
+import com.czbix.v2ex.db.Member
 import com.czbix.v2ex.helper.JsoupObjects
-import com.czbix.v2ex.model.*
+import com.czbix.v2ex.model.Avatar
+import com.czbix.v2ex.model.Postscript
+import com.czbix.v2ex.model.Topic
+import com.czbix.v2ex.model.TopicResponse
 import com.google.common.base.Preconditions
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -13,13 +19,12 @@ object TopicParser : Parser() {
     private val PATTERN_POSTSCRIPT = "·\\s+(.+)".toRegex()
     private val PATTERN_NUMBERS = "\\d+".toRegex()
 
-    @JvmStatic
-    fun parseDoc(doc: Document, topic: Topic): TopicWithComments {
+    fun parseDoc(doc: Document, topic: Topic, page: Int): TopicResponse {
         val topicBuilder = topic.toBuilder()
         val contentEle = JsoupObjects(doc).bfs("body").child("#Wrapper").child(".content").first()
 
         val csrfToken = parseTopicInfo(topicBuilder, contentEle)
-        val comments = parseComments(contentEle)
+        val comments = parseComments(contentEle, topic.id, page)
         val pageNum = getMaxPage(contentEle)
 
         val onceToken = if (UserState.isLoggedIn()) {
@@ -30,7 +35,7 @@ object TopicParser : Parser() {
 
         val newTopic = topicBuilder.build()
 
-        return TopicWithComments(newTopic, comments, pageNum.first,
+        return TopicResponse(newTopic, comments, pageNum.first,
                 pageNum.second, csrfToken, onceToken)
     }
 
@@ -39,7 +44,7 @@ object TopicParser : Parser() {
         return if (ele == null) {
             1 to 1
         } else {
-            val maxPage = ele.children().size
+            val maxPage = JsoupObjects(ele).child("a").count() + 1
             val curPage = JsoupObjects.child(ele, ".page_current").text().toInt()
 
             curPage to maxPage
@@ -123,7 +128,7 @@ object TopicParser : Parser() {
         }
     }
 
-    private fun parseComments(main: Element): List<Comment> {
+    private fun parseComments(main: Element, topicId: Int, page: Int): List<CommentAndMember> {
         val elements = JsoupObjects(main).child(".box:nth-child(3)").child("[id^=r_]").child("table").child("tbody").child("tr")
         return elements.map { ele ->
             val avatarBuilder = Avatar.Builder()
@@ -132,48 +137,53 @@ object TopicParser : Parser() {
             val td = JsoupObjects.child(ele, "td:nth-child(3)")
 
             val memberBuilder = Member.Builder()
-            memberBuilder.setAvatar(avatarBuilder.build())
+            memberBuilder.avatar = avatarBuilder.build()
             parseMember(memberBuilder, td)
 
-            val commentBuilder = Comment.Builder()
-            commentBuilder.setMember(memberBuilder.createMember())
+            val commentBuilder = Comment.Builder().also {
+                it.topicId = topicId
+                it.page = page
+            }
+            val member = memberBuilder.build()
+            commentBuilder.username = member.username
 
             parseCommentInfo(commentBuilder, td)
             parseCommentContent(commentBuilder, td)
 
-            commentBuilder.createComment()
+            val comment = commentBuilder.build()
+
+            CommentAndMember(comment, member)
         }
     }
 
     private fun parseCommentContent(builder: Comment.Builder, ele: Element) {
-        builder.setContent(JsoupObjects.child(ele, ".reply_content").html())
+        builder.content = JsoupObjects.child(ele, ".reply_content").html()
     }
 
     private fun parseCommentInfo(builder: Comment.Builder, ele: Element) {
         val tableEle = JsoupObjects.parents(ele, "div")
         // example data: r_123456
         val id = tableEle.id().substring(2).toInt()
-        builder.setId(id)
+        builder.id = id
 
         val fr = JsoupObjects.child(ele, ".fr")
-        builder.setThanked(JsoupObjects(fr).child(".thank_area").any { it.hasClass("thanked") })
-        builder.setFloor(JsoupObjects.child(fr, ".no").text().toInt())
+        builder.thanked = JsoupObjects(fr).child(".thank_area").any { it.hasClass("thanked") }
+        builder.floor = JsoupObjects.child(fr, ".no").text().toInt()
 
         val elements = JsoupObjects(ele).child(".small").toList()
 
         val timeEle = elements[0]
-        builder.setReplyTime(timeEle.text())
+        builder.addAt = timeEle.text()
 
         if (elements.size == 2) {
             val matcher = checkNotNull(PATTERN_NUMBERS.find(elements[1].text()))
 
-            val thanks = matcher.value.toInt()
-            builder.setThanks(thanks)
+            builder.thanks = matcher.value.toInt()
         }
     }
 
     private fun parseMember(builder: Member.Builder, ele: Element) {
-        builder.setUsername(JsoupObjects(ele).bfs(".dark").first().text())
+        builder.username = JsoupObjects(ele).bfs(".dark").first().text()
     }
 
     private fun parseAvatar(builder: Avatar.Builder, ele: Element) {

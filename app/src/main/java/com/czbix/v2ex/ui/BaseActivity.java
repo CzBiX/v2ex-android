@@ -18,7 +18,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         final Wrapper wrapper = new Wrapper();
         AppCtx.getEventBus().register(wrapper);
 
-        if (AppCtx.getInstance().isInited()) {
+        if (!AppCtx.getInstance().isInited().isLocked()) {
             AppCtx.getEventBus().unregister(wrapper);
             return;
         }

@@ -25,6 +25,7 @@
         android:layout_marginBottom="16dp"
         android:layout_width="@dimen/btn_jump_back_size"
         android:layout_height="@dimen/btn_jump_back_size"
+        tools:visibility="visible"
         tools:ignore="ContentDescription"/>
 
     <ViewStub android:id="@+id/reply_form"

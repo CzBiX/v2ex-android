@@ -4,8 +4,11 @@ import android.text.Spanned
 import android.text.style.ImageSpan
 import androidx.core.text.getSpans
 import com.czbix.v2ex.BuildConfig
+import com.czbix.v2ex.db.Member
 import com.czbix.v2ex.helper.JsoupObjects
-import com.czbix.v2ex.model.*
+import com.czbix.v2ex.model.Avatar
+import com.czbix.v2ex.model.ContentBlock
+import com.czbix.v2ex.model.Node
 import com.czbix.v2ex.util.MiscUtils
 import com.czbix.v2ex.util.ViewUtils
 import org.jsoup.Jsoup
@@ -67,7 +70,7 @@ abstract class Parser {
             // get member url
             check(ele.tagName() == "a")
             val url = ele.attr("href")
-            memberBuilder.setUsername(Member.getNameFromUrl(url))
+            memberBuilder.username = Member.getNameFromUrl(url)
 
             // get member avatar
             ele = ele.child(0)
@@ -75,15 +78,15 @@ abstract class Parser {
             check(ele.tagName() == "img")
             avatarBuilder.setUrl(ele.attr("src"))
 
-            memberBuilder.setAvatar(avatarBuilder.build())
+            memberBuilder.avatar = avatarBuilder.build()
 
-            return memberBuilder.createMember()
+            return memberBuilder.build()
         }
 
         fun parseHtml2Blocks(html: String): List<ContentBlock> {
             val builder = ViewUtils.parseHtml(html, null, true)
             val simpleResult by lazy {
-                val block = TextBlock(0, builder)
+                val block = ContentBlock.TextBlock(0, builder)
 
                 listOf(block)
             }
@@ -104,11 +107,11 @@ abstract class Parser {
                 val start = builder.getSpanStart(span)
                 val text = builder.subSequence(lastEndPos, start).trim()
                 if (text.isNotEmpty()) {
-                    blocks.add(TextBlock(index++, text))
+                    blocks.add(ContentBlock.TextBlock(index++, text))
                 }
 
                 val url = MiscUtils.formatUrl(span.source!!)
-                blocks.add(ImageBlock(index++, url))
+                blocks.add(ContentBlock.ImageBlock(index++, url))
 
                 lastEndPos = builder.getSpanEnd(span)
             }
@@ -117,7 +120,7 @@ abstract class Parser {
             if (lastEndPos != length) {
                 val text = builder.subSequence(lastEndPos, length).trim()
 
-                blocks.add(TextBlock(index, text))
+                blocks.add(ContentBlock.TextBlock(index, text))
             }
 
             return blocks

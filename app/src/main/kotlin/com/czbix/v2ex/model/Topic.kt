@@ -1,5 +1,6 @@
 package com.czbix.v2ex.model
 
+import com.czbix.v2ex.db.Member
 import com.czbix.v2ex.network.RequestHelper
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
@@ -84,6 +85,10 @@ data class Topic(
         result = 31 * result + hasRead.hashCode()
         result = 31 * result + hasInfo.hashCode()
         return result
+    }
+
+    override fun toString(): String {
+        return "Topic(id=$id, title=$title)"
     }
 
     class Builder {

@@ -1,14 +1,13 @@
 package com.czbix.v2ex.model
 
 import android.os.Parcelable
+import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
-import com.google.common.cache.CacheLoader
-import com.google.common.cache.LoadingCache
 import kotlinx.android.parcel.Parcelize
 import java.util.regex.Pattern
 
 @Parcelize
-class Avatar(
+data class Avatar(
         val baseUrl: String
 ) : Parcelable {
     fun getUrlByPx(size: Int): String {
@@ -35,22 +34,20 @@ class Avatar(
         }
 
         fun build(): Avatar {
-            return CACHE.get(mBaseUrl)
+            return CACHE.get(mBaseUrl) {
+                Avatar(mBaseUrl)
+            }
         }
 
         companion object {
-            private val CACHE: LoadingCache<String, Avatar>
+            private val CACHE: Cache<String, Avatar>
 
             init {
                 CACHE = CacheBuilder.newBuilder()
                         .softValues()
                         .initialCapacity(32)
                         .maximumSize(128)
-                        .build(object : CacheLoader<String, Avatar>() {
-                            override fun load(key: String): Avatar {
-                                return Avatar(key)
-                            }
-                        })
+                        .build()
             }
         }
     }

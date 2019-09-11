@@ -35,7 +35,6 @@
     <string name="toast_sending">发送中…</string>
     <string name="toast_cancel_failed">取消失败！</string>
     <string name="action_cancel">取消</string>
-    <string name="toast_reply_saved_as_draft">评论已保存为草稿</string>
     <string name="drawer_notifications">通知</string>
     <string name="action_thank">感谢</string>
     <string name="action_ignore">忽略</string>
@@ -43,7 +42,7 @@
     <string name="toast_daily_award_received">每日登录奖励已领取</string>
     <string name="tv_daily_bonus">每日奖励</string>
     <string name="toast_connection_exception">网络连接失败…</string>
-    <string name="toast_need_sign_in">请先登录！</string>
+    <string name="toast_need_sign_in">请先登录</string>
     <string name="toast_remote_exception">服务器错误，请稍候再试！</string>
     <string name="pref_title_always_load_image">总是显示图片</string>
     <string name="pref_summary_load_image_on_mobile_network">在使用移动网络时，载入主题或回复中的图片</string>
@@ -69,7 +68,7 @@
     <string name="toast_can_not_found_comments_of_the_author">找不到 %s 的评论！</string>
     <string name="pref_long_press_to_sort">长按项目进行排序</string>
     <string name="pref_title_tab_list">自定义分类显示</string>
-    <string name="toast_parse_failed">解析失败！</string>
+    <string name="toast_parse_failed">解析失败</string>
     <string name="pref_receive_notifications">接收通知消息</string>
     <string name="pref_summary_receive_notifications">通过 FCM 接收消息提醒</string>
     <string name="toast_register_device_failed">注册设备失败！</string>
@@ -90,7 +89,7 @@
     <string name="action_load">载入</string>
     <string name="title_select_node">选择节点</string>
     <string name="toast_activity_not_found">打开应用失败！</string>
-    <string name="toast_topic_not_found">主题未找到！</string>
+    <string name="toast_topic_not_found">主题未找到</string>
     <string name="toast_access_denied">拒绝访问，请稍候再试！</string>
     <string name="pref_title_always_show_reply_form">总是显示回复框</string>
     <string name="drawer_feedback">反馈</string>
@@ -117,8 +116,13 @@
     <string name="pref_version">版本</string>
     <string name="error_invalid_auth_code">验证码无效</string>
     <string name="title_two_factor_auth">两步验证</string>
-    <string name="toast_node_not_found">节点未找到！</string>
+    <string name="toast_node_not_found">节点未找到</string>
     <string name="toast_access_restricted">访问受限！请在网页版验证手机号。</string>
     <string name="desc_author">楼主</string>
     <string name="action_copy_link">复制链接</string>
+    <string name="toast_unknown_error">未知错误</string>
+    <string name="label_failed_with_retry">载入失败，点击重试。</string>
+    <string name="label_loading">载入中…</string>
+    <string name="label_no_comments">还没有人评论</string>
+    <string name="label_no_more_comments">没有更多评论了</string>
 </resources>

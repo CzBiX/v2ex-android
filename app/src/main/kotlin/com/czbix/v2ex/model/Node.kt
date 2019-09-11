@@ -89,6 +89,10 @@ class Node : Page, Comparable<Node>, ExArrayAdapter.Filterable, Favable {
         return String.format("%s/unfavorite/node/%d?once=%s", RequestHelper.BASE_URL, id, token)
     }
 
+    override fun toString(): String {
+        return "Node(id=$id, name='$name')"
+    }
+
     class Builder {
         private var mId: Int = 0
         private var mTitle: String? = null

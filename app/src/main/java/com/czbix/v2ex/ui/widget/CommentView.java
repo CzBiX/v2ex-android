@@ -14,13 +14,13 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.ViewerProvider;
 import com.czbix.v2ex.common.UserState;
-import com.czbix.v2ex.model.Comment;
-import com.czbix.v2ex.model.Member;
+import com.czbix.v2ex.db.Comment;
+import com.czbix.v2ex.db.CommentAndMember;
+import com.czbix.v2ex.db.Member;
 import com.czbix.v2ex.network.GlideApp;
 import com.czbix.v2ex.util.ViewUtils;
 
@@ -35,7 +35,8 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
     private final TextView mThanks;
     private final TextView mAuthor;
     private OnCommentActionListener mListener;
-    private Comment mComment;
+    private Comment comment;
+    private Member member;
     private int mPos;
 
     public CommentView(Context context) {
@@ -73,21 +74,22 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
     }
 
     @SuppressLint({"DefaultLocale", "SetTextI18n"})
-    public void fillData(RequestManager glide, Comment comment, boolean isAuthor, int position) {
-        mComment = comment;
+    public void fillData(RequestManager glide, CommentAndMember item, boolean isAuthor, int position) {
+        comment = item.getComment();
+        member = item.getMember();
         mPos = position;
 
         ViewUtils.setHtmlIntoTextView(mContent, comment.getContent(), 0, false);
         appendThanks(comment);
 
-        mUsername.setText(comment.getMember().getUsername());
-        mReplyTime.setText(comment.getReplyTime());
+        mUsername.setText(member.getUsername());
+        mReplyTime.setText(comment.getAddAt());
 
         mFloor.setText(Integer.toString(comment.getFloor()));
 
         mAuthor.setVisibility(isAuthor ? View.VISIBLE : View.GONE);
 
-        mAvatar.setAvatar(glide, comment.getMember().getAvatar());
+        mAvatar.setAvatar(glide, member.getAvatar());
     }
 
     public void clear(RequestManager glide) {
@@ -102,7 +104,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
         }
 
         final String text = "+" + comment.getThanks();
-        if (comment.isThanked()) {
+        if (comment.getThanked()) {
             final ForegroundColorSpan span = new ForegroundColorSpan(
                     ContextCompat.getColor(mThanks.getContext(), R.color.highlight_green));
             final SpannableString string = new SpannableString(text);
@@ -123,7 +125,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
         }
 
         final String username = UserState.INSTANCE.getUsername();
-        if (mComment.getMember().getUsername().equals(username)) {
+        if (member.getUsername().equals(username)) {
             // can't do action on comment by myself
             return;
         }
@@ -134,7 +136,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
             final MenuItem item = menu.getItem(i);
             item.setOnMenuItemClickListener(this);
             if (item.getItemId() == R.id.action_thank) {
-                item.setEnabled(!mComment.isThanked());
+                item.setEnabled(!comment.getThanked());
             }
         }
 
@@ -144,7 +146,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
     @Override
     public void onClick(View v) {
         if (v == mAvatar || v == mUsername) {
-            mListener.onMemberClick(mComment.getMember());
+            mListener.onMemberClick(member);
         }
     }
 
@@ -152,16 +154,16 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_thank:
-                mListener.onCommentThank(mComment);
+                mListener.onCommentThank(comment);
                 return true;
             case R.id.action_reply:
-                mListener.onCommentReply(mComment);
+                mListener.onCommentReply(comment, member);
                 return true;
             case R.id.action_ignore:
-                mListener.onCommentIgnore(mComment);
+                mListener.onCommentIgnore(comment);
                 return true;
             case R.id.action_copy:
-                mListener.onCommentCopy(mComment, mContent.getText().toString());
+                mListener.onCommentCopy(comment, mContent.getText().toString());
                 return true;
         }
         return false;
@@ -180,7 +182,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
     public interface OnCommentActionListener {
         void onMemberClick(Member member);
         void onCommentThank(Comment comment);
-        void onCommentReply(Comment comment);
+        void onCommentReply(Comment comment, Member member);
         void onCommentIgnore(Comment comment);
         void onCommentCopy(Comment comment, String content);
         void onCommentUrlClick(String url, int pos);

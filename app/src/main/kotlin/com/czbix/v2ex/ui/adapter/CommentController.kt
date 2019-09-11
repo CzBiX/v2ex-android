@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.core.view.updatePaddingRelative
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.airbnb.epoxy.*
+import com.airbnb.epoxy.paging.PagedListEpoxyController
 import com.airbnb.epoxy.preload.Preloadable
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
@@ -18,12 +19,17 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.target.Target
+import com.czbix.v2ex.CommentPlaceholderBindingModel_
 import com.czbix.v2ex.R
+import com.czbix.v2ex.commentsFooter
 import com.czbix.v2ex.common.PrefStore
-import com.czbix.v2ex.model.*
+import com.czbix.v2ex.db.CommentAndMember
+import com.czbix.v2ex.model.ContentBlock
+import com.czbix.v2ex.model.Topic
 import com.czbix.v2ex.network.GlideConfig
 import com.czbix.v2ex.postscript
 import com.czbix.v2ex.ui.ExHolder
+import com.czbix.v2ex.ui.common.RetryCallback
 import com.czbix.v2ex.ui.fragment.NodeListFragment.OnNodeActionListener
 import com.czbix.v2ex.ui.widget.*
 import com.czbix.v2ex.ui.widget.AvatarView.OnAvatarActionListener
@@ -35,30 +41,65 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 class CommentController(
-        private val mCommentListener: OnCommentActionListener,
-        private val mContentListener: OnHtmlActionListener,
-        private val mNodeListener: OnNodeActionListener,
-        private val mAvatarListener: OnAvatarActionListener
-) : EpoxyController() {
-    private lateinit var topic: Topic
-    private var author: Member? = null
-    private var commentList: List<Comment>? = null
+        private val commentListener: OnCommentActionListener,
+        private val contentListener: OnHtmlActionListener,
+        private val nodeListener: OnNodeActionListener,
+        private val avatarListener: OnAvatarActionListener
+) : PagedListEpoxyController<CommentAndMember>() {
+    private var topic: Topic? = null
+    private var loading = false
+    private var failed = false
+
+    lateinit var retryCallback: RetryCallback
+
     var commentBasePos: Int = 0
         private set
 
-    fun setTopic(topic: Topic) {
+    fun setData(topic: Topic?) {
         this.topic = topic
+        this.loading = false
+        this.failed = false
 
         requestDelayedModelBuild(100)
     }
 
-    fun setData(author: Member?, comments: List<Comment>?) {
-        this.author = author
-        this.commentList = comments
+    fun setLoading(loading: Boolean) {
+        this.loading = loading
+
         requestModelBuild()
     }
 
-    override fun buildModels() {
+    fun setFailed() {
+        this.loading = false
+        this.failed = true
+
+        requestModelBuild()
+    }
+
+    override fun buildItemModel(currentPosition: Int, item: CommentAndMember?): EpoxyModel<*> {
+        if (item == null) {
+            return CommentPlaceholderBindingModel_().apply {
+                id("placeholder_$currentPosition")
+                floor(currentPosition.toString())
+            }
+        }
+
+        return `CommentController$CommentModel_`().apply {
+            id(item.comment.id)
+            listener(commentListener)
+            comment(item)
+            isAuthor(item.member.isSameUser(topic!!.member!!))
+            position(currentPosition)
+        }
+    }
+
+    override fun addModels(models: List<EpoxyModel<*>>) {
+        if (topic == null) {
+            return
+        }
+
+        val topic = this.topic!!
+
         if (!topic.hasInfo) {
             return
         }
@@ -67,16 +108,15 @@ class CommentController(
 
         commentControllerTopic {
             id("topic")
-            nodeListener(mNodeListener)
-            avatarListener(mAvatarListener)
+            nodeListener(nodeListener)
+            avatarListener(avatarListener)
             topic(topic)
             hasContent(!topic.content.isNullOrEmpty())
             hasPostscript(hasPostscript)
         }
 
         topic.content?.run {
-
-            addBlocks("t", this) {index ->
+            addBlocks("t", this) { index ->
                 !hasPostscript && index == lastIndex
             }
         }
@@ -99,13 +139,23 @@ class CommentController(
         }
 
         commentBasePos = modelCountBuiltSoFar
-        commentList?.forEachIndexed { index, comment ->
-            commentControllerComment {
-                id(comment.id)
-                listener(mCommentListener)
-                comment(comment)
-                isAuthor(comment.member.isSameUser(author!!))
-                position(index)
+        val hasComments = models.isNotEmpty()
+
+        super.addModels(models)
+
+        val footerText = when {
+            loading -> R.string.label_loading
+            failed -> R.string.label_failed_with_retry
+            !hasComments -> R.string.label_no_comments
+            else -> R.string.label_no_more_comments
+        }
+        commentsFooter {
+            id("footer")
+            textRes(footerText)
+            if (failed) {
+                footerListener { _ ->
+                    retryCallback.retry()
+                }
             }
         }
     }
@@ -113,23 +163,22 @@ class CommentController(
     private inline fun addBlocks(tag: String, blocks: List<ContentBlock>, showDivider: (index: Int) -> Boolean) {
         blocks.forEachIndexed { index, block ->
             when (block) {
-                is TextBlock -> {
+                is ContentBlock.TextBlock -> {
                     commentControllerTextBlock {
                         id("${tag}_${block.id}")
                         text(block.text)
                         showDivider(showDivider(index))
-                        contentListener(mContentListener)
+                        contentListener(contentListener)
                     }
                 }
-                is ImageBlock -> {
+                is ContentBlock.ImageBlock -> {
                     commentControllerImageBlock {
                         id("${tag}_${block.id}")
                         source(block.source)
                         showDivider(showDivider(index))
-                        contentListener(mContentListener)
+                        contentListener(contentListener)
                     }
                 }
-                else -> error("Unknown block type.")
             }
         }
     }
@@ -160,7 +209,7 @@ class CommentController(
         }
 
         class Holder : ExHolder<TextView>() {
-            override fun init() {
+            override fun onCreate() {
                 if (PrefStore.getInstance().isContentSelectable) {
                     view.setTextIsSelectable(true)
                 }
@@ -173,6 +222,8 @@ class CommentController(
         @EpoxyAttribute
         lateinit var source: String
 
+        private lateinit var lastTarget: ImageTarget
+
         override fun bind(holder: Holder) {
             val view = holder.view
             DividerItemDecoration.setHasDivider(view, showDivider)
@@ -184,10 +235,10 @@ class CommentController(
                     .error(holder.errorDrawable)
 
             val shouldLoadImage = PrefStore.getInstance().shouldLoadImage()
-            if (!shouldLoadImage) {
+            lastTarget = if (!shouldLoadImage) {
                 request.load(holder.disabledDrawable)
             } else {
-                request.listener(getGlideListener(view))
+                request.listener(holder.glideListener)
             }.into(holder.target)
         }
 
@@ -199,10 +250,17 @@ class CommentController(
         }
 
         override fun unbind(holder: Holder) {
+            holder.view.setOnClickListener(null)
             holder.glide.clear(holder.view)
         }
 
         override fun onClick(v: View?) {
+            val request = lastTarget.request
+            if (request != null && request.isFailed) {
+                request.begin()
+                return
+            }
+
             contentListener.onImageClick(source)
         }
 
@@ -219,7 +277,7 @@ class CommentController(
                 resetState()
                 super.onLoadStarted(placeholder)
 
-                if (placeholder is Animatable) {
+                if (placeholder is Animatable && !placeholder.isRunning) {
                     // HACK: let placeholder animated
                     onResourceReady(placeholder, null)
                 }
@@ -245,6 +303,7 @@ class CommentController(
             }
             override val viewsToPreload by lazy { listOf(view) }
             val target by lazy { ImageTarget(view) }
+            val glideListener by lazy { getGlideListener(view) }
         }
 
         companion object {
@@ -329,7 +388,7 @@ class CommentController(
         }
 
         class Holder : ExHolder<TopicView>() {
-            override fun init() {
+            override fun onCreate() {
                 view.updatePaddingRelative(
                         top = view.paddingTop * 2,
                         bottom = view.paddingBottom * 2
@@ -344,7 +403,7 @@ class CommentController(
         lateinit var listener: OnCommentActionListener
 
         @EpoxyAttribute
-        lateinit var comment: Comment
+        lateinit var comment: CommentAndMember
 
         @EpoxyAttribute
         var isAuthor = false
@@ -364,7 +423,7 @@ class CommentController(
         }
 
         fun getImgRequest(glide: RequestManager, avatarView: AvatarView): RequestBuilder<Drawable> {
-            return avatarView.getImgRequest(glide, comment.member.avatar!!)
+            return avatarView.getImgRequest(glide, comment.member.avatar)
         }
 
         class Holder : ExHolder<CommentView>(), Preloadable {

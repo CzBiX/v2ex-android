@@ -7,12 +7,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,13 +16,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.czbix.v2ex.R;
 import com.czbix.v2ex.common.UserState;
 import com.czbix.v2ex.common.exception.ConnectionException;
 import com.czbix.v2ex.common.exception.FatalException;
 import com.czbix.v2ex.common.exception.RemoteException;
 import com.czbix.v2ex.common.exception.RequestException;
-import com.czbix.v2ex.dao.DraftDao;
 import com.czbix.v2ex.dao.NodeDao;
 import com.czbix.v2ex.model.Node;
 import com.czbix.v2ex.model.db.Draft;
@@ -40,6 +37,7 @@ import com.czbix.v2ex.ui.widget.SearchListView;
 import com.czbix.v2ex.util.ExecutorUtils;
 import com.czbix.v2ex.util.MiscUtils;
 import com.czbix.v2ex.util.ViewUtils;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
@@ -76,7 +74,7 @@ public class TopicEditActivity extends AppCompatActivity {
 
         final ActionBar actionBar = getSupportActionBar();
         Preconditions.checkNotNull(actionBar);
-        actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
     @Nullable
@@ -149,8 +147,6 @@ public class TopicEditActivity extends AppCompatActivity {
                 mLayout.post(new Runnable() {
                     @Override
                     public void run() {
-                        DraftDao.delete(DraftDao.ID_TOPIC_DRAFT);
-
                         final Intent intent = new Intent(TopicEditActivity.this, TopicActivity.class);
                         intent.putExtra(TopicActivity.KEY_TOPIC_ID, id);
                         startActivity(intent);
@@ -208,12 +204,7 @@ public class TopicEditActivity extends AppCompatActivity {
             return;
         }
 
-        final Draft draft = DraftDao.get(DraftDao.ID_TOPIC_DRAFT);
-        if (draft == null) {
-            loadNodeFromIntent();
-        } else {
-            showDraftDialog(draft);
-        }
+        loadNodeFromIntent();
     }
 
     private void loadNodeFromIntent() {
@@ -285,7 +276,7 @@ public class TopicEditActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.action_discard, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DraftDao.delete(draft.mId);
+//                        DraftDao.delete(draft.mId);
 
                         loadNodeFromIntent();
                     }
@@ -303,17 +294,19 @@ public class TopicEditActivity extends AppCompatActivity {
             return;
         }
 
+        /*
         final String nodeName = mNode.getName();
         final String title = mTitle.getText().toString();
         final String content = mContent.getText().toString();
 
         final TopicDraft topicDraft = new TopicDraft(nodeName, title, content);
         DraftDao.update(DraftDao.ID_TOPIC_DRAFT, topicDraft.toJson());
-        Toast.makeText(this, R.string.toast_topic_saved_as_draft, Toast.LENGTH_SHORT).show();
+        TODO
+         */
+        Toast.makeText(this, R.string.action_discard, Toast.LENGTH_SHORT).show();
     }
 
     private void updateNodeText() {
         mSelectedNode.setText(Html.fromHtml(getString(R.string.tv_selected_node, mNode.getTitle())));
     }
-
 }

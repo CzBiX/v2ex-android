@@ -21,13 +21,15 @@ import com.czbix.v2ex.common.exception.FatalException
 import com.czbix.v2ex.common.exception.RemoteException
 import com.czbix.v2ex.common.exception.RequestException
 import com.czbix.v2ex.dao.NodeDao
+import com.czbix.v2ex.db.TopicRecordDao
 import com.czbix.v2ex.event.BaseEvent
 import com.czbix.v2ex.helper.RxBus
+import com.czbix.v2ex.inject.Injectable
 import com.czbix.v2ex.model.Node
 import com.czbix.v2ex.model.Page
 import com.czbix.v2ex.model.Topic
 import com.czbix.v2ex.network.HttpStatus
-import com.czbix.v2ex.network.RequestHelper
+import com.czbix.v2ex.network.V2exService
 import com.czbix.v2ex.ui.MainActivity
 import com.czbix.v2ex.ui.TopicActivity
 import com.czbix.v2ex.ui.TopicEditActivity
@@ -44,8 +46,10 @@ import com.czbix.v2ex.util.LogUtils
 import com.czbix.v2ex.util.dispose
 import com.google.common.net.HttpHeaders
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
-class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<LoaderResult<TopicListLoader.TopicList>>, SwipeRefreshLayout.OnRefreshListener, OnTopicActionListener {
+class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<LoaderResult<TopicListLoader.TopicList>>, SwipeRefreshLayout.OnRefreshListener, OnTopicActionListener,  Injectable {
     private lateinit var mPage: Page
 
     private lateinit var controller: TopicController
@@ -56,6 +60,12 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
     private val disposables: MutableList<Disposable> = mutableListOf()
     private var mFavored: Boolean = false
     private var mOnceToken: String? = null
+
+    @Inject
+    lateinit var topicDao: TopicRecordDao
+
+    @Inject
+    lateinit var v2exService: V2exService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,7 +161,7 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
         Crashlytics.log(log)
         LogUtils.d(TAG, log)
 
-        return TopicListLoader(activity!!, mPage)
+        return TopicListLoader(activity!!, mPage, topicDao)
     }
 
     override fun onLoadFinished(loader: Loader<LoaderResult<TopicListLoader.TopicList>>, result: LoaderResult<TopicListLoader.TopicList>) {
@@ -276,7 +286,9 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
         ExecutorUtils.execute {
             try {
                 val node = mPage as Node
-                RequestHelper.favor(node, mFavored, mOnceToken!!)
+                runBlocking {
+                    v2exService.favor(node, mFavored, mOnceToken!!)
+                }
             } catch (e: Exception) {
                 when (e) {
                     is ConnectionException, is RemoteException -> {

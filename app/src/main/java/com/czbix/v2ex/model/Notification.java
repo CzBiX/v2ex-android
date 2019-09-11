@@ -2,6 +2,7 @@ package com.czbix.v2ex.model;
 
 import androidx.annotation.IntDef;
 
+import com.czbix.v2ex.db.Member;
 import com.google.common.base.Objects;
 
 import java.lang.annotation.Retention;

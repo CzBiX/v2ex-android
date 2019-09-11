@@ -16,7 +16,7 @@ import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.event.DeviceRegisterEvent
 import com.czbix.v2ex.google.GoogleHelper
 import com.czbix.v2ex.helper.RxBus
-import com.czbix.v2ex.model.Member
+import com.czbix.v2ex.db.Member
 import com.czbix.v2ex.util.MiscUtils
 import com.google.common.base.Strings
 import io.reactivex.disposables.Disposable

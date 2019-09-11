@@ -14,12 +14,21 @@ import com.czbix.v2ex.util.ViewUtils;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.common.base.Strings;
 
-public class TopicActivity extends BaseActivity {
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasAndroidInjector;
+
+public class TopicActivity extends BaseActivity implements HasAndroidInjector {
     private static final String TAG = TopicActivity.class.getSimpleName();
 
     public static final String KEY_TOPIC = "topic";
     public static final String KEY_TOPIC_ID = "topic_id";
     private AppBarLayout mAppBarLayout;
+
+    @Inject
+    DispatchingAndroidInjector<Object> dispatchingAndroidInjector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +46,11 @@ public class TopicActivity extends BaseActivity {
 
             addFragmentToView(topic);
         }
+    }
+
+    @Override
+    public AndroidInjector<Object> androidInjector() {
+        return dispatchingAndroidInjector;
     }
 
     public AppBarLayout getAppBarLayout() {

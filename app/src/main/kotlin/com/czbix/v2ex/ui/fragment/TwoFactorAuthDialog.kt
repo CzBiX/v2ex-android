@@ -3,14 +3,14 @@ package com.czbix.v2ex.ui.fragment
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import androidx.fragment.app.DialogFragment
-import androidx.appcompat.app.AlertDialog
 import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.DialogFragment
 import com.czbix.v2ex.R
 import com.czbix.v2ex.event.BaseEvent
 import com.czbix.v2ex.helper.RxBus
 
-class TwoFactorAuthDialog : androidx.fragment.app.DialogFragment(), DialogInterface.OnClickListener {
+class TwoFactorAuthDialog : DialogFragment(), DialogInterface.OnClickListener {
     private lateinit var editText: EditText
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -30,7 +30,9 @@ class TwoFactorAuthDialog : androidx.fragment.app.DialogFragment(), DialogInterf
     override fun onStart() {
         super.onStart()
 
-        (dialog as AlertDialog).getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
+        val dialog = dialog as AlertDialog
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
             onClick(dialog, DialogInterface.BUTTON_POSITIVE)
         }
     }
@@ -52,7 +54,7 @@ class TwoFactorAuthDialog : androidx.fragment.app.DialogFragment(), DialogInterf
         }
     }
 
-    override fun onCancel(dialog: DialogInterface?) {
+    override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
 
         RxBus.post(TwoFactorAuthEvent())

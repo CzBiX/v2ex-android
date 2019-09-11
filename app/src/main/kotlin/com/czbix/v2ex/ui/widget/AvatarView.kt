@@ -10,7 +10,7 @@ import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.czbix.v2ex.R
 import com.czbix.v2ex.model.Avatar
-import com.czbix.v2ex.model.Member
+import com.czbix.v2ex.db.Member
 
 class AvatarView @JvmOverloads constructor(
         context: Context,

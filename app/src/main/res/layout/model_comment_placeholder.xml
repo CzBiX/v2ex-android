@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="floor"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/avatar_img"
+            android:layout_width="@dimen/comment_avatar_size"
+            android:layout_height="@dimen/comment_avatar_size"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/desc_avatar"
+            android:padding="8dp"
+            android:src="@drawable/avatar_default"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/username_tv"
+            android:layout_width="80sp"
+            android:layout_height="19sp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/placeholder"
+            app:layout_constraintLeft_toRightOf="@+id/avatar_img"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Username" />
+
+        <View
+            android:id="@+id/time_tv"
+            android:layout_width="60sp"
+            android:layout_height="16sp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/placeholder"
+            app:layout_constraintLeft_toRightOf="@+id/avatar_img"
+            app:layout_constraintTop_toBottomOf="@+id/username_tv"
+            tools:text="12h" />
+
+        <View
+            android:id="@+id/content"
+            android:layout_width="0dp"
+            android:layout_height="20sp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/placeholder"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/avatar_img"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/avatar_img"
+            tools:text="Content" />
+
+        <TextView
+            style="@style/AppTheme.Topic.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@{floor}"
+            tools:text="23" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
