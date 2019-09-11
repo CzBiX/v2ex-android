@@ -18,11 +18,13 @@ import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.IdRes
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.target.CustomViewTarget
@@ -44,14 +46,12 @@ import com.czbix.v2ex.network.RequestHelper
 import com.czbix.v2ex.presenter.TopicSearchPresenter
 import com.czbix.v2ex.res.GoogleImg
 import com.czbix.v2ex.ui.fragment.*
+import com.czbix.v2ex.ui.model.NightModeViewModel
 import com.czbix.v2ex.ui.widget.SearchBoxLayout
 import com.czbix.v2ex.util.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.navigation.NavigationView
 import com.google.common.eventbus.Subscribe
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
@@ -59,8 +59,7 @@ class MainActivity :
         BaseActivity(),
         NavigationView.OnNavigationItemSelectedListener,
         NodeListFragment.OnNodeActionListener,
-        androidx.fragment.app.FragmentManager.OnBackStackChangedListener,
-        HasAndroidInjector
+        androidx.fragment.app.FragmentManager.OnBackStackChangedListener
 {
     private var mIsTabFragment: Boolean = false
     private var mToolbar: Toolbar? = null
@@ -81,11 +80,18 @@ class MainActivity :
     private lateinit var mFavItem: MenuItem
 
     @Inject
-    lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel: NightModeViewModel by viewModels {
+        viewModelFactory
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
+
+        initNightMode(viewModel.nightMode)
+
         setContentView(R.layout.activity_main)
 
         mAppBar = findViewById(R.id.appbar)
@@ -106,10 +112,6 @@ class MainActivity :
 
         supportFragmentManager.addOnBackStackChangedListener(this)
         switchFragment(getFragmentToShow(intent), false)
-    }
-
-    override fun androidInjector(): AndroidInjector<Any> {
-        return dispatchingAndroidInjector
     }
 
     override fun onDestroy() {

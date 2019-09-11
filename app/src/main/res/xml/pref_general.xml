@@ -1,46 +1,63 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
     <PreferenceCategory
         android:key="general"
         android:title="@string/pref_category_general">
         <Preference android:key="debug"
-                    android:title="Debug"/>
+            android:title="Debug"/>
         <Preference android:key="login"
-                    android:title="@string/pref_sign_in"/>
+            android:icon="@drawable/ic_person_add_outline"
+            android:title="@string/pref_sign_in"/>
+        <ListPreference android:key="night_mode"
+            android:icon="@drawable/ic_brightness_medium_outline"
+            android:title="Night mode"
+            android:entries="@array/settings_night_mode_title"
+            android:entryValues="@array/settings_night_mode_value"
+            app:useSimpleSummaryProvider="true"
+            />
         <SwitchPreference android:key="always_load_image"
-                          android:title="@string/pref_title_always_load_image"
-                          android:summary="@string/pref_summary_load_image_on_mobile_network"/>
+            android:icon="@drawable/ic_image_outline"
+            android:title="@string/pref_title_always_load_image"
+            android:summary="@string/pref_summary_load_image_on_mobile_network"/>
         <SwitchPreference android:key="always_show_reply_form"
-                          android:title="@string/pref_title_always_show_reply_form" />
+            android:icon="@drawable/ic_comment_outline"
+            android:title="@string/pref_title_always_show_reply_form" />
         <SwitchPreference android:key="enable_force_touch"
-                          android:title="@string/pref_title_force_touch"
-                          android:summary="@string/pref_summary_force_touch" />
+            android:title="@string/pref_title_force_touch"
+            android:summary="@string/pref_summary_force_touch" />
         <SwitchPreference android:key="content_selectable"
-                          android:title="@string/pref_title_content_selectable"
-                          android:summary="@string/pref_summary_content_selectable" />
-        <com.czbix.v2ex.ui.preference.TabListPreference
+            android:icon="@drawable/ic_content_copy_outline_black_24dp"
+            android:title="@string/pref_title_content_selectable"
+            android:summary="@string/pref_summary_content_selectable" />
+        <!--com.czbix.v2ex.ui.preference.TabListPreference
             android:title="@string/pref_title_tab_list"
             android:key="tabs_to_show"
             android:dialogTitle="@string/pref_long_press_to_sort"
-            />
+            /-->
     </PreferenceCategory>
     <PreferenceCategory
         android:key="user"
         android:title="@string/pref_category_user">
         <Preference android:key="user_info"
-                    android:title="@string/pref_title_user_info" />
+            android:icon="@drawable/ic_account_circle"
+            android:title="@string/pref_title_user_info" />
         <!--<SwitchPreference android:key="receive_notifications"-->
-                    <!--android:title="@string/pref_receive_notifications"-->
-                    <!--android:summary="@string/pref_summary_receive_notifications" />-->
+        <!--android:title="@string/pref_receive_notifications"-->
+        <!--android:summary="@string/pref_summary_receive_notifications" />-->
         <SwitchPreference android:key="enable_undo"
+            android:icon="@drawable/ic_undo_black_24dp"
             android:title="@string/pref_enable_undo"
             android:summary="@string/pref_summary_enable_undo" />
         <Preference android:key="logout"
-                    android:title="@string/pref_log_out"/>
+            android:icon="@drawable/ic_cancel_outline_black_24dp"
+            android:title="@string/pref_log_out"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/drawer_about">
         <Preference android:key="version"
-                    android:title="@string/pref_version"
-                    android:enabled="false" />
+            android:icon="@drawable/ic_info_outline_black_24dp"
+            android:title="@string/pref_version"
+            android:enabled="false" />
     </PreferenceCategory>
 </PreferenceScreen>

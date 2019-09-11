@@ -1,7 +1,9 @@
 package com.czbix.v2ex.inject
 
 import com.czbix.v2ex.ui.MainActivity
+import com.czbix.v2ex.ui.SettingsActivity
 import com.czbix.v2ex.ui.TopicActivity
+import com.czbix.v2ex.ui.settings.SettingsModule
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -15,4 +17,8 @@ abstract class ActivityModule {
     @ActivityScoped
     @ContributesAndroidInjector(modules = [TopicFragmentModule::class])
     abstract fun topicActivity(): TopicActivity
+
+    @ActivityScoped
+    @ContributesAndroidInjector(modules = [SettingsModule::class])
+    abstract fun settingsActivity(): SettingsActivity
 }

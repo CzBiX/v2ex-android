@@ -1,25 +1,16 @@
 package com.czbix.v2ex.ui.preference;
 
-import android.content.Context;
-import android.preference.DialogPreference;
-import androidx.annotation.NonNull;
-import android.util.AttributeSet;
-import android.view.View;
-import android.widget.ArrayAdapter;
-
-import com.czbix.v2ex.common.PrefStore;
-import com.czbix.v2ex.model.Tab;
-import com.czbix.v2ex.ui.adapter.StableArrayAdapter;
-import com.czbix.v2ex.ui.widget.DragSortListView;
-
-import java.util.List;
-
+/*
 public class TabListPreference extends DialogPreference {
     public List<Tab> mTabsToShow;
 
     public TabListPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
+
+
+
+
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
@@ -57,4 +48,6 @@ public class TabListPreference extends DialogPreference {
         }
         mTabsToShow = null;
     }
+
 }
+ */

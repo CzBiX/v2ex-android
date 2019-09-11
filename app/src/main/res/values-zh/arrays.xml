@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="settings_night_mode_title">
+        <item>浅色</item>
+        <item>深色</item>
+        <item>系统</item>
+    </string-array>
+</resources>

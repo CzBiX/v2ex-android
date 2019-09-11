@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.wifi.WifiManager
 import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.common.PrefStore
+import com.czbix.v2ex.model.PreferenceStorage
 import com.czbix.v2ex.network.RequestHelper
 import com.czbix.v2ex.network.V2exService
 import dagger.Module
@@ -41,6 +42,12 @@ class AppModule {
     @Provides
     fun providesPrefStore(): PrefStore {
         return PrefStore.getInstance()
+    }
+
+    @Singleton
+    @Provides
+    fun providesPreferenceStorage(context: Context): PreferenceStorage {
+        return PreferenceStorage.SharedPreferenceStorage(context)
     }
 
     @Singleton

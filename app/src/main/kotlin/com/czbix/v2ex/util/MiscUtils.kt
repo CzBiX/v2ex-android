@@ -8,8 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
+import android.os.Build
 import android.widget.Toast
 import androidx.core.os.ConfigurationCompat
 import com.czbix.v2ex.AppCtx
@@ -26,9 +25,6 @@ object MiscUtils {
     @JvmField
     val PREFIX_MEMBER: String
 
-    @JvmField
-    val HAS_M: Boolean
-
     init {
         val context = AppCtx.instance
         HOST_MASTER = context.getString(R.string.master_host)
@@ -37,9 +33,6 @@ object MiscUtils {
         PREFIX_TOPIC = context.getString(R.string.topic_url_prefix)
         PREFIX_NODE = context.getString(R.string.node_url_prefix)
         PREFIX_MEMBER = context.getString(R.string.member_url_prefix)
-
-        val sdkInt = VERSION.SDK_INT
-        HAS_M = sdkInt >= VERSION_CODES.M
     }
 
     @JvmStatic
@@ -132,6 +125,10 @@ object MiscUtils {
     fun isChineseLang(resources: Resources): Boolean {
         val lang = ConfigurationCompat.getLocales(resources.configuration)[0].language
         return lang == "zh"
+    }
+
+    fun atLeast(version: Int): Boolean {
+        return Build.VERSION.SDK_INT >= version
     }
 }
 

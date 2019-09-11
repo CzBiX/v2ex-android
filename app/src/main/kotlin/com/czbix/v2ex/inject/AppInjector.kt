@@ -2,13 +2,12 @@ package com.czbix.v2ex.inject
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.czbix.v2ex.AppCtx
-import dagger.android.AndroidInjection
-import dagger.android.HasAndroidInjector
 import dagger.android.support.AndroidSupportInjection
 
 object AppInjector {
@@ -47,18 +46,11 @@ object AppInjector {
     }
 
     private fun handleActivity(activity: Activity) {
-        if (activity is HasAndroidInjector) {
-            AndroidInjection.inject(activity)
-        }
         if (activity is FragmentActivity) {
             activity.supportFragmentManager
                     .registerFragmentLifecycleCallbacks(
                             object : FragmentManager.FragmentLifecycleCallbacks() {
-                                override fun onFragmentCreated(
-                                        fm: FragmentManager,
-                                        f: Fragment,
-                                        savedInstanceState: Bundle?
-                                ) {
+                                override fun onFragmentAttached(fm: FragmentManager, f: Fragment, context: Context) {
                                     if (f is Injectable) {
                                         AndroidSupportInjection.inject(f)
                                     }

@@ -14,7 +14,8 @@ import javax.inject.Singleton
             AppModule::class,
             DbModule::class,
             ViewModelModule::class,
-            ActivityModule::class
+            ActivityModule::class,
+            NightModeModule::class
         ]
 )
 interface AppComponent : AndroidInjector<AppCtx> {

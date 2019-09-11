@@ -189,7 +189,7 @@ class TopicFragment : Fragment(),
         val actionBar = checkNotNull(activity.supportActionBar)
         actionBar.setDisplayHomeAsUpEnabled(true)
 
-        appBarLayout = activity.appBarLayout
+        appBarLayout = activity.appBarLayout!!
         appBarLayout.findViewById<View>(R.id.toolbar).setOnClickListener {
             scrollToPos(null, CommentPos(true, 0))
         }
