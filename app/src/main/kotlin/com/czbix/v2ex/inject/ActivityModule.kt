@@ -1,5 +1,6 @@
 package com.czbix.v2ex.inject
 
+import com.czbix.v2ex.ui.LoginActivity
 import com.czbix.v2ex.ui.MainActivity
 import com.czbix.v2ex.ui.SettingsActivity
 import com.czbix.v2ex.ui.TopicActivity
@@ -21,4 +22,8 @@ abstract class ActivityModule {
     @ActivityScoped
     @ContributesAndroidInjector(modules = [SettingsModule::class])
     abstract fun settingsActivity(): SettingsActivity
+
+    @ActivityScoped
+    @ContributesAndroidInjector
+    abstract fun loginActivity(): LoginActivity
 }
