@@ -54,7 +54,6 @@ import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.common.base.Preconditions
 import com.google.common.net.HttpHeaders
-import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 
@@ -349,8 +348,6 @@ class TopicFragment : Fragment(),
     }
 
     private fun handleLoadException(exception: Exception) {
-        Timber.w(exception)
-
         mLastIsFailed = true
         setIsLoading(false)
 
