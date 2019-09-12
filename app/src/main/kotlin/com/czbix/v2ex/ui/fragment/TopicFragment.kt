@@ -319,7 +319,7 @@ class TopicFragment : Fragment(),
     private val lastReadRecordObserver: Observer<in TopicRecord?> = Observer {
         if (it != null && it.lastReadComment > 0 && lastPosStack.isEmpty()) {
             val pos = minOf(it.lastReadComment, topicViewModel.comments.value!!.size)
-            lastPosStack.push(CommentPos(false, pos))
+            lastPosStack.push(CommentPos(false, pos - 1))
             updateJumpBackButton()
         }
     }
