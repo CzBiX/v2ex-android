@@ -131,7 +131,7 @@ class CommentController(
                 }
 
                 postscript.content.apply {
-                    addBlocks("ps", this) {
+                    addBlocks("ps${index}", this) {
                         lastPostscript && it == lastIndex
                     }
                 }
