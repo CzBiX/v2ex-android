@@ -51,7 +51,6 @@ object RequestHelper {
     private val URL_NEW_TOPIC = BASE_URL + "/new/%s"
     private val URL_CAPTCHA = BASE_URL + "/_captcha"
     private const val URL_SELECT_LANG = "$BASE_URL/select/language/%s"
-    private val returnUnit = { _: Response -> Unit }
 
     val client: OkHttpClient
     private val isChinese: Boolean
