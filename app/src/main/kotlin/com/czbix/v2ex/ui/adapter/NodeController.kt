@@ -87,10 +87,11 @@ class NodeController(private val listener: NodeListFragment.OnNodeActionListener
         }
 
         fun setAvatarImg(holder: Holder, node: Node) {
+            val glide = holder.glide
             val avatar = node.avatar ?: return
 
             val pixel = ViewUtils.getDimensionPixelSize(R.dimen.node_avatar_size)
-            holder.glide.load(avatar.getUrlByPx(pixel))
+            glide.load(avatar.getUrlByPx(pixel))
                     .transition(DrawableTransitionOptions.withCrossFade()).into(holder.avatar)
         }
 

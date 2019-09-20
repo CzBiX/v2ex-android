@@ -10,7 +10,7 @@ import kotlin.reflect.KProperty
 
 abstract class ExHolder<T : View> : EpoxyHolder() {
     lateinit var view: T
-    val glide by lazy { Glide.with(view) }
+    val glide by lazy(LazyThreadSafetyMode.NONE) { Glide.with(view) }
 
     @CallSuper
     override fun bindView(itemView: View) {
