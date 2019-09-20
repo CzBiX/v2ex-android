@@ -2,7 +2,9 @@ package com.czbix.v2ex.ui.util
 
 import android.text.style.URLSpan
 import androidx.core.text.getSpans
-import com.google.common.truth.Truth.*
+import io.kotlintest.inspectors.forAll
+import io.kotlintest.matchers.types.shouldNotBeSameInstanceAs
+import io.kotlintest.shouldBe
 import org.junit.Test
 
 class HtmlTest {
@@ -15,8 +17,8 @@ class HtmlTest {
         val spanned = Html.fromHtml(html)
         val spans = spanned.getSpans<Any>()
 
-        spans.forEach {
-            assertThat(it).isNotInstanceOf(URLSpan::class.java)
+        spans.forAll {
+            it shouldNotBeSameInstanceAs URLSpan::class
         }
     }
 
@@ -28,6 +30,17 @@ class HtmlTest {
 
         val spanned = Html.fromHtml(html)
 
-        assertThat(spanned.length).isEqualTo(9)
+        spanned.length shouldBe 9
+    }
+
+    @Test
+    fun fromHtml_withCfEncoded() {
+        val html = """
+                支持 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4f787d7f3f0f7879777f293f3c">[email&nbsp;protected]</a>，<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="80b1b0b8b0f0c0b9b6b0e6f0f3">[email&nbsp;protected]</a> 超级慢动作视频
+                """.trimIndent()
+
+        val spanned = Html.fromHtml(html)
+
+        spanned.toString() shouldBe "支持 720p@7680fps，1080p@960fps 超级慢动作视频"
     }
 }

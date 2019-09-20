@@ -11,30 +11,12 @@ import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 import androidx.core.os.ConfigurationCompat
-import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.BuildConfig
 import com.czbix.v2ex.R
 import com.czbix.v2ex.helper.CustomTabsHelper
 import com.czbix.v2ex.network.RequestHelper
 
 object MiscUtils {
-    private val HOST_MASTER: String
-    private val HOST_WWW: String
-    private val PREFIX_TOPIC: String
-    private val PREFIX_NODE: String
-    @JvmField
-    val PREFIX_MEMBER: String
-
-    init {
-        val context = AppCtx.instance
-        HOST_MASTER = context.getString(R.string.master_host)
-        HOST_WWW = context.getString(R.string.www_host)
-
-        PREFIX_TOPIC = context.getString(R.string.topic_url_prefix)
-        PREFIX_NODE = context.getString(R.string.node_url_prefix)
-        PREFIX_MEMBER = context.getString(R.string.member_url_prefix)
-    }
-
     @JvmStatic
     val appUpdateIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=${BuildConfig.APPLICATION_ID}"))
 
@@ -129,6 +111,18 @@ object MiscUtils {
 
     fun atLeast(version: Int): Boolean {
         return Build.VERSION.SDK_INT >= version
+    }
+
+    @JvmStatic
+    fun decodeCfEmail(str: String): String {
+        val sb = StringBuilder()
+        val k = str.substring(0, 2).toInt(16)
+        for (i in 2.until(str.length).step(2)) {
+            val n = str.substring(i, i + 2).toInt(16) xor k
+            sb.append(n.toChar())
+        }
+
+        return sb.toString()
     }
 }
 

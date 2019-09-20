@@ -89,10 +89,12 @@ class TopicFragment : Fragment(),
     private var mIsLoading: Boolean = false
     private var mLastIsFailed: Boolean = false
     private lateinit var baseTopic: Topic
+    private lateinit var prefixMember: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        prefixMember = getString(R.string.member_url_prefix)
         baseTopic = arguments?.getParcelable(ARG_TOPIC)!!
 
         lastPosStack = Stack()
@@ -496,7 +498,7 @@ class TopicFragment : Fragment(),
     }
 
     override fun onCommentUrlClick(url: String, pos: Int) {
-        if (url.startsWith(MiscUtils.PREFIX_MEMBER)) {
+        if (url.startsWith(prefixMember)) {
             findComment(Member.getNameFromUrl(url), pos)
             return
         }

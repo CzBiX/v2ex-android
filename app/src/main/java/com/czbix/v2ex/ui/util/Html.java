@@ -45,6 +45,7 @@ import android.text.style.URLSpan;
 import android.text.style.UnderlineSpan;
 
 import com.czbix.v2ex.parser.AsyncImageGetter;
+import com.czbix.v2ex.util.MiscUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
@@ -807,9 +808,10 @@ class HtmlToSpannedConverter implements ContentHandler {
 
     private static void startA(SpannableStringBuilder text, Attributes attributes) {
         String href = attributes.getValue("", "href");
+        String encodedCf = attributes.getValue("", "data-cfemail");
 
         int len = text.length();
-        text.setSpan(new Href(href), len, len, Spannable.SPAN_MARK_MARK);
+        text.setSpan(new Href(href, encodedCf), len, len, Spannable.SPAN_MARK_MARK);
     }
 
     private static final String[] SM_MS_URLS = new String[]{"https://ooo.0o0.ooo/", "https://i.loli.net/"};
@@ -840,8 +842,11 @@ class HtmlToSpannedConverter implements ContentHandler {
         if (where != len) {
             Href h = (Href) obj;
             final String href = h.mHref;
-
-            if (href != null) {
+            if (h.encodedCf != null) {
+                final String decode = MiscUtils.decodeCfEmail(h.encodedCf);
+                text.delete(where, len);
+                text.append(decode);
+            } else if (href != null) {
                 if (isAllowedImgUrl(href) && href.contentEquals(text.subSequence(where, len))) {
                     text.delete(where, len);
                     addImg(text, imageGetter, href);
@@ -984,9 +989,11 @@ class HtmlToSpannedConverter implements ContentHandler {
 
     private static class Href {
         public String mHref;
+        public String encodedCf;
 
-        public Href(String href) {
+        public Href(String href, String encodedCf) {
             mHref = href;
+            this.encodedCf = encodedCf;
         }
     }
 
