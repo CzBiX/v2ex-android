@@ -74,6 +74,8 @@ class TopicActivity : BaseActivity() {
         ViewUtils.initToolbar(this)
         appBarLayout = findViewById(R.id.appbar)
 
+        setupTransparentNavigationBar()
+
         if (savedInstanceState == null) {
             val topic = getTopicFromIntent()
             if (topic == null) {

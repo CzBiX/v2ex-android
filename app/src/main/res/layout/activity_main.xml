@@ -5,8 +5,10 @@
                                         android:layout_width="match_parent"
                                         android:fitsSystemWindows="true">
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/content_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true">
         <include layout="@layout/app_bar_layout"/>
         <FrameLayout
             android:layout_width="match_parent"

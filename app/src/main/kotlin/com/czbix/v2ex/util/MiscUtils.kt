@@ -23,7 +23,7 @@ object MiscUtils {
     @JvmStatic
     fun setClipboard(context: Context, data: ClipData) {
         val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        manager.primaryClip = data
+        manager.setPrimaryClip(data)
 
         Toast.makeText(context, R.string.toast_copied, Toast.LENGTH_SHORT).show()
     }
