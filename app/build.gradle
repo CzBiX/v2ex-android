@@ -202,4 +202,4 @@ dependencies {
     compileOnly 'org.ccil.cowan.tagsoup:tagsoup:1.2.1'
 }
 
-//apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.gms.google-services'
