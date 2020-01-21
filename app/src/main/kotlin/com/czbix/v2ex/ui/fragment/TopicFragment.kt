@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.airbnb.epoxy.EpoxyRecyclerView
 import com.bumptech.glide.Glide
+import com.czbix.v2ex.BuildConfig
 import com.czbix.v2ex.CommentPlaceholderBindingModel_
 import com.czbix.v2ex.R
 import com.czbix.v2ex.ViewerProvider
@@ -228,6 +229,10 @@ class TopicFragment : Fragment(),
             }
         }
 
+        if (!BuildConfig.DEBUG) {
+            menu.findItem(R.id.action_open_in_browser).isVisible = false
+        }
+
         setupShareActionMenu(menu)
 
         super.onCreateOptionsMenu(menu, inflater)
@@ -290,6 +295,10 @@ class TopicFragment : Fragment(),
             }
             R.id.action_ignore -> {
                 onIgnoreTopic(topic)
+                return true
+            }
+            R.id.action_open_in_browser -> {
+                MiscUtils.openUrl(activity!!, topic.url, false)
                 return true
             }
         }
