@@ -27,11 +27,11 @@ object ViewUtils {
     val density: Float
     val tagRegex = Regex("<(/\\w{1,6}>|img)")
     val entityRegex = Regex("&(\\w{1,10}|#\\d{1,4});")
+    val brRegex = Regex("\n?<br>")
 
     private val spannableFactory = object : Spannable.Factory() {
         override fun newSpannable(source: CharSequence): Spannable {
             return source as? Spannable ?: super.newSpannable(source)
-
         }
     }
 
@@ -101,10 +101,12 @@ object ViewUtils {
     }
 
     fun parseHtml(html: String, imageGetter: Html.ImageGetter?, isTopic: Boolean): CharSequence {
+        // Quick reject non-html
         return if (!isTopic && !tagRegex.containsMatchIn(html) && !entityRegex.containsMatchIn(html)) {
-            // Quick reject non-html
-            html.replace("<br>", "")
-        } else parseHtmlInternal(html, imageGetter, isTopic)
+            brRegex.replace(html, "\n")
+        } else {
+            parseHtmlInternal(html, imageGetter, isTopic)
+        }
     }
 
     private fun parseHtmlInternal(html: String, imageGetter: Html.ImageGetter?, isTopic: Boolean): SpannableStringBuilder {
