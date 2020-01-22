@@ -520,7 +520,7 @@ class TopicFragment : Fragment(),
 
         val basePos = commentController.commentBasePos
         val models = commentController.adapter.copyOfModels
-        for (model in models.subList(basePos, basePos + pos - 1).asReversed()) {
+        for (model in models.subList(basePos, basePos + pos).asReversed()) {
             if (model is CommentPlaceholderBindingModel_) {
                 continue
             }
