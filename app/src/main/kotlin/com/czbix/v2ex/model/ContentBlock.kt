@@ -9,4 +9,7 @@ sealed class ContentBlock : Parcelable {
 
     @Parcelize
     data class ImageBlock(val id: Int, val source: String) : ContentBlock()
+
+    @Parcelize
+    data class PreBlock(val id: Int, val text: CharSequence) : ContentBlock()
 }

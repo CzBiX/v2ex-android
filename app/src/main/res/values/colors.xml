@@ -7,5 +7,6 @@
     <color name="material_blue_a200">#448aff</color>
     <color name="count_background">@color/material_blue_grey_500</color>
     <color name="transparent_background">#88000000</color>
-    <color name="placeholder">#ddd</color>
+    <color name="placeholder">#eee</color>
+    <color name="pre_block_background">@color/placeholder</color>
 </resources>

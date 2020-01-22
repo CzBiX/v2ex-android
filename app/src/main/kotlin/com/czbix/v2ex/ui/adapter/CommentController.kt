@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.updatePaddingRelative
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.airbnb.epoxy.*
@@ -121,6 +122,7 @@ class CommentController(
             }
         }
 
+        val lastIsPreBlock = topic.content?.last() is ContentBlock.PreBlock
         topic.postscripts?.run {
             forEachIndexed { index, postscript ->
                 val lastPostscript = index == lastIndex
@@ -128,6 +130,7 @@ class CommentController(
                     id(index)
                     index(index + 1)
                     time(postscript.time)
+                    hasBorder(index != 0 || !lastIsPreBlock)
                 }
 
                 postscript.content.apply {
@@ -166,8 +169,18 @@ class CommentController(
                 is ContentBlock.TextBlock -> {
                     commentControllerTextBlock {
                         id("${tag}_${block.id}")
+                        isPreBlock(false)
                         text(block.text)
                         showDivider(showDivider(index))
+                        contentListener(contentListener)
+                    }
+                }
+                is ContentBlock.PreBlock -> {
+                    commentControllerTextBlock {
+                        id("${tag}_${block.id}")
+                        isPreBlock(true)
+                        text(block.text)
+                        showDivider(false)
                         contentListener(contentListener)
                     }
                 }
@@ -195,12 +208,21 @@ class CommentController(
     abstract class TextBlockModel : ContentBlockModel<TextBlockModel.Holder>() {
         @EpoxyAttribute
         lateinit var text: CharSequence
+        @EpoxyAttribute
+        var isPreBlock = false
 
         override fun bind(holder: Holder) {
             val view = holder.view
             view.movementMethod = HtmlMovementMethod(contentListener)
             DividerItemDecoration.setHasDivider(view, showDivider)
 
+            val theme = view.context.theme
+            val bgColor = if (isPreBlock) {
+                ResourcesCompat.getColor(view.resources, R.color.pre_block_background, theme)
+            } else {
+                 ViewUtils.getAttrColor(theme, android.R.attr.colorBackground)
+            }
+            view.setBackgroundColor(bgColor)
             view.setText(text, TextView.BufferType.SPANNABLE)
         }
 

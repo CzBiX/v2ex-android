@@ -28,7 +28,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.AlignmentSpan;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
@@ -568,10 +567,10 @@ class HtmlToSpannedConverter implements ContentHandler {
         } else if (tag.equalsIgnoreCase("button")) {
             endButton(mSpannableStringBuilder);
         } else if (tag.equalsIgnoreCase("code")) {
-            end(mSpannableStringBuilder, Code.class, new BackgroundColorSpan(0xFFEEEEEE));
+            end(mSpannableStringBuilder, Code.class, new TypefaceSpan("monospace"));
         } else if (tag.equalsIgnoreCase("pre")) {
             mInPreTag = false;
-            end(mSpannableStringBuilder, Pre.class, new BackgroundColorSpan(0xFFEEEEEE));
+            end(mSpannableStringBuilder, Pre.class, new com.czbix.v2ex.parser.Parser.PreKind());
         } else if (tag.equalsIgnoreCase("li")) {
             mSpannableStringBuilder.append('\n');
         }

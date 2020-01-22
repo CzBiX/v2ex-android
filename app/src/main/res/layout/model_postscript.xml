@@ -10,6 +10,9 @@
         <variable
             name="time"
             type="String" />
+        <variable
+            name="hasBorder"
+            type="Boolean" />
     </data>
 
     <RelativeLayout
@@ -24,6 +27,7 @@
             android:id="@+id/border"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            app:visible="@{hasBorder}"
             android:background="?android:listDivider" />
 
         <TextView

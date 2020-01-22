@@ -85,35 +85,42 @@ abstract class Parser {
 
         fun parseHtml2Blocks(html: String): List<ContentBlock> {
             val builder = ViewUtils.parseHtml(html, null, true)
-            val simpleResult by lazy {
-                val block = ContentBlock.TextBlock(0, builder)
-
-                listOf(block)
-            }
 
             if (builder !is Spanned) {
-                return simpleResult
+                val block = ContentBlock.TextBlock(0, builder)
+
+                return listOf(block)
             }
 
-            val imageSpans = builder.getSpans<ImageSpan>()
-            if (imageSpans.isEmpty()) {
-                return simpleResult
-            }
+            val spans = builder.getSpans<Any>()
 
             var lastEndPos = 0
             var index = 0
             val blocks = mutableListOf<ContentBlock>()
-            imageSpans.forEach { span ->
+            for (span in spans) {
+                if (span !is ImageSpan && span !is PreKind) {
+                    continue
+                }
+
                 val start = builder.getSpanStart(span)
                 val text = builder.subSequence(lastEndPos, start).trim()
                 if (text.isNotEmpty()) {
                     blocks.add(ContentBlock.TextBlock(index++, text))
                 }
 
-                val url = MiscUtils.formatUrl(span.source!!)
-                blocks.add(ContentBlock.ImageBlock(index++, url))
+                val end by lazy {
+                    builder.getSpanEnd(span)
+                }
 
-                lastEndPos = builder.getSpanEnd(span)
+                if (span is ImageSpan) {
+                    val url = MiscUtils.formatUrl(span.source!!)
+                    blocks.add(ContentBlock.ImageBlock(index++, url))
+                } else {
+                    val preText = builder.subSequence(start, end - 1)
+                    blocks.add(ContentBlock.PreBlock(index++, preText))
+                }
+
+                lastEndPos = end
             }
 
             val length = builder.length
@@ -135,6 +142,8 @@ abstract class Parser {
          */
         Topic,
     }
+
+    class PreKind
 
     data class SignInFormData(val username: String, val password: String,
                               val once: String, val captcha: String)
