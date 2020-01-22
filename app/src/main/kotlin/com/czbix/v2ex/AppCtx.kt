@@ -29,6 +29,7 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import io.fabric.sdk.android.Fabric
+import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -63,6 +64,10 @@ open class AppCtx : Application(), HasAndroidInjector {
         val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
         val crashlytics = Crashlytics.Builder().core(core).build()
         Fabric.with(this, crashlytics)
+
+        RxJavaPlugins.setErrorHandler { e ->
+            Timber.w(e)
+        }
     }
 
     override fun androidInjector(): AndroidInjector<Any> {
