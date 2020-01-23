@@ -93,7 +93,7 @@ public class CommentView extends ConstraintLayout implements View.OnClickListene
     }
 
     public void clear(RequestManager glide) {
-        glide.clear(mAvatar);
+        mAvatar.setAvatar(glide, null);
         mContent.setText(null);
     }
 

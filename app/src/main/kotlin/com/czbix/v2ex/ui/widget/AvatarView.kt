@@ -7,10 +7,10 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.airbnb.epoxy.preload.ViewMetadata
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.czbix.v2ex.R
-import com.czbix.v2ex.model.Avatar
 import com.czbix.v2ex.db.Member
+import com.czbix.v2ex.model.Avatar
+import com.czbix.v2ex.util.withCrossFade
 
 class AvatarView @JvmOverloads constructor(
         context: Context,
@@ -36,7 +36,7 @@ class AvatarView @JvmOverloads constructor(
 
         return glide.load(url).placeholder(R.drawable.avatar_default)
                 .override(size, size).fitCenter()
-                .transition(DrawableTransitionOptions.withCrossFade())
+                .withCrossFade()
     }
 
     interface OnAvatarActionListener {

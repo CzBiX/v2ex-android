@@ -80,7 +80,7 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     fun clear(glide: RequestManager) {
         mListener = null
-        glide.clear(mAvatar)
+        mAvatar.setAvatar(glide, null)
     }
 
     private fun updateForRead(readed: Boolean) {

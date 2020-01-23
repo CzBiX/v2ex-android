@@ -3,6 +3,7 @@ package com.czbix.v2ex.util
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -16,6 +17,9 @@ import androidx.annotation.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.transition.DrawableCrossFadeFactory
 import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.R
 import com.czbix.v2ex.parser.AsyncImageGetter
@@ -172,4 +176,13 @@ object ViewUtils {
         activity.setSupportActionBar(toolbar)
         return toolbar
     }
+}
+
+private val crossFadeOptions = run {
+    val builder = DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true)
+    DrawableTransitionOptions.withCrossFade(builder)
+}
+
+fun RequestBuilder<Drawable>.withCrossFade(): RequestBuilder<Drawable> {
+    return this.transition(crossFadeOptions)
 }
