@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.TextView;
 
+import com.czbix.v2ex.model.Node;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
@@ -379,7 +380,9 @@ public class ExArrayAdapter<T extends ExArrayAdapter.Filterable> extends BaseAda
 
         T item = getItem(position);
         if (item instanceof CharSequence) {
-            text.setText((CharSequence)item);
+            text.setText((CharSequence) item);
+        } else if (item instanceof Node) {
+            text.setText(((Node) item).getTitle());
         } else {
             text.setText(item.toString());
         }
