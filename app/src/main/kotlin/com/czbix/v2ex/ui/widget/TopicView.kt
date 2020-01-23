@@ -56,10 +56,10 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         mUsername.setOnClickListener(tmp)
     }
 
-    fun fillData(glide: RequestManager, topic: Topic) {
+    fun fillData(glide: RequestManager, topic: Topic, readed: Boolean) {
         mTopic = topic
 
-        updateForRead()
+        updateForRead(readed)
 
         ViewUtils.setHtmlIntoTextView(mTitle, topic.title!!,
                 ViewUtils.getDimensionPixelSize(R.dimen.abc_text_size_body_1_material), false)
@@ -83,8 +83,8 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
         glide.clear(mAvatar)
     }
 
-    fun updateForRead() {
-        if (mTopic.hasRead) {
+    private fun updateForRead(readed: Boolean) {
+        if (readed) {
             mReplyCount.alpha = 0.3f
         } else {
             mReplyCount.alpha = 1f
@@ -93,7 +93,6 @@ class TopicView @JvmOverloads constructor(context: Context, attrs: AttributeSet?
 
     override fun onClick(v: View) {
         mListener!!.onTopicOpen(v, mTopic)
-        updateForRead()
     }
 
     interface OnTopicActionListener {

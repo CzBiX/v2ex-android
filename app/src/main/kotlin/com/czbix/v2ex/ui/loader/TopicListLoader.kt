@@ -1,6 +1,7 @@
 package com.czbix.v2ex.ui.loader
 
 import android.content.Context
+import androidx.collection.ArraySet
 import com.czbix.v2ex.db.TopicRecordDao
 import com.czbix.v2ex.model.Page
 import com.czbix.v2ex.model.Topic
@@ -18,14 +19,23 @@ class TopicListLoader(
             RequestHelper.getTopics(mPage)
         }
 
-        for (topic in topics) {
+        val readed = topics.filter { topic ->
             val lastRead = dao.getLastReadComment(topic.id) ?: 0
-            if (lastRead >= topic.replyCount) {
-                topic.hasRead = true
-            }
+            lastRead >= topic.replyCount
+        }.map {
+            it.id
         }
+
+        topics.readed = ArraySet(readed)
+
         return topics
     }
 
-    class TopicList(list: List<Topic>, val isFavorited: Boolean, val onceToken: String? = null): List<Topic> by list
+    class TopicList(
+            list: List<Topic>,
+            val isFavorited: Boolean,
+            val onceToken: String? = null
+    ): List<Topic> by list {
+        lateinit var readed: Set<Int>
+    }
 }

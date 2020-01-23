@@ -401,7 +401,7 @@ class CommentController(
             view.setNodeListener(nodeListener)
             view.setAvatarListener(avatarListener)
 
-            view.fillData(holder.glide, topic)
+            view.fillData(holder.glide, topic, false)
             DividerItemDecoration.setHasDivider(view, !hasContent && !hasPostscript)
         }
 

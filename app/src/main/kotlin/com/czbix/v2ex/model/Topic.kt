@@ -18,9 +18,7 @@ data class Topic(
         val node: Node?,
         val replyTime: String?,
         val isFavored: Boolean,
-        val postscripts: List<Postscript>?,
-        @Transient
-        var hasRead: Boolean
+        val postscripts: List<Postscript>?
 ) : Page(), Thankable, Ignorable, Favable {
     @IgnoredOnParcel
     val hasInfo = member != null
@@ -65,7 +63,6 @@ data class Topic(
         if (replyTime != other.replyTime) return false
         if (isFavored != other.isFavored) return false
         if (postscripts != other.postscripts) return false
-        if (hasRead != other.hasRead) return false
         if (hasInfo != other.hasInfo) return false
 
         return true
@@ -82,7 +79,6 @@ data class Topic(
         result = 31 * result + (replyTime?.hashCode() ?: 0)
         result = 31 * result + isFavored.hashCode()
         result = 31 * result + (postscripts?.hashCode() ?: 0)
-        result = 31 * result + hasRead.hashCode()
         result = 31 * result + hasInfo.hashCode()
         return result
     }
@@ -101,7 +97,6 @@ data class Topic(
         var replyTime: String? = null
         var isFavored: Boolean = false
         var postscripts: List<Postscript>? = null
-        var hasRead: Boolean = false
 
         val hasInfo: Boolean
             get() = member != null
@@ -116,8 +111,7 @@ data class Topic(
                     node,
                     replyTime,
                     isFavored,
-                    postscripts,
-                    hasRead
+                    postscripts
             )
         }
     }
@@ -133,7 +127,6 @@ data class Topic(
             it.replyTime = this.replyTime
             it.isFavored = this.isFavored
             it.postscripts = this.postscripts
-            it.hasRead = this.hasRead
         }
     }
 

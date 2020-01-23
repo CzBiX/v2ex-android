@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.collection.ArraySet
 import androidx.loader.app.LoaderManager.LoaderCallbacks
 import androidx.loader.content.Loader
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -174,7 +175,7 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
         result.mResult.let {
             mFavored = it.isFavorited
             mOnceToken = it.onceToken
-            controller.setData(it)
+            controller.setData(it, it.readed)
         }
 
         activity!!.invalidateOptionsMenu()
@@ -210,7 +211,7 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
     }
 
     override fun onLoaderReset(loader: Loader<LoaderResult<TopicListLoader.TopicList>>) {
-        controller.setData(null)
+        controller.setData(emptyList(), emptySet())
     }
 
     override fun onRefresh() {
@@ -309,7 +310,8 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
 
         startActivity(intent)
 
-        topic.hasRead = true
+        (controller.readedSet as ArraySet).add(topic.id)
+        controller.setData(controller.data, controller.readedSet)
     }
 
     override fun onDestroy() {
