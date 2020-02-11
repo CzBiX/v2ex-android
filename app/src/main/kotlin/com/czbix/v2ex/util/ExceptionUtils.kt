@@ -2,7 +2,6 @@ package com.czbix.v2ex.util
 
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.exception.*
 import com.czbix.v2ex.network.HttpStatus
@@ -45,7 +44,7 @@ object ExceptionUtils {
             }
             is RequestException -> {
                 if (e.isShouldLogged) {
-                    Crashlytics.logException(e)
+                    Timber.e(e)
                 }
                 stringId = when (e.code) {
                     HttpStatus.SC_FORBIDDEN -> R.string.toast_access_denied
@@ -58,15 +57,15 @@ object ExceptionUtils {
                     logException = e.shouldLogged
                 }
                 if (logException) {
-                    Crashlytics.logException(e)
+                    Timber.e(e)
                 } else {
-                    Crashlytics.log(e.message)
+                    Timber.i(e)
                 }
 
                 stringId = R.string.toast_parse_failed
             }
             is RuntimeException -> {
-                Crashlytics.logException(e)
+                Timber.e(e)
                 stringId = R.string.toast_parse_failed
             }
             else -> {

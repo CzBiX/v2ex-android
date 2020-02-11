@@ -51,8 +51,8 @@ object MyselfParser : Parser() {
 
     // topic in mobile style
     private fun parseTopic(doc: Document): MySelfInfo? {
-        val ele = JsoupObjects(doc).body().child("#Wrapper").child(".content").dfs("tr").child("td:nth-child(3)").child("a").first()
-        return if (ele.attr("href") == "/") null else MySelfInfo(0, false)
+        val ele = JsoupObjects(doc).body().child("header").bfs("#user-menu").firstOrNull()
+        return if (ele == null) null else MySelfInfo(0, false)
     }
 
     private fun hasAwardInTab(box: Element): Boolean {
