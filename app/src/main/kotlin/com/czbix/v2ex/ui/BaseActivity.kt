@@ -32,22 +32,18 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     }
 
     protected fun setupTransparentNavigationBar() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
 
         val contextView: View = findViewById(R.id.content_view) ?: return
         contextView.setOnApplyWindowInsetsListener { v, insets ->
-            if (insets.systemGestureInsets.left == insets.systemWindowInsetLeft
-                    && insets.systemGestureInsets.right == insets.systemWindowInsetRight) {
-                // gesture disabled
-
-                contextView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-                window.navigationBarColor = Color.BLACK
-            } else {
-                contextView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
-                window.navigationBarColor = Color.TRANSPARENT
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (insets.systemGestureInsets.left != insets.systemWindowInsetLeft
+                        || insets.systemGestureInsets.right != insets.systemWindowInsetRight) {
+                    // gesture enabled
+                    contextView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+                    window.navigationBarColor = Color.TRANSPARENT
+                }
             }
 
             (v.layoutParams as ViewGroup.MarginLayoutParams).apply {
