@@ -97,6 +97,8 @@ class MainActivity :
         mAppBar = findViewById(R.id.appbar)
         mDrawerLayout = findViewById(R.id.drawer_layout)
 
+        setupTransparentNavigationBar()
+
         mNav = findViewById(R.id.nav)
 
         val headerView = mNav.getHeaderView(0)
@@ -131,7 +133,7 @@ class MainActivity :
         var node: Node? = null
         if (Intent.ACTION_VIEW == intent.action) {
             val url = intent.dataString
-            val name = Node.getNameFromUrl(url)
+            val name = Node.getNameFromUrl(url!!)
             node = Node.Builder().setName(name).createNode()
         } else if (intent.hasExtra(BUNDLE_NODE)) {
             node = intent.getParcelableExtra<Node>(BUNDLE_NODE)

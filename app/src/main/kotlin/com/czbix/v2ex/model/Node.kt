@@ -170,7 +170,7 @@ class Node : Page, Comparable<Node>, ExArrayAdapter.Filterable, Favable {
     private constructor(`in`: Parcel) {
         this.id = `in`.readInt()
         this.mTitle = `in`.readString()
-        this.name = `in`.readString()
+        this.name = `in`.readString()!!
         this.titleAlternative = `in`.readString()
         this.topics = `in`.readInt()
         this.avatar = `in`.readParcelable<Avatar>(Avatar::class.java.classLoader)

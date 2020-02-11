@@ -28,12 +28,12 @@ apply plugin: 'kotlin-allopen'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
         applicationId "com.czbix.v2ex"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 110
         versionName "1.27.6"
 

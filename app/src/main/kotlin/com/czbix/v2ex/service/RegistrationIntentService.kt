@@ -87,7 +87,7 @@ class RegistrationIntentService : IntentService(TAG) {
 
             try {
                 // never delete token/id on Google, see https://developers.google.com/cloud-messaging/registration#unregistration-and-unsubscription
-                return deleteRegistrationOnServer(oldToken)
+                return deleteRegistrationOnServer(oldToken!!)
             } catch (e: Exception) {
                 LogUtils.w(TAG, "delete registration on server failed", e)
             }
