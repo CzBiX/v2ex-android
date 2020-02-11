@@ -30,8 +30,8 @@ object MyselfParser : Parser() {
      * @return null if user signed out
      */
     @JvmStatic
-    fun parseDoc(doc: Document, pageType: Parser.PageType): MySelfInfo? {
-        if (pageType === Parser.PageType.Topic) {
+    fun parseDoc(doc: Document, pageType: PageType): MySelfInfo? {
+        if (pageType === PageType.Topic) {
             return parseTopic(doc)
         }
 
@@ -44,14 +44,14 @@ object MyselfParser : Parser() {
         }
 
         val num = getNotificationsNum(box)
-        val hasAward = pageType === Parser.PageType.Tab && hasAwardInTab(box)
+        val hasAward = pageType === PageType.Tab && hasAwardInTab(box)
 
         return MySelfInfo(num, hasAward)
     }
 
     // topic in mobile style
     private fun parseTopic(doc: Document): MySelfInfo? {
-        val ele = JsoupObjects(doc).body().child("#Top").child(".content").dfs("tr").child("td:nth-child(3)").child("a").first()
+        val ele = JsoupObjects(doc).body().child("#Wrapper").child(".content").dfs("tr").child("td:nth-child(3)").child("a").first()
         return if (ele.attr("href") == "/") null else MySelfInfo(0, false)
     }
 
