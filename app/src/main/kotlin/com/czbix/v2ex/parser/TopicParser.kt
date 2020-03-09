@@ -1,6 +1,5 @@
 package com.czbix.v2ex.parser
 
-import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.common.UserState
 import com.czbix.v2ex.db.Comment
 import com.czbix.v2ex.db.CommentAndMember
@@ -15,7 +14,6 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
 object TopicParser : Parser() {
-    private val PATTERN_TOPIC_REPLY_TIME = "at (.+?),".toRegex()
     private val PATTERN_POSTSCRIPT = "·\\s+(.+)".toRegex()
     private val PATTERN_NUMBERS = "\\d+".toRegex()
 
@@ -72,14 +70,7 @@ object TopicParser : Parser() {
         val node = JsoupObjects(header).child(".chevron").adjacent("a").first().let { parseNode(it) }
         builder.node = node
 
-        try {
-            parseTopicReplyTime(builder, JsoupObjects.child(header, ".gray").textNodes()[1].text())
-        } catch (e: IllegalStateException) {
-            // TODO: fix this exception and remove log code
-            Crashlytics.log(JsoupObjects.child(header, ".gray").html())
-            Crashlytics.logException(e)
-            throw e
-        }
+        parseTopicReplyTime(builder, header)
         parseTopicTitle(builder, header)
 
         parseTopicContent(builder, topicBox)
@@ -100,13 +91,9 @@ object TopicParser : Parser() {
         return csrfToken
     }
 
-    private fun parseTopicReplyTime(topicBuilder: Topic.Builder, text: String) {
-        val matcher = checkNotNull(PATTERN_TOPIC_REPLY_TIME.find(text)) {
-            "match reply time for topic failed: $text"
-        }
-
-        val timeStr = matcher.groupValues[1]
-        topicBuilder.replyTime = timeStr
+    private fun parseTopicReplyTime(topicBuilder: Topic.Builder, header: Element) {
+        val timeStr = JsoupObjects.child(header, ".gray").textNodes().last().text()
+        topicBuilder.replyTime = timeStr.trim()
     }
 
     private fun parseTopicTitle(builder: Topic.Builder, header: Element) {
