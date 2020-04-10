@@ -14,6 +14,7 @@ import com.czbix.v2ex.parser.MyselfParser
 import com.czbix.v2ex.parser.Parser.PageType
 import com.czbix.v2ex.util.CrashlyticsUtils
 import com.czbix.v2ex.util.ExecutorUtils
+import com.czbix.v2ex.util.TrackerUtils
 import com.czbix.v2ex.util.UserUtils
 
 object UserState {
@@ -58,6 +59,7 @@ object UserState {
 
         this.username = username
         CrashlyticsUtils.setUserState(true)
+        TrackerUtils.setUserId(username)
 
         AppCtx.eventBus.post(LoginEvent(username))
         ExecutorUtils.execute { UserUtils.checkDailyAward() }
@@ -70,6 +72,7 @@ object UserState {
         ConfigDao.remove(ConfigDao.KEY_USERNAME)
         ConfigDao.remove(ConfigDao.KEY_AVATAR)
 
+        TrackerUtils.setUserId(null)
         CrashlyticsUtils.setUserState(false)
 
         ExecutorUtils.runInUiThread {

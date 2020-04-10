@@ -115,38 +115,12 @@
             android:name=".ui.TopicEditActivity" >
         </activity>
 
-        <!-- start Google Analytics -->
-        <receiver
-            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
-            android:enabled="true"
-            tools:ignore="ExportedReceiver" >
-            <intent-filter>
-                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
-            </intent-filter>
-        </receiver>
-
         <provider
             android:name="com.czbix.v2ex.ViewerProvider"
             android:authorities="${applicationId}.viewer"
             android:exported="false"
             android:grantUriPermissions="true">
         </provider>
-
-        <service
-            android:name="com.google.android.gms.analytics.AnalyticsService"
-            android:enabled="true"
-            android:exported="false" />
-
-        <receiver
-            android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
-            android:exported="true"
-            tools:ignore="ExportedReceiver" >
-            <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER" />
-            </intent-filter>
-        </receiver>
-
-        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
     </application>
 
 </manifest>

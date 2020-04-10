@@ -11,6 +11,7 @@ import okhttp3.internal.EMPTY_REQUEST
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.system.measureTimeMillis
 
 class V2exService @Inject constructor(
         private val helper: RequestHelper
@@ -37,10 +38,11 @@ class V2exService @Inject constructor(
         val doc = Parser.toDoc(html)
         helper.processUserState(doc, Parser.PageType.Topic)
 
-        val stopwatch = Stopwatch.createStarted()
-        val result = TopicParser.parseDoc(doc, topic, page)
-        TrackerUtils.onParseTopic(stopwatch.elapsed(TimeUnit.MILLISECONDS),
-                result.comments.size.toString())
+        lateinit var result: TopicResponse
+        val measureTime = measureTimeMillis {
+            result = TopicParser.parseDoc(doc, topic, page)
+        }
+        TrackerUtils.onParseTopic(measureTime, result.comments.size)
 
         return result
     }
