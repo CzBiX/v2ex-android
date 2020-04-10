@@ -7,7 +7,6 @@ import android.preference.PreferenceManager;
 
 import com.czbix.v2ex.AppCtx;
 import com.czbix.v2ex.model.Tab;
-import com.czbix.v2ex.util.LogUtils;
 
 import java.io.File;
 import java.util.List;
@@ -19,7 +18,6 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
     private static PrefStore instance;
     private static final String PREF_ALWAYS_LOAD_IMAGE = "always_load_image";
     public static final String PREF_TABS_TO_SHOW = "tabs_to_show";
-    public static final String PREF_RECEIVE_NOTIFICATIONS = "receive_notifications";
     private static final String PREF_ALWAYS_SHOW_REPLY_FORM = "always_show_reply_form";
     private static final String PREF_ENABLE_UNDO = "enable_undo";
     private static final String PREF_LAST_PREF_VERSION = "last_app_version";
@@ -92,15 +90,6 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
         return Tab.getTabsToShow(string);
     }
 
-    public boolean shouldReceiveNotifications() {
-        if (!UserState.INSTANCE.isLoggedIn()) {
-            LogUtils.i(TAG, "Guest can't receive notifications");
-            return false;
-        }
-
-        return mPreferences.getBoolean(PREF_RECEIVE_NOTIFICATIONS, false);
-    }
-
     public boolean isAlwaysShowReplyForm() {
         return mPreferences.getBoolean(PREF_ALWAYS_SHOW_REPLY_FORM, false);
     }
@@ -120,14 +109,6 @@ public class PrefStore implements SharedPreferences.OnSharedPreferenceChangeList
 
     public void registerPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
         mPreferences.registerOnSharedPreferenceChangeListener(listener);
-    }
-
-    public boolean shouldClearGcmInfo() {
-        return mPreferences.getBoolean(PREF_SHOULD_CLEAR_GCM_INFO, false);
-    }
-
-    public void unsetShouldClearGcmInfo() {
-        mPreferences.edit().remove(PREF_SHOULD_CLEAR_GCM_INFO).apply();
     }
 
     public boolean isContentSelectable() {

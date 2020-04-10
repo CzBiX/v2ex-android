@@ -160,8 +160,6 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
     implementation "com.google.android.gms:play-services-analytics:$gms_version"
-    implementation "com.google.firebase:firebase-messaging:19.0.1"
-    implementation 'com.firebase:firebase-jobdispatcher:0.5.2'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
