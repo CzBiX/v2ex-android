@@ -137,6 +137,7 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
+    implementation 'androidx.drawerlayout:drawerlayout:1.1.0-beta01'
 
     api 'com.google.guava:guava:28.0-android'
     implementation 'com.squareup.okhttp3:okhttp:4.1.0'

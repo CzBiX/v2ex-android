@@ -1,37 +1,48 @@
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent">
+
     <com.czbix.v2ex.ui.widget.ExSwipeRefreshLayout
         android:id="@+id/comments_layout"
-        android:layout_above="@+id/reply_form"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/reply_form"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
         <com.airbnb.epoxy.EpoxyRecyclerView
             android:id="@+id/comments"
-            android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
     </com.czbix.v2ex.ui.widget.ExSwipeRefreshLayout>
+
     <ImageButton
         android:id="@+id/btn_jump_back"
-        android:layout_alignEnd="@id/comments_layout"
-        android:layout_alignBottom="@id/comments_layout"
+        android:layout_width="@dimen/btn_jump_back_size"
+        android:layout_height="@dimen/btn_jump_back_size"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/btn_jump_back_background"
         android:src="@drawable/ic_keyboard_arrow_down_white_24dp"
         android:visibility="gone"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:layout_width="@dimen/btn_jump_back_size"
-        android:layout_height="@dimen/btn_jump_back_size"
-        tools:visibility="visible"
-        tools:ignore="ContentDescription"/>
+        app:layout_constraintBottom_toBottomOf="@id/comments_layout"
+        app:layout_constraintEnd_toEndOf="@id/comments_layout"
+        tools:ignore="ContentDescription"
+        tools:visibility="visible" />
 
-    <ViewStub android:id="@+id/reply_form"
-              android:layout="@layout/view_reply_form"
-              android:inflatedId="@id/reply_form"
-              android:layout_alignParentBottom="true"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"/>
-</RelativeLayout>
+    <ViewStub
+        android:id="@+id/reply_form"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:inflatedId="@id/reply_form"
+        android:layout="@layout/view_reply_form"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

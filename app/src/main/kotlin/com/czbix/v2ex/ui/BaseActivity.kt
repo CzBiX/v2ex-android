@@ -32,7 +32,6 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     }
 
     protected fun setupTransparentNavigationBar() {
-
         val contextView: View = findViewById(R.id.content_view) ?: return
         contextView.setOnApplyWindowInsetsListener { v, insets ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -50,6 +49,17 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
                 topMargin = insets.systemWindowInsetTop
                 leftMargin = insets.systemWindowInsetLeft
                 rightMargin = insets.systemWindowInsetRight
+
+                // handle keyboard height
+                bottomMargin = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if (insets.systemWindowInsetBottom > insets.systemGestureInsets.bottom) {
+                        insets.systemWindowInsetBottom
+                    } else {
+                        insets.tappableElementInsets.bottom
+                    }
+                } else {
+                    insets.systemWindowInsetBottom
+                }
             }
             insets.consumeSystemWindowInsets()
         }
