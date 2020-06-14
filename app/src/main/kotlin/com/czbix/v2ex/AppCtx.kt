@@ -3,8 +3,6 @@ package com.czbix.v2ex
 import android.app.Application
 import android.os.Build
 import android.os.StrictMode
-import com.crashlytics.android.Crashlytics
-import com.crashlytics.android.core.CrashlyticsCore
 import com.czbix.v2ex.common.NotificationStatus
 import com.czbix.v2ex.common.UpdateInfo
 import com.czbix.v2ex.common.UserState
@@ -25,10 +23,10 @@ import com.google.common.eventbus.AsyncEventBus
 import com.google.common.eventbus.DeadEvent
 import com.google.common.eventbus.EventBus
 import com.google.common.eventbus.Subscribe
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
-import io.fabric.sdk.android.Fabric
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
@@ -61,9 +59,9 @@ open class AppCtx : Application(), HasAndroidInjector {
     }
 
     private fun initCrashlytics() {
-        val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
-        val crashlytics = Crashlytics.Builder().core(core).build()
-        Fabric.with(this, crashlytics)
+        if (BuildConfig.DEBUG) {
+            FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(false)
+        }
 
         RxJavaPlugins.setErrorHandler { e ->
             Timber.w(e)

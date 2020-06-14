@@ -3,7 +3,6 @@ package com.czbix.v2ex.network
 import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
-import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.BuildConfig
 import com.czbix.v2ex.common.DeviceStatus
@@ -19,6 +18,7 @@ import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
 import com.google.common.base.Preconditions
 import com.google.common.net.HttpHeaders
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.reactivex.Single
 import io.reactivex.subjects.SingleSubject
 import kotlinx.coroutines.*
@@ -550,8 +550,8 @@ object RequestHelper {
             throw RemoteException(response)
         }
 
-
-        Crashlytics.log("request url: " + response.request.url)
+        val crashlytics = FirebaseCrashlytics.getInstance()
+        crashlytics.log("request url: " + response.request.url)
         if (code == HttpStatus.SC_FORBIDDEN || code == HttpStatus.SC_NOT_FOUND) {
             try {
                 val body = response.body!!
@@ -562,7 +562,7 @@ object RequestHelper {
                 } else {
                     // topic deleted, record logs for debug
                     val bodyStr = body.string()
-                    Crashlytics.log(String.format("response code %d, %s", code,
+                    crashlytics.log(String.format("response code %d, %s", code,
                             bodyStr.substring(0, minOf(4096, bodyStr.length))))
                 }
 

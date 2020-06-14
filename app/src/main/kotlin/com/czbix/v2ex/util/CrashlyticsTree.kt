@@ -1,7 +1,7 @@
 package com.czbix.v2ex.util
 
 import android.util.Log
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import timber.log.Timber
 
 class CrashlyticsTree : Timber.Tree() {
@@ -10,9 +10,10 @@ class CrashlyticsTree : Timber.Tree() {
             return
         }
 
-        Crashlytics.log(priority, tag, message)
+        val crashlytics = FirebaseCrashlytics.getInstance()
+        crashlytics.log(message)
         if (t != null) {
-            Crashlytics.logException(t)
+            crashlytics.recordException(t)
         }
     }
 }

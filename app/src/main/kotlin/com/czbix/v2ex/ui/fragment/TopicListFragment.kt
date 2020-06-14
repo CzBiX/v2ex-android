@@ -13,7 +13,6 @@ import com.airbnb.epoxy.EpoxyRecyclerView
 import com.airbnb.epoxy.addGlidePreloader
 import com.airbnb.epoxy.glidePreloader
 import com.bumptech.glide.Glide
-import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.AppCtx
 import com.czbix.v2ex.R
 import com.czbix.v2ex.common.UserState
@@ -46,6 +45,7 @@ import com.czbix.v2ex.util.ExecutorUtils
 import com.czbix.v2ex.util.LogUtils
 import com.czbix.v2ex.util.dispose
 import com.google.common.net.HttpHeaders
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
@@ -159,10 +159,10 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
 
     override fun onCreateLoader(id: Int, args: Bundle?): Loader<LoaderResult<TopicListLoader.TopicList>> {
         val log = String.format("load list: %s", mPage.title)
-        Crashlytics.log(log)
+        FirebaseCrashlytics.getInstance().log(log)
         LogUtils.d(TAG, log)
 
-        return TopicListLoader(activity!!, mPage, topicDao)
+        return TopicListLoader(requireActivity(), mPage, topicDao)
     }
 
     override fun onLoadFinished(loader: Loader<LoaderResult<TopicListLoader.TopicList>>, result: LoaderResult<TopicListLoader.TopicList>) {
@@ -178,7 +178,7 @@ class TopicListFragment : androidx.fragment.app.Fragment(), LoaderCallbacks<Load
             controller.setData(it, it.readed)
         }
 
-        activity!!.invalidateOptionsMenu()
+        requireActivity().invalidateOptionsMenu()
     }
 
     private fun handleLoadException(ex: Exception) {

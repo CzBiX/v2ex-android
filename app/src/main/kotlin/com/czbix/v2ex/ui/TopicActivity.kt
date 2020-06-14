@@ -7,7 +7,6 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
-import com.crashlytics.android.Crashlytics
 import com.czbix.v2ex.R
 import com.czbix.v2ex.model.Topic
 import com.czbix.v2ex.ui.fragment.TopicFragment
@@ -15,6 +14,7 @@ import com.czbix.v2ex.ui.model.NightModeViewModel
 import com.czbix.v2ex.util.ViewUtils
 import com.google.android.material.appbar.AppBarLayout
 import com.google.common.base.Strings
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import javax.inject.Inject
 
 class TopicActivity : BaseActivity() {
@@ -49,7 +49,7 @@ class TopicActivity : BaseActivity() {
                 try {
                     id = Topic.getIdFromUrl(url!!)
                 } catch (e: IllegalArgumentException) {
-                    Crashlytics.log(Log.INFO, TAG, "unsupported url: " + url!!)
+                    FirebaseCrashlytics.getInstance().log("unsupported url: " + url!!)
                     Toast.makeText(this, R.string.toast_unsupported_url, Toast.LENGTH_LONG).show()
 
                     return null
