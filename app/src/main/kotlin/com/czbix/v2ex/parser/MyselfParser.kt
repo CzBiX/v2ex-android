@@ -51,7 +51,7 @@ object MyselfParser : Parser() {
 
     // topic in mobile style
     private fun parseTopic(doc: Document): MySelfInfo? {
-        val ele = JsoupObjects(doc).body().child("header").bfs("#user-menu").firstOrNull()
+        val ele = JsoupObjects(doc).body().child("header", "#site-header-menu").bfs("a[href=/settings]").firstOrNull()
         return if (ele == null) null else MySelfInfo(0, false)
     }
 
@@ -70,7 +70,7 @@ object MyselfParser : Parser() {
 
     @JvmStatic
     fun getNotificationsNum(ele: Element): Int {
-        val text = JsoupObjects(ele).child(".inner").bfs("a[href=/notifications]").first().text()
+        val text = JsoupObjects(ele).child(".cell").bfs("a[href=/notifications]").first().text()
         val matcher = PATTERN_UNREAD_NUM.matcher(text)
         Preconditions.checkState(matcher.find())
         return Integer.parseInt(matcher.group())
