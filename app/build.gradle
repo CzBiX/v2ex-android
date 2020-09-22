@@ -30,8 +30,8 @@ android {
         applicationId "com.czbix.v2ex"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 114
-        versionName "1.27.11"
+        versionCode 115
+        versionName "1.27.12"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
