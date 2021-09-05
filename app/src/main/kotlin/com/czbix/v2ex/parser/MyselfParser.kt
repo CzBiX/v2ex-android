@@ -78,7 +78,7 @@ object MyselfParser : Parser() {
 
     @JvmStatic
     fun parseFavNodes(doc: Document): List<Node> {
-        val elements = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Main").child(".box").child("#MyNodes").child("a")
+        val elements = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Main").child(".box").child("#my-nodes").child("a")
         return elements.map { ele ->
             val name = Node.getNameFromUrl(ele.attr("href"))
             checkNotNull(NodeDao.get(name))

@@ -33,6 +33,14 @@ class JsoupObjects(vararg elements: Element) : Iterable<Element> {
         }
     }
 
+    fun exclude(query: String): JsoupObjects {
+        val evaluator = parseQuery(query)
+        mResult = mResult.filterNot {
+            evaluator(it)
+        }
+        return this
+    }
+
     infix fun child(query: String): JsoupObjects {
         val evaluator = parseQuery(query)
         addQuery(evaluator) { it.children().asSequence() }
