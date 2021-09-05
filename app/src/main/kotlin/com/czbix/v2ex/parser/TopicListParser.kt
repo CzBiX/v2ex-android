@@ -17,11 +17,11 @@ object TopicListParser : Parser() {
 
     @JvmStatic
     fun parseDoc(doc: Document, page: Page): TopicListLoader.TopicList {
-        val contentBox = JsoupObjects(doc).bfs("body").child("#Wrapper").child(".content").child("#Main").child(".box").first()
+        val main = JsoupObjects(doc).body().child("#Wrapper").child(".content").child("#Main").first()
 
         return when (page) {
-            is Node -> parseDocForNode(contentBox, page)
-            is Tab, Page.PAGE_FAV_TOPIC -> parseDocForTab(contentBox)
+            is Node -> parseDocForNode(main, page)
+            is Tab, Page.PAGE_FAV_TOPIC -> parseDocForTab(JsoupObjects(main).child(".box").exclude(".box-title").first())
             else -> throw IllegalArgumentException("Unknown page type: $page")
         }
     }
@@ -35,9 +35,9 @@ object TopicListParser : Parser() {
         }
     }
 
-    private fun parseDocForNode(contentBox: Element, node: Node): TopicListLoader.TopicList {
-        val (favorited, once) = parseFavorited(contentBox)
-        val elements = JsoupObjects(contentBox).child("#TopicsNode").child(".cell").child("table").child("tbody").child("tr")
+    private fun parseDocForNode(main: Element, node: Node): TopicListLoader.TopicList {
+        val (favorited, once) = parseFavorited(main)
+        val elements = JsoupObjects(main).child(".box").child("#TopicsNode").child(".cell").child("table").child("tbody").child("tr")
         return elements.map {
             parseItemForNode(it, node)
         }.let {
@@ -45,13 +45,12 @@ object TopicListParser : Parser() {
         }
     }
 
-    private fun parseFavorited(contentBox: Element): Pair<Boolean, String?> {
+    private fun parseFavorited(main: Element): Pair<Boolean, String?> {
         if (!UserState.isLoggedIn()) {
             return false to null
         }
 
-        val a = JsoupObjects(contentBox).child(".node_header", ".node_info", ".fr",
-                "a.node_header_link").first()
+        val a = JsoupObjects(main).child(".node-header", ".cell_ops", "div", "a").first()
         val href = a.attr("href")
 
         return href.startsWith("/unfav") to href.substringAfterLast("?once=")
