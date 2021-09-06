@@ -13,7 +13,7 @@ object NotificationParser : Parser() {
 
     @JvmStatic
     fun parseDoc(doc: Document): List<Notification> {
-        val box = JsoupObjects(doc).body().child("#Wrapper").child(".content").child(".box").first()
+        val box = JsoupObjects(doc).body().child("#Wrapper").child(".content").child(".box").child("#notifications").first()
         val list = JsoupObjects(box).child(".cell[id]").child("table").child("tbody").child("tr")
 
         return list.map { parseNotification(it) }
