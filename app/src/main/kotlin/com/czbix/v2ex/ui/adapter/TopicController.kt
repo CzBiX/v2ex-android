@@ -29,7 +29,7 @@ class TopicController(private val mListener: TopicView.OnTopicActionListener)
         data.forEach { topic ->
             topicControllerTopic {
                 id(topic.id)
-                listener(mListener)
+                listener(this@TopicController.mListener)
                 topic(topic)
                 readed(topic.id in readedSet)
             }

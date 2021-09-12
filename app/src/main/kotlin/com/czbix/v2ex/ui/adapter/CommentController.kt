@@ -20,15 +20,12 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.DrawableImageViewTarget
 import com.bumptech.glide.request.target.Target
-import com.czbix.v2ex.CommentPlaceholderBindingModel_
-import com.czbix.v2ex.R
-import com.czbix.v2ex.commentsFooter
+import com.czbix.v2ex.*
 import com.czbix.v2ex.common.PrefStore
 import com.czbix.v2ex.db.CommentAndMember
 import com.czbix.v2ex.model.ContentBlock
 import com.czbix.v2ex.model.Topic
 import com.czbix.v2ex.network.GlideConfig
-import com.czbix.v2ex.postscript
 import com.czbix.v2ex.ui.ExHolder
 import com.czbix.v2ex.ui.common.RetryCallback
 import com.czbix.v2ex.ui.fragment.NodeListFragment.OnNodeActionListener
@@ -79,19 +76,17 @@ class CommentController(
 
     override fun buildItemModel(currentPosition: Int, item: CommentAndMember?): EpoxyModel<*> {
         if (item == null) {
-            return CommentPlaceholderBindingModel_().apply {
-                id("placeholder_$currentPosition")
-                floor(currentPosition.toString())
-            }
+            return CommentPlaceholderBindingModel_()
+                .id("placeholder_$currentPosition")
+                .floor(currentPosition.toString())
         }
 
-        return `CommentController$CommentModel_`().apply {
-            id(item.comment.id)
-            listener(commentListener)
-            comment(item)
-            isAuthor(item.member.isSameUser(topic!!.member!!))
-            position(currentPosition)
-        }
+        return `CommentController$CommentModel_`()
+            .id(item.comment.id)
+            .listener(commentListener)
+            .comment(item)
+            .isAuthor(item.member.isSameUser(topic!!.member!!))
+            .position(currentPosition)
     }
 
     override fun addModels(models: List<EpoxyModel<*>>) {
@@ -109,8 +104,8 @@ class CommentController(
 
         commentControllerTopic {
             id("topic")
-            nodeListener(nodeListener)
-            avatarListener(avatarListener)
+            nodeListener(this@CommentController.nodeListener)
+            avatarListener(this@CommentController.avatarListener)
             topic(topic)
             hasContent(!topic.content.isNullOrEmpty())
             hasPostscript(hasPostscript)
@@ -155,9 +150,9 @@ class CommentController(
         commentsFooter {
             id("footer")
             textRes(footerText)
-            if (failed) {
+            if (this@CommentController.failed) {
                 footerListener { _ ->
-                    retryCallback.retry()
+                    this@CommentController.retryCallback.retry()
                 }
             }
         }
@@ -172,7 +167,7 @@ class CommentController(
                         isPreBlock(false)
                         text(block.text)
                         showDivider(showDivider(index))
-                        contentListener(contentListener)
+                        contentListener(this@CommentController.contentListener)
                     }
                 }
                 is ContentBlock.PreBlock -> {
@@ -181,7 +176,7 @@ class CommentController(
                         isPreBlock(true)
                         text(block.text)
                         showDivider(false)
-                        contentListener(contentListener)
+                        contentListener(this@CommentController.contentListener)
                     }
                 }
                 is ContentBlock.ImageBlock -> {
@@ -189,7 +184,7 @@ class CommentController(
                         id("${tag}_${block.id}")
                         source(block.source)
                         showDivider(showDivider(index))
-                        contentListener(contentListener)
+                        contentListener(this@CommentController.contentListener)
                     }
                 }
             }
@@ -278,7 +273,7 @@ class CommentController(
 
         override fun onClick(v: View?) {
             val request = lastTarget.request
-            if (request != null && request.isFailed) {
+            if (request != null && !request.isRunning && !request.isComplete) {
                 request.begin()
                 return
             }

@@ -36,7 +36,7 @@ class NodeController(private val listener: NodeListFragment.OnNodeActionListener
             nodeControllerNode {
                 id(node.id)
                 node(node)
-                listener(listener)
+                listener(this@NodeController.listener)
             }
         }
     }
