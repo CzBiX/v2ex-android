@@ -38,7 +38,7 @@ object TopicParser : Parser() {
     }
 
     private fun getMaxPage(parent: Element): Pair<Int, Int> {
-        val ele = JsoupObjects(parent).child(".box:nth-child(3):not(.transparent)").child(".inner:last-child:not([id])").firstOrNull()
+        val ele = JsoupObjects(parent).child(".box:nth-child(5):not(.transparent)").child(".inner:last-child:not([id])").firstOrNull()
         return if (ele == null) {
             1 to 1
         } else {
@@ -50,7 +50,7 @@ object TopicParser : Parser() {
     }
 
     private fun parseOnceToken(parent: Element): String? {
-        return JsoupObjects(parent).child(".box:nth-child(5)", ".cell:nth-child(2)",
+        return JsoupObjects(parent).child(".box:nth-child(7)", ".cell:nth-child(2)",
                 "form", "[name=once]").firstOrNull()?.let(Element::`val`)
     }
 
@@ -103,7 +103,7 @@ object TopicParser : Parser() {
     }
 
     private fun parseTopicReplyCount(topicBuilder: Topic.Builder, parent: Element) {
-        val gray = JsoupObjects(parent).child(".box:nth-child(3)").child(".cell").child(".gray").firstOrNull()
+        val gray = JsoupObjects(parent).child(".box:nth-child(5)").child(".cell").child(".gray").firstOrNull()
         if (gray == null) {
             // empty reply
             topicBuilder.replyCount = 0
@@ -116,7 +116,7 @@ object TopicParser : Parser() {
     }
 
     private fun parseComments(main: Element, topicId: Int, page: Int): List<CommentAndMember> {
-        val elements = JsoupObjects(main).child(".box:nth-child(3)").child("[id^=r_]").child("table").child("tbody").child("tr")
+        val elements = JsoupObjects(main).child(".box:nth-child(5)").child("[id^=r_]").child("table").child("tbody").child("tr")
         return elements.map { ele ->
             val avatarBuilder = Avatar.Builder()
             parseAvatar(avatarBuilder, ele)
