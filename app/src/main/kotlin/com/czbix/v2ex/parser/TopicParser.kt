@@ -38,6 +38,10 @@ object TopicParser : Parser() {
     }
 
     private fun getMaxPage(parent: Element): Pair<Int, Int> {
+        val emptyEle = JsoupObjects(parent).child("#no-comments-yet").firstOrNull();
+        if (emptyEle != null) {
+            return 1 to 1
+        }
         val ele = JsoupObjects(parent).child(".box:nth-child(5):not(.transparent)").child(".inner:last-child:not([id])").firstOrNull()
         return if (ele == null) {
             1 to 1
