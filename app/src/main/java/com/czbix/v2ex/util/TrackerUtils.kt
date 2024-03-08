@@ -11,7 +11,7 @@ object TrackerUtils {
     private fun hashString(data: String): String {
         val salted = "cz-%s-bix".format(data)
         return MessageDigest.getInstance("MD5")
-                .digest(data.toByteArray())
+                .digest(salted.toByteArray())
                 .fold("") { str, it ->
                         str + "%02x".format(it)
                 }

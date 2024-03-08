@@ -88,7 +88,7 @@ class ViewerProvider : ContentProvider() {
             throw IllegalArgumentException("Invalid file path")
         }
 
-        var file = File(tempPath)
+        var file = File(tempPath!!)
         try {
             file = file.canonicalFile
         } catch (e: IOException) {

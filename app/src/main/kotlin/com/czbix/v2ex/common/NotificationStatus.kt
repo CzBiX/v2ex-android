@@ -12,7 +12,6 @@ import com.czbix.v2ex.event.BaseEvent.NewUnreadEvent
 import com.czbix.v2ex.helper.RxBus
 import com.czbix.v2ex.ui.MainActivity
 import com.czbix.v2ex.util.MiscUtils
-import com.google.common.eventbus.Subscribe
 
 object NotificationStatus {
     private val mNtfManager: NotificationManagerCompat

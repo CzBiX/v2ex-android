@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -124,7 +123,7 @@ class TopicFragment : Fragment(),
         CommentController.addGlidePreloader(commentsView, Glide.with(this))
         initCommentsView()
 
-        topicViewModel.result.observe(this) { result ->
+        topicViewModel.result.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Resource.Loading -> {
                     setIsLoading(true)
@@ -134,10 +133,10 @@ class TopicFragment : Fragment(),
                 is Resource.Success -> onLoadFinished(result.data)
             }
         }
-        topicViewModel.comments.observe(this) {
+        topicViewModel.comments.observe(viewLifecycleOwner) {
             commentController.submitList(it)
         }
-        topicViewModel.userActionResult.observe(this) { (action, resource) ->
+        topicViewModel.userActionResult.observe(viewLifecycleOwner) { (action, resource) ->
             handleUserActionResult(action, resource)
         }
 
@@ -270,7 +269,7 @@ class TopicFragment : Fragment(),
 
         when (item.itemId) {
             R.id.action_copy_link -> {
-                MiscUtils.setClipboard(activity!!, getString(R.string.desc_topic_link),
+                MiscUtils.setClipboard(requireActivity(), getString(R.string.desc_topic_link),
                         String.format("%s\n%s", topic.getTitle(), topic.url))
                 return true
             }
@@ -298,7 +297,7 @@ class TopicFragment : Fragment(),
                 return true
             }
             R.id.action_open_in_browser -> {
-                MiscUtils.openUrl(activity!!, topic.url, false)
+                MiscUtils.openUrl(requireActivity(), topic.url, false)
                 return true
             }
         }
@@ -339,7 +338,7 @@ class TopicFragment : Fragment(),
             if (!baseTopic.hasInfo) {
                 commentsView.setVisible(true)
             }
-            topicViewModel.lastReadRecord.observe(this, lastReadRecordObserver)
+            topicViewModel.lastReadRecord.observe(viewLifecycleOwner, lastReadRecordObserver)
         }
         mIsLoaded = true
         mLastIsFailed = false
@@ -347,7 +346,7 @@ class TopicFragment : Fragment(),
         commentController.setData(data.topic)
         commentController.setLoading(false)
 
-        activity!!.invalidateOptionsMenu()
+        requireActivity().invalidateOptionsMenu()
 
         if (replyForm == null &&
                 UserState.isLoggedIn() &&
@@ -393,7 +392,7 @@ class TopicFragment : Fragment(),
         }
 
         if (finishActivity) {
-            activity!!.finish()
+            requireActivity().finish()
         }
     }
 
@@ -436,17 +435,21 @@ class TopicFragment : Fragment(),
                         }
                     }
                 }
+                else -> {
+                }
             }
         } else {
             when (action) {
                 is TopicViewModel.Action.FavTopic -> updateFavIcon(false, action.bool)
                 is TopicViewModel.Action.IgnoreTopic -> {
                     Toast.makeText(activity, R.string.toast_topic_ignored, Toast.LENGTH_LONG).show()
-                    activity!!.finish()
+                    requireActivity().finish()
                     return
                 }
                 is TopicViewModel.Action.PostComment -> {
                     replyForm!!.setContent(null)
+                }
+                else -> {
                 }
             }
         }
@@ -560,7 +563,7 @@ class TopicFragment : Fragment(),
 
     override fun onUrlClick(url: String) {
         try {
-            MiscUtils.openUrl(activity!!, url)
+            MiscUtils.openUrl(requireActivity(), url)
         } catch (e: ActivityNotFoundException) {
             LogUtils.i(TAG, "can't start activity for: %s", e, url)
             Toast.makeText(activity, R.string.toast_activity_not_found,
@@ -570,7 +573,7 @@ class TopicFragment : Fragment(),
     }
 
     override fun onImageClick(source: String) {
-        ViewerProvider.viewImage(context!!, GlideApp.with(this), source)
+        ViewerProvider.viewImage(requireContext(), GlideApp.with(this), source)
     }
 
     override fun onNodeOpen(node: Node) {

@@ -105,7 +105,7 @@ object MiscUtils {
     }
 
     fun isChineseLang(resources: Resources): Boolean {
-        val lang = ConfigurationCompat.getLocales(resources.configuration)[0].language
+        val lang = ConfigurationCompat.getLocales(resources.configuration)[0]!!.language
         return lang == "zh"
     }
 
