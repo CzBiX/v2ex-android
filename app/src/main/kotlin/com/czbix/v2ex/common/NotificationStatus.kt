@@ -40,7 +40,7 @@ object NotificationStatus {
     }
 
     fun showAppUpdate() {
-        val pendingIntent = PendingIntent.getActivity(context, 0, MiscUtils.appUpdateIntent, 0)
+        val pendingIntent = PendingIntent.getActivity(context, 0, MiscUtils.appUpdateIntent, PendingIntent.FLAG_IMMUTABLE)
 
         val notification = NotificationCompat.Builder(context).apply {
             setSmallIcon(R.drawable.ic_update_black_24dp)
@@ -69,7 +69,7 @@ object NotificationStatus {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         }
 
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         val notification = NotificationCompat.Builder(context).apply {
             setSmallIcon(R.drawable.ic_notifications_white_24dp)
