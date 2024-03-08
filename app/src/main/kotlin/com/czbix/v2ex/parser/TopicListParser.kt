@@ -21,7 +21,7 @@ object TopicListParser : Parser() {
 
         return when (page) {
             is Node -> parseDocForNode(main, page)
-            is Tab, Page.PAGE_FAV_TOPIC -> parseDocForTab(JsoupObjects(main).child(".box").exclude(".box-title").first())
+            is Tab, Page.PAGE_FAV_TOPIC -> parseDocForTab(JsoupObjects(main).child(".box:not(.box-title)").first())
             else -> throw IllegalArgumentException("Unknown page type: $page")
         }
     }

@@ -42,12 +42,12 @@ object TopicParser : Parser() {
         if (emptyEle != null) {
             return 1 to 1
         }
-        val ele = JsoupObjects(parent).child(".box:nth-child(5):not(.transparent)").child(".inner:last-child:not([id])").firstOrNull()
+        val ele = JsoupObjects(parent).child(".box:not(.transparent)", ".cell:not([id])").child(".page_current").firstOrNull()
         return if (ele == null) {
             1 to 1
         } else {
-            val maxPage = JsoupObjects(ele).child("a").count() + 1
-            val curPage = JsoupObjects.child(ele, ".page_current").text().toInt()
+            val maxPage = JsoupObjects(ele).adjacent("a").count() + 1
+            val curPage = ele.text().toInt()
 
             curPage to maxPage
         }
@@ -120,7 +120,7 @@ object TopicParser : Parser() {
     }
 
     private fun parseComments(main: Element, topicId: Int, page: Int): List<CommentAndMember> {
-        val elements = JsoupObjects(main).child(".box:nth-child(5)").child("[id^=r_]").child("table").child("tbody").child("tr")
+        val elements = JsoupObjects(main).child(".box").child("[id^=r_]").child("table").child("tbody").child("tr")
         return elements.map { ele ->
             val avatarBuilder = Avatar.Builder()
             parseAvatar(avatarBuilder, ele)
