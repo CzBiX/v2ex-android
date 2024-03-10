@@ -141,20 +141,22 @@ object TopicListParser : Parser() {
     }
 
     internal fun parseMember(builder: Topic.Builder, ele: Element) {
-        var e = ele
         val memberBuilder = Member.Builder()
 
         // get member url
-        e = e.child(0)
-        Preconditions.checkState(e.tagName() == "a")
-        val url = e.attr("href")
+        val a = JsoupObjects.child(ele, "a")
+        val url = a.attr("href")
         memberBuilder.username = Member.getNameFromUrl(url)
 
         // get member avatar
         val avatarBuilder = Avatar.Builder()
-        e = e.child(0)
-        Preconditions.checkState(e.tagName() == "img")
-        avatarBuilder.setUrl(e.attr("src"))
+        val img = JsoupObjects(a).child("img").firstOrNull()
+        if (img != null) {
+            avatarBuilder.setUrl(img.attr("src"))
+        } else {
+            // sometimes avatar are missing here
+            avatarBuilder.setUrl("https://cdn.v2ex.com/static/img/avatar_large.png")
+        }
         memberBuilder.avatar = avatarBuilder.build()
 
         builder.member = memberBuilder.build()
